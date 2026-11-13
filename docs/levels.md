@@ -82,8 +82,13 @@ Level (Node2D)
 
 ## Les intérieurs
 
-Trois cartes : `ludo_house` (salon), `ludo_bedroom` (chambre à l'étage),
-`lab_house`.
+Quatre cartes, une par bâtiment du village :
+
+| Bâtiment sur `start_town` | Porte (case) | Carte |
+|---|---|---|
+| maison en bas à gauche — **Ludo** | `MaisonLudo` (8,15) | `ludo_house` (salon) + `ludo_bedroom` (étage) |
+| maison du centre — **les voisins**, PNJ à venir | `MaisonVoisins` (21,13) | `neighbor_house`, de plain-pied |
+| grand bâtiment en haut à droite, à la Poké Ball — **le laboratoire** | `Laboratoire` (28,7) | `lab_house` |
 
 Chaque pièce est posée au milieu d'une grille de **32 × 20 cases de noir**. Ce
 cadre n'est pas décoratif : les limites de caméra viennent de l'étendue du
@@ -98,7 +103,10 @@ Le mur occupe les rangées 0 à 2 de la pièce, le sol commence à la rangée 3.
   sol. S'il tenait entièrement dans les rangées du mur, il aurait l'air
   accroché dessus.
 - **Seuls fenêtres, tableaux et tableau noir sont dans le mur** (rangées 1-2,
-  calque `WallDecor`).
+  calque `WallDecor`) — et seulement au-dessus d'une colonne **sans meuble
+  haut** : un meuble adossé monte dans la rangée 2 et masquerait le cadre.
+- **Un meuble posé au milieu de la pièce ne ferme aucune case** : vérifier
+  qu'il ne reste pas une poche de sol inaccessible entre lui et le mur.
 - Un tapis centré porte la table ; des plantes occupent les coins du bas ; le
   paillasson rouge de sortie est centré sur la dernière rangée.
 - **Tabourets et coussins sont franchissables** (calque `Decor`) : on marche
@@ -108,6 +116,24 @@ Le mur occupe les rangées 0 à 2 de la pièce, le sol commence à la rangée 3.
 Le mur fait 37 px de haut dans ses 3 rangées : sa rangée du haut est presque
 vide. C'est pour ça que les murs sont sur un calque à part, **au-dessus** du
 noir de `Ground` — sinon on voit le gris de fond du viewport à travers.
+
+### Le laboratoire
+
+Composé d'après celui du Prof. Chen (Rouge Feu / Vert Feuille), avec le
+mobilier du labo du Prof. Orme (HeartGold) :
+
+- contre le mur du fond, les appareils : serveurs, bureau et son PC, étagère à
+  fioles, machine de soin, une bibliothèque ;
+- au mur, une note, une horloge, une carte ;
+- **au milieu, la machine aux trois Poké Balls**, face à l'entrée ;
+- une rangée de bibliothèques à mi-pièce, coupée par la machine et deux allées ;
+- des feuilles au sol, deux plantes à l'entrée, sol carrelé gris.
+
+Le mur est encore le papier peint des maisons, faute d'un mur de labo dans
+l'atlas.
+
+En cas de doute sur une pièce, aller chercher une référence du jeu d'origine
+(Bulbapedia, Poképédia) avant de composer.
 
 ### L'atlas `interiors.png`
 
