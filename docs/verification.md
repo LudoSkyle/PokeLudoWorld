@@ -107,6 +107,7 @@ tests/run.sh              # tout
 | `test_lab.gd` | laboratoire et ses objets à examiner |
 | `test_cave.gd` | les trois niveaux de la grotte et leurs tunnels |
 | `test_signs.gd` | panneaux du village |
+| `test_npcs.gd` | PNJ du village et passage gardé à l'ouest |
 | `audit.gd` + `audit.py` | grille de collisions : arrivées libres, portes reliées |
 
 **Ne relancer que les tests des zones touchées.** Un long parcours unique qui

@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Readable
+import fr.skyle.pokeludoworld.scripts.gameplay.levels.Roadblock
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
@@ -10,6 +11,7 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
 import godot.api.Input
+import godot.core.Vector2
 
 /**
  * Assemble les trois composants du joueur : entrée, déplacement, animation,
@@ -25,6 +27,29 @@ class Player : CharacterBody2D() {
 	private var input: PlayerInput? = null
 	private var movement: CharacterMovement? = null
 	private var sprite: CharacterAnimation? = null
+
+	/** Vrai pendant une scène jouée par le jeu : le joueur ne répond plus aux touches. */
+	var isLocked: Boolean = false
+		private set
+
+	val isWalking: Boolean
+		get() = movement?.isWalking ?: false
+
+	fun lock() {
+		isLocked = true
+	}
+
+	/**
+	 * Rend la main. [blocked] est ignorée tant que sa touche reste enfoncée :
+	 * c'est la direction qui relancerait aussitôt la scène.
+	 */
+	fun unlock(blocked: Vector2) {
+		isLocked = false
+		input?.blockUntilReleased(blocked)
+	}
+
+	/** Recule d'une case sans se retourner. Renvoie false si la case est occupée. */
+	fun stepBack(direction: Vector2): Boolean = movement?.tryWalk(direction) ?: false
 
 	@Register
 	override fun _ready() {
@@ -42,7 +67,14 @@ class Player : CharacterBody2D() {
 		val currentInput = input ?: return
 		val currentMovement = movement ?: return
 
+		val wasWalking = currentMovement.isWalking
 		currentMovement.process(delta)
+
+		// Un passage gardé se déclenche à l'instant où l'on se pose dessus,
+		// avant que la touche tenue n'engage le pas suivant.
+		if (wasWalking && !currentMovement.isWalking && !isLocked) {
+			(currentMovement.areaUnderfoot() as? Roadblock)?.intercept(this)
+		}
 
 		// Pendant un fondu, le pas engagé se termine mais plus aucune entrée
 		// n'est lue : le joueur finit d'entrer dans la porte, puis attend.
@@ -59,6 +91,11 @@ class Player : CharacterBody2D() {
 		if (box != null && box.isOpen) {
 			if (interact) box.advance()
 			sprite?.refresh(currentInput.direction, false)
+			return
+		}
+
+		if (isLocked) {
+			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
 			return
 		}
 
@@ -97,6 +134,7 @@ class Player : CharacterBody2D() {
 		when (target) {
 			is Sign -> target.read()
 			is Readable -> target.read()
+			is Npc -> target.talk(facing)
 		}
 	}
 }
