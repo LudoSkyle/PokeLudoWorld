@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/MessageBox.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/message_box.png" id="2_frame"]
-[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald-pro.ttf" id="3_font"]
 
 [node name="MessageBox" type="CanvasLayer"]
 script = ExtResource("1_script")
@@ -49,4 +49,4 @@ theme_override_colors/font_shadow_color = Color(0.427451, 0.498039, 0.466667, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_fonts/normal_font = ExtResource("3_font")
-theme_override_font_sizes/normal_font_size = 40
+theme_override_font_sizes/normal_font_size = 48

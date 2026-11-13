@@ -56,7 +56,7 @@ Instancier `sign.tscn` sous `World`, le placer sur un centre de case, et
 remplir `text`. Une **barre verticale `|` sépare deux boîtes successives** :
 
 ```
-text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
+text = "Maison de Ludo.|La porte n'est jamais fermée, entrez donc."
 ```
 
 Un tableau exporté serait plus propre en théorie, mais plus pénible à éditer
@@ -92,7 +92,11 @@ Un corps est posé sur **chaque case solide** du meuble, pour qu'on puisse
 l'examiner de n'importe quel côté. Une horloge est au mur : son corps est sur
 la case **en dessous**, celle qu'on regarde depuis le sol.
 
-La police n'a ni accents ni apostrophe : les textes s'écrivent sans.
+La police est **Pokémon Emerald Pro** (`assets/fonts/pokemon-emerald-pro.ttf`,
+crystalwalrein, CC BY-SA 3.0). Elle a les accents et l'apostrophe : les textes
+s'écrivent en français correct. Elle s'affiche en **48 px**, sans lissage : un
+pixel de la police vaut alors exactement trois pixels écran. Une boîte tient
+**deux lignes** d'environ 30 caractères ; au-delà, couper avec `|`.
 
 ## L'interaction
 
