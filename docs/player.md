@@ -71,3 +71,11 @@ puis l'image fixe, en 0,2 s. C'est le petit à-coup des jeux d'origine quand on
 pivote sans avancer. L'animation ne boucle pas, et `refresh()` la laisse aller
 au bout avant de retomber sur l'`idle_*` — sans ça elle serait écrasée dès la
 frame suivante.
+
+
+## Changement de carte
+
+Le joueur n'appartient à aucune carte : `SceneManager` le reparente. À
+l'arrivée son pas est annulé, il est orienté dos à la porte et une nouvelle
+pression est exigée avant de bouger — le détail et les raisons sont dans
+[levels.md](levels.md).
