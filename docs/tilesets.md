@@ -73,6 +73,29 @@ plutôt que recopiées :
   visuellement à la rangée du dessus, et sans ça il coupait la tête du joueur
   qui se tient devant.
 
+## Décor franchissable : trier depuis le haut de la case
+
+**Toute tuile 1×1 d'un calque de `World` posée sur une case franchissable doit
+porter `y_sort_origin = -8`.** Sinon elle trie 8 px *après* le joueur qui s'y
+tient et se dessine par-dessus lui.
+
+Avec `-8` la tuile trie depuis le haut de sa case : le joueur qui est dessus
+passe devant, et celui qui est une case au-dessus passe derrière — les deux
+comportements attendus.
+
+Les six cases concernées aujourd'hui, à recalculer après toute modification de
+collision :
+
+| Tuile | Cases |
+|---|---|
+| `5:13,32` plantes aquatiques | (39,16) (40,18) |
+| `5:5,99` `5:6,99` `5:7,99` façade | (31,7) (32,7) (33,7) |
+| `5:33,23` bouche de grotte | (38,2) |
+
+La liste se recalcule : croiser les cases non solides mesurées en jeu avec les
+cases couvertes par `Cliffs`, `Props` et `Houses`. Les grosses tuiles d'arbres
+sont exclues — là on veut justement passer derrière.
+
 ## Ce qui reste à déclarer
 
 Les collisions couvrent les ~150 tuiles que `start_town` utilise réellement.
