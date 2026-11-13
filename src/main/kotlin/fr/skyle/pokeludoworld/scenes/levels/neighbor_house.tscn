@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="3_readable"]
 
 [node name="Level" type="Node2D"]
 
@@ -28,7 +29,7 @@ y_sort_enabled = true
 
 [node name="Props" type="TileMapLayer" parent="World"]
 y_sort_enabled = true
-tile_map_data = PackedByteArray("AAAKAAcABwAOAAMAAAAKAAgABwAOAAQAAAAKAAwABwAEAAUAAAAKAA0ABwAEAAYAAAALAAcABwAPAAMAAAALAAgABwAPAAQAAAAMAAcABwAIAAMAAAAMAAgABwAIAAQAAAANAAcABwAJAAMAAAANAAgABwAJAAQAAAAOAAkABwASAAUAAAAOAAoABwASAAYAAAAPAAkABwATAAUAAAAPAAoABwATAAYAAAAQAAkABwAUAAUAAAAQAAoABwAUAAYAAAASAAcABwAQAAMAAAASAAgABwAQAAQAAAATAAcABwARAAMAAAATAAgABwARAAQAAAAUAAcABwALAAUAAAAUAAgABwALAAYAAAAVAAcABwAMAAUAAAAVAAgABwAMAAYAAAAVAAwABwAXAAIAAAAVAA0ABwAXAAMAAAA=")
+tile_map_data = PackedByteArray("AAAKAAcABwAOAAMAAAAKAAgABwAOAAQAAAAKAAwABwAEAAUAAAAKAA0ABwAEAAYAAAALAAcABwAPAAMAAAALAAgABwAPAAQAAAAMAAcABwAKAAMAAAAMAAgABwAKAAQAAAANAAcABwALAAMAAAANAAgABwALAAQAAAAOAAkABwASAAUAAAAOAAoABwASAAYAAAAPAAkABwATAAUAAAAPAAoABwATAAYAAAAQAAkABwAUAAUAAAAQAAoABwAUAAYAAAASAAcABwAQAAMAAAASAAgABwAQAAQAAAATAAcABwARAAMAAAATAAgABwARAAQAAAAUAAcABwALAAUAAAAUAAgABwALAAYAAAAVAAcABwAMAAUAAAAVAAgABwAMAAYAAAAVAAwABwAXAAIAAAAVAA0ABwAXAAMAAAA=")
 tile_set = ExtResource("1_tileset")
 
 [node name="Entities" type="Node2D" parent="World"]
@@ -49,3 +50,37 @@ target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start
 target_door = "MaisonVoisins"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)
+
+[node name="Readables" type="Node2D" parent="."]
+
+[node name="Books00" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(168, 120)
+text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+
+[node name="Books01" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(184, 120)
+text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+
+[node name="Tv02" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(296, 120)
+kind = "tv"
+
+[node name="Tv03" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(312, 120)
+kind = "tv"
+
+[node name="Books04" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(168, 136)
+text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+
+[node name="Books05" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(184, 136)
+text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+
+[node name="Tv06" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(296, 136)
+kind = "tv"
+
+[node name="Tv07" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(312, 136)
+kind = "tv"

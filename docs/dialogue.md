@@ -62,12 +62,48 @@ text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
 Un tableau exporté serait plus propre en théorie, mais plus pénible à éditer
 pour ce que ça apporte.
 
+## Les meubles examinables
+
+`scenes/levels/readable.tscn` — un `StaticBody2D` **invisible**, script
+`Readable.kt`. Le meuble reste une tuile ; le corps est posé sur sa case pour
+que le joueur le trouve devant lui.
+
+| `kind` | Ce qu'il dit |
+|---|---|
+| `text` (défaut) | le contenu de `text`, avec `|` entre deux boîtes |
+| `clock` | **l'heure réelle** de la machine, lue à chaque examen |
+| `tv` | une émission **tirée au hasard** parmi dix |
+
+Les émissions sont dans `Readable.TV_PROGRAMS`, dans l'esprit des jeux
+d'origine : la télé décrit en une phrase ce qui passe (« Il y a un film à la
+télé… »), ou donne la météo. Tant que le monde n'a pas de Pokémon, aucune n'en
+parle.
+
+Dans les intérieurs, ils sont générés avec la pièce, sous un nœud `Readables` :
+
+| Meuble | Texte |
+|---|---|
+| bibliothèques, étagères à livres | pleine de livres qui ont l'air très intéressants |
+| poubelle | vide — elle pourra contenir quelque chose plus tard |
+| serveurs | ont l'air de contenir des données très importantes |
+| télé, horloge | voir `kind` |
+
+Un corps est posé sur **chaque case solide** du meuble, pour qu'on puisse
+l'examiner de n'importe quel côté. Une horloge est au mur : son corps est sur
+la case **en dessous**, celle qu'on regarde depuis le sol.
+
+La police n'a ni accents ni apostrophe : les textes s'écrivent sans.
+
 ## L'interaction
 
 `Player.readFacingObject()` interroge la case regardée via
 `CharacterMovement.colliderAt(direction)` — la même requête physique que le
 déplacement, mais elle renvoie *quoi* bloque et non seulement *si* ça bloque.
-Si c'est un `Sign`, il se lit.
+Si c'est un `Sign` ou un `Readable`, il se lit.
+
+La case d'un meuble examinable contient deux corps : le calque de tuiles, qui
+dessine et bloque, et le `Readable`. `colliderAt` renvoie en priorité le
+`StaticBody2D`, sinon le calque.
 
 Tout ce qui sera interactif plus tard (PNJ, objets au sol) passera par là :
 ajouter une branche dans `readFacingObject`.
