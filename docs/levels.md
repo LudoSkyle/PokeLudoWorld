@@ -251,3 +251,28 @@ Deux contrôles, tous deux automatisables par une sonde (voir
   l'orientation. Y inclure les cas négatifs : traverser un paillasson de côté
   ne doit rien déclencher. Téléporter le joueur sur une porte ne teste rien de
   tout ça.
+
+## Bandeau de lieu
+
+`scenes/ui/location_banner.tscn`, script `LocationBanner.kt`, instancié dans
+`game_manager.tscn`. Il descend en haut à gauche quand on arrive dans un lieu,
+reste deux secondes, puis remonte.
+
+Chaque carte déclare son lieu par deux **métadonnées de sa racine** `Level` :
+
+```
+[node name="Level" type="Node2D"]
+metadata/location = "Maison de Ludo"
+metadata/banner = "wood"
+```
+
+- `location` : le nom affiché. Le bandeau ne s'annonce que si ce nom **change** :
+  deux cartes du même lieu (rez-de-chaussée et étage) portent le même nom, et
+  l'escalier ne le fait pas réapparaître. Sans nom, pas de bandeau.
+- `banner` : un fichier de `assets/ui/banners` — `wood` (défaut), `metal`,
+  `stone`, `cave`, `forest`, `beach`, `water`, `sea`. Le texte passe en blanc
+  sur les bandeaux sombres (`cave`, `forest`, `water`).
+
+Le bandeau est dessiné à 4 pixels écran par pixel, comme le décor ; sa largeur
+est fixe (131 px source), donc un nom tient en une vingtaine de caractères.
+`SceneManager` l'annonce à chaque changement de carte, après le fondu.

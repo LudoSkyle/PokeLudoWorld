@@ -6,6 +6,7 @@ import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerCamera
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerInput
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
 import fr.skyle.pokeludoworld.scripts.log.Logger
+import fr.skyle.pokeludoworld.scripts.ui.LocationBanner
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.Register
@@ -33,6 +34,12 @@ class SceneManager : Node() {
 	companion object {
 		var instance: SceneManager? = null
 			private set
+
+		/** Métadonnée de la racine d'une carte : le nom affiché par le bandeau. */
+		private const val LOCATION_META = "location"
+
+		/** Métadonnée de la racine d'une carte : le bandeau qui porte ce nom. */
+		private const val BANNER_META = "banner"
 	}
 
 	@Category("Scenes")
@@ -137,6 +144,13 @@ class SceneManager : Node() {
 
 		host.addChild(next)
 		level = next
+
+		// Le bandeau attend que le fondu d'arrivée soit levé pour descendre.
+		LocationBanner.instance?.announce(
+			next.getMeta(LOCATION_META, "").toString(),
+			next.getMeta(BANNER_META, "").toString(),
+			fadeSeconds,
+		)
 
 		if (currentPlayer == null) return
 

@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="3_readable"]
 
 [node name="Level" type="Node2D"]
+metadata/location = "Laboratoire"
+metadata/banner = "metal"
 
 [node name="Background" type="Node2D" parent="."]
 
