@@ -50,9 +50,15 @@ La tuile sous une porte doit être praticable. Les deux portes du village
    franchi la porte vise une case de l'*ancienne* carte ; sans ça le personnage
    glisse vers elle à travers les murs de la nouvelle.
 2. **Poser et orienter le joueur** selon la sorte de porte (tableau ci-dessus).
-3. **Exiger une nouvelle pression** (`PlayerInput.requireFreshPress`). On prend
-   un escalier en maintenant Gauche ; à l'arrivée Gauche est toujours enfoncé,
-   et sans ça on reprend aussitôt l'escalier dans l'autre sens.
+3. **Bloquer le chemin du retour, et lui seul**
+   (`PlayerInput.blockUntilReleased`). Sur une sortie — tapis d'escalier,
+   paillasson — la direction qui la déclenche est ignorée tant que sa touche
+   reste enfoncée : on prend un escalier en maintenant Gauche, on arrive Gauche
+   toujours enfoncé, et sans ça on le reprend aussitôt, en boucle.
+
+   Les autres directions ne sont pas touchées : **une touche tenue continue de
+   faire marcher après la porte**. Entrer dans une maison en maintenant Haut
+   fait avancer dans la pièce sans relâcher, comme dans les jeux d'origine.
 
 Pendant le fondu, le pas engagé se termine mais plus aucune entrée n'est lue.
 Après, `PlayerCamera.applyLimits()` est rappelée à la main : le joueur est

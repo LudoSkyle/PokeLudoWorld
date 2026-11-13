@@ -30,7 +30,7 @@ class PlayerInput : Node() {
 		private set
 
 	private var holdTime: Double = 0.0
-	private var waitForRelease: Boolean = false
+	private var blockedDirection: Vector2? = null
 
 	/** Oriente le personnage sans passer par une touche (arrivée par une porte). */
 	fun face(newDirection: Vector2) {
@@ -38,13 +38,16 @@ class PlayerInput : Node() {
 	}
 
 	/**
-	 * Ignore la touche tenue jusqu'à ce qu'elle soit relâchée. Sans ça, prendre
-	 * un escalier en maintenant sa direction fait arriver sur le tapis d'en
-	 * face, touche toujours enfoncée : on le reprend aussitôt, en boucle.
+	 * Ignore UNE direction tant que sa touche reste enfoncée. Sert à l'arrivée
+	 * sur une sortie : on prend un escalier en maintenant Gauche, on arrive sur
+	 * le tapis d'en face Gauche toujours enfoncé, et on le reprendrait aussitôt,
+	 * en boucle.
+	 *
+	 * Les autres directions ne sont pas touchées : entrer dans une maison en
+	 * maintenant Haut doit continuer à faire avancer, sans relâcher.
 	 */
-	fun requireFreshPress() {
-		waitForRelease = true
-		holdTime = 0.0
+	fun blockUntilReleased(blocked: Vector2) {
+		blockedDirection = blocked
 	}
 
 	private val bindings = listOf(
@@ -65,9 +68,13 @@ class PlayerInput : Node() {
 	 * le compteur de maintien ne doit pas avancer pendant un déplacement.
 	 */
 	fun poll(delta: Double): MoveIntent {
-		if (waitForRelease) {
-			if (heldDirection() == null) waitForRelease = false
-			return MoveIntent.NONE
+		val blocked = blockedDirection
+		if (blocked != null) {
+			if (heldDirection() == blocked) {
+				holdTime = 0.0
+				return MoveIntent.NONE
+			}
+			blockedDirection = null
 		}
 
 		// Une nouvelle pression réoriente tout de suite et relance le compteur.

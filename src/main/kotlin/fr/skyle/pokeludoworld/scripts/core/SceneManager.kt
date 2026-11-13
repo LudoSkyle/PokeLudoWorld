@@ -158,7 +158,9 @@ class SceneManager : Node() {
 			if (door != null) {
 				input?.face(if (door.isExit) door.exitDirection * -1.0 else door.entryDirection)
 			}
-			input?.requireFreshPress()
+			// Une touche tenue continue de faire marcher après la porte, sauf si
+			// elle ferait aussitôt repartir par où l'on vient d'arriver.
+			if (door != null && door.isExit) input?.blockUntilReleased(door.exitDirection)
 		}
 
 		if (currentPlayer.hasNode("Movement")) {
