@@ -159,8 +159,12 @@ class SceneManager : Node() {
 				input?.face(if (door.isExit) door.exitDirection * -1.0 else door.entryDirection)
 			}
 			// Une touche tenue continue de faire marcher après la porte, sauf si
-			// elle ferait aussitôt repartir par où l'on vient d'arriver.
-			if (door != null && door.isExit) input?.blockUntilReleased(door.exitDirection)
+			// elle ferait aussitôt repartir par où l'on vient d'arriver : la
+			// direction de sortie d'un paillasson, ou le demi-tour vers une
+			// porte à contact (on entre dans un tunnel en maintenant Haut).
+			if (door != null) {
+				input?.blockUntilReleased(if (door.isExit) door.exitDirection else door.entryDirection * -1.0)
+			}
 		}
 
 		if (currentPlayer.hasNode("Movement")) {
