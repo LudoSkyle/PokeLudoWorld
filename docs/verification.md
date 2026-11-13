@@ -60,6 +60,24 @@ p.position = Vector2(case.x * 16 + 8, case.y * 16 + 16)
 
 Au-dessus d'un arbre on doit passer derrière, en dessous devant.
 
+## Une capture qui ne montre pas le joueur n'est pas un résultat
+
+La caméra est bornée à l'étendue de la map : près d'un bord, le joueur n'est
+plus au centre de l'image, et un recadrage fixe sur le centre peut ne pas le
+montrer du tout. Ça s'est produit sur la zone d'eau, la capture est passée pour
+bonne, et le défaut est remonté par le joueur.
+
+Dans une sonde, lever les limites avant de capturer :
+
+```gdscript
+cam.limit_left = -10000 ; cam.limit_top = -10000
+cam.limit_right = 10000 ; cam.limit_bottom = 10000
+```
+
+Le joueur est alors exactement au centre, et `cam.get_screen_center_position()`
+doit valoir sa position — à imprimer, c'est l'assertion qui empêche de valider
+une image vide.
+
 ## La règle qui coûte cher quand on l'oublie
 
 **Ne jamais valider un rendu sur une vue d'ensemble.** Deux bugs sont passés
