@@ -50,4 +50,7 @@ src/main/kotlin/fr/skyle/pokeludoworld/
   n'hérite pas du filtre projet. Voir [docs/architecture.md](docs/architecture.md).
 - **Ne jamais valider un rendu sur une vue d'ensemble.** Zoomer sur chaque
   jonction — voir [docs/verification.md](docs/verification.md).
+- **Que ça ait du sens.** Visuel possible, comportement logique, ensemble
+  cohérent, collisions justifiées : les quatre questions de
+  [docs/verification.md](docs/verification.md), à se poser avant toute sonde.
 - Réponds en français ; les titres de commit restent en anglais.
