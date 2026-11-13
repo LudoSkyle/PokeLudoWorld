@@ -1,5 +1,6 @@
-package fr.skyle.pokeludoworld.scripts.core
+package fr.skyle.pokeludoworld.scripts.autoload
 
+import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.Register
