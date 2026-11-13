@@ -19,6 +19,12 @@ func wait(n: int) -> void:
 	for i in n:
 		await process_frame
 
+# Attend en SECONDES : les images ne durent pas pareil sur tous les ecrans.
+func secs(t: float) -> void:
+	var end := Time.get_ticks_msec() + int(t * 1000.0)
+	while Time.get_ticks_msec() < end:
+		await process_frame
+
 func level() -> Node2D:
 	return game.get_node_or_null(VP + "/Level")
 
@@ -78,7 +84,9 @@ func walk(label: String, to: Vector2i, expect_change: bool, avoid: Array = []) -
 	if path.is_empty():
 		return
 	var id := level_id()
-	for target in path:
+	var replans := 0
+	while not path.is_empty():
+		var target: Vector2i = path.pop_front()
 		var d: Vector2i = target - cell()
 		Input.action_press(DIRS[d])
 		var guard := 0
@@ -89,6 +97,11 @@ func walk(label: String, to: Vector2i, expect_change: bool, avoid: Array = []) -
 		await wait(3)
 		if level_id() != id:
 			break
+		# Un PNJ qui bouge a pu se mettre en travers : on recalcule la route.
+		if cell() != target and replans < 20:
+			replans += 1
+			await wait(20)
+			path = find_path(cell(), to, avoid)
 	if expect_change:
 		var guard2 := 0
 		while guard2 < 300 and level_id() == id:

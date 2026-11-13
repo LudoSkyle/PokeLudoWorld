@@ -112,6 +112,24 @@ position = Vector2(136, 72)
 appearance = "bug_catcher"
 facing = Vector2(0, 1)
 text = "Ces herbes sont si hautes qu on s y perd.|Je cherche des insectes, mais je n ai encore rien trouve."
+movement = "wander"
+pace = 2.0
+wander_layer = "Background/Grass"
+
+[node name="Runner" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(216, 152)
+appearance = "triathlete_m"
+facing = Vector2(0, 1)
+text = "Pff... pff... Je fais le tour du village tous les matins.|Ne reste pas au milieu du chemin, je perds mon rythme."
+movement = "patrol"
+pace = 3.0
+route = PackedVector2Array(13, 16, 26, 16, 26, 9, 25, 9, 25, 15, 14, 15, 14, 9, 13, 9)
+
+[node name="Fisher" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(648, 280)
+appearance = "fisher"
+facing = Vector2(1, 0)
+text = "Chut... Ca mord pas fort aujourd hui.|Il parait qu il y a de gros poissons au fond du lac."
 
 [node name="Triggers" type="Node2D" parent="."]
 
