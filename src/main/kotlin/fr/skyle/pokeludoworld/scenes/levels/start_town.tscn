@@ -49,13 +49,13 @@ y_sort_enabled = true
 tile_map_data = PackedByteArray("AAABABYABgASAAAAAAADABYABgAPAAAAAAAFABYABgAVAAAAAAAHABYABgAPAAAAAAAJABYABgAPAAAAAAALABYABgASAAAAAAANABYABgASAAAAAAAPABYABgAVAAAAAAARABYABgAPAAAAAAATABYABgAPAAAAAAAVABYABgASAAAAAAAXABYABgAVAAAAAAAZABYABgAPAAAAAAAbABYABgAPAAAAAAAdABYABgAPAAAAAAAfABYABgAVAAAAAAAhABYABgASAAAAAAAjABYABgASAAAAAAAlABYABgAPAAAAAAAnABYABgAPAAAAAAApABYABgAPAAAAAAArABYABgASAAAAAAACABQABgAVAAAAAAAAABQABgAPAAAAAAABABIABgAPAAAAAAD//xIABgAVAAAAAAAAABAABgASAAAAAAACABAABgASAAAAAAADABIABgAVAAAAAAABAA4ABgAPAAAAAAD//w4ABgAVAAAAAAADAA4ABgAPAAAAAAAAAAwABgAVAAAAAAACAAwABgAPAAAAAAABAAoABgAPAAAAAAD//woABgAVAAAAAAADAAoABgAVAAAAAAD//wUABgAPAAAAAAABAAUABgAPAAAAAAADAAUABgAPAAAAAAACAAMABgAPAAAAAAAAAAMABgASAAAAAAABAAEABgAVAAAAAAD//wEABgAPAAAAAAADAAEABgAPAAAAAAAAAP//BgAVAAAAAAACAP//BgAVAAAAAAD//xYABgAVAAAAAAAEAP//BgAVAAAAAAAGAP//BgAPAAAAAAAIAP//BgAPAAAAAAAKAP//BgAPAAAAAAAMAP//BgASAAAAAAAOAP//BgAPAAAAAAAQAP//BgASAAAAAAASAP//BgAVAAAAAAAUAP//BgAVAAAAAAAWAP//BgASAAAAAAAYAP//BgAVAAAAAAAaAP//BgASAAAAAAAcAP//BgAVAAAAAAAeAP//BgAPAAAAAAAgAP//BgASAAAAAAAiAP//BgAPAAAAAAAFAAEABgAPAAAAAAAHAAEABgAPAAAAAAAJAAEABgAVAAAAAAALAAEABgAPAAAAAAANAAEABgAVAAAAAAAPAAEABgASAAAAAAARAAEABgAPAAAAAAATAAEABgAPAAAAAAAVAAEABgAVAAAAAAAXAAEABgAVAAAAAAAZAAEABgAVAAAAAAAbAAEABgAPAAAAAAAdAAEABgAVAAAAAAAfAAEABgAPAAAAAAAhAAEABgASAAAAAAAEABQABgAPAAAAAAAGABQABgAVAAAAAAAIABQABgASAAAAAAAKABQABgAVAAAAAAAMABQABgAPAAAAAAAOABQABgAPAAAAAAAQABQABgAVAAAAAAASABQABgAVAAAAAAAUABQABgAPAAAAAAAWABQABgAVAAAAAAAYABQABgAPAAAAAAAaABQABgASAAAAAAAcABQABgAVAAAAAAAeABQABgAVAAAAAAAgABQABgASAAAAAAAiABQABgAPAAAAAAAkABQABgAVAAAAAAAmABQABgAPAAAAAAAoABQABgAVAAAAAAAqABQABgAPAAAAAAAsABQABgAPAAAAAAAUAAQABgARAAMAAAA=")
 tile_set = ExtResource("1_ian7c")
 
-[node name="SignHouse" parent="World" instance=ExtResource("3_sign")]
+[node name="SignNeighbors" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(312, 216)
-text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
+text = "Maison des voisins.|Frappez avant d entrer."
 
-[node name="SignLab" parent="World" instance=ExtResource("3_sign")]
+[node name="SignLudo" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(104, 248)
-text = "Laboratoire de recherche.|Defense d entrer sans autorisation.|Merci de votre comprehension."
+text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
 
 [node name="Entities" type="Node2D" parent="World" unique_id=1708336925]
 y_sort_enabled = true
@@ -70,13 +70,19 @@ position = Vector2(328, 136)
 [node name="Doors" type="Node2D" parent="."]
 
 [node name="MaisonLudo" parent="Doors" instance=ExtResource("2_door")]
-position = Vector2(344, 216)
+position = Vector2(136, 248)
 target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/ludo_house.tscn"
 target_door = "Entree"
 entry_direction = Vector2(0, 1)
 
+[node name="MaisonVoisins" parent="Doors" instance=ExtResource("2_door")]
+position = Vector2(344, 216)
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/neighbor_house.tscn"
+target_door = "Entree"
+entry_direction = Vector2(0, 1)
+
 [node name="Laboratoire" parent="Doors" instance=ExtResource("2_door")]
-position = Vector2(136, 248)
+position = Vector2(456, 120)
 target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/lab_house.tscn"
 target_door = "Entree"
 entry_direction = Vector2(0, 1)
