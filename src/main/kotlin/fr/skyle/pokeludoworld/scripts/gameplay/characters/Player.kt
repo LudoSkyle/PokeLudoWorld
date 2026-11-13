@@ -39,8 +39,12 @@ class Player : CharacterBody2D() {
 
 		// L'entrée n'est lue qu'entre deux pas : un pas engagé va toujours
 		// jusqu'au bout, sinon le personnage s'arrête entre deux cases.
-		if (!currentMovement.isWalking && currentInput.poll(delta) == MoveIntent.WALK) {
-			currentMovement.tryWalk(currentInput.direction)
+		if (!currentMovement.isWalking) {
+			when (currentInput.poll(delta)) {
+				MoveIntent.WALK -> currentMovement.tryWalk(currentInput.direction)
+				MoveIntent.TURN -> sprite?.playTurn(currentInput.direction)
+				MoveIntent.NONE -> {}
+			}
 		}
 
 		sprite?.refresh(currentInput.direction, currentMovement.isWalking)
