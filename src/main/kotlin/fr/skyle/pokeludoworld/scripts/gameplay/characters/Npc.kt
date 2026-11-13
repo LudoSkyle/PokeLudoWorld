@@ -4,6 +4,7 @@ import fr.skyle.pokeludoworld.scripts.autoload.Globals
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
+import fr.skyle.pokeludoworld.scripts.ui.PauseMenu
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.MultilineText
@@ -193,9 +194,10 @@ class Npc : CharacterBody2D() {
 		pause = nextPause()
 	}
 
-	/** Personne ne bouge de soi-même pendant un dialogue ou un fondu. */
+	/** Personne ne bouge de soi-même pendant un dialogue, un fondu ou le menu. */
 	private fun isHeld(): Boolean =
-		MessageBox.instance?.isOpen == true || SceneManager.instance?.isChanging == true
+		MessageBox.instance?.isOpen == true || SceneManager.instance?.isChanging == true ||
+			PauseMenu.instance?.isOpen == true
 
 	// --- errance
 
