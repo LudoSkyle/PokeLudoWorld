@@ -7,6 +7,7 @@ import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
+import fr.skyle.pokeludoworld.scripts.ui.PauseMenu
 import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
@@ -96,6 +97,21 @@ class Player : CharacterBody2D() {
 
 		if (isLocked) {
 			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+			return
+		}
+
+		// Menu ouvert : les flèches déplacent son curseur, plus le personnage.
+		val menu = PauseMenu.instance
+		if (menu != null && menu.isOpen) {
+			menu.handle(interact)
+			sprite?.refresh(currentInput.direction, false)
+			return
+		}
+
+		// Il ne s'ouvre qu'entre deux pas, jamais au milieu d'une case.
+		if (menu != null && !currentMovement.isWalking && Input.isActionJustPressed(PauseMenu.ACTION)) {
+			menu.open()
+			sprite?.refresh(currentInput.direction, false)
 			return
 		}
 
