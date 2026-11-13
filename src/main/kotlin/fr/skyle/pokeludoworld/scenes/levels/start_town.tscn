@@ -86,3 +86,9 @@ position = Vector2(456, 120)
 target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/lab_house.tscn"
 target_door = "Entree"
 entry_direction = Vector2(0, 1)
+
+[node name="Grotte" parent="Doors" instance=ExtResource("2_door")]
+position = Vector2(616, 40)
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/cave_1f.tscn"
+target_door = "Sortie"
+entry_direction = Vector2(0, 1)

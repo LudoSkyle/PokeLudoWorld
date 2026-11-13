@@ -34,6 +34,10 @@ C'est vrai pour le dessin, pour le polygone de collision et pour le point de
 tri — tous partagent le même repère local, centré sur la case d'ancrage.
 Vérifié par rendu comparé ; se tromper là-dessus décale tout de 16 px.
 
+Deux autres sources complètent l'atlas principal : `7`, les meubles recalés
+(`interiors.png`), et `8`, la roche de grotte nettoyée (`cave.png`) — voir
+[levels.md](levels.md).
+
 ## Couche physique
 
 Une seule : `physics_layer_0/collision_layer = 1`. Le polygone standard pour une

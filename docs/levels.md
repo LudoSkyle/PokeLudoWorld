@@ -51,9 +51,9 @@ La tuile sous une porte doit être praticable. Les deux portes du village
    glisse vers elle à travers les murs de la nouvelle.
 2. **Poser et orienter le joueur** selon la sorte de porte (tableau ci-dessus).
 3. **Bloquer le chemin du retour, et lui seul**
-   (`PlayerInput.blockUntilReleased`). Sur une sortie — tapis d'escalier,
-   paillasson — la direction qui la déclenche est ignorée tant que sa touche
-   reste enfoncée : on prend un escalier en maintenant Gauche, on arrive Gauche
+   (`PlayerInput.blockUntilReleased`). La direction qui ferait repartir par où
+   l'on arrive — celle qui déclenche une sortie, ou le demi-tour vers une porte
+   à contact — est ignorée tant que sa touche reste enfoncée : on prend un escalier en maintenant Gauche, on arrive Gauche
    toujours enfoncé, et sans ça on le reprend aussitôt, en boucle.
 
    Les autres directions ne sont pas touchées : **une touche tenue continue de
@@ -195,6 +195,47 @@ tapis et on avance vers l'escalier. On arrive sur le tapis de l'autre étage,
 tourné vers la pièce. Comme pour le paillasson, traverser le tapis ou s'y
 arrêter ne déclenche rien. Depuis la case du dessous, avancer vers la gauche
 ne prend pas l'escalier : on passe simplement devant.
+
+## La grotte
+
+Trois cartes, sur le modèle du Mont Sélénite (Rouge Feu) :
+
+| Carte | Forme |
+|---|---|
+| `cave_1f` | une grande salle ouverte coupée de crêtes rocheuses ; la sortie en bas |
+| `cave_b1f` | deux boyaux **isolés dans le noir**, sans lien entre eux |
+| `cave_b2f` | une salle autour d'un lac souterrain |
+
+```
+village ── Sortie ── 1F ── TunnelA ── B1F ouest ── TunnelC ──┐
+                      └─── TunnelB ── B1F est ──── TunnelD ── B2F
+```
+
+On descend par un tunnel et on remonte par l'autre : les deux boyaux du
+sous-sol ne communiquent que par le niveau du dessus ou celui du dessous.
+
+**Les niveaux se relient par des bouches de tunnel**, percées dans une paroi
+nord, et non par des échelles : l'atlas n'a pas de tuile d'échelle. Une bouche
+est une porte à contact ; on en ressort une case en dessous, dos à elle.
+
+La sortie du 1F est un couloir qui file jusqu'au bas de la carte : ses deux
+dernières cases sont des *sorties* (`exit_direction` vers le bas).
+
+### Les tuiles
+
+`assets/levels/cave.png` (source `8`) : la roche grise de `environments.png`
+recopiée, plus une tuile.
+
+- **Pourquoi une copie.** Dans l'atlas d'origine ce bloc est décalé d'un pixel :
+  la première rangée et la première colonne de pixels appartiennent aux dessins
+  voisins, ce qui trace des liserés bleus et noirs en jeu.
+- **La tuile en plus est le sol.** C'est le dessus du massif, qui se répète sans
+  raccord — mais en tuile à part, car celle du massif est solide et tout le sol
+  le devenait.
+
+Une salle est une cuvette : sol au centre, parois autour, noir au-delà. Les
+parois se déduisent du voisinage de chaque case de roche ; une paroi doit faire
+au moins deux cases d'épaisseur entre deux salles.
 
 ## Tester une carte
 
