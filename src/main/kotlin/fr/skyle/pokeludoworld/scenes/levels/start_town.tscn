@@ -1,6 +1,7 @@
-[gd_scene format=4 uid="uid://ct7i0ltbka6wo"]
+[gd_scene load_steps=3 format=4 uid="uid://ct7i0ltbka6wo"]
 
 [ext_resource type="TileSet" uid="uid://c38ht37ho6e3a" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_ian7c"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/player.tscn" id="2_player"]
 
 [node name="Level" type="Node2D" unique_id=1312979652]
 position = Vector2(0, 3)
@@ -49,6 +50,9 @@ tile_set = ExtResource("1_ian7c")
 
 [node name="Entities" type="Node2D" parent="World" unique_id=1708336925]
 y_sort_enabled = true
+
+[node name="Player" parent="World/Entities" instance=ExtResource("2_player")]
+position = Vector2(328, 136)
 
 [node name="Overhead" type="TileMapLayer" parent="." unique_id=2024517338]
 tile_set = ExtResource("1_ian7c")

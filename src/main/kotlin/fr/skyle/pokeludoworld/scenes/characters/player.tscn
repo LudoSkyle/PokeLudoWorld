@@ -1,0 +1,36 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/Player.kt" id="1_player"]
+[ext_resource type="SpriteFrames" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/spriteframes/player.tres" id="2_frames"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterAnimation.kt" id="3_anim"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/PlayerInput.kt" id="4_input"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterMovement.kt" id="5_movement"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/PlayerCamera.kt" id="6_camera"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
+size = Vector2(12, 12)
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -4)
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle_down"
+script = ExtResource("3_anim")
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_player")
+
+[node name="Camera" type="Camera2D" parent="."]
+zoom = Vector2(5, 5)
+script = ExtResource("6_camera")
+
+[node name="Input" type="Node" parent="."]
+script = ExtResource("4_input")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("5_movement")
