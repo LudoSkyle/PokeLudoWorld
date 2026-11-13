@@ -71,7 +71,8 @@ Les valeurs en place, et pourquoi :
 
 | Tuiles | `y_sort_origin` | Raison |
 |---|---|---|
-| Décors 1×1 (Props, Houses, Cliffs) | `8` | pied de la tuile |
+| Décors 1×1 (Props, Cliffs) | `8` | pied de la tuile |
+| Maisons | `9` | gagne les égalités, voir plus bas |
 | Arbres de bordure 3×3 | `22` | voir ci-dessous |
 | Arbre isolé 3×4 | `28` | base du tronc |
 
@@ -80,6 +81,11 @@ tombe au bas de la rangée `ancre+1` — exactement là où commence le toit du
 Centre Pokémon. Les deux triaient à 48, l'ordre devenait arbitraire et le tronc
 passait sur le toit. À 22 l'arbre trie à 46 : tout décor 1×1 de la même rangée
 passe devant, et l'arbre garde la main sur ce qui est strictement au-dessus.
+
+Les maisons sont à `9` et non `8` pour une raison voisine : une clôture et le
+faîte d'un toit partagent la rangée 9 devant la maison du milieu. À égalité de
+tri, c'est la clôture qui passait devant et coupait le toit. Un pixel d'écart
+suffit à trancher, et reste invisible face au joueur qui trie 8 px plus haut.
 
 **Règle générale : quand un décor large et un décor 1×1 se disputent la même
 rangée, baisse le `y_sort_origin` du large de 2 px plutôt que de réordonner les
