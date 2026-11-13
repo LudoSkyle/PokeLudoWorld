@@ -68,17 +68,23 @@ global, et donne au joueur `z_index = 5` en l'ajoutant directement au viewport :
 **chez lui le joueur passe toujours devant tout, on ne marche jamais derrière un
 arbre.**
 
-On a choisi l'inverse. Conséquence à ne pas oublier :
+On a choisi l'inverse. Le joueur est donc instancié dans `World/Entities` en
+`z_index = 0` : **ne pas recopier le `z_index = 5` du tutoriel**, il annulerait
+le tri Y.
 
-> Quand le joueur sera créé, il va dans `World/Entities` avec `z_index = 0`.
-> Ne pas recopier le `z_index = 5` du tutoriel, sinon le tri Y ne sert à rien.
+Son origine est le **centre de sa case**, pas le coin haut-gauche comme dans le
+tutoriel. Son point de tri tombe ainsi à mi-chemin entre deux rangées de décor,
+ce qui évite les égalités : une tuile de la rangée *n* trie à `n*16+16`, le
+joueur sur cette rangée à `n*16+8`. Le sprite est décalé de `(0, -4)` et mis à
+l'échelle `0.5` pour que ses pieds touchent le bas de la case.
 
 Aucun script du tutoriel ne référence de chemin de nœud du genre `Tiles/Ground`
 (vérifié sur `part14_2`), donc ce changement de structure ne casse pas son code.
 
 ## Ce qui n'existe pas encore
 
-- Le joueur et les PNJ (`World/Entities` est vide).
+- Les PNJ. Le joueur, lui, est en place dans `World/Entities` — voir
+  [docs/player.md](player.md).
 - Les déclencheurs de transition entre maps. Le tutoriel utilise une scène
   `scene_trigger.tscn` instanciée sous un nœud `SceneTriggers`.
 - Les limites de map : le tutoriel pose des `StaticBody2D` à la main sous un
