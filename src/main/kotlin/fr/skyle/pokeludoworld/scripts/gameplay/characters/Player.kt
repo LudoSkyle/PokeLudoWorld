@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
+import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
@@ -38,6 +39,9 @@ class Player : CharacterBody2D() {
 	override fun _process(delta: Double) {
 		val currentInput = input ?: return
 		val currentMovement = movement ?: return
+
+		// Pendant un fondu de changement de carte, le joueur ne repond plus.
+		if (SceneManager.instance?.isChanging == true) return
 
 		currentMovement.process(delta)
 
