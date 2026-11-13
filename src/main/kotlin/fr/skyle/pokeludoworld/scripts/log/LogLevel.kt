@@ -1,4 +1,4 @@
-package fr.skyle.pokeludoworld.scripts.core
+package fr.skyle.pokeludoworld.scripts.log
 
 enum class LogLevel {
     DEBUG,
