@@ -1,9 +1,14 @@
 extends SceneTree
 
 # Outils communs aux tests. Chaque test herite de ce fichier et ecrit test().
-# Tout se joue avec de VRAIES entrees clavier : aucun teleport.
+#
+# Un test est PETIT : un dialogue, une porte, une piece, un deplacement. Il
+# demarre directement sur sa carte et sa case (scene() et start()) pour ne pas
+# rejouer le trajet depuis le village. Ce placement est une mise en place ;
+# tout ce qui est VERIFIE se joue avec de vraies entrees clavier.
 
 const VP := "Control/SubViewportContainer/SubViewport"
+const LEVELS := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
 const DIRS := {Vector2i(0, -1): "ui_up", Vector2i(0, 1): "ui_down",
 	Vector2i(-1, 0): "ui_left", Vector2i(1, 0): "ui_right"}
 const STAIR_MAT := Vector2i(11, 8)
@@ -11,6 +16,14 @@ const EXIT_MAT := Vector2i(15, 14)
 
 var game: Node
 var failures := 0
+
+# Carte de depart : nom d'un fichier de scenes/levels, sans extension.
+func scene() -> String:
+	return "start_town"
+
+# Case de depart. (-1, -1) = la ou la carte fait apparaitre le joueur.
+func start() -> Vector2i:
+	return Vector2i(-1, -1)
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -80,8 +93,8 @@ func shot(name: String) -> void:
 
 func walk(label: String, to: Vector2i, expect_change: bool, avoid: Array = []) -> void:
 	var path := find_path(cell(), to, avoid)
-	check(label + " : chemin trouve", not path.is_empty(), "%d pas" % path.size())
-	if path.is_empty():
+	check(label + " : chemin trouve", cell() == to or not path.is_empty(), "%d pas" % path.size())
+	if path.is_empty() and cell() != to:
 		return
 	var id := level_id()
 	var replans := 0
@@ -139,10 +152,10 @@ func face_left_and_shoot(name: String) -> void:
 	Input.action_press("ui_left"); await wait(2); Input.action_release("ui_left"); await wait(12)
 	shot(name)
 
-func examine(label: String, from: Vector2i, expected: String) -> void:
-	# marche jusqu'a la case, se tourne vers le haut d'une pression breve, examine
+func examine(label: String, from: Vector2i, expected: String, facing: String = "ui_up") -> void:
+	# marche jusqu'a la case, se tourne d'une pression breve, examine
 	await walk(label + " : approche", from, false)
-	Input.action_press("ui_up"); await wait(2); Input.action_release("ui_up"); await wait(6)
+	Input.action_press(facing); await wait(2); Input.action_release(facing); await wait(6)
 	Input.action_press("interact"); await wait(2); Input.action_release("interact")
 	await wait(150)
 	var box: Control = game.get_node(VP + "/MessageBox/Control/Box")
@@ -171,12 +184,13 @@ func arrival(label: String, expected: Vector2i, anim: String) -> void:
 	check(label + " : case d'arrivee libre", is_free(cell()))
 	shot(label.replace(" ", "_").replace("'", ""))
 
-func hold_and_count_changes(action: String, frames: int) -> int:
+func hold_and_count_changes(action: String, seconds: float) -> int:
 	# maintient une touche sans la relacher et compte les changements de carte
 	var last := level_id()
 	var changes := 0
 	Input.action_press(action)
-	for i in frames:
+	var end := Time.get_ticks_msec() + int(seconds * 1000.0)
+	while Time.get_ticks_msec() < end:
 		await process_frame
 		if level_id() != last and level_id() != -1:
 			changes += 1
@@ -188,6 +202,77 @@ func hold_and_count_changes(action: String, frames: int) -> int:
 func enter(label: String, door: Vector2i) -> void:
 	await walk(label, door, true)
 
+# --- PNJ
+
+const ENT := VP + "/Level/World/Entities/"
+
+func npc(n: String) -> Node2D:
+	return game.get_node(ENT + n)
+
+func anim(n: String) -> String:
+	return str(npc(n).get_node("Sprite").animation)
+
+func box() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Box")
+
+func box_text() -> String:
+	return game.get_node(VP + "/MessageBox/Control/Box/Text").text
+
+func tap(action: String) -> void:
+	Input.action_press(action); await wait(2); Input.action_release(action); await wait(8)
+
+func close_box() -> void:
+	var n := 0
+	while box().visible and n < 12:
+		Input.action_press("interact"); await wait(2); Input.action_release("interact"); await wait(60)
+		n += 1
+
+func talk(label: String, from: Vector2i, facing: String, who: String, expected: String, npc_anim: String) -> void:
+	await walk(label + " : approche", from, false)
+	await tap(facing)
+	Input.action_press("interact"); await wait(2); Input.action_release("interact")
+	await wait(150)
+	check(label + " : la boite s'ouvre", box().visible)
+	check(label + " : dit ce qu'il faut", box_text().to_lower().contains(expected), box_text())
+	check(label + " : se tourne vers nous", anim(who) == npc_anim, anim(who))
+	await close_box()
+	check(label + " : la boite est refermee", not box().visible)
+	check(label + " : on n'a pas bouge", cell() == from, str(cell()))
+
+func cell_of(n: String) -> Vector2i:
+	var p := npc(n).position
+	return Vector2i(floori(p.x / 16.0), floori(p.y / 16.0))
+
+# Vrai quand le PNJ est pose sur un centre de case (pas au milieu d'un pas).
+func resting(n: String) -> bool:
+	var p := npc(n).position
+	return is_equal_approx(fmod(p.x, 16.0), 8.0) and is_equal_approx(fmod(p.y, 16.0), 8.0)
+
+# --- bandeau de lieu
+
+func banner() -> Control:
+	return game.get_node(VP + "/LocationBanner/Control/Panel")
+
+func banner_text() -> String:
+	return game.get_node(VP + "/LocationBanner/Control/Panel/Name").text
+
+# Regarde le bandeau pendant t secondes : [est apparu, texte, hauteur la plus basse]
+func watch_banner(t: float, name: String = "") -> Array:
+	var shown := false
+	var text := ""
+	var lowest := -999.0
+	var end := Time.get_ticks_msec() + int(t * 1000.0)
+	while Time.get_ticks_msec() < end:
+		await process_frame
+		if banner().visible:
+			shown = true
+			text = banner_text()
+			if banner().position.y > lowest:
+				lowest = banner().position.y
+				if name != "" and lowest >= 24.0:
+					shot(name); name = ""
+	return [shown, text, lowest]
+
 func test() -> void:
 	pass
 
@@ -195,8 +280,12 @@ func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
 	game = packed.instantiate()
+	game.get_node(VP + "/SceneManager").start_scene = LEVELS + scene() + ".tscn"
 	root.add_child(game)
 	await wait(20)
+	if start() != Vector2i(-1, -1):
+		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)
+		await wait(10)
 	await test()
 	print("RESULTAT : %s" % ("TOUT PASSE" if failures == 0 else "%d ECHEC(S)" % failures))
 	quit()

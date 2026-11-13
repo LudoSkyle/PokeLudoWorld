@@ -89,35 +89,68 @@ la case change, relâcher. Avec un parcours en largeur sur les collisions du
 jeu, elle suit n'importe quel trajet. Les contrôles à faire à chaque arrivée
 sont listés dans [levels.md](levels.md).
 
-## Les tests : petits, par zone
+## Les tests : un sujet par fichier
 
-`tests/` contient un fichier par zone, joué au clavier, et un script pour les
-lancer :
+Un test vérifie **une seule chose** — un dialogue, une porte, une pièce, un
+déplacement — et dure de 5 à 20 secondes. Il démarre directement sur sa carte
+et sa case, sans rejouer le trajet depuis le village.
 
 ```bash
-tests/run.sh cave lab     # seulement ces deux-là
-tests/run.sh audit        # accessibilité des cartes fermées
-tests/run.sh              # tout
+tests/run.sh dialogue/fisher     # un test
+tests/run.sh fisher lab_clock    # pareil, par leur nom seul
+tests/run.sh doors               # tout un dossier
+tests/run.sh doors/cave          # ceux dont le chemin commence ainsi
+tests/run.sh audit               # accessibilité des cartes fermées
+tests/run.sh --list              # la liste
+tests/run.sh                     # tout : 6 minutes, à éviter
 ```
 
-| Fichier | Couvre |
-|---|---|
-| `test_ludo_house.gd` | entrée touche tenue, paillasson, télé, escalier, chambre |
-| `test_neighbors.gd` | maison des voisins |
-| `test_lab.gd` | laboratoire et ses objets à examiner |
-| `test_cave.gd` | les trois niveaux de la grotte et leurs tunnels |
-| `test_signs.gd` | panneaux du village |
-| `test_npcs.gd` | PNJ du village et passage gardé à l'ouest |
-| `audit.gd` + `audit.py` | grille de collisions : arrivées libres, portes reliées |
+| Dossier | Un fichier par… | Exemples |
+|---|---|---|
+| `dialogue/` | personnage ou objet à qui l'on parle | `fisher`, `guard_north`, `runner_hailed`, `sign_ludo`, `tv`, `lab_clock` |
+| `moves/` | déplacement qu'on veut voir | `runner_loop`, `runner_blocked`, `grass_wander`, `roadblock` |
+| `doors/` | porte, dans un sens | `ludo_enter`, `ludo_stairs_up`, `cave_tunnel_a`, `lab_exit` |
+| `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `cave_lake`, `npcs` |
+| `ui/` | comportement d'interface | `banner_town`, `banner_same_place` |
+| `audit/` | grille de collisions : arrivées libres, portes reliées | `tests/run.sh audit` |
 
-**Ne relancer que les tests des zones touchées.** Un long parcours unique qui
-rejoue tout le jeu coûte plusieurs minutes pour revérifier ce qui n'a pas
-bougé. Exception : si un mécanisme partagé change (portes, lecture des touches,
-boîte de dialogue), relancer tous ceux qui s'en servent.
+**Ne lancer que les tests de ce qu'on vient de toucher** : on déplace le
+pêcheur, on lance `fisher` et `collisions/npcs`, rien d'autre. Si un mécanisme
+partagé change (lecture des touches, portes, boîte de dialogue), lancer le
+dossier qui s'en sert, pas tout.
 
-Un nouveau test hérite de `tests/lib.gd` et écrit `test()` ; les outils y sont
-(`walk`, `arrival`, `examine`, `hold_no_change`, `hold_and_count_changes`).
-Chaque test part du point d'apparition du village.
+### Écrire un test
+
+Un nouveau sujet = un nouveau fichier, jamais une section de plus dans un
+fichier existant.
+
+```gdscript
+extends "res://tests/lib.gd"
+
+# Le pecheur : il repond, puis se retourne vers l'eau.
+
+func scene() -> String:            # carte de depart ; start_town par defaut
+	return "start_town"
+
+func start() -> Vector2i:          # case de depart ; l'apparition par defaut
+	return Vector2i(40, 16)
+
+func test() -> void:
+	await talk("pecheur", Vector2i(40, 16), "ui_down", "Fisher", "mord", "idle_up")
+```
+
+`scene()` et `start()` posent le joueur : c'est une mise en place. Tout ce qui
+est **vérifié** se joue avec de vraies entrées clavier. Les outils sont dans
+`tests/lib.gd` : `walk`, `arrival`, `examine`, `talk`, `hold_no_change`,
+`hold_until_change`, `hold_and_count_changes`, `watch_banner`, `cell_of`,
+`resting`, `secs`.
+
+### PNJ mobiles et durées
+
+Un test attend en **secondes** (`secs(t)` dans `tests/lib.gd`), pas en images :
+sur un écran à 120 Hz une image dure deux fois moins. `walk()` recalcule sa
+route si un PNJ s'est mis en travers. Pour parler à un PNJ qui erre, le test le
+fige d'abord (`npc.movement = "static"`).
 
 ## Les quatre questions, avant toute sonde
 
@@ -154,10 +187,3 @@ La méthode qui marche :
 Et quand on demande une relecture visuelle dans l'éditeur : **le redémarrer
 soi-même**. Un éditeur déjà ouvert garde les anciens fichiers en mémoire, et on
 se fait renvoyer la même capture.
-
-### Tests et PNJ mobiles
-
-Un test attend en **secondes** (`secs(t)` dans `tests/lib.gd`), pas en images :
-sur un écran à 120 Hz une image dure deux fois moins. `walk()` recalcule sa
-route si un PNJ s'est mis en travers. Pour parler à un PNJ qui erre, le test le
-fige d'abord (`npc.movement = "static"`).
