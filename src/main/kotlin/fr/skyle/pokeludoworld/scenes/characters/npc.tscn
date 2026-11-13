@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/Npc.kt" id="1_npc"]
+[ext_resource type="SpriteFrames" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/spriteframes/worker.tres" id="2_frames"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterAnimation.kt" id="3_anim"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterMovement.kt" id="4_movement"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_npc"]
+size = Vector2(14, 14)
+
+[node name="Npc" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_npc")
+
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -4)
+scale = Vector2(0.5, 0.5)
+sprite_frames = ExtResource("2_frames")
+animation = &"idle_down"
+script = ExtResource("3_anim")
+
+[node name="Collider" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_npc")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("4_movement")
