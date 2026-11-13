@@ -89,6 +89,24 @@ la case change, relâcher. Avec un parcours en largeur sur les collisions du
 jeu, elle suit n'importe quel trajet. Les contrôles à faire à chaque arrivée
 sont listés dans [levels.md](levels.md).
 
+## Les quatre questions, avant toute sonde
+
+Un test automatique vérifie ce qu'on a décidé, pas si ça a du sens. Avant de
+rendre la main, se poser ces questions **case par case**, le personnage posé à
+chaque endroit clé :
+
+1. **Est-ce visuellement logique, possible ?** Un pot de fleurs ici a-t-il un
+   sens ? Une fenêtre peut-elle être là ?
+2. **Le comportement est-il logique ?** On entre par la porte, par le milieu de
+   l'escalier ; on ne traverse pas une barrière. Comme dans la vraie vie.
+3. **L'ensemble est-il cohérent ?** Pas de caillou dans une maison, pas
+   d'algues sur l'herbe.
+4. **Les collisions sont-elles logiques ?** Pour chaque case bloquée : qu'est-ce
+   qui gêne physiquement ? Pour chaque case libre : pourrait-on s'y tenir ?
+
+Quand une référence du jeu d'origine est fournie, c'est à elle qu'on compare,
+avant la planche de tuiles.
+
 ## La règle qui coûte cher quand on l'oublie
 
 **Ne jamais valider un rendu sur une vue d'ensemble.** Deux bugs sont passés
