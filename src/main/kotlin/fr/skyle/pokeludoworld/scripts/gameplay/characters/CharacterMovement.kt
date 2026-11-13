@@ -100,6 +100,39 @@ class CharacterMovement : Node() {
 		return null
 	}
 
+	/**
+	 * Zone (porte) sur laquelle le personnage se tient, ou null. Les portes
+	 * sont sur le calque de collision 3 pour pouvoir être retrouvées ainsi.
+	 */
+	fun areaUnderfoot(): Node? {
+		val node = body ?: return null
+		val space = node.getWorld2d()?.directSpaceState ?: return null
+
+		val params = PhysicsPointQueryParameters2D()
+		params.position = node.globalPosition
+		params.collisionMask = 4
+		params.collideWithBodies = false
+		params.collideWithAreas = true
+
+		val hits = space.intersectPoint(params, 4)
+
+		for (i in 0 until hits.size) {
+			val collider = hits.get(i).get("collider")
+			if (collider is Node) return collider
+		}
+
+		return null
+	}
+
+	/**
+	 * Abandonne le pas en cours. Indispensable après une téléportation : la
+	 * cible du pas est exprimée dans l'ancienne carte, et le personnage
+	 * glisserait vers elle à travers les murs de la nouvelle.
+	 */
+	fun stop() {
+		isWalking = false
+	}
+
 	/** Recale sur le centre de case le plus proche. */
 	fun snapToGrid() {
 		val node = body ?: return
