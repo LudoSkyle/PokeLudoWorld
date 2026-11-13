@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
+import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
@@ -40,6 +41,13 @@ class Player : CharacterBody2D() {
 		val currentMovement = movement ?: return
 
 		currentMovement.process(delta)
+
+		// Pendant un fondu, le pas engagé se termine mais plus aucune entrée
+		// n'est lue : le joueur finit d'entrer dans la porte, puis attend.
+		if (SceneManager.instance?.isChanging == true) {
+			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+			return
+		}
 
 		// Une seule lecture de la touche d'interaction dans tout le jeu : sans
 		// ça, la pression qui ouvre la boîte la ferait avancer aussitôt.

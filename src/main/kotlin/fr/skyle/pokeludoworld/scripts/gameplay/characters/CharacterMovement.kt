@@ -100,6 +100,15 @@ class CharacterMovement : Node() {
 		return null
 	}
 
+	/**
+	 * Abandonne le pas en cours. Indispensable après une téléportation : la
+	 * cible du pas est exprimée dans l'ancienne carte, et le personnage
+	 * glisserait vers elle à travers les murs de la nouvelle.
+	 */
+	fun stop() {
+		isWalking = false
+	}
+
 	/** Recale sur le centre de case le plus proche. */
 	fun snapToGrid() {
 		val node = body ?: return
