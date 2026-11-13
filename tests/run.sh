@@ -77,7 +77,10 @@ for name in "${names[@]}"; do
   run_script "res://tests/$name.gd" "$log" "^RESULTAT" 120
   grep -E "^FAIL|SCRIPT ERROR" "$log" | sed 's/^/  /'
   ok=$(grep -c "^OK" "$log"); ko=$(grep -c "^FAIL" "$log"); took=$(( $(date +%s) - began ))
-  if grep -q "TOUT PASSE" "$log"; then
+  # Une erreur de script arrete le test avant ses controles : ce n'est pas un succes.
+  if grep -q "SCRIPT ERROR" "$log" || ! grep -q "^RESULTAT" "$log"; then
+    echo "$name : ERREUR, le test ne s'est pas termine — $log"; failed=1
+  elif grep -q "TOUT PASSE" "$log"; then
     echo "$name : $ok controles, tous bons (${took} s)"
   else
     echo "$name : ECHEC ($ok bons, $ko en echec) — $log"; failed=1

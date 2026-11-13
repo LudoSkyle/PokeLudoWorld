@@ -248,6 +248,27 @@ func resting(n: String) -> bool:
 	var p := npc(n).position
 	return is_equal_approx(fmod(p.x, 16.0), 8.0) and is_equal_approx(fmod(p.y, 16.0), 8.0)
 
+# --- menu de pause
+
+func menu() -> Node:
+	return game.get_node(VP + "/PauseMenu")
+
+func menu_open() -> bool:
+	return game.get_node(VP + "/PauseMenu/Control/Menu").visible
+
+# Ligne (0, 1, 2...) en face de laquelle le curseur est dessine.
+func menu_cursor_line() -> int:
+	var cursor: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Cursor")
+	var list: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Entries")
+	var middle := cursor.position.y + cursor.size.y / 2.0 - list.position.y
+	return floori(middle / 64.0)
+
+# Nom du noeud de l'entree en face du curseur : Bag, Options, Quit.
+func menu_selected() -> String:
+	var list: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Entries")
+	var line := menu_cursor_line()
+	return "" if line < 0 or line >= list.get_child_count() else str(list.get_child(line).name)
+
 # --- bandeau de lieu
 
 func banner() -> Control:
