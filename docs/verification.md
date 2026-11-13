@@ -154,3 +154,10 @@ La méthode qui marche :
 Et quand on demande une relecture visuelle dans l'éditeur : **le redémarrer
 soi-même**. Un éditeur déjà ouvert garde les anciens fichiers en mémoire, et on
 se fait renvoyer la même capture.
+
+### Tests et PNJ mobiles
+
+Un test attend en **secondes** (`secs(t)` dans `tests/lib.gd`), pas en images :
+sur un écran à 120 Hz une image dure deux fois moins. `walk()` recalcule sa
+route si un PNJ s'est mis en travers. Pour parler à un PNJ qui erre, le test le
+fige d'abord (`npc.movement = "static"`).

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/Npc.kt" id="1_npc"]
-[ext_resource type="SpriteFrames" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/spriteframes/worker.tres" id="2_frames"]
+[ext_resource type="SpriteFrames" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/spriteframes/player.tres" id="2_frames"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterAnimation.kt" id="3_anim"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterMovement.kt" id="4_movement"]
 
@@ -25,3 +25,4 @@ shape = SubResource("RectangleShape2D_npc")
 
 [node name="Movement" type="Node" parent="."]
 script = ExtResource("4_movement")
+obstacle_mask = 3

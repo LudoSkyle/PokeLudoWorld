@@ -3,12 +3,14 @@ package fr.skyle.pokeludoworld.scripts.gameplay.characters
 import fr.skyle.pokeludoworld.scripts.autoload.Globals
 import godot.annotation.Category
 import godot.annotation.Export
+import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.Node
 import godot.api.Node2D
 import godot.api.PhysicsPointQueryParameters2D
 import godot.api.StaticBody2D
 import godot.core.Vector2
+import kotlin.math.floor
 import kotlin.math.round
 
 /**
@@ -19,12 +21,29 @@ import kotlin.math.round
 @Script
 class CharacterMovement : Node() {
 
+	companion object {
+		/** Cases réservées par un pas en cours, tous personnages confondus. */
+		private val claims = HashMap<Long, CharacterMovement>()
+	}
+
 	@Category("Movement")
 	@Export
 	var tilesPerSecond: Double = 4.0
 
+	/**
+	 * Calques qui arrêtent ce personnage. Le joueur est sur le calque 2 : lui
+	 * ne s'arrête que sur le décor et les PNJ (1), un PNJ s'arrête aussi sur
+	 * le joueur (3).
+	 */
+	@Category("Movement")
+	@Export
+	var obstacleMask: Int = 1
+
 	var isWalking: Boolean = false
 		private set
+
+	/** Case visée par le pas en cours, réservée tant qu'il dure. */
+	private var claimed: Long? = null
 
 	private var body: Node2D? = null
 	private var target: Vector2 = Vector2.ZERO
@@ -37,14 +56,23 @@ class CharacterMovement : Node() {
 	private fun gridSize(): Double = Globals.instance.gridSize.toDouble()
 
 	/** Tente un pas. Renvoie false si la case visée est occupée ou si un pas est en cours. */
-	fun tryWalk(direction: Vector2): Boolean {
+	fun tryWalk(direction: Vector2, mask: Int = obstacleMask): Boolean {
 		val node = body ?: return false
 		if (isWalking) return false
 
 		val step = direction * gridSize()
+		val destination = node.globalPosition + step
 
 		// La case visée est testée en coordonnées globales, au centre de la case.
-		if (isBlocked(node.globalPosition + step)) return false
+		if (isBlocked(destination, mask)) return false
+
+		// Un corps n'occupe sa case d'arrivée qu'à la fin du pas : sans cette
+		// réservation, deux personnages partis en même temps s'y retrouvent.
+		val key = cellKey(destination)
+		val owner = claims[key]
+		if (owner != null && owner !== this) return false
+		claims[key] = this
+		claimed = key
 
 		target = node.position + step
 		isWalking = true
@@ -60,16 +88,35 @@ class CharacterMovement : Node() {
 		if (node.position.distanceTo(target) < 0.01) {
 			node.position = target
 			isWalking = false
+			release()
 		}
 	}
 
-	private fun isBlocked(globalPoint: Vector2): Boolean {
+	@Register
+	override fun _exitTree() {
+		release()
+	}
+
+	private fun release() {
+		val key = claimed ?: return
+		if (claims[key] === this) claims.remove(key)
+		claimed = null
+	}
+
+	private fun cellKey(globalPoint: Vector2): Long {
+		val grid = gridSize()
+		val x = floor(globalPoint.x / grid).toLong()
+		val y = floor(globalPoint.y / grid).toLong()
+		return x * 100_000L + y
+	}
+
+	private fun isBlocked(globalPoint: Vector2, mask: Int): Boolean {
 		val node = body ?: return true
 		val space = node.getWorld2d()?.directSpaceState ?: return true
 
 		val params = PhysicsPointQueryParameters2D()
 		params.position = globalPoint
-		params.collisionMask = 1
+		params.collisionMask = mask.toLong()
 		params.collideWithBodies = true
 		params.collideWithAreas = false
 
@@ -140,6 +187,7 @@ class CharacterMovement : Node() {
 	 */
 	fun stop() {
 		isWalking = false
+		release()
 	}
 
 	/** Recale sur le centre de case le plus proche. */
