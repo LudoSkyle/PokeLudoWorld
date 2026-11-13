@@ -62,6 +62,8 @@ Les rangées du sprite sheet sont, dans l'ordre : **bas, gauche, droite, haut**.
 C'est contre-intuitif à l'œil — vérifier au rendu avant de corriger quoi que ce
 soit, l'ordre a déjà été remis à l'endroit une fois.
 
-Les animations `turn_*` existent dans la ressource mais ne sont pas utilisées :
-un demi-tour affiche directement l'`idle_*` de la nouvelle direction, ce qui
-suffit visuellement.
+Un demi-tour sur place joue `turn_<direction>` : deux images, une image de pas
+puis l'image fixe, en 0,2 s. C'est le petit à-coup des jeux d'origine quand on
+pivote sans avancer. L'animation ne boucle pas, et `refresh()` la laisse aller
+au bout avant de retomber sur l'`idle_*` — sans ça elle serait écrasée dès la
+frame suivante.
