@@ -47,11 +47,11 @@ Les cas particuliers en place :
 | Tuiles | Collision |
 |---|---|
 | Arbres de bordure 3×3 | les **deux rangées basses** (48×32) |
-| Arbre isolé 3×4 | le tronc, sur ses **deux** cases |
+| Arbre isolé 3×4 | la **rangée du pied**, sur les 3 cases de large |
 | Maisons | pleine, **sauf** les tuiles opaques à moins de 25 % |
 | Bouche de grotte `5:33,23` | **aucune** — c'est l'entrée |
 | Eau profonde (`5:5,34`, `5:6,34`, `5:6,35`) | pleine |
-| Eau claire `5:9,31` | **aucune** — faible profondeur, on y marche |
+| Eau claire `5:9,31` et plantes `5:13,32` | **aucune** — faible profondeur |
 | Trait de côte, sable, chemins, herbes hautes, décors | aucune |
 
 Trois de ces règles viennent d'une partie de test, et valent d'être comprises
@@ -61,13 +61,17 @@ plutôt que recopiées :
   toutes les deux cases, donc leurs collisions se chevauchent : bloquer les
   trois rangées rendait infranchissable une rangée d'herbe visible à l'écran.
   On peut désormais marcher derrière la cime, ce qui est le rendu attendu.
-- **Le tronc de l'arbre isolé déborde sur la case du dessous.** Son polygone
-  va de `+8` à `+36` en local, au-delà des bornes de la tuile — c'est permis,
-  et c'est nécessaire : sinon le joueur a les pieds dans le tronc.
+- **L'arbre isolé bloque sa rangée de pied, pas la case du dessous.** On doit
+  pouvoir se tenir sous l'arbre, devant le tronc ; ce qu'il faut interdire,
+  c'est de remonter d'une case, des deux côtés comme au milieu. Le polygone
+  couvre donc toute la largeur de la cime sur la seule rangée du pied.
 - **Une tuile de maison quasi transparente est du sol.** Les trois tuiles de
   la façade du Centre Pokémon (`5:99`, `6:99`, `7:99`, opaques à 19 %, 19 % et
   4 %) ne montrent que de l'herbe : les bloquer interdisait trois cases qui
   n'ont rien d'un mur. **Mesurer l'opacité avant de déclarer une collision.**
+  Ces trois-là portent en plus `y_sort_origin = -8` : ce sliver appartient
+  visuellement à la rangée du dessus, et sans ça il coupait la tête du joueur
+  qui se tient devant.
 
 ## Ce qui reste à déclarer
 
