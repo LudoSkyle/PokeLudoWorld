@@ -15,6 +15,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | scènes, calques, ordre de dessin, tri Y | [docs/architecture.md](docs/architecture.md) |
 | tuiles, collisions, terrains, atlas | [docs/tilesets.md](docs/tilesets.md) |
 | le joueur, ses déplacements, sa caméra | [docs/player.md](docs/player.md) |
+| dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
 | vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
 
@@ -26,9 +27,12 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 ├── resources/tilesets/ level.tres — LE TileSet, collisions comprises
 ├── scenes/core/        game_manager.tscn (point d'entrée)
 ├── scenes/levels/      une scène par map
+├── scenes/ui/          interface (boîte de dialogue)
 └── scripts/
     ├── autoload/       singletons déclarés dans project.godot
-    └── log/            Logger, LogLevel, LogColor
+    ├── gameplay/       joueur, objets de niveau
+    ├── log/            Logger, LogLevel, LogColor
+    └── ui/             MessageBox
 ```
 
 ## Règles qui ne se redemandent pas
