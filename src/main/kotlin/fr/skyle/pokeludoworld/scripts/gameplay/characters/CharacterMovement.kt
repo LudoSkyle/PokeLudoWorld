@@ -7,6 +7,7 @@ import godot.annotation.Script
 import godot.api.Node
 import godot.api.Node2D
 import godot.api.PhysicsPointQueryParameters2D
+import godot.api.StaticBody2D
 import godot.core.Vector2
 import kotlin.math.round
 
@@ -92,12 +93,16 @@ class CharacterMovement : Node() {
 
 		val hits = space.intersectPoint(params, 8)
 
+		// Un meuble examinable partage sa case avec la tuile qui le dessine :
+		// c'est lui qu'on veut, pas le calque de tuiles.
+		var first: Node? = null
 		for (i in 0 until hits.size) {
-			val collider = hits.get(i).get("collider")
-			if (collider is Node) return collider
+			val collider = hits.get(i).get("collider") as? Node ?: continue
+			if (collider is StaticBody2D) return collider
+			if (first == null) first = collider
 		}
 
-		return null
+		return first
 	}
 
 	/**
@@ -116,12 +121,16 @@ class CharacterMovement : Node() {
 
 		val hits = space.intersectPoint(params, 4)
 
+		// Un meuble examinable partage sa case avec la tuile qui le dessine :
+		// c'est lui qu'on veut, pas le calque de tuiles.
+		var first: Node? = null
 		for (i in 0 until hits.size) {
-			val collider = hits.get(i).get("collider")
-			if (collider is Node) return collider
+			val collider = hits.get(i).get("collider") as? Node ?: continue
+			if (collider is StaticBody2D) return collider
+			if (first == null) first = collider
 		}
 
-		return null
+		return first
 	}
 
 	/**

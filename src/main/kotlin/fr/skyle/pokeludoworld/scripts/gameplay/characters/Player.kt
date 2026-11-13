@@ -1,6 +1,7 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
+import fr.skyle.pokeludoworld.scripts.gameplay.levels.Readable
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
@@ -93,6 +94,9 @@ class Player : CharacterBody2D() {
 		val facing = input?.direction ?: return
 		val target = movement?.colliderAt(facing) ?: return
 
-		if (target is Sign) target.read()
+		when (target) {
+			is Sign -> target.read()
+			is Readable -> target.read()
+		}
 	}
 }
