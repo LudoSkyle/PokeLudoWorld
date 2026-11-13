@@ -26,6 +26,7 @@ pas de séparation. Deux sources :
 |---|---|---|
 | `5` | `environments` | tuiles 1×1 (sol, chemins, maisons, décors, falaises) |
 | `6` | `border_environments` | grosses tuiles 3×3 et 3×4 (arbres) |
+| `7` | `interiors` | meubles d'intérieur recalés sur la grille — voir [levels.md](levels.md) |
 
 **Les grosses tuiles sont centrées sur leur case d'ancrage**, pas ancrées en
 haut à gauche. Une tuile 3×3 posée en `(x, y)` couvre `x-1..x+1` et `y-1..y+1`.

@@ -78,6 +78,17 @@ Le joueur est alors exactement au centre, et `cam.get_screen_center_position()`
 doit valoir sa position — à imprimer, c'est l'assertion qui empêche de valider
 une image vide.
 
+## Tester en jouant, pas en téléportant
+
+Poser le joueur sur une case par `position = ...` court-circuite tout ce qui
+peut mal tourner : le chemin pour y arriver, le pas en cours, la touche encore
+enfoncée. Trois défauts sont passés ainsi sur les changements de carte.
+
+Une sonde peut jouer pour de vrai : `Input.action_press("ui_up")`, attendre que
+la case change, relâcher. Avec un parcours en largeur sur les collisions du
+jeu, elle suit n'importe quel trajet. Les contrôles à faire à chaque arrivée
+sont listés dans [levels.md](levels.md).
+
 ## La règle qui coûte cher quand on l'oublie
 
 **Ne jamais valider un rendu sur une vue d'ensemble.** Deux bugs sont passés

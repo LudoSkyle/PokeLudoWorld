@@ -16,6 +16,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | tuiles, collisions, terrains, atlas | [docs/tilesets.md](docs/tilesets.md) |
 | le joueur, ses déplacements, sa caméra | [docs/player.md](docs/player.md) |
 | dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
+| cartes, portes, changement de scène | [docs/levels.md](docs/levels.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
 | vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
 
@@ -37,6 +38,10 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 
 ## Règles qui ne se redemandent pas
 
+- **Un `@Export` Kotlin devient du `snake_case` côté Godot.** `targetScene`
+  s'écrit `target_scene` dans un `.tscn` ; avec le nom camelCase la valeur est
+  silencieusement ignorée et la propriété garde son défaut. Vérifier avec
+  `get_property_list()` en cas de doute.
 - **Un `.import` se commite toujours avec son asset.** Il porte l'UID ; sans lui
   les références `uid://` cassent sur un clone neuf.
 - **Jamais de collision posée à la main sur une map.** Tout se déclare une fois
