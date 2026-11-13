@@ -56,7 +56,7 @@ Instancier `sign.tscn` sous `World`, le placer sur un centre de case, et
 remplir `text`. Une **barre verticale `|` sépare deux boîtes successives** :
 
 ```
-text = "Laboratoire de recherche.|Defense d entrer sans autorisation."
+text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
 ```
 
 Un tableau exporté serait plus propre en théorie, mais plus pénible à éditer
