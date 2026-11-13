@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/PauseMenu.kt" id="1_script"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/rse_01.png" id="2_frame"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald-pro.ttf" id="3_font"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/cursor.png" id="4_cursor"]
+
+[node name="PauseMenu" type="CanvasLayer"]
+layer = 2
+script = ExtResource("1_script")
+
+[node name="Control" type="Control" parent="."]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Menu" type="Control" parent="Control"]
+visible = false
+layout_mode = 0
+offset_left = 848.0
+offset_top = 16.0
+offset_right = 1136.0
+offset_bottom = 272.0
+mouse_filter = 2
+
+[node name="Frame" type="NinePatchRect" parent="Control/Menu"]
+layout_mode = 0
+offset_right = 72.0
+offset_bottom = 64.0
+scale = Vector2(4, 4)
+mouse_filter = 2
+texture = ExtResource("2_frame")
+patch_margin_left = 8
+patch_margin_top = 8
+patch_margin_right = 8
+patch_margin_bottom = 8
+
+[node name="Cursor" type="TextureRect" parent="Control/Menu"]
+layout_mode = 0
+offset_left = 36.0
+offset_top = 44.0
+offset_right = 60.0
+offset_bottom = 84.0
+mouse_filter = 2
+texture = ExtResource("4_cursor")
+expand_mode = 1
+
+[node name="Entries" type="VBoxContainer" parent="Control/Menu"]
+layout_mode = 0
+offset_left = 72.0
+offset_top = 32.0
+offset_right = 256.0
+offset_bottom = 224.0
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="Bag" type="Label" parent="Control/Menu/Entries"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
+theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 48
+text = "Sac"
+vertical_alignment = 1
+
+[node name="Options" type="Label" parent="Control/Menu/Entries"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
+theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 48
+text = "Options"
+vertical_alignment = 1
+
+[node name="Quit" type="Label" parent="Control/Menu/Entries"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
+theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 48
+text = "Quitter"
+vertical_alignment = 1
