@@ -37,6 +37,8 @@ src/main/kotlin/fr/skyle/pokeludoworld/
   les références `uid://` cassent sur un clone neuf.
 - **Jamais de collision posée à la main sur une map.** Tout se déclare une fois
   par tuile dans `level.tres` — voir [docs/tilesets.md](docs/tilesets.md).
+- **Le flou sur du pixel art vient du `SubViewport`**, pas des calques : il
+  n'hérite pas du filtre projet. Voir [docs/architecture.md](docs/architecture.md).
 - **Ne jamais valider un rendu sur une vue d'ensemble.** Zoomer sur chaque
   jonction — voir [docs/verification.md](docs/verification.md).
 - Réponds en français ; les titres de commit restent en anglais.

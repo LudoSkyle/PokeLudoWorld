@@ -5,6 +5,7 @@
 [node name="GameManager" type="Node" unique_id=1125087688]
 
 [node name="Control" type="Control" parent="." unique_id=2095912339]
+texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -13,6 +14,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Control" unique_id=915310402]
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,6 +24,7 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer" unique_id=2012847285]
+canvas_item_default_texture_filter = 0
 handle_input_locally = false
 size = Vector2i(1152, 648)
 size_2d_override = Vector2i(1152, 648)
