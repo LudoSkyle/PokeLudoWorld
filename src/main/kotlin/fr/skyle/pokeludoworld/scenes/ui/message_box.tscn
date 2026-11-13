@@ -1,0 +1,52 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/MessageBox.kt" id="1_script"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/message_box.png" id="2_frame"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald.ttf" id="3_font"]
+
+[node name="MessageBox" type="CanvasLayer"]
+script = ExtResource("1_script")
+
+[node name="Control" type="Control" parent="."]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Box" type="NinePatchRect" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.236
+anchor_top = 0.753
+anchor_right = 0.764
+anchor_bottom = 0.938
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_frame")
+patch_margin_left = 12
+patch_margin_top = 12
+patch_margin_right = 12
+patch_margin_bottom = 12
+
+[node name="Text" type="RichTextLabel" parent="Control/Box"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.026
+anchor_top = 0.133
+anchor_right = 0.974
+anchor_bottom = 0.867
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.427451, 0.498039, 0.466667, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/normal_font = ExtResource("3_font")
+theme_override_font_sizes/normal_font_size = 40
