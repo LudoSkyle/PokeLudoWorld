@@ -1,16 +1,20 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
+import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
+import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
+import godot.api.Input
 
 /**
- * Assemble les trois composants du joueur : entrée, déplacement, animation.
+ * Assemble les trois composants du joueur : entrée, déplacement, animation,
+ * et porte l'interaction avec ce qui se trouve devant lui.
  *
- * Pas de machine à états pour l'instant : il n'y a qu'un seul état. Elle
- * deviendra utile quand les boîtes de dialogue arriveront, et viendra
- * s'intercaler ici sans toucher aux composants.
+ * Pas de machine à états : une boîte de dialogue ouverte se contente de
+ * court-circuiter le déplacement. Elle s'imposera le jour où un troisième
+ * mode apparaîtra (combat, menu).
  */
 @Script
 class Player : CharacterBody2D() {
@@ -37,6 +41,23 @@ class Player : CharacterBody2D() {
 
 		currentMovement.process(delta)
 
+		// Une seule lecture de la touche d'interaction dans tout le jeu : sans
+		// ça, la pression qui ouvre la boîte la ferait avancer aussitôt.
+		val interact = Input.isActionJustPressed("interact")
+		val box = MessageBox.instance
+
+		if (box != null && box.isOpen) {
+			if (interact) box.advance()
+			sprite?.refresh(currentInput.direction, false)
+			return
+		}
+
+		if (!currentMovement.isWalking && interact) {
+			readFacingObject()
+			sprite?.refresh(currentInput.direction, false)
+			return
+		}
+
 		// L'entrée n'est lue qu'entre deux pas : un pas engagé va toujours
 		// jusqu'au bout, sinon le personnage s'arrête entre deux cases.
 		if (!currentMovement.isWalking) {
@@ -48,5 +69,12 @@ class Player : CharacterBody2D() {
 		}
 
 		sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+	}
+
+	private fun readFacingObject() {
+		val facing = input?.direction ?: return
+		val target = movement?.colliderAt(facing) ?: return
+
+		if (target is Sign) target.read()
 	}
 }

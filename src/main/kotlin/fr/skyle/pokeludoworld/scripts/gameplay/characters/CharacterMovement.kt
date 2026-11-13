@@ -75,6 +75,31 @@ class CharacterMovement : Node() {
 		return space.intersectPoint(params, 1).size > 0
 	}
 
+	/**
+	 * Premier corps présent sur la case voisine dans [direction], ou null.
+	 * Sert à interagir avec ce qu'on regarde — le même test que le déplacement,
+	 * mais on veut ici savoir *quoi* bloque, pas seulement si ça bloque.
+	 */
+	fun colliderAt(direction: Vector2): Node? {
+		val node = body ?: return null
+		val space = node.getWorld2d()?.directSpaceState ?: return null
+
+		val params = PhysicsPointQueryParameters2D()
+		params.position = node.globalPosition + direction * gridSize()
+		params.collisionMask = 1
+		params.collideWithBodies = true
+		params.collideWithAreas = false
+
+		val hits = space.intersectPoint(params, 8)
+
+		for (i in 0 until hits.size) {
+			val collider = hits.get(i).get("collider")
+			if (collider is Node) return collider
+		}
+
+		return null
+	}
+
 	/** Recale sur le centre de case le plus proche. */
 	fun snapToGrid() {
 		val node = body ?: return
