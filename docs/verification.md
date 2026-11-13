@@ -89,6 +89,35 @@ la case change, relâcher. Avec un parcours en largeur sur les collisions du
 jeu, elle suit n'importe quel trajet. Les contrôles à faire à chaque arrivée
 sont listés dans [levels.md](levels.md).
 
+## Les tests : petits, par zone
+
+`tests/` contient un fichier par zone, joué au clavier, et un script pour les
+lancer :
+
+```bash
+tests/run.sh cave lab     # seulement ces deux-là
+tests/run.sh audit        # accessibilité des cartes fermées
+tests/run.sh              # tout
+```
+
+| Fichier | Couvre |
+|---|---|
+| `test_ludo_house.gd` | entrée touche tenue, paillasson, télé, escalier, chambre |
+| `test_neighbors.gd` | maison des voisins |
+| `test_lab.gd` | laboratoire et ses objets à examiner |
+| `test_cave.gd` | les trois niveaux de la grotte et leurs tunnels |
+| `test_signs.gd` | panneaux du village |
+| `audit.gd` + `audit.py` | grille de collisions : arrivées libres, portes reliées |
+
+**Ne relancer que les tests des zones touchées.** Un long parcours unique qui
+rejoue tout le jeu coûte plusieurs minutes pour revérifier ce qui n'a pas
+bougé. Exception : si un mécanisme partagé change (portes, lecture des touches,
+boîte de dialogue), relancer tous ceux qui s'en servent.
+
+Un nouveau test hérite de `tests/lib.gd` et écrit `test()` ; les outils y sont
+(`walk`, `arrival`, `examine`, `hold_no_change`, `hold_and_count_changes`).
+Chaque test part du point d'apparition du village.
+
 ## Les quatre questions, avant toute sonde
 
 Un test automatique vérifie ce qu'on a décidé, pas si ça a du sens. Avant de
