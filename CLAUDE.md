@@ -16,8 +16,8 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | tuiles, collisions, terrains, atlas | [docs/tilesets.md](docs/tilesets.md) |
 | le joueur, ses déplacements, sa caméra | [docs/player.md](docs/player.md) |
 | dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
-| cartes, portes, changement de scène | [docs/levels.md](docs/levels.md) |
-| PNJ, passages gardés | [docs/npcs.md](docs/npcs.md) |
+| cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
+| PNJ, leurs déplacements, passages gardés | [docs/npcs.md](docs/npcs.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
 | vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
 
