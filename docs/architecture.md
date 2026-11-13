@@ -36,6 +36,30 @@ jamais repasser devant, quel que soit son `y_sort_origin`. C'est ce qui est
 arrivé aux falaises, d'abord rangées dans `Background`, où les arbres leur
 passaient dessus.
 
+## Rendu pixel art
+
+Le jeu est rendu dans un `SubViewport` puis étiré jusqu'à la fenêtre. Deux
+endroits distincts doivent être en Nearest, et oublier l'un des deux suffit à
+tout rendre flou :
+
+| Où | Réglage |
+|---|---|
+| `SubViewport` | `canvas_item_default_texture_filter = 0` |
+| `Control` et `SubViewportContainer` | `texture_filter = 1` |
+
+**Un `SubViewport` ne reprend PAS `rendering/textures/canvas_textures/default_texture_filter`
+du projet** : son défaut reste Linear. Tout ce qu'il contient hérite donc de
+Linear, même quand le réglage projet dit Nearest. C'est le piège : on croit que
+le réglage global couvre tout, et les calques qui « héritent » héritent en
+réalité du mauvais filtre.
+
+Le second réglage concerne l'agrandissement final vers la fenêtre, qui n'est
+presque jamais à l'échelle 1 — un écran HiDPI suffit à déclencher le
+rééchantillonnage.
+
+Corollaire : inutile de mettre `texture_filter` sur chaque `TileMapLayer`, tant
+que le `SubViewport` est correctement réglé.
+
 ## Tri en Y
 
 Godot trie un élément sur `map_to_local(case d'ancrage).y + y_sort_origin`.
