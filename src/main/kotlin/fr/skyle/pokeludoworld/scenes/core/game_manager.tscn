@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://ei8m8fho5p37"]
 
+[ext_resource type="PackedScene" uid="uid://ct7i0ltbka6wo" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn" id="1_8ocv7"]
+
 [node name="GameManager" type="Node" unique_id=1125087688]
 
 [node name="Control" type="Control" parent="." unique_id=2095912339]
@@ -20,6 +22,10 @@ grow_vertical = 2
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer" unique_id=2012847285]
+handle_input_locally = false
 size = Vector2i(1152, 648)
 size_2d_override = Vector2i(1152, 648)
 size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Level" parent="Control/SubViewportContainer/SubViewport" unique_id=1312979652 instance=ExtResource("1_8ocv7")]
