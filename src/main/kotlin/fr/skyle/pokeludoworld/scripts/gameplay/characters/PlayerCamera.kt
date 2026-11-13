@@ -12,13 +12,19 @@ import godot.core.Vector2
 
 /**
  * Caméra centrée sur le joueur, bornée à l'étendue réelle du calque Ground.
- * Les limites sont déduites de la map : rien à régler à la main quand elle change.
+ * Les limites sont déduites de la carte : rien à régler à la main quand elle
+ * change — mais [applyLimits] doit être rappelée après un changement de carte,
+ * le joueur étant reparenté sans repasser par `_ready`.
  */
 @Script
 class PlayerCamera : Camera2D() {
 
 	@Register
 	override fun _ready() {
+		applyLimits()
+	}
+
+	fun applyLimits() {
 		val ground = findGroundLayer()
 
 		if (ground == null) {
@@ -26,24 +32,6 @@ class PlayerCamera : Camera2D() {
 			return
 		}
 
-		applyLimits(ground)
-	}
-
-	/** Remonte jusqu'au noeud Level puis descend sur le calque de sol. */
-	private fun findGroundLayer(): TileMapLayer? {
-		var node: Node? = this
-
-		while (node != null) {
-			if (node.name.toString() == "Level") {
-				return node.getNode("Background/Ground") as? TileMapLayer
-			}
-			node = node.getParent()
-		}
-
-		return null
-	}
-
-	private fun applyLimits(ground: TileMapLayer) {
 		val rect = ground.getUsedRect()
 		val grid = Globals.instance.gridSize
 
@@ -57,5 +45,23 @@ class PlayerCamera : Camera2D() {
 		setLimit(Side.BOTTOM, bottomRight.y.toInt())
 
 		Logger.i("Limites camera : $topLeft -> $bottomRight")
+	}
+
+	/** Remonte jusqu'au noeud Level puis descend sur le calque de sol. */
+	private fun findGroundLayer(): TileMapLayer? {
+		var node: Node? = this
+
+		while (node != null) {
+			if (node.name.toString() == "Level") {
+				return if (node.hasNode("Background/Ground")) {
+					node.getNode("Background/Ground") as? TileMapLayer
+				} else {
+					null
+				}
+			}
+			node = node.getParent()
+		}
+
+		return null
 	}
 }
