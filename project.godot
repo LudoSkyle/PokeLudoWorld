@@ -11,9 +11,14 @@ config_version=5
 [application]
 
 config/name="PokeLudoWorld"
+run/main_scene="uid://ei8m8fho5p37"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/core/Globals.kt"
+Globals="*uid://drws2db0gwgd1"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
