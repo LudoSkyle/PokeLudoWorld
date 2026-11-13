@@ -14,9 +14,13 @@ Player (CharacterBody2D)     Player.kt — assemble les composants
 Trois composants indépendants, assemblés par `Player.kt` : l'entrée ne connaît
 pas le déplacement, le déplacement ne connaît pas l'animation.
 
-Pas de machine à états pour l'instant — il n'y en aurait qu'un seul. Elle
-redeviendra utile avec les boîtes de dialogue (partie 7 du tutoriel) et
-s'intercalera dans `Player.kt` sans toucher aux composants.
+Pas de machine à états : une boîte de dialogue ouverte se contente de
+court-circuiter le déplacement dans `Player._process`. Elle s'imposera le jour
+où un troisième mode apparaîtra (combat, menu).
+
+`Player` lit aussi la touche `interact` — et il est le **seul** à la lire, y
+compris pour faire avancer un dialogue. La raison est dans
+[dialogue.md](dialogue.md).
 
 ## Repère et échelle
 
