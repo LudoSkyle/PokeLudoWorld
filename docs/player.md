@@ -33,7 +33,10 @@ une case de large, une case et demie de haut. Sans cette mise à l'échelle le
 personnage est deux fois trop gros pour le décor. Son décalage `(0, -4)` place
 ses pieds au bas de la case.
 
-Caméra en `zoom = 5`, bornée à l'étendue du calque `Background/Ground` lue par
+Caméra en `zoom = 4` — le viewport fait 1152×648, on voit donc 18 cases de
+large et 10 de haut, plus un liseré de la onzième. Rester sur un zoom
+**entier** : un zoom fractionnaire donne des pixels de largeurs inégales qui
+scintillent en marchant. Elle est bornée à l'étendue du calque `Background/Ground` lue par
 `getUsedRect()` : rien à régler quand la map change de taille.
 
 ## Déplacement
