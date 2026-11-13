@@ -30,6 +30,22 @@ class PlayerInput : Node() {
 		private set
 
 	private var holdTime: Double = 0.0
+	private var waitForRelease: Boolean = false
+
+	/** Oriente le personnage sans passer par une touche (arrivée par une porte). */
+	fun face(newDirection: Vector2) {
+		direction = newDirection
+	}
+
+	/**
+	 * Ignore la touche tenue jusqu'à ce qu'elle soit relâchée. Sans ça, prendre
+	 * un escalier en maintenant sa direction fait arriver sur le tapis d'en
+	 * face, touche toujours enfoncée : on le reprend aussitôt, en boucle.
+	 */
+	fun requireFreshPress() {
+		waitForRelease = true
+		holdTime = 0.0
+	}
 
 	private val bindings = listOf(
 		"ui_up" to Vector2.UP,
@@ -49,6 +65,11 @@ class PlayerInput : Node() {
 	 * le compteur de maintien ne doit pas avancer pendant un déplacement.
 	 */
 	fun poll(delta: Double): MoveIntent {
+		if (waitForRelease) {
+			if (heldDirection() == null) waitForRelease = false
+			return MoveIntent.NONE
+		}
+
 		// Une nouvelle pression réoriente tout de suite et relance le compteur.
 		val pressed = justPressedDirection()
 		if (pressed != null) {
