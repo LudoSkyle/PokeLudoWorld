@@ -49,6 +49,12 @@ Le ressenti Pokémon vient du seuil de maintien (`holdThreshold`, 0,12 s) :
 - pression brève → le personnage **pivote** sans avancer ;
 - pression maintenue → il **marche**, et enchaîne tant que la touche est tenue.
 
+**Deux directions tenues : la dernière pressée commande.** On tient Haut, on
+presse Gauche : on va à gauche ; on relâche Gauche, Haut reprend la main.
+Aucune direction n'a priorité sur une autre (`PlayerInput.heldDirection`). Un
+ordre fixe — Haut, Bas, Gauche, Droite — a existé : Haut et Bas l'emportaient
+toujours, et Gauche / Droite étaient ignorées tant qu'on tenait l'une d'elles.
+
 Vitesse : `walk_pace`, 4 cases par seconde.
 
 ### Courir
