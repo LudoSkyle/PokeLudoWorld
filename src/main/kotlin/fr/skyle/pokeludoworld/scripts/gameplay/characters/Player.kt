@@ -9,6 +9,8 @@ import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.PauseMenu
+import godot.annotation.Category
+import godot.annotation.Export
 import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
@@ -25,6 +27,20 @@ import godot.core.Vector2
  */
 @Script
 class Player : CharacterBody2D() {
+
+	/** Cases par seconde en marchant. */
+	@Category("Deplacement")
+	@Export
+	var walkPace: Double = 4.0
+
+	/** Cases par seconde en courant, touche de course tenue. */
+	@Category("Deplacement")
+	@Export
+	var runPace: Double = 8.0
+
+	/** Vrai si le pas en cours, ou le dernier fait, est un pas de course. */
+	var isRunning: Boolean = false
+		private set
 
 	private var input: PlayerInput? = null
 	private var movement: CharacterMovement? = null
@@ -54,7 +70,23 @@ class Player : CharacterBody2D() {
 	}
 
 	/** Recule d'une case sans se retourner. Renvoie false si la case est occupée. */
-	fun stepBack(direction: Vector2): Boolean = movement?.tryWalk(direction) ?: false
+	fun stepBack(direction: Vector2): Boolean {
+		// Une scène règle l'allure : on recule au pas, même si l'on arrivait en courant.
+		setPace(running = false)
+		return movement?.tryWalk(direction) ?: false
+	}
+
+	/**
+	 * Règle l'allure du prochain pas. Elle ne change qu'entre deux pas : un pas
+	 * engagé va jusqu'au bout à l'allure où il a commencé. Les jambes suivent —
+	 * la planche n'a pas d'images de course, c'est la marche qui s'accélère.
+	 */
+	private fun setPace(running: Boolean) {
+		isRunning = running
+		val pace = if (running) runPace else walkPace
+		movement?.tilesPerSecond = pace
+		sprite?.speedScale = (pace / walkPace).toFloat()
+	}
 
 	@Register
 	override fun _ready() {
@@ -140,6 +172,8 @@ class Player : CharacterBody2D() {
 		if (!currentMovement.isWalking) {
 			when (currentInput.poll(delta)) {
 				MoveIntent.WALK -> {
+					// On court tant que la touche de course est tenue.
+					setPace(Input.isActionPressed(RUN))
 					// Sur un paillasson, avancer vers la sortie quitte la pièce
 					// au lieu de buter contre le mur.
 					val door = currentMovement.areaUnderfoot() as? SceneTrigger
@@ -174,3 +208,4 @@ class Player : CharacterBody2D() {
 }
 
 private const val BUMP_SECONDS = 0.3
+private const val RUN = "run"
