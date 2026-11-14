@@ -371,13 +371,31 @@ func bag_line() -> int:
 	var cursor: Control = bag("Cursor")
 	return floori((cursor.position.y + cursor.size.y / 2.0 - bag("Names").position.y) / 64.0)
 
-func bag_icon() -> String:
-	return bag("Icon").texture.resource_path.get_file()
-
-# Remplit le sac par l'entree Debug du menu, comme le ferait le joueur.
+# Remplit le sac par l'entree Debug du menu, comme le ferait le joueur :
+# huit objets (x3 a x10), des Poke Balls (x11) et deux objets rares.
 func fill_bag() -> void:
 	await menu_pick("Debug")
-	await close_box()
+	# Le premier message se passe a la touche ; les deux objets rares
+	# s'annoncent ensuite et passent tout seuls, sans tenir compte des touches.
+	var end := Time.get_ticks_msec() + 15000
+	while Time.get_ticks_msec() < end and box().visible:
+		await tap("interact")
+		await secs(0.2)
+	await wait(10)
+
+func bag_choices() -> Control:
+	return bag("Choices")
+
+# Les reponses proposees par la boite de choix du sac : ["Jeter", "Annuler"]
+func bag_answers() -> Array:
+	var answers: Array = []
+	for label in bag("Choices/Entries").get_children():
+		if label.visible:
+			answers.append(label.text)
+	return answers
+
+func reveal() -> Control:
+	return game.get_node(VP + "/ItemReveal/Control/Panel")
 
 # --- sauvegarde
 

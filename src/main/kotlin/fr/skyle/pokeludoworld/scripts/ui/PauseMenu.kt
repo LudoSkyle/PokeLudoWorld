@@ -1,6 +1,7 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -158,12 +159,15 @@ class PauseMenu : CanvasLayer() {
 	 * tout, puisque rien dans le jeu ne donne encore d'objet.
 	 */
 	private fun debug() {
-		Inventory.add("potion", 3)
-		Inventory.add("poke_ball", 5)
-		Inventory.add("old_rod")
-		Inventory.add("town_map")
+		Items.ALL.filter { !it.isKey }.forEachIndexed { index, item -> Inventory.add(item.id, index + 3) }
 		close()
-		MessageBox.instance?.play(listOf(N("Des objets de test ont été ajoutés au sac.")))
+		MessageBox.instance?.play(
+			listOf(
+				N("Des objets de test ont été ajoutés au sac."),
+				"@give:old_rod " + N("Vous recevez la Vieille canne !"),
+				"@give:town_map " + N("Vous recevez la Carte du village !"),
+			),
+		)
 	}
 
 	private fun placeCursor() {

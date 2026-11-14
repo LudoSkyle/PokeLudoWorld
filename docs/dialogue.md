@@ -119,3 +119,8 @@ ajouter une branche dans `readFacingObject`.
 ## La touche
 
 Action `interact` dans `project.godot` : **Espace** ou **Entrée**.
+
+## Donner un objet dans un dialogue
+
+Une boîte qui commence par `@give:<id>` met l'objet dans le sac ; un objet rare
+est alors montré au centre de l'écran. Voir [bag.md](bag.md).

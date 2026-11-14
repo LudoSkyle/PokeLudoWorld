@@ -11,6 +11,6 @@ func test() -> void:
 	check("le sac est ecrit dans la sauvegarde", saved_file().get_value("items", "potion", 0) == 3 and saved_file().get_value("items", "old_rod", 0) == 1)
 	await relaunch()
 	await menu_pick("Bag")
-	check("relance : la potion est toujours la", bag_rows() == ["Potion x3", "Retour"], str(bag_rows()))
+	check("relance : les objets sont toujours la, dans le meme ordre", bag_rows() == ["Potion x3", "Super Potion x4", "Hyper Potion x5", "Antidote x6", "Rappel x7", "Eau Fraîche x8"], str(bag_rows()))
 	await tap("ui_right")
-	check("relance : les objets rares aussi, dans le meme ordre", bag_rows() == ["Vieille canne", "Carte du village", "Retour"], str(bag_rows()))
+	check("relance : les objets rares aussi", bag_rows() == ["Vieille canne", "Carte du village", "Retour"], str(bag_rows()))
