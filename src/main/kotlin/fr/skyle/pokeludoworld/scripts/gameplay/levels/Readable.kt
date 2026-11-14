@@ -36,7 +36,7 @@ class Readable : StaticBody2D() {
 	private fun messages(): List<String> = when (kind) {
 		"clock" -> {
 			val now = LocalTime.now()
-			listOf("L horloge indique %d h %02d.".format(now.hour, now.minute))
+			listOf("L'horloge indique %d h %02d.".format(now.hour, now.minute))
 		}
 
 		"tv" -> split(TV_PROGRAMS.random())
@@ -52,16 +52,16 @@ class Readable : StaticBody2D() {
 		 * qui passe, et le héros repart. Aucun Pokémon pour l'instant.
 		 */
 		private val TV_PROGRAMS = listOf(
-			"C est la meteo.|Grand soleil sur tout le village aujourd hui !",
-			"C est la meteo.|Quelques nuages ce soir, mais pas une goutte de pluie.",
-			"C est la meteo.|Un petit vent frais soufflera sur la cote demain matin.",
-			"Il y a un film a la tele.|Quatre garcons marchent le long d une voie ferree.|Je ferais mieux d y aller aussi.",
-			"Il y a un film a la tele.|Deux hommes dansent sur un piano geant.|Bon, il est temps de bouger !",
-			"Une emission de cuisine.|Le chef rate sa crepe, le public applaudit quand meme.",
-			"Un documentaire sur les grottes de la region.|Il parait qu on s y perd facilement.",
-			"Un jeu televise.|Le candidat hesite... Ah, mauvaise reponse !",
-			"C est le journal.|Rien a signaler au village, et c est tres bien comme ca.",
-			"Une publicite pour des chaussures de course.|Avec elles on irait deux fois plus vite, parait-il.",
+			"C'est la météo.|Grand soleil sur tout le village aujourd hui !",
+			"C'est la météo.|Quelques nuages ce soir, mais pas une goutte de pluie.",
+			"C'est la météo.|Un petit vent frais soufflera sur la côte demain matin.",
+			"Il y a un film à la télé.|Quatre garçons marchent le long d'une voie ferrée.|Je ferais mieux d'y aller aussi.",
+			"Il y a un film à la télé.|Deux hommes dansent sur un piano géant.|Bon, il est temps de bouger !",
+			"Une émission de cuisine.|Le chef rate sa crêpe, le public applaudit quand même.",
+			"Un documentaire sur les grottes de la région.|Il paraît qu'on s'y perd facilement.",
+			"Un jeu télévisé.|Le candidat hésite... Ah, mauvaise réponse !",
+			"C'est le journal.|Rien à signaler au village, et c'est très bien comme ça.",
+			"Une publicité pour des chaussures de course.|Avec elles on irait deux fois plus vite, paraît-il.",
 		)
 	}
 }

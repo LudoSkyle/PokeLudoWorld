@@ -55,11 +55,11 @@ tile_set = ExtResource("1_ian7c")
 
 [node name="SignNeighbors" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(312, 216)
-text = "Maison des voisins.|Frappez avant d entrer."
+text = "Maison des voisins.|Frappez avant d'entrer."
 
 [node name="SignLudo" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(104, 248)
-text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
+text = "Maison de Ludo.|La porte n'est jamais fermée, entrez donc."
 
 [node name="Entities" type="Node2D" parent="World" unique_id=1708336925]
 y_sort_enabled = true
@@ -101,19 +101,19 @@ entry_direction = Vector2(0, 1)
 position = Vector2(88, 120)
 appearance = "worker"
 facing = Vector2(1, 0)
-text = "Desole, le passage est ferme.|C est dangereux par la : la route n est pas encore sure."
+text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
 
 [node name="GuardSouth" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(88, 152)
 appearance = "worker"
 facing = Vector2(1, 0)
-text = "Desole, le passage est ferme.|C est dangereux par la : la route n est pas encore sure."
+text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
 
 [node name="GrassWatcher" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(136, 72)
 appearance = "bug_catcher"
 facing = Vector2(0, 1)
-text = "Ces herbes sont si hautes qu on s y perd.|Je cherche des insectes, mais je n ai encore rien trouve."
+text = "Ces herbes sont si hautes qu'on s'y perd.|Je cherche des insectes, mais je n'ai encore rien trouvé."
 movement = "wander"
 pace = 2.0
 wander_layer = "Background/Grass"
@@ -131,7 +131,7 @@ route = PackedVector2Array(13, 16, 26, 16, 26, 9, 25, 9, 25, 15, 14, 15, 14, 9, 
 position = Vector2(648, 280)
 appearance = "fisher"
 facing = Vector2(1, 0)
-text = "Chut... Ca mord pas fort aujourd hui.|Il parait qu il y a de gros poissons au fond du lac."
+text = "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au fond du lac."
 
 [node name="Triggers" type="Node2D" parent="."]
 

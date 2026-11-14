@@ -12,7 +12,8 @@ début de ligne.
 
 Entrées actuelles : **Sac** (ne fait encore rien), **Options** (ouvre l'écran
 des options), **Quitter** (ferme le menu). Le menu est collé au coin haut droit
-de l'écran, comme dans les jeux d'origine. Le curseur garde sa place d'une ouverture à l'autre.
+de l'écran, comme dans les jeux d'origine. À chaque ouverture, le curseur repart de la **première entrée** ; il ne garde
+sa place que le temps d'un aller-retour dans un écran ouvert depuis le menu.
 
 ## Qui lit les touches
 
@@ -60,7 +61,7 @@ qu'on la change, sans validation.
 
 | Ligne | Valeurs | Effet |
 |---|---|---|
-| Vitesse du texte | Lente, Normale, Rapide (défaut), Instant | secondes par lettre de la boîte de dialogue : 0,08 / 0,04 / 0,02 / 0 |
+| Vitesse du texte | x0.5, x1 (défaut), x2, x4 | multiplie la vitesse de la boîte de dialogue ; x1 = 0,02 s par lettre |
 
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
@@ -72,3 +73,25 @@ plus à `ListFrame`.
 
 Les tests forcent la vitesse Rapide au démarrage (`tests/lib.gd`) : ils ne
 dépendent pas du réglage enregistré par le joueur.
+
+## La police et le curseur
+
+Les menus utilisent **Pokémon DP Pro** (`assets/fonts/pokemon-dp-pro.ttf`) en
+64 px : la police fait 16 px de haut, un de ses pixels vaut donc 4 pixels
+écran, comme les cadres et le décor. Elle a tous les accents français.
+
+Sa ligne fait 18 px, deux de trop pour des entrées espacées de 16 : les scènes
+passent par une `FontVariation` qui retire 4 px écran en haut et en bas
+(`spacing_top`, `spacing_bottom`), sans rogner les lettres.
+
+**L'ombre n'est pas dans la police.** Dans les jeux d'origine, chaque pixel de
+lettre porte une ombre à droite, en dessous **et** en diagonale. Godot ne
+décale l'ombre d'un texte que dans une direction : le `Label` garde la
+diagonale (4 px écran, soit un pixel de police), et `PixelShadow.attachAll`
+glisse derrière lui deux copies du texte, couleur d'ombre, décalées à droite et
+vers le bas. Encre `#585850`, ombre `#a8b8b8`, relevées sur la capture de
+référence. La boîte de dialogue fait de même ; son texte change à chaque
+lettre, elle passe donc par `PixelShadow.setText`.
+
+Le curseur (`assets/ui/cursor.png`, 6×10 avec son ombre) est extrait de la même
+capture, et dessiné à l'échelle 4.
