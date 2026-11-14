@@ -16,6 +16,8 @@ joueur : `CharacterMovement` pour les pas, `CharacterAnimation` pour le sprite.
 | `appearance` | nom d'une planche de `assets/characters`, sans l'extension |
 | `facing` | direction regardée au repos |
 | `text` | ce qu'il dit, avec `|` entre deux boîtes |
+| `states` | ce qu'il dit selon l'histoire : `drapeau > texte`, voir [quests.md](quests.md) |
+| `required_flag`, `forbidden_flag` | drapeau sans lequel, ou avec lequel, il n'est pas sur la carte |
 | `movement` | `static` (défaut), `wander` ou `patrol` |
 | `pace` | cases par seconde ; 4 = le joueur, 2 = les PNJ du projet de référence |
 | `wander_layer` | errance : calque de tuiles dont il ne sort pas |
@@ -73,6 +75,7 @@ la laisser importer. Son nom de fichier est la valeur d'`appearance` :
 |---|---|
 | `guard` | nom du garde sous `World/Entities` ; il doit être sur une case voisine |
 | `push_direction` | direction dans laquelle le joueur est repoussé |
+| `required_flag`, `forbidden_flag` | drapeau sans lequel, ou avec lequel, le passage n'est pas gardé ([quests.md](quests.md)) |
 
 Si le joueur s'engage sur la case :
 

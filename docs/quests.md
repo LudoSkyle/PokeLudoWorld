@@ -31,22 +31,12 @@ ce sont `flag(nom)` et `set_flag(nom)` de `tests/lib.gd`.
 
 Tests : `tests/run.sh quests`.
 
-## Ce qui manque dans le moteur
+### Les textes conditionnels : `states`
 
-Quatre briques, aucune grosse, toutes réutilisables par les quêtes suivantes.
-
-| # | Brique | Où | Ce que c'est |
-|---|---|---|---|
-| 2 | **Textes conditionnels** | `Npc`, `Readable` | un export `states` en plus de `text` : le texte dépend des drapeaux posés |
-| 3 | **Objets ramassables** | `Readable` | un `kind = "item"` qui annonce une trouvaille et pose un drapeau |
-| 4 | **Question avant action** | `Readable`, `Npc` | un export `ask` qui passe par `ChoiceBox` — la classe existe déjà, écrite pour la sauvegarde |
-| 5 | **Présence conditionnelle** | `Npc`, `Readable`, `Roadblock`, `Sign` | `required_flag` / `forbidden_flag` : le nœud se `queueFree()` dans `_ready` si la condition n'est pas remplie |
-
-### Forme proposée pour `states`
-
-Un `PackedStringArray`, une entrée par état, `drapeau > texte`. Il est lu **de
-bas en haut** : la dernière étape atteinte gagne. `text` reste le texte par
-défaut, quand aucun drapeau n'est posé.
+Un `Npc` ou un `Readable` porte, en plus de `text`, un export `states` : un
+`PackedStringArray`, une entrée par état, `drapeau > texte`. Il est lu **de bas
+en haut** : la dernière étape atteinte gagne. `text` reste le texte par
+défaut, quand aucun de ces drapeaux n'est posé (`StoryText.kt`).
 
 ```gdscript
 text = "Bienvenue à la bibliothèque.|Tout ce qui est écrit sur le village est ici."
@@ -57,10 +47,49 @@ states = PackedStringArray(
 ```
 
 Tout tient dans le `.tscn`, il n'y a pas de ressource de dialogue à écrire. La
-barre `|` sépare toujours deux boîtes, comme aujourd'hui.
+barre `|` sépare toujours deux boîtes. Les entrées se rangent **dans l'ordre de
+l'histoire** : c'est leur place dans la liste qui départage deux drapeaux posés,
+pas l'ordre dans lequel le joueur les a obtenus.
+
+Le texte est choisi **à chaque fois qu'on parle** : un drapeau posé pendant
+qu'on est sur la carte change la réplique suivante, sans rien recharger.
+
+Chaque état se traduit boîte par boîte dans `locale/en.po`, comme `text` ;
+`tests/run.sh i18n` relève les `states` des scènes ([i18n.md](i18n.md)).
+
+### La présence conditionnelle : `required_flag`, `forbidden_flag`
+
+Sur `Npc`, `Readable`, `Sign` et `Roadblock` :
+
+| Propriété | Le nœud est sur la carte… |
+|---|---|
+| `required_flag` | seulement **si** ce drapeau est posé |
+| `forbidden_flag` | seulement **tant que** ce drapeau ne l'est pas |
+
+Les deux peuvent se combiner. Un nœud qui n'a pas sa place se retire de
+lui-même (`queueFree()` dans `_ready`) : il ne bloque plus, ne parle plus, et
+un passage gardé retiré laisse passer.
+
+**La présence se décide au chargement de la carte.** Un drapeau posé pendant
+qu'on s'y trouve ne fait disparaître ni apparaître personne sous nos yeux : le
+changement se voit à la prochaine entrée sur la carte, ou après un fondu qui
+la recharge.
+
+Deux nœuds `Npc` pour un même personnage — l'un `forbidden_flag`, l'autre
+`required_flag` sur le même drapeau — le font changer de place, d'itinéraire
+et de texte d'un coup.
 
 > **Rappel.** Un `@Export` Kotlin devient du `snake_case` côté Godot :
 > `requiredFlag` s'écrit `required_flag` dans le `.tscn`.
+
+## Ce qui manque dans le moteur
+
+Deux briques, réutilisables par les quêtes suivantes.
+
+| # | Brique | Où | Ce que c'est |
+|---|---|---|---|
+| 3 | **Objets ramassables** | `Readable` | un `kind = "item"` qui annonce une trouvaille et pose un drapeau |
+| 4 | **Question avant action** | `Readable`, `Npc` | un export `ask` qui passe par `ChoiceBox` — la classe existe déjà, écrite pour la sauvegarde |
 
 ---
 
@@ -370,7 +399,7 @@ Six lots, chacun testable seul. Les trois premiers servent à toutes les quêtes
 suivantes et ne contiennent pas une ligne de scénario.
 
 1. **Les drapeaux** (brique 1) — **fait**.
-2. **Textes conditionnels et présence conditionnelle** (briques 2 et 5).
+2. **Textes conditionnels et présence conditionnelle** (briques 2 et 5) — **fait**.
 3. **Objets ramassables et question** (briques 3 et 4).
 4. **La bibliothèque** : la carte, Alix, les archives, le Registre.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine

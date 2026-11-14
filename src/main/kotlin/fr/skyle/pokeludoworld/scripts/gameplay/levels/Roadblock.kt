@@ -3,6 +3,7 @@ package fr.skyle.pokeludoworld.scripts.gameplay.levels
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.Npc
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.Player
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import godot.annotation.Category
 import godot.annotation.Export
@@ -37,6 +38,16 @@ class Roadblock : Area2D() {
 	@Export
 	var pushDirection: Vector2 = Vector2.RIGHT
 
+	/** Drapeau sans lequel le passage n'est pas sur la carte. */
+	@Category("Histoire")
+	@Export
+	var requiredFlag: String = ""
+
+	/** Drapeau avec lequel le passage n'est plus sur la carte. */
+	@Category("Histoire")
+	@Export
+	var forbiddenFlag: String = ""
+
 	private enum class Phase { IDLE, MOVING_IN, TALKING, MOVING_OUT }
 
 	private var phase = Phase.IDLE
@@ -44,6 +55,12 @@ class Roadblock : Area2D() {
 	private var guardMoved = false
 
 	private var player: Player? = null
+
+	@Register
+	override fun _ready() {
+		// Absent de cette étape de l'histoire : le passage est libre.
+		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) queueFree()
+	}
 
 	/** Appelé par le joueur quand il vient de se poser sur cette case. */
 	fun intercept(arriving: Player) {

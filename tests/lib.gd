@@ -425,6 +425,34 @@ func flag(name: String) -> bool:
 func set_flag(name: String) -> void:
 	root.get_node("Globals").set_flag(name)
 
+# --- noeuds de test
+#
+# Les briques de quete se verifient sans scenario : le test pose lui-meme un
+# PNJ, un meuble, un panneau ou un passage sur la carte, avec ses reglages.
+
+const SCENES := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/"
+const SPAWNABLE := {
+	"npc": [SCENES + "characters/npc.tscn", "World/Entities"],
+	"readable": [SCENES + "levels/readable.tscn", "World"],
+	"sign": [SCENES + "levels/sign.tscn", "World"],
+	"roadblock": [SCENES + "levels/roadblock.tscn", "Triggers"],
+}
+
+# Pose un noeud sur une case. props : ses proprietes telles qu'un .tscn les
+# ecrit (snake_case). Renvoie le noeud ; s'il a quitte la carte de lui-meme,
+# is_instance_valid(noeud) est faux.
+func spawn(kind: String, name: String, at: Vector2i, props: Dictionary = {}) -> Node:
+	var node: Node2D = load(SPAWNABLE[kind][0]).instantiate()
+	node.name = name
+	for key in props:
+		if not key in node:
+			check("%s : la propriete %s existe" % [name, key], false)
+		node.set(key, props[key])
+	node.position = Vector2(at.x * 16 + 8, at.y * 16 + 8)
+	level().get_node(SPAWNABLE[kind][1]).add_child(node)
+	await wait(4)
+	return node
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.

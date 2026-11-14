@@ -112,7 +112,7 @@ tests/run.sh                     # tout : 6 minutes, à éviter
 | `doors/` | porte, dans un sens | `ludo_enter`, `ludo_stairs_up`, `cave_tunnel_a`, `lab_exit` |
 | `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `cave_lake`, `npcs` |
 | `ui/` | comportement d'interface | `banner_town`, `banner_same_place` |
-| `quests/` | brique du moteur de quêtes | `flag_saved`, `flag_reset` |
+| `quests/` | brique du moteur de quêtes, sur des nœuds posés par le test (`spawn`) | `flag_saved`, `npc_states`, `presence_required`, `roadblock_lifted` |
 | `audit/` | grille de collisions : arrivées libres, portes reliées | `tests/run.sh audit` |
 
 **Ne lancer que les tests de ce qu'on vient de toucher** : on déplace le

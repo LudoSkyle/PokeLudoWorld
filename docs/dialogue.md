@@ -62,6 +62,9 @@ text = "Maison de Ludo.|La porte n'est jamais fermée, entrez donc."
 Un tableau exporté serait plus propre en théorie, mais plus pénible à éditer
 pour ce que ça apporte.
 
+`required_flag` / `forbidden_flag` font dépendre sa présence de l'histoire
+([quests.md](quests.md)).
+
 ## Les meubles examinables
 
 `scenes/levels/readable.tscn` — un `StaticBody2D` **invisible**, script
@@ -73,6 +76,10 @@ que le joueur le trouve devant lui.
 | `text` (défaut) | le contenu de `text`, avec `|` entre deux boîtes |
 | `clock` | **l'heure réelle** de la machine, lue à chaque examen |
 | `tv` | une émission **tirée au hasard** parmi dix |
+
+Avec `kind = text`, l'export `states` fait dépendre le texte de l'histoire, et
+`required_flag` / `forbidden_flag` la présence du meuble : voir
+[quests.md](quests.md).
 
 Les émissions sont dans `Readable.TV_PROGRAMS`, dans l'esprit des jeux
 d'origine : la télé décrit en une phrase ce qui passe (« Il y a un film à la
