@@ -1,0 +1,37 @@
+FONT CREATED AND PROVIDED BY POKÉPRINT (pokeprint.kimbachu.com)
+
+-------------------------------------------------------------------
+
+TERMS OF USE
+* This font is provided for personal use only.
+* You must not redistribute this font.
+* If using this font on your website, please provide a link back to PokéPrint.
+
+For full terms, see pokeprint.kimbachu.com/site/terms-of-use.
+
+-------------------------------------------------------------------
+
+INSTALLATION INSTRUCTIONS
+  ON YOUR WINDOWS 11 PC:
+    1. Locate and double-click the .ttf file.
+    2. Click "Install".
+
+  ON YOUR MAC:
+    1. Locate and double-click the .ttf file.
+    2. Click "Install Font".
+
+  ON YOUR WEBSITE/BLOG:
+    1. Upload the .ttf file to your website directory.
+    2. Add the following code to your CSS file:
+        @font-face {
+            font-family: “PokePixel GBA”;
+            src: url(http://yoursite.com/pokepixel-gba.ttf) format("truetype");
+        }
+        body, html {
+            font-family: “PokePixel GB”, sans-serif;
+        }
+    3. Replace the above URL with the URL of the uploaded .ttf file.
+    4. Provide a link back to PokéPrint somewhere on your site/blog.
+
+-------------------------------------------------------------------
+  
