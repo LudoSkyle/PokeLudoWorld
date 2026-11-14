@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -112,6 +113,12 @@ class PauseMenu : CanvasLayer() {
 			return
 		}
 
+		val bag = BagMenu.instance
+		if (bag != null && bag.isOpen) {
+			bag.handle(interact)
+			return
+		}
+
 		val save = SaveMenu.instance
 		if (save != null && save.isOpen) {
 			save.handle(interact)
@@ -140,9 +147,23 @@ class PauseMenu : CanvasLayer() {
 			"Quit" -> close()
 			"Options" -> OptionsMenu.instance?.open()
 			"Save" -> SaveMenu.instance?.open()
-			// Le Sac n'ouvre encore rien.
-			else -> Logger.i("Menu : $selectedName (pas encore branche)")
+			"Bag" -> BagMenu.instance?.open()
+			"Debug" -> debug()
+			else -> Logger.i("Menu : entree inconnue $selectedName")
 		}
+	}
+
+	/**
+	 * Outils de mise au point. Pour l'instant : remplir le sac d'un peu de
+	 * tout, puisque rien dans le jeu ne donne encore d'objet.
+	 */
+	private fun debug() {
+		Inventory.add("potion", 3)
+		Inventory.add("poke_ball", 5)
+		Inventory.add("old_rod")
+		Inventory.add("town_map")
+		close()
+		MessageBox.instance?.play(listOf(N("Des objets de test ont été ajoutés au sac.")))
 	}
 
 	private fun placeCursor() {

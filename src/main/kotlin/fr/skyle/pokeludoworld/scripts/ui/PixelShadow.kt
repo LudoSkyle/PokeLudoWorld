@@ -39,8 +39,13 @@ object PixelShadow {
 		val colorName = if (text is RichTextLabel) "default_color" else "font_color"
 		val shadow = text.getThemeColor("font_shadow_color".asStringName())
 
+		// Toutes les copies sont faites AVANT d'en accrocher une : sinon la
+		// seconde emporterait la première avec elle, et cette copie de copie
+		// garderait l'ancien texte à chaque changement.
+		val copies = OFFSETS.map { text.duplicate() as? Control }
+
 		OFFSETS.forEachIndexed { index, (x, y) ->
-			val copy = text.duplicate() as? Control ?: return@forEachIndexed
+			val copy = copies[index] ?: return@forEachIndexed
 			copy.setName("$PREFIX$index")
 			copy.addThemeColorOverride(colorName, shadow)
 			copy.addThemeColorOverride("font_shadow_color", NONE)

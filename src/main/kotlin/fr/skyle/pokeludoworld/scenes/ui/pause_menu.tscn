@@ -30,13 +30,13 @@ layout_mode = 0
 offset_left = 768.0
 offset_top = 0.0
 offset_right = 1152.0
-offset_bottom = 320.0
+offset_bottom = 384.0
 mouse_filter = 2
 
 [node name="Frame" type="NinePatchRect" parent="Control/Menu"]
 layout_mode = 0
 offset_right = 96.0
-offset_bottom = 80.0
+offset_bottom = 96.0
 scale = Vector2(4, 4)
 mouse_filter = 2
 texture = ExtResource("2_frame")
@@ -60,7 +60,7 @@ layout_mode = 0
 offset_left = 72.0
 offset_top = 32.0
 offset_right = 352.0
-offset_bottom = 288.0
+offset_bottom = 352.0
 mouse_filter = 2
 theme_override_constants/separation = 0
 
@@ -98,6 +98,18 @@ theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = SubResource("menu_font")
 theme_override_font_sizes/font_size = 64
 text = "Options"
+vertical_alignment = 1
+
+[node name="Debug" type="Label" parent="Control/Menu/Entries"]
+custom_minimum_size = Vector2(0, 64)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
+text = "Debug"
 vertical_alignment = 1
 
 [node name="Quit" type="Label" parent="Control/Menu/Entries"]

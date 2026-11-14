@@ -19,6 +19,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
 | PNJ, leurs déplacements, passages gardés | [docs/npcs.md](docs/npcs.md) |
 | menu de pause, options | [docs/menu.md](docs/menu.md) |
+| sac, objets, inventaire | [docs/bag.md](docs/bag.md) |
 | textes, traductions | [docs/i18n.md](docs/i18n.md) |
 | sauvegarde, reprise au lancement | [docs/save.md](docs/save.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
