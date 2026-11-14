@@ -60,8 +60,27 @@ class PlayerInput : Node() {
 	private fun justPressedDirection(): Vector2? =
 		bindings.firstOrNull { Input.isActionJustPressed(it.first) }?.second
 
-	private fun heldDirection(): Vector2? =
-		bindings.firstOrNull { Input.isActionPressed(it.first) }?.second
+	/** Les directions tenues, de la plus ancienne à la plus récente. */
+	private val held = ArrayList<Vector2>()
+
+	/**
+	 * La direction qui commande : **la dernière pressée** parmi celles qui
+	 * sont tenues. On tient Haut, on presse Gauche : on va à gauche ; on
+	 * relâche Gauche, Haut reprend la main. Aucune direction n'a priorité sur
+	 * une autre — avec un ordre fixe, Haut et Bas l'emportaient toujours et
+	 * Gauche / Droite étaient ignorées tant qu'on les tenait.
+	 *
+	 * L'ordre se reconstitue à chaque lecture : une touche pressée pendant un
+	 * pas, où l'entrée n'est pas lue, est vue ici comme la plus récente.
+	 */
+	private fun heldDirection(): Vector2? {
+		for ((action, way) in bindings) {
+			val pressed = Input.isActionPressed(action)
+			if (pressed && way !in held) held.add(way)
+			if (!pressed) held.remove(way)
+		}
+		return held.lastOrNull()
+	}
 
 	/**
 	 * À appeler une fois par frame, seulement quand le personnage est immobile :
