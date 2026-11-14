@@ -16,10 +16,14 @@ titre.
 | `location`, `banner` | nom du lieu (en français) et son bandeau |
 | `seconds` | temps de jeu total |
 | section `[items]` | le contenu du sac : une quantité par identifiant d'objet |
+| section `[flags]` | les drapeaux d'histoire posés ([quests.md](quests.md)) : `nom=true` |
 
 Rien d'autre n'a d'état pour l'instant : les PNJ repartent de leur case de
-départ, comme à chaque changement de carte. Un nouvel état à garder (drapeaux
-d'histoire) s'ajoute dans `SaveGame.State`, `read` et `write`, comme le sac.
+départ, comme à chaque changement de carte. Un nouvel état à garder s'ajoute
+dans `SaveGame.State`, `read` et `write`, comme le sac et les drapeaux.
+
+Une partie qui démarre **sans sauvegarde** part d'un sac vide et sans aucun
+drapeau (`SceneManager._ready`).
 
 Le **temps de jeu** tourne en permanence, menus compris, comme dans les jeux
 d'origine (`SceneManager.playSeconds`). Il s'affiche en heures:minutes.

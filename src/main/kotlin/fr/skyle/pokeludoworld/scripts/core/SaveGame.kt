@@ -8,7 +8,8 @@ import godot.core.Vector2
 
 /**
  * La sauvegarde : une seule, dans un fichier chez le joueur (voir
- * [GameFiles]). Elle retient où l'on est et depuis combien de temps on joue.
+ * [GameFiles]). Elle retient où l'on est, depuis combien de temps on joue, le
+ * contenu du sac et les drapeaux d'histoire.
  */
 object SaveGame {
 
@@ -26,6 +27,8 @@ object SaveGame {
 		val seconds: Double,
 		/** Contenu du sac : quantité par identifiant d'objet, dans l'ordre d'arrivée. */
 		val items: Map<String, Int> = emptyMap(),
+		/** Drapeaux d'histoire posés, dans l'ordre où ils l'ont été. */
+		val flags: Set<String> = emptySet(),
 	)
 
 	fun exists(): Boolean = FileAccess.fileExists(GameFiles.save)
@@ -45,7 +48,18 @@ object SaveGame {
 			banner = file.getValue(SECTION, "banner", "").toString(),
 			seconds = number(file, "seconds"),
 			items = items(file),
+			flags = flags(file),
 		)
+	}
+
+	private fun flags(file: ConfigFile): Set<String> {
+		val found = LinkedHashSet<String>()
+		if (!file.hasSection(FLAGS)) return found
+		val keys = file.getSectionKeys(FLAGS)
+		for (index in 0 until keys.size) {
+			if (file.getValue(FLAGS, keys[index], false) == true) found.add(keys[index])
+		}
+		return found
 	}
 
 	private fun items(file: ConfigFile): Map<String, Int> {
@@ -70,6 +84,7 @@ object SaveGame {
 		file.setValue(SECTION, "banner", state.banner)
 		file.setValue(SECTION, "seconds", state.seconds)
 		state.items.forEach { (id, amount) -> file.setValue(ITEMS, id, amount) }
+		state.flags.forEach { file.setValue(FLAGS, it, true) }
 
 		val saved = file.save(GameFiles.save) == Error.OK
 		if (!saved) Logger.e("Sauvegarde impossible : ${GameFiles.save}")
@@ -87,4 +102,5 @@ object SaveGame {
 
 	private const val SECTION = "save"
 	private const val ITEMS = "items"
+	private const val FLAGS = "flags"
 }
