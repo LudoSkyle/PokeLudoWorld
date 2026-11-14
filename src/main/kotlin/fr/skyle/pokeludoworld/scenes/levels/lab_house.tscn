@@ -104,38 +104,6 @@ text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 position = Vector2(360, 120)
 text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 
-[node name="Books10" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(152, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books11" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(168, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books12" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(184, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books13" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(200, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books14" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(312, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books15" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(328, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books16" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(344, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
-[node name="Books17" parent="Readables" instance=ExtResource("3_readable")]
-position = Vector2(360, 200)
-text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
-
 [node name="Books18" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(152, 216)
 text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"

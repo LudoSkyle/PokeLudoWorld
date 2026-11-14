@@ -118,7 +118,8 @@ Dans les intérieurs, ils sont générés avec la pièce, sous un nœud `Readabl
 | télé, horloge | voir `kind` |
 
 Un corps est posé sur **chaque case solide** du meuble, pour qu'on puisse
-l'examiner de n'importe quel côté. Une horloge est au mur : son corps est sur
+l'examiner de n'importe quel côté. Le haut d'une bibliothèque n'est pas solide
+(on passe derrière, voir [levels.md](levels.md)) : il n'en porte pas. Une horloge est au mur : son corps est sur
 la case **en dessous**, celle qu'on regarde depuis le sol.
 
 La police est **Pokémon DP Pro** (`assets/fonts/pokemon-dp-pro.ttf`,

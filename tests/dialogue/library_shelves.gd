@@ -10,7 +10,7 @@ func start() -> Vector2i:
 
 func test() -> void:
 	await examine("rayonnage du fond", Vector2i(13, 9), "pleine de livres")
-	await examine("rayonnage du milieu, vu de derriere", Vector2i(13, 9), "pleine de livres", "ui_down")
+	await examine("rayonnage du milieu, depuis derriere lui", Vector2i(13, 10), "pleine de livres", "ui_down")
 	await examine("archives, premiere case", Vector2i(9, 9), "pleine de livres")
 	await examine("archives, troisieme case : rien a prendre", Vector2i(11, 9), "pleine de livres")
 	check("aucun drapeau n'est pose", not flag("bell_register"))
