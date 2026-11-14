@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://ct7i0ltbka6wo"]
+[gd_scene load_steps=13 format=4 uid="uid://ct7i0ltbka6wo"]
 
 [ext_resource type="TileSet" uid="uid://c38ht37ho6e3a" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_ian7c"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/bell_stand.png" id="7_stand"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/environments.png" id="8_environments"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="9_readable"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/street_lamp.tscn" id="10_lamp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_stand"]
 size = Vector2(48, 16)
@@ -162,6 +163,27 @@ region_rect = Rect2(1075, 1719, 27, 42)
 
 [node name="Collider" type="CollisionShape2D" parent="World/StatueEast"]
 shape = SubResource("RectangleShape2D_statue")
+
+[node name="LampWestRoad" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(200, 104)
+
+[node name="LampLudo" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(88, 280)
+
+[node name="LampLibrary" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(264, 280)
+
+[node name="LampLab" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(408, 120)
+
+[node name="LampSquareWest" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(456, 264)
+
+[node name="LampSquareEast" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(552, 264)
+
+[node name="LampCave" parent="World" instance=ExtResource("10_lamp")]
+position = Vector2(648, 104)
 
 [node name="Entities" type="Node2D" parent="World" unique_id=1708336925]
 y_sort_enabled = true
