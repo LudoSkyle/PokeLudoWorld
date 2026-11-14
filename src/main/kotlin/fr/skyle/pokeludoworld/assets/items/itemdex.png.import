@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b73pyorbfxw4h"
-path="res://.godot/imported/old_rod.png-3500dde87756d38fefa980de1ac27d4b.ctex"
+uid="uid://d014tm4rnx708"
+path="res://.godot/imported/itemdex.png-c3dde3b53c6e6a9e1c726d42533877e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/old_rod.png"
-dest_files=["res://.godot/imported/old_rod.png-3500dde87756d38fefa980de1ac27d4b.ctex"]
+source_file="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/itemdex.png"
+dest_files=["res://.godot/imported/itemdex.png-c3dde3b53c6e6a9e1c726d42533877e8.ctex"]
 
 [params]
 
