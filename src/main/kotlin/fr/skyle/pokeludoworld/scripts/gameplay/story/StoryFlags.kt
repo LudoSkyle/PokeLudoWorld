@@ -17,6 +17,13 @@ object StoryFlags {
 		if (flag.isNotBlank()) raised.add(flag.trim())
 	}
 
+	/**
+	 * La condition de présence d'un nœud de carte : [required] doit être posé
+	 * et [forbidden] ne pas l'être. Un nom vide ne demande rien.
+	 */
+	fun allows(required: String, forbidden: String): Boolean =
+		(required.isBlank() || has(required.trim())) && (forbidden.isBlank() || !has(forbidden.trim()))
+
 	fun snapshot(): Set<String> = LinkedHashSet(raised)
 
 	fun restore(saved: Set<String>) {

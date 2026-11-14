@@ -1,12 +1,16 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.levels
 
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryText
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.T
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.MultilineText
+import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.StaticBody2D
+import godot.core.PackedStringArray
 import java.time.LocalTime
 
 /**
@@ -30,6 +34,30 @@ class Readable : StaticBody2D() {
 	@Export
 	var text: String = ""
 
+	/**
+	 * Pour `kind = text` : ce qu'il dit selon l'histoire : des entrées `drapeau > texte`, lues de
+	 * bas en haut. [text] reste le défaut (voir StoryText).
+	 */
+	@Category("Contenu")
+	@Export
+	var states: PackedStringArray = PackedStringArray()
+
+	/** Drapeau sans lequel le meuble n'est pas sur la carte. */
+	@Category("Histoire")
+	@Export
+	var requiredFlag: String = ""
+
+	/** Drapeau avec lequel le meuble n'est plus sur la carte. */
+	@Category("Histoire")
+	@Export
+	var forbiddenFlag: String = ""
+
+	@Register
+	override fun _ready() {
+		// Absent de cette étape de l'histoire : il quitte la carte avant d'y avoir servi.
+		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) queueFree()
+	}
+
 	fun read() {
 		MessageBox.instance?.play(messages())
 	}
@@ -40,12 +68,9 @@ class Readable : StaticBody2D() {
 			listOf(T("L'horloge indique %d h %02d.").format(now.hour, now.minute))
 		}
 
-		"tv" -> split(TV_PROGRAMS.random())
-		else -> split(text)
+		"tv" -> StoryText.boxes(TV_PROGRAMS.random())
+		else -> StoryText.boxes(StoryText.current(text, states))
 	}
-
-	private fun split(raw: String): List<String> =
-		raw.split("|").map { it.trim() }.filter { it.isNotEmpty() }
 
 	companion object {
 		/**

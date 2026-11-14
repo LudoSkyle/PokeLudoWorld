@@ -28,6 +28,10 @@ def sources():
         body = open(path, encoding="utf-8").read()
         for text in re.findall(r'^text = "((?:[^"\\]|\\.)*)"$', body, re.M):
             add(text.replace('\\"', '"').replace("\\n", "\n"), path)
+        # Textes selon l'histoire : "drapeau > texte", le drapeau n'est pas du texte.
+        for states in re.findall(r"^states = PackedStringArray\((.*)\)$", body, re.M):
+            for text in re.findall(r'"((?:[^"\\]|\\.)*)"', states):
+                add(re.sub(r"^\s*\w+\s*>", "", text).replace('\\"', '"').replace("\\n", "\n"), path)
         for text in re.findall(r'^metadata/location = "(.*)"$', body, re.M):
             add(text, path)
 

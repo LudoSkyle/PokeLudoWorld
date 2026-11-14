@@ -2,6 +2,8 @@ package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
 import fr.skyle.pokeludoworld.scripts.autoload.Globals
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryText
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.PauseMenu
@@ -17,6 +19,7 @@ import godot.api.ResourceLoader
 import godot.api.SpriteFrames
 import godot.api.Texture2D
 import godot.api.TileMapLayer
+import godot.core.PackedStringArray
 import godot.core.PackedVector2Array
 import godot.core.Vector2
 import kotlin.math.abs
@@ -51,6 +54,24 @@ class Npc : CharacterBody2D() {
 	@MultilineText
 	@Export
 	var text: String = ""
+
+	/**
+	 * Ce qu'il dit selon l'histoire : des entrées `drapeau > texte`, lues de
+	 * bas en haut. [text] reste le défaut (voir StoryText).
+	 */
+	@Category("Contenu")
+	@Export
+	var states: PackedStringArray = PackedStringArray()
+
+	/** Drapeau sans lequel il n'est pas sur la carte. */
+	@Category("Histoire")
+	@Export
+	var requiredFlag: String = ""
+
+	/** Drapeau avec lequel il n'est plus sur la carte. */
+	@Category("Histoire")
+	@Export
+	var forbiddenFlag: String = ""
 
 	/** `static` : immobile. `wander` : erre dans une zone. `patrol` : suit [route]. */
 	@Category("Deplacement")
@@ -98,6 +119,12 @@ class Npc : CharacterBody2D() {
 
 	@Register
 	override fun _ready() {
+		// Absent de cette étape de l'histoire : il quitte la carte avant d'y avoir servi.
+		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) {
+			queueFree()
+			return
+		}
+
 		mover = getNode("Movement") as? CharacterMovement
 		sprite = getNode("Sprite") as? CharacterAnimation
 		mover?.attach(this)
@@ -159,10 +186,9 @@ class Npc : CharacterBody2D() {
 		return mover?.tryWalk(step, SCENERY) ?: false
 	}
 
-	/** Dit son texte, sans se tourner. */
+	/** Dit son texte du moment, sans se tourner. */
 	fun speak() {
-		val messages = text.split("|").map { it.trim() }.filter { it.isNotEmpty() }
-		MessageBox.instance?.play(messages)
+		MessageBox.instance?.play(StoryText.boxes(StoryText.current(text, states)))
 	}
 
 	/**
