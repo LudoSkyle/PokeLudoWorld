@@ -75,9 +75,40 @@ Dans `start_town`, sept lampadaires, tous sur l'herbe au bord d'un chemin :
 Aucun n'est sur une ronde de PNJ ni sur une case où quelqu'un se tient après
 la Veillée.
 
-## Ce qui manque
+## Les fenêtres éclairées
 
-**Des fenêtres éclairées** la nuit, sur les maisons.
+La nuit, les vitres des maisons virent au jaune et répandent une lueur sur la
+façade. Deux pièces :
+
+**La vitre** — un shader, `resources/shaders/window.gdshader`, attaché dans
+`level.tres` aux tuiles de maison qui ont une vitre :
+
+```
+15:99/0/material = SubResource("ShaderMaterial_window")
+```
+
+- Il ne touche que les **pixels bleu vitre** de la tuile ; le mur, le toit et
+  les jardinières ne changent pas. Le dessin des tuiles n'est pas modifié.
+- La vitre s'allume avec `DayNight.light()`, comme les lampadaires : la nuit
+  seulement, en montant pendant qu'elle tombe. À l'aube et au crépuscule
+  elle reste une vitre bleue.
+- **Elle n'est pas assombrie par la nuit.** La teinte multiplie tout le
+  dehors ; le shader divise donc la couleur de la vitre par la teinte du
+  moment, que le moteur remultiplie ensuite.
+- Il lit deux valeurs globales, déclarées dans `project.godot`
+  (`[shader_globals]`) et réglées à chaque image par `SceneManager` :
+  `night_light`, la force des lumières, et `day_tint`, la teinte du dehors.
+  Dans un intérieur elles valent 0 et blanc.
+
+Les 23 tuiles concernées ont été trouvées en cherchant les pixels bleu clair
+dans les tuiles du calque `Houses`. **Une nouvelle maison à fenêtres a besoin
+de cette ligne sur ses tuiles vitrées**, comme pour une collision.
+
+**La lueur** — `scenes/levels/window_glow.tscn`, script `NightLight.kt` : une
+petite lumière chaude qui suit l'heure, comme celle d'un lampadaire en plus
+faible. On en pose une par groupe de fenêtres, sous `World`, au centre des
+vitres. Dans `start_town` : `GlowLudoUp`, `GlowLudoDown`, `GlowLibrary`,
+`GlowLabLeft`, `GlowLabRight`, `GlowLabWing`.
 
 ## Mise au point
 
