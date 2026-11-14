@@ -269,6 +269,20 @@ func menu_selected() -> String:
 	var line := menu_cursor_line()
 	return "" if line < 0 or line >= list.get_child_count() else str(list.get_child(line).name)
 
+func options_open() -> bool:
+	return game.get_node(VP + "/OptionsMenu/Control/Screen").visible
+
+# Nom du choix de vitesse affiche en rouge : Slow, Normal, Fast, Instant.
+func options_speed() -> String:
+	var red := ""
+	for label in game.get_node(VP + "/OptionsMenu/Control/Screen/Rows/TextSpeed/Choices").get_children():
+		if label.get_theme_color("font_color").r > 0.8:
+			red += str(label.name)
+	return red
+
+func letter_seconds() -> float:
+	return game.get_node(VP + "/MessageBox").seconds_per_letter
+
 # --- bandeau de lieu
 
 func banner() -> Control:
@@ -304,6 +318,8 @@ func _run() -> void:
 	game.get_node(VP + "/SceneManager").start_scene = LEVELS + scene() + ".tscn"
 	root.add_child(game)
 	await wait(20)
+	# Les tests ne dependent pas de la vitesse de texte que le joueur a reglee.
+	game.get_node(VP + "/MessageBox").seconds_per_letter = 0.02
 	if start() != Vector2i(-1, -1):
 		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)
 		await wait(10)
