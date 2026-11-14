@@ -42,6 +42,10 @@ dans un cadre de menu (`ItemReveal.kt`). Elle reste **une seconde** une fois le
 texte écrit, puis le dialogue passe seul à la boîte suivante, ou se ferme : les
 touches ne pressent pas ce passage, elles ne font que finir d'écrire le texte.
 
+Un objet **à ramasser** sur une carte est un `Readable` de `kind = "item"` :
+il donne son objet par ce même `@give:`, une seule fois
+([quests.md](quests.md)).
+
 Rien dans le jeu ne donne encore d'objet. En attendant, l'entrée **Debug** du
 menu de pause remplit le sac (`PauseMenu.debug`) : huit objets, des Poké Balls,
 et deux objets rares donnés par `@give:` pour voir leur présentation.

@@ -19,8 +19,9 @@ s'expose en singleton par `MessageBox.instance`, comme `Globals`.
 
 ## Une seule lecture de la touche
 
-**`MessageBox` ne lit jamais l'entrée.** C'est `Player` qui lit `interact` et
-appelle `advance()`.
+**`MessageBox` ne lit jamais la touche d'interaction.** C'est `Player` qui lit
+`interact` et la lui passe à chaque image par `handle(interact)`, qui appelle
+`advance()`.
 
 Ce n'est pas un détail : si les deux la lisaient, la pression qui ouvre la boîte
 la ferait avancer dans la même frame, et le premier message sauterait. Un seul
@@ -76,9 +77,11 @@ que le joueur le trouve devant lui.
 | `text` (défaut) | le contenu de `text`, avec `|` entre deux boîtes |
 | `clock` | **l'heure réelle** de la machine, lue à chaque examen |
 | `tv` | une émission **tirée au hasard** parmi dix |
+| `item` | une **trouvaille** : donne un objet une fois, pose son drapeau — voir [quests.md](quests.md) |
 
-Avec `kind = text`, l'export `states` fait dépendre le texte de l'histoire, et
-`required_flag` / `forbidden_flag` la présence du meuble : voir
+Avec `kind = text`, l'export `states` fait dépendre le texte de l'histoire,
+`ask` pose une question avant de le dire, et `required_flag` /
+`forbidden_flag` décident de la présence du meuble : voir
 [quests.md](quests.md).
 
 Les émissions sont dans `Readable.TV_PROGRAMS`, dans l'esprit des jeux
@@ -127,7 +130,24 @@ ajouter une branche dans `readFacingObject`.
 
 Action `interact` dans `project.godot` : **Espace** ou **Entrée**.
 
-## Donner un objet dans un dialogue
+## Les consignes en tête de boîte
 
-Une boîte qui commence par `@give:<id>` met l'objet dans le sac ; un objet rare
-est alors montré au centre de l'écran. Voir [bag.md](bag.md).
+Une boîte peut commencer par des consignes, exécutées **au moment où elle
+s'affiche** et jamais affichées. Chacune est suivie d'une espace ; elles se
+combinent dans n'importe quel ordre.
+
+| Consigne | Effet |
+|---|---|
+| `@give:<id>`, `@give:<id>*3` | met l'objet dans le sac ; un objet rare est montré au centre de l'écran — voir [bag.md](bag.md) |
+| `@flag:<drapeau>` | pose un drapeau d'histoire — voir [quests.md](quests.md) |
+
+## Une question dans un dialogue
+
+`MessageBox.ask(question, suite)` écrit la question, puis montre **Oui / Non**
+au-dessus de la boîte (`Control/Choices`, une `ChoiceBox`). Oui enchaîne sur la
+suite ; Non, ou la touche du menu, referme. Pendant la question, une pression
+ne fait que finir de l'écrire.
+
+C'est ce que fait l'export `ask` d'un PNJ ou d'un meuble
+([quests.md](quests.md)). L'écran de sauvegarde et le sac posent leurs propres
+questions avec `say()`, parce qu'ils enchaînent autre chose qu'un dialogue.

@@ -63,6 +63,14 @@ class Npc : CharacterBody2D() {
 	@Export
 	var states: PackedStringArray = PackedStringArray()
 
+	/**
+	 * Question Oui / Non posée avant d'agir : `Question ?` devant [text],
+	 * `drapeau > Question ?` devant le texte de cet état. Non ne dit rien.
+	 */
+	@Category("Contenu")
+	@Export
+	var ask: String = ""
+
 	/** Drapeau sans lequel il n'est pas sur la carte. */
 	@Category("Histoire")
 	@Export
@@ -188,7 +196,7 @@ class Npc : CharacterBody2D() {
 
 	/** Dit son texte du moment, sans se tourner. */
 	fun speak() {
-		MessageBox.instance?.play(StoryText.boxes(StoryText.current(text, states)))
+		StoryText.say(text, states, ask)
 	}
 
 	/**

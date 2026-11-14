@@ -17,6 +17,7 @@ joueur : `CharacterMovement` pour les pas, `CharacterAnimation` pour le sprite.
 | `facing` | direction regardée au repos |
 | `text` | ce qu'il dit, avec `|` entre deux boîtes |
 | `states` | ce qu'il dit selon l'histoire : `drapeau > texte`, voir [quests.md](quests.md) |
+| `ask` | question Oui / Non posée avant de parler : `Question ?` ou `drapeau > Question ?` |
 | `required_flag`, `forbidden_flag` | drapeau sans lequel, ou avec lequel, il n'est pas sur la carte |
 | `movement` | `static` (défaut), `wander` ou `patrol` |
 | `pace` | cases par seconde ; 4 = le joueur, 2 = les PNJ du projet de référence |
