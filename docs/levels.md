@@ -64,6 +64,14 @@ Pendant le fondu, le pas engagé se termine mais plus aucune entrée n'est lue.
 Après, `PlayerCamera.applyLimits()` est rappelée à la main : le joueur est
 reparenté sans repasser par `_ready`.
 
+## Recharger la carte sur place
+
+`SceneManager.reload()` recharge la carte courante dans le même fondu qu'une
+porte, le joueur gardant sa place et son regard. Si la carte rechargée a posé
+quelque chose sur sa case, il recule d'une case. Le bandeau de lieu ne se
+réannonce pas. C'est ce que déclenche la consigne de dialogue `@reload`
+([quests.md](quests.md)).
+
 ## Structure d'une carte
 
 ```

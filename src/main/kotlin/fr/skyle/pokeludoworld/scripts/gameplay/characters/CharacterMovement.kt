@@ -124,6 +124,22 @@ class CharacterMovement : Node() {
 	}
 
 	/**
+	 * Si un corps occupe la case où l'on se tient — une carte rechargée a pu y
+	 * poser quelque chose —, se pose sur la première case libre parmi
+	 * [directions]. Renvoie true si l'on a dû bouger.
+	 */
+	fun stepOutOfSolid(directions: List<Vector2>): Boolean {
+		val node = body ?: return false
+		if (!isBlocked(node.globalPosition, obstacleMask)) return false
+
+		val free = directions.firstOrNull { !isBlocked(node.globalPosition + it * gridSize(), obstacleMask) }
+			?: return false
+		stop()
+		node.position += free * gridSize()
+		return true
+	}
+
+	/**
 	 * Premier corps présent sur la case voisine dans [direction], ou null.
 	 * Sert à interagir avec ce qu'on regarde — le même test que le déplacement,
 	 * mais on veut ici savoir *quoi* bloque, pas seulement si ça bloque.

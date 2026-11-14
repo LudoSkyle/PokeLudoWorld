@@ -494,6 +494,24 @@ func receive(item: String, at: Vector2i, facing: String) -> void:
 	giver.free()
 	await wait(4)
 
+# Recharge la carte comme le fait la consigne @reload d'un dialogue : c'est
+# la que se decide qui s'y trouve selon les drapeaux.
+func reload_level() -> void:
+	var id := level_id()
+	game.get_node(VP + "/SceneManager").reload()
+	var end := Time.get_ticks_msec() + 4000
+	while Time.get_ticks_msec() < end and level_id() == id:
+		await process_frame
+	await secs(0.6)
+
+# Pose le joueur sur une case, entre deux parties d'un test (mise en place).
+func place(c: Vector2i) -> void:
+	player().position = Vector2(c.x * 16 + 8, c.y * 16 + 8)
+	await wait(10)
+
+func node(path: String) -> Node:
+	return level().get_node_or_null(path)
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.

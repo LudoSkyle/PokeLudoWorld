@@ -1,10 +1,20 @@
-[gd_scene load_steps=6 format=4 uid="uid://ct7i0ltbka6wo"]
+[gd_scene load_steps=12 format=4 uid="uid://ct7i0ltbka6wo"]
 
 [ext_resource type="TileSet" uid="uid://c38ht37ho6e3a" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_ian7c"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/sign.tscn" id="3_sign"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/npc.tscn" id="4_npc"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/roadblock.tscn" id="5_roadblock"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/levels/Readable.kt" id="6_readable_script"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/bell_stand.png" id="7_stand"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/environments.png" id="8_environments"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="9_readable"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_stand"]
+size = Vector2(48, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_statue"]
+size = Vector2(16, 16)
 
 [node name="Level" type="Node2D" unique_id=1312979652]
 metadata/location = "Bourg-Ludo"
@@ -22,8 +32,12 @@ position = Vector2(0, -1)
 tile_map_data = PackedByteArray("AAAPAAkABQACABEAAAAPAAgABQACABEAAAAPAAcABQACABAAAAAOAAkABQABABEAAAAOAAgABQADABIAAAAOAAcABQABABAAAAANAAkABQADABEAAAANAAgABQAEABIAAAANAAcABQABABAAAAAMAAkABQABABIAAAAMAAgABQABABEAAAAMAAcABQABABAAAAALAAkABQABABIAAAALAAgABQADABIAAAALAAcABQABABAAAAAKAAkABQABABIAAAAKAAgABQADABIAAAAKAAcABQABABAAAAAJAAkABQABABIAAAAJAAgABQAEABIAAAAJAAcABQABABAAAAAIAAkABQABABIAAAAIAAgABQAEABIAAAAIAAcABQABABAAAAAHAAkABQABABIAAAAHAAgABQABABEAAAAHAAcABQABABAAAAAGAAkABQABABIAAAAGAAgABQAEABIAAAAGAAcABQABABAAAAAFAAkABQABABIAAAAFAAgABQAEABIAAAAFAAcABQABABAAAAAEAAkABQABABIAAAAEAAgABQADABIAAAAEAAcABQABABAAAAADAAkABQABABIAAAADAAgABQADABIAAAADAAcABQABABAAAAACAAkABQABABIAAAACAAgABQABABEAAAACAAcABQABABAAAAABAAkABQABABIAAAABAAgABQAEABIAAAABAAcABQABABAAAAAAAAkABQAAABIAAAAAAAgABQAAABEAAAAAAAcABQAAABAAAAAPABEABQACABEAAAAPABAABQAEABEAAAAPAA8ABQABABEAAAAPAA4ABQAEABAAAAAPAA0ABQACABEAAAAPAAwABQACABEAAAAPAAsABQACABEAAAAPAAoABQACABEAAAAOABEABQAEABIAAAAOABAABQADABIAAAAOAA8ABQADABIAAAAOAA4ABQADABIAAAAOAA0ABQABABEAAAAOAAwABQAEABIAAAAOAAsABQAEABIAAAAOAAoABQABABEAAAANABEABQAEABIAAAANABAABQADABAAAAANAA8ABQAAABEAAAANAA4ABQAAABEAAAANAA0ABQAAABEAAAANAAwABQAAABEAAAANAAsABQAAABEAAAANAAoABQAAABEAAAAPABIABQACABIAAAAOABIABQABABIAAAANABIABQABABIAAAAMABIABQABABIAAAAMABEABQAEABIAAAAMABAABQABABAAAAALABIABQABABIAAAALABEABQADABIAAAALABAABQABABAAAAAKABIABQABABIAAAAKABEABQAEABIAAAAKABAABQABABAAAAAJABIABQABABIAAAAJABEABQAEABIAAAAJABAABQAEABAAAAAIABIABQABABIAAAAIABEABQADABIAAAAIABAABQAEABIAAAAHABIABQABABIAAAAHABEABQADABIAAAAHABAABQADABAAAAAGABIABQAAABIAAAAGABEABQAAABEAAAAGABAABQAAABAAAAAaABAABQACABIAAAAaAA8ABQACABEAAAAaAA4ABQACABEAAAAZABAABQABABIAAAAZAA8ABQABABEAAAAZAA4ABQABABEAAAAYABAABQABABIAAAAYAA8ABQAEABIAAAAYAA4ABQADABAAAAAXABAABQABABIAAAAXAA8ABQAEABIAAAAXAA4ABQABABAAAAAWABAABQABABIAAAAWAA8ABQAEABIAAAAWAA4ABQAEABAAAAAVABAABQABABIAAAAVAA8ABQADABIAAAAVAA4ABQADABIAAAAUABAABQABABIAAAAUAA8ABQADABIAAAAUAA4ABQADABAAAAATABAABQABABIAAAATAA8ABQABABEAAAATAA4ABQABABAAAAASABAABQABABIAAAASAA8ABQADABIAAAASAA4ABQABABAAAAARABAABQABABIAAAARAA8ABQAEABIAAAARAA4ABQABABAAAAAQABAABQABABIAAAAQAA8ABQAEABIAAAAQAA4ABQABABAAAAAaAA0ABQACABEAAAAaAAwABQACABEAAAAaAAsABQACABEAAAAaAAoABQAEABEAAAAaAAkABQADABIAAAAaAAgABQABABAAAAAZAA0ABQADABIAAAAZAAwABQABABEAAAAZAAsABQAEABIAAAAZAAoABQADABIAAAAZAAkABQAEABIAAAAZAAgABQABABAAAAAYAA0ABQAAABEAAAAYAAwABQAAABEAAAAYAAsABQAAABEAAAAYAAoABQAAABEAAAAYAAkABQAAABEAAAAYAAgABQAAABAAAAAjAAoABQABABIAAAAjAAkABQABABEAAAAjAAgABQABABAAAAAiAAoABQABABIAAAAiAAkABQADABIAAAAiAAgABQABABAAAAAhAAoABQABABIAAAAhAAkABQABABEAAAAhAAgABQABABAAAAAgAAoABQABABIAAAAgAAkABQAEABIAAAAgAAgABQABABAAAAAfAAoABQABABIAAAAfAAkABQAEABIAAAAfAAgABQABABAAAAAeAAoABQABABIAAAAeAAkABQADABIAAAAeAAgABQABABAAAAAdAAoABQABABIAAAAdAAkABQABABEAAAAdAAgABQAEABAAAAAcAAoABQABABIAAAAcAAkABQADABIAAAAcAAgABQABABEAAAAbAAoABQABABIAAAAbAAkABQAEABIAAAAbAAgABQADABAAAAAJAA8ABQACABAAAAAIAA8ABQABABAAAAAHAA8ABQAAABAAAAAWAA0ABQACABAAAAAVAA0ABQABABAAAAAUAA0ABQAAABAAAAAdAAcABQACABAAAAAcAAcABQABABAAAAAbAAcABQAAABAAAAAnAAoABQACABIAAAAnAAkABQACABEAAAAmAAoABQABABIAAAAmAAkABQAEABIAAAAlAAoABQABABIAAAAlAAkABQADABIAAAAkAAoABQABABIAAAAkAAkABQAEABIAAAAkAAgABQABABAAAAAnAAgABQACABEAAAAnAAcABQACABEAAAAmAAgABQABABEAAAAmAAcABQAEABIAAAAlAAgABQADABAAAAAlAAcABQAAABEAAAAnAAYABQACABEAAAAnAAUABQACABEAAAAnAAQABQACABEAAAAnAAMABQACABEAAAAnAAIABQACABAAAAAmAAYABQAEABIAAAAmAAUABQABABEAAAAmAAQABQABABEAAAAmAAMABQAEABIAAAAmAAIABQABABAAAAAlAAYABQAAABEAAAAlAAUABQAAABEAAAAlAAQABQAAABEAAAAlAAMABQAAABEAAAAlAAIABQAAABAAAAA=")
 tile_set = ExtResource("1_ian7c")
 
+[node name="Plaza" type="TileMapLayer" parent="Background"]
+tile_map_data = PackedByteArray("AAAbAAsABQAFAC8AAAAbAAwABQAFADAAAAAbAA0ABQAFADAAAAAbAA4ABQAFADAAAAAbAA8ABQAFADEAAAAcAAsABQAGAC8AAAAcAAwABQAGADAAAAAcAA0ABQAGADAAAAAcAA4ABQAGADAAAAAcAA8ABQAGADEAAAAdAAsABQAGAC8AAAAdAAwABQAGADAAAAAdAA0ABQAGADAAAAAdAA4ABQAGADAAAAAdAA8ABQAGADEAAAAeAAsABQAGAC8AAAAeAAwABQAGADAAAAAeAA0ABQAGADAAAAAeAA4ABQAGADAAAAAeAA8ABQAGADEAAAAfAAsABQAGAC8AAAAfAAwABQAGADAAAAAfAA0ABQAGADAAAAAfAA4ABQAGADAAAAAfAA8ABQAGADEAAAAgAAsABQAGAC8AAAAgAAwABQAGADAAAAAgAA0ABQAGADAAAAAgAA4ABQAGADAAAAAgAA8ABQAGADEAAAAhAAsABQAGAC8AAAAhAAwABQAGADAAAAAhAA0ABQAGADAAAAAhAA4ABQAGADAAAAAhAA8ABQAGADEAAAAiAAsABQAGAC8AAAAiAAwABQAGADAAAAAiAA0ABQAGADAAAAAiAA4ABQAGADAAAAAiAA8ABQAGADEAAAAjAAsABQAHAC8AAAAjAAwABQAHADAAAAAjAA0ABQAHADAAAAAjAA4ABQAHADAAAAAjAA8ABQAHADEAAAA=")
+tile_set = ExtResource("1_ian7c")
+
 [node name="Decorations" type="TileMapLayer" parent="Background" unique_id=449281842]
-tile_map_data = PackedByteArray("AAARABEABQAEAAEAAAAbABIABQADAAIAAAAiABAABQAGAAIAAAAlAA0ABQAIAAEAAAAXAAYABQAGAAIAAAAjAAQABQADAAIAAAAQAAQABQALAAIAAAANAAUABQAHAAEAAAAfAAwABQAJAAIAAAAGAA0ABQAEAAEAAAATAAoABQAJAAEAAAAlABIABQACACcAAAApAA0ABQADACYAAAA=")
+tile_map_data = PackedByteArray("AAARABEABQAEAAEAAAAlAA0ABQAIAAEAAAAXAAYABQAGAAIAAAAjAAQABQADAAIAAAAQAAQABQALAAIAAAANAAUABQAHAAEAAAAGAA0ABQAEAAEAAAATAAoABQAJAAEAAAAlABIABQACACcAAAApAA0ABQADACYAAAA=")
 tile_set = ExtResource("1_ian7c")
 
 [node name="Grass" type="TileMapLayer" parent="Background" unique_id=662956657]
@@ -40,7 +54,7 @@ tile_set = ExtResource("1_ian7c")
 
 [node name="Props" type="TileMapLayer" parent="World" unique_id=426075204]
 y_sort_enabled = true
-tile_map_data = PackedByteArray("AAAMAA4ABQAzABwAAAAMAA0ABQAzABwAAAAMAAwABQAzABwAAAAMAAsABQAzABwAAAAMAAoABQAzABsAAAALAAoABQAyABsAAAAKAAoABQAyABsAAAAJAAoABQAyABsAAAAIAAoABQAyABsAAAAHAAoABQAyABsAAAAGAAoABQAyABsAAAAMAA8ABQAzAB0AAAAFAAoABQAxABsAAAAFAAsABQAxABwAAAAFAAwABQAxABwAAAAFAA0ABQAxABwAAAAFAA4ABQAxABwAAAAFAA8ABQAxAB0AAAASAAkABQAxABsAAAASAAoABQAxABwAAAASAAsABQAxABwAAAASAAwABQAxABwAAAASAA0ABQAxAB0AAAATAAkABQAyABsAAAAUAAkABQAyABsAAAAVAAkABQAyABsAAAAWAAkABQAyABsAAAAXAAkABQAzABsAAAAXAAoABQAzABwAAAAEAAYABQAyABsAAAAFAAYABQAyABsAAAAGAAYABQAyABsAAAAHAAYABQAyABsAAAAIAAYABQAyABsAAAAJAAYABQAyABsAAAAKAAYABQAyABsAAAALAAYABQAyABsAAAAcAAwABQBKACcAAAAcAA0ABQBKACgAAAAcAA4ABQBKACkAAAAdAAwABQBLACcAAAAdAA0ABQBLACgAAAAdAA4ABQBLACkAAAAfAA0ABQBSACcAAAAfAA4ABQBSACgAAAAfAA8ABQBSACkAAAAgAA0ABQBTACcAAAAgAA4ABQBTACgAAAAgAA8ABQBTACkAAAAqAAoABQAUAB4AAAAqAAsABQAUAB8AAAArAAoABQAVAB4AAAArAAsABQAVAB8AAAApAAsABQApAB0AAAAXAAMABQAXAAcAAAAXAAQABQAXAAgAAAAYAAMABQAYAAcAAAAYAAQABQAYAAgAAAAYAAUABQAaAAgAAAAZAAUABQAbAAgAAAAZAAMABQAUAAkAAAAZAAQABQAUAAkAAAArAA4ABQAOACEAAAArAA8ABQANACEAAAAnABAABQANACAAAAAoABIABQANACAAAAAqAAwABQAoAB0AAAArAA0ABQAnAB0AAAArAAwABQAoAB0AAAApAAoABQApAB0AAAA=")
+tile_map_data = PackedByteArray("AAAMAA4ABQAzABwAAAAMAA0ABQAzABwAAAAMAAwABQAzABwAAAAMAAsABQAzABwAAAAMAAoABQAzABsAAAALAAoABQAyABsAAAAKAAoABQAyABsAAAAJAAoABQAyABsAAAAIAAoABQAyABsAAAAHAAoABQAyABsAAAAGAAoABQAyABsAAAAMAA8ABQAzAB0AAAAFAAoABQAxABsAAAAFAAsABQAxABwAAAAFAAwABQAxABwAAAAFAA0ABQAxABwAAAAFAA4ABQAxABwAAAAFAA8ABQAxAB0AAAASAAkABQAxABsAAAASAAoABQAxABwAAAASAAsABQAxABwAAAASAAwABQAxABwAAAASAA0ABQAxAB0AAAATAAkABQAyABsAAAAUAAkABQAyABsAAAAVAAkABQAyABsAAAAWAAkABQAyABsAAAAXAAkABQAzABsAAAAXAAoABQAzABwAAAAEAAYABQAyABsAAAAFAAYABQAyABsAAAAGAAYABQAyABsAAAAHAAYABQAyABsAAAAIAAYABQAyABsAAAAJAAYABQAyABsAAAAKAAYABQAyABsAAAALAAYABQAyABsAAAAqAAoABQAUAB4AAAAqAAsABQAUAB8AAAArAAoABQAVAB4AAAArAAsABQAVAB8AAAApAAsABQApAB0AAAAXAAMABQAXAAcAAAAXAAQABQAXAAgAAAAYAAMABQAYAAcAAAAYAAQABQAYAAgAAAAYAAUABQAaAAgAAAAZAAUABQAbAAgAAAAZAAMABQAUAAkAAAAZAAQABQAUAAkAAAArAA4ABQAOACEAAAArAA8ABQANACEAAAAnABAABQANACAAAAAoABIABQANACAAAAAqAAwABQAoAB0AAAArAA0ABQAnAB0AAAArAAwABQAoAB0AAAApAAoABQApAB0AAAAbAA4ABQBKABkAAAAcAA4ABQBLABkAAAAiAA4ABQBKABkAAAAjAA4ABQBLABkAAAA=")
 tile_set = ExtResource("1_ian7c")
 
 [node name="Houses" type="TileMapLayer" parent="World" unique_id=1135129789]
@@ -60,6 +74,92 @@ text = "Bibliothèque de Bourg-Ludo.|Entrée libre. On parle à voix basse."
 [node name="SignLudo" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(104, 248)
 text = "Maison de Ludo.|La porte n'est jamais fermée, entrez donc."
+
+[node name="BellStandEmpty" type="StaticBody2D" parent="World"]
+position = Vector2(504, 207)
+collision_mask = 0
+script = ExtResource("6_readable_script")
+text = "Un socle de pierre. Il manque quelque chose dessus."
+states = PackedStringArray("bell_ribbon > @flag:bell_hung @take:clear_bell @reload Vous accrochez la cloche. Elle tient.")
+ask = "bell_ribbon > Accrocher la Cloche claire ?"
+forbidden_flag = "bell_hung"
+
+[node name="Sprite" type="Sprite2D" parent="World/BellStandEmpty"]
+position = Vector2(0, 9)
+texture = ExtResource("7_stand")
+region_enabled = true
+region_rect = Rect2(0, 0, 48, 48)
+
+[node name="ColliderBack" type="CollisionShape2D" parent="World/BellStandEmpty"]
+position = Vector2(0, -7)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="ColliderPostLeft" type="CollisionShape2D" parent="World/BellStandEmpty"]
+position = Vector2(-16, 9)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="ColliderPostRight" type="CollisionShape2D" parent="World/BellStandEmpty"]
+position = Vector2(16, 9)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="ColliderLeft" type="CollisionShape2D" parent="World/BellStandEmpty"]
+position = Vector2(-16, 25)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="ColliderRight" type="CollisionShape2D" parent="World/BellStandEmpty"]
+position = Vector2(16, 25)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="BellStand" type="StaticBody2D" parent="World"]
+position = Vector2(504, 216)
+collision_mask = 0
+script = ExtResource("6_readable_script")
+text = "La cloche est à sa place.|Elle bouge un peu quand le vent passe."
+required_flag = "bell_hung"
+
+[node name="Sprite" type="Sprite2D" parent="World/BellStand"]
+texture = ExtResource("7_stand")
+region_enabled = true
+region_rect = Rect2(48, 0, 48, 48)
+
+[node name="Collider" type="CollisionShape2D" parent="World/BellStand"]
+shape = SubResource("RectangleShape2D_stand")
+
+[node name="ColliderLeft" type="CollisionShape2D" parent="World/BellStand"]
+position = Vector2(-16, 16)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="ColliderRight" type="CollisionShape2D" parent="World/BellStand"]
+position = Vector2(16, 16)
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="StatueWest" type="StaticBody2D" parent="World"]
+position = Vector2(456, 200)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="World/StatueWest"]
+position = Vector2(0, -13)
+texture = ExtResource("8_environments")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(1075, 1719, 27, 42)
+
+[node name="Collider" type="CollisionShape2D" parent="World/StatueWest"]
+shape = SubResource("RectangleShape2D_statue")
+
+[node name="StatueEast" type="StaticBody2D" parent="World"]
+position = Vector2(552, 200)
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="World/StatueEast"]
+position = Vector2(0, -13)
+texture = ExtResource("8_environments")
+flip_h = false
+region_enabled = true
+region_rect = Rect2(1075, 1719, 27, 42)
+
+[node name="Collider" type="CollisionShape2D" parent="World/StatueEast"]
+shape = SubResource("RectangleShape2D_statue")
 
 [node name="Entities" type="Node2D" parent="World" unique_id=1708336925]
 y_sort_enabled = true
@@ -102,18 +202,21 @@ position = Vector2(88, 120)
 appearance = "worker"
 facing = Vector2(1, 0)
 text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
+forbidden_flag = "bell_hung"
 
 [node name="GuardSouth" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(88, 152)
 appearance = "worker"
 facing = Vector2(1, 0)
 text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
+forbidden_flag = "bell_hung"
 
 [node name="GrassWatcher" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(136, 72)
 appearance = "bug_catcher"
 facing = Vector2(0, 1)
 text = "Ces herbes sont si hautes qu'on s'y perd.|Je cherche des insectes, mais je n'ai encore rien trouvé."
+states = PackedStringArray("bell_hung > Il paraît que c'est toi qui as retrouvé la cloche ! Bravo !|Moi, toujours pas le moindre insecte.")
 movement = "wander"
 pace = 2.0
 wander_layer = "Background/Grass"
@@ -126,18 +229,120 @@ text = "Pff... pff... Je fais le tour du village tous les matins.|Ne reste pas a
 movement = "patrol"
 pace = 3.0
 route = PackedVector2Array(13, 16, 26, 16, 26, 9, 25, 9, 25, 15, 14, 15, 14, 9, 13, 9)
+forbidden_flag = "bell_hung"
 
 [node name="Fisher" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(648, 280)
 appearance = "fisher"
 facing = Vector2(1, 0)
 text = "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au fond du lac."
+forbidden_flag = "bell_hung"
 
 [node name="Roland" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(632, 56)
 appearance = "ruin_maniac"
 text = "Cette grotte, j'y ai passé vingt ans.|Elle a encore des choses à dire, je le sens."
 states = PackedStringArray("bell_register > Tout en bas, près du lac souterrain...|...il y a quelque chose qui accroche la lumière.|Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe devant.")
+forbidden_flag = "bell_hung"
+
+[node name="OdileAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(488, 248)
+appearance = "socialite"
+text = "J'ai finalement fait le déplacement. Je voulais l'entendre de près.|Merci.|*Kraak* ...MON DOS !!!"
+required_flag = "bell_hung"
+
+[node name="FisherAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(520, 248)
+appearance = "fisher"
+facing = Vector2(0, -1)
+text = "J'ai laissé ma canne là-bas. Pour une fois."
+required_flag = "bell_hung"
+
+[node name="AlixAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(472, 216)
+appearance = "aroma_girl"
+facing = Vector2(1, 0)
+text = "J'ai fermé la bibliothèque pour ce soir.|Il y a des choses qu'on n'apprend pas dans les livres."
+required_flag = "bell_hung"
+
+[node name="RolandAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(536, 216)
+appearance = "ruin_maniac"
+facing = Vector2(-1, 0)
+text = "Vingt ans que je passais devant sans la voir."
+required_flag = "bell_hung"
+
+[node name="WorkerAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(584, 232)
+appearance = "worker"
+facing = Vector2(-1, 0)
+text = "La route de l'ouest est ouverte.|On a fini juste à temps pour la Veillée."
+required_flag = "bell_hung"
+
+[node name="RunnerAfter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(216, 152)
+appearance = "triathlete_m"
+text = "Cette cloche m'a ouvert les yeux !|J'ai couru dans le mauvais sens pendant dix ans !"
+movement = "patrol"
+pace = 3.0
+route = PackedVector2Array(14, 9, 14, 15, 25, 15, 25, 11, 35, 11, 35, 10, 26, 10, 26, 16, 13, 16, 13, 9)
+required_flag = "bell_hung"
+
+[node name="WorkerAfter2" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(568, 264)
+appearance = "worker"
+facing = Vector2(0, -1)
+text = "Les outils sont rangés.|Ce soir on ne répare rien : on écoute."
+required_flag = "bell_hung"
+
+[node name="VisitorHiker" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(536, 248)
+appearance = "backpacker_f"
+facing = Vector2(-1, 0)
+text = "On l'entendait depuis la route de l'ouest !"
+required_flag = "bell_hung"
+
+[node name="VisitorKalos" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(584, 200)
+appearance = "kalos_hiker"
+facing = Vector2(-1, 0)
+text = "J'ai traversé toute la forêt pour venir. Ça valait la marche."
+required_flag = "bell_hung"
+
+[node name="VisitorChild" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(488, 280)
+appearance = "preschooler"
+facing = Vector2(0, -1)
+text = "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !"
+required_flag = "bell_hung"
+
+[node name="VisitorFestival" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(552, 248)
+appearance = "festival_girl"
+facing = Vector2(-1, 0)
+text = "Une Veillée ! Ma grand-mère m'en parlait tout le temps."
+required_flag = "bell_hung"
+
+[node name="VisitorPainter" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(568, 200)
+appearance = "painter"
+facing = Vector2(-1, 0)
+text = "Ne bouge pas... La lumière sur ce bronze est parfaite."
+required_flag = "bell_hung"
+
+[node name="VisitorWaitress" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(440, 216)
+appearance = "waitress"
+facing = Vector2(1, 0)
+text = "Si j'avais su, j'aurais apporté de quoi nourrir tout ce monde."
+required_flag = "bell_hung"
+
+[node name="VisitorBlackBelt" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(520, 280)
+appearance = "black_belt"
+facing = Vector2(0, -1)
+text = "Même au dojo, on s'est arrêtés pour écouter."
+required_flag = "bell_hung"
 
 [node name="Triggers" type="Node2D" parent="."]
 
@@ -145,3 +350,18 @@ states = PackedStringArray("bell_register > Tout en bas, près du lac souterrain
 position = Vector2(88, 136)
 guard = "GuardNorth"
 push_direction = Vector2(1, 0)
+forbidden_flag = "bell_hung"
+
+[node name="Readables" type="Node2D" parent="."]
+
+[node name="RoadEnd0" parent="Readables" instance=ExtResource("9_readable")]
+position = Vector2(8, 120)
+text = "La route de l'ouest s'enfonce dans la forêt.|Le chemin n'est pas encore tracé au-delà."
+
+[node name="RoadEnd1" parent="Readables" instance=ExtResource("9_readable")]
+position = Vector2(8, 136)
+text = "La route de l'ouest s'enfonce dans la forêt.|Le chemin n'est pas encore tracé au-delà."
+
+[node name="RoadEnd2" parent="Readables" instance=ExtResource("9_readable")]
+position = Vector2(8, 152)
+text = "La route de l'ouest s'enfonce dans la forêt.|Le chemin n'est pas encore tracé au-delà."

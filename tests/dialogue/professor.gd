@@ -23,3 +23,5 @@ func test() -> void:
 	await close_box()
 	set_flag("bell_clean")
 	await talk("la cloche nettoyee", Vector2i(12, 11), "ui_up", "Professor", "comme neuve", "idle_down")
+	set_flag("bell_hung")
+	await talk("la cloche accrochee : il l'a entendue", Vector2i(12, 11), "ui_up", "Professor", "entendue d'ici", "idle_down")

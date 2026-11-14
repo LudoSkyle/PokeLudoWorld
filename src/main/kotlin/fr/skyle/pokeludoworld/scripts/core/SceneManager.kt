@@ -42,6 +42,8 @@ class SceneManager : Node() {
 
 		/** Métadonnée de la racine d'une carte : le bandeau qui porte ce nom. */
 		private const val BANNER_META = "banner"
+
+		private const val SETTLE_FRAMES = 4
 	}
 
 	@Category("Scenes")
@@ -71,6 +73,7 @@ class SceneManager : Node() {
 	private var banner = ""
 	private var currentScene = ""
 	private var restore: SaveGame.State? = null
+	private var reloading = false
 
 	private var levelHost: Node? = null
 	private var fade: ColorRect? = null
@@ -82,6 +85,9 @@ class SceneManager : Node() {
 	private var pendingScene = ""
 	private var pendingDoor = ""
 	private var bootstrapped = false
+
+	/** Images à attendre après un rechargement avant de vérifier la case du joueur. */
+	private var settleFrames = 0
 
 	/** Vrai pendant tout le fondu : le joueur ne doit pas bouger. */
 	val isChanging: Boolean
@@ -132,6 +138,8 @@ class SceneManager : Node() {
 			swap()
 			return
 		}
+
+		if (settleFrames > 0 && --settleFrames == 0) settlePlayer()
 
 		if (phase == Phase.IDLE) return
 
@@ -238,10 +246,59 @@ class SceneManager : Node() {
 			movement?.stop()
 			movement?.snapToGrid()
 		}
+		// Les corps de la nouvelle carte n'existent pour la physique qu'après
+		// quelques images : la case du joueur se vérifie alors (voir settlePlayer).
+		if (reloading) {
+			reloading = false
+			settleFrames = SETTLE_FRAMES
+		}
 		// Les limites de caméra dépendent de la carte : elles doivent être reprises.
 		if (currentPlayer.hasNode("Camera")) {
 			(currentPlayer.getNode("Camera") as? PlayerCamera)?.applyLimits()
 		}
+	}
+
+	/**
+	 * Recharge la carte courante dans un fondu, le joueur gardant sa place et
+	 * son regard. C'est au chargement d'une carte que se décide qui s'y trouve
+	 * (voir StoryFlags.allows) : après un drapeau qui change le village, c'est
+	 * ce qui le montre. Ignoré si un fondu est déjà en cours.
+	 */
+	@Register
+	fun reload() {
+		val current = player ?: return
+		if (isChanging || currentScene.isEmpty()) return
+
+		val input = (if (current.hasNode("Input")) current.getNode("Input") else null) as? PlayerInput
+		restore = SaveGame.State(
+			scene = currentScene,
+			position = current.position,
+			facing = input?.direction ?: Vector2.DOWN,
+			location = location,
+			banner = banner,
+			seconds = playSeconds,
+		)
+		pendingScene = currentScene
+		pendingDoor = ""
+		progress = 0.0
+		phase = Phase.FADE_OUT
+		reloading = true
+
+		Logger.i("Reloading level $currentScene")
+	}
+
+	/**
+	 * Après un rechargement, la carte a pu poser quelque chose là où se tient
+	 * le joueur (la cloche sous le portique où il vient de l'accrocher). Il
+	 * recule alors d'une case, sans se retourner — pendant que l'écran est
+	 * encore noir.
+	 */
+	private fun settlePlayer() {
+		val current = player ?: return
+		val movement = (if (current.hasNode("Movement")) current.getNode("Movement") else null) as? CharacterMovement
+		val input = (if (current.hasNode("Input")) current.getNode("Input") else null) as? PlayerInput
+		val back = (input?.direction ?: Vector2.DOWN) * -1.0
+		movement?.stepOutOfSolid(listOf(back, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT, Vector2.UP))
 	}
 
 	/**

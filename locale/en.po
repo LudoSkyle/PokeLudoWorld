@@ -460,3 +460,96 @@ msgstr "The machine lights up and sings three notes."
 
 msgid "Vous récupérez la Cloche claire !"
 msgstr "You got the Clear Bell back!"
+
+msgid "Un socle de pierre. Il manque quelque chose dessus."
+msgstr "A stone stand. Something is missing on top of it."
+
+msgid "Accrocher la Cloche claire ?"
+msgstr "Hang the Clear Bell?"
+
+msgid "Vous accrochez la cloche. Elle tient."
+msgstr "You hang the bell. It holds."
+
+msgid "La cloche est à sa place."
+msgstr "The bell is where it belongs."
+
+msgid "Elle bouge un peu quand le vent passe."
+msgstr "It sways a little when the wind blows."
+
+msgid "Il paraît que c'est toi qui as retrouvé la cloche ! Bravo !"
+msgstr "I hear you're the one who found the bell! Well done!"
+
+msgid "Moi, toujours pas le moindre insecte."
+msgstr "As for me, still not a single bug."
+
+msgid "J'ai finalement fait le déplacement. Je voulais l'entendre de près."
+msgstr "I made the trip after all. I wanted to hear it up close."
+
+msgid "*Kraak* ...MON DOS !!!"
+msgstr "*Crack* ...MY BACK!!!"
+
+msgid "Merci."
+msgstr "Thank you."
+
+msgid "J'ai laissé ma canne là-bas. Pour une fois."
+msgstr "I left my rod over there. For once."
+
+msgid "J'ai fermé la bibliothèque pour ce soir."
+msgstr "I closed the library for tonight."
+
+msgid "Il y a des choses qu'on n'apprend pas dans les livres."
+msgstr "Some things you don't learn from books."
+
+msgid "Vingt ans que je passais devant sans la voir."
+msgstr "Twenty years I walked past it without seeing it."
+
+msgid "La route de l'ouest est ouverte."
+msgstr "The west road is open."
+
+msgid "On a fini juste à temps pour la Veillée."
+msgstr "We finished just in time for the Vigil."
+
+msgid "Cette cloche m'a ouvert les yeux !"
+msgstr "That bell opened my eyes!"
+
+msgid "J'ai couru dans le mauvais sens pendant dix ans !"
+msgstr "I've been running the wrong way for ten years!"
+
+msgid "Les outils sont rangés."
+msgstr "The tools are put away."
+
+msgid "Ce soir on ne répare rien : on écoute."
+msgstr "Tonight we fix nothing: we listen."
+
+msgid "Je l'ai entendue d'ici, par la fenêtre ouverte."
+msgstr "I heard it from here, through the open window."
+
+msgid "Un son clair. Ma machine n'avait jamais aussi bien servi."
+msgstr "A clear sound. My machine had never been put to better use."
+
+msgid "On l'entendait depuis la route de l'ouest !"
+msgstr "We could hear it from the west road!"
+
+msgid "J'ai traversé toute la forêt pour venir. Ça valait la marche."
+msgstr "I crossed the whole forest to come. It was worth the walk."
+
+msgid "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !"
+msgstr "The bell is so tiny! But it makes a big sound!"
+
+msgid "Une Veillée ! Ma grand-mère m'en parlait tout le temps."
+msgstr "A Vigil! My grandmother talked about them all the time."
+
+msgid "Ne bouge pas... La lumière sur ce bronze est parfaite."
+msgstr "Don't move... The light on that bronze is perfect."
+
+msgid "Si j'avais su, j'aurais apporté de quoi nourrir tout ce monde."
+msgstr "Had I known, I'd have brought enough to feed all these people."
+
+msgid "Même au dojo, on s'est arrêtés pour écouter."
+msgstr "Even at the dojo, we stopped to listen."
+
+msgid "La route de l'ouest s'enfonce dans la forêt."
+msgstr "The west road runs deep into the forest."
+
+msgid "Le chemin n'est pas encore tracé au-delà."
+msgstr "The way beyond has not been cleared yet."
