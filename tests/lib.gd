@@ -371,6 +371,17 @@ func bag_line() -> int:
 	var cursor: Control = bag("Cursor")
 	return floori((cursor.position.y + cursor.size.y / 2.0 - bag("Names").position.y) / 64.0)
 
+# Fait avancer un dialogue d'une pression — sauf pendant qu'un objet rare est
+# montre : cette boite-la passe seule. Y presser quand meme, c'est risquer que
+# la pression tombe a l'instant ou la boite se ferme : le joueur reexaminerait
+# ce qui est devant lui, et recevrait l'objet une seconde fois.
+func press_unless_revealing() -> void:
+	if reveal().visible:
+		await process_frame
+		return
+	await tap("interact")
+	await secs(0.2)
+
 # Remplit le sac par l'entree Debug du menu (premier outil), comme le ferait le joueur :
 # huit objets (x3 a x10), des Poke Balls (x11) et deux objets rares.
 func fill_bag() -> void:
@@ -380,8 +391,7 @@ func fill_bag() -> void:
 	# s'annoncent ensuite et passent tout seuls, sans tenir compte des touches.
 	var end := Time.get_ticks_msec() + 30000
 	while Time.get_ticks_msec() < end and box().visible:
-		await tap("interact")
-		await secs(0.2)
+		await press_unless_revealing()
 	await wait(10)
 
 func bag_choices() -> Control:
@@ -490,8 +500,7 @@ func receive(item: String, at: Vector2i, facing: String) -> void:
 	await interact_facing(facing)
 	var end := Time.get_ticks_msec() + 12000
 	while Time.get_ticks_msec() < end and box().visible:
-		await tap("interact")
-		await secs(0.2)
+		await press_unless_revealing()
 	giver.free()
 	await wait(4)
 
