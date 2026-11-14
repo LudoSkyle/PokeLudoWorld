@@ -43,11 +43,41 @@ prend la teinte : décor, joueur, PNJ.
 
 Aujourd'hui seule `start_town` est dehors.
 
+## Les lampadaires
+
+`scenes/levels/street_lamp.tscn`, script `StreetLamp.kt` : un objet posé sur
+une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
+
+- **La lumière ne s'allume que la nuit** : éteinte le jour, à l'aube et au
+  crépuscule. Sa force vient de `DayNight.light()` : 1 la nuit, 0 aux trois
+  autres moments. Elle monte donc pendant que la nuit tombe (de 19 h à
+  20 h 30) et baisse quand elle s'en va (de 5 h 30 à 6 h 30), sans saut.
+- **Elle perce la teinte** : autour du lampadaire le décor et les personnages
+  retrouvent leurs couleurs, dans un halo chaud de 4 cases de rayon.
+- Le halo est un dégradé fabriqué dans la scène, sans asset. Le dessin du
+  lampadaire est découpé dans `environments.png`, qui en a une vingtaine de
+  modèles côte à côte (rangées 17-19, à partir de la colonne 71).
+
+**En poser un** : instancier `street_lamp.tscn` sous `World`, sur un centre de
+case. Rien d'autre à régler. `brightness` change sa force.
+
+Dans `start_town`, sept lampadaires, tous sur l'herbe au bord d'un chemin :
+
+| Nœud | Case | Où |
+|---|---|---|
+| `LampWestRoad` | (12,6) | au nord de la route de l'ouest |
+| `LampLudo` | (5,17) | à gauche du chemin de la maison de Ludo |
+| `LampLibrary` | (16,17) | dans le tournant, entre le chemin de Ludo et celui de la bibliothèque |
+| `LampLab` | (25,7) | à gauche du laboratoire, contre sa façade |
+| `LampSquareWest`, `LampSquareEast` | (28,16), (34,16) | au sud de la place, de part et d'autre |
+| `LampCave` | (40,6) | à droite du chemin de la grotte |
+
+Aucun n'est sur une ronde de PNJ ni sur une case où quelqu'un se tient après
+la Veillée.
+
 ## Ce qui manque
 
-La teinte seule assombrit tout uniformément. Restent à faire : **des
-lampadaires et leurs halos**, **des fenêtres éclairées**, qui percent la nuit
-là où il y a de la lumière.
+**Des fenêtres éclairées** la nuit, sur les maisons.
 
 ## Mise au point
 

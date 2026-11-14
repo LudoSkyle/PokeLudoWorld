@@ -15,12 +15,16 @@ import java.time.LocalTime
  */
 object DayNight {
 
-	/** Un moment de la journée : son nom, et une heure qui tombe en plein dedans. */
-	enum class Moment(val label: String, val hour: Double, val tint: Color) {
-		DAWN(N("Heure : aube"), 6.5, Color(0.96, 0.86, 0.92, 1.0)),
-		DAY(N("Heure : jour"), 12.0, Color(1.0, 1.0, 1.0, 1.0)),
-		DUSK(N("Heure : crépuscule"), 19.0, Color(1.0, 0.76, 0.58, 1.0)),
-		NIGHT(N("Heure : nuit"), 23.0, Color(0.38, 0.44, 0.78, 1.0)),
+	/**
+	 * Un moment de la journée : son nom, une heure qui tombe en plein dedans,
+	 * la teinte qu'il donne au dehors, et à quel point les lampes y éclairent
+	 * (0 éteintes, 1 pleine lumière).
+	 */
+	enum class Moment(val label: String, val hour: Double, val tint: Color, val light: Double) {
+		DAWN(N("Heure : aube"), 6.5, Color(0.96, 0.86, 0.92, 1.0), 0.0),
+		DAY(N("Heure : jour"), 12.0, Color(1.0, 1.0, 1.0, 1.0), 0.0),
+		DUSK(N("Heure : crépuscule"), 19.0, Color(1.0, 0.76, 0.58, 1.0), 0.0),
+		NIGHT(N("Heure : nuit"), 23.0, Color(0.38, 0.44, 0.78, 1.0), 1.0),
 	}
 
 	/** Libellé de l'heure réelle, pour l'outil de mise au point. */
@@ -57,12 +61,28 @@ object DayNight {
 
 	/** La teinte du dehors à [hour]. Blanc : le décor est tel qu'il a été dessiné. */
 	fun tint(hour: Double = hour()): Color {
+		val (from, to, progress) = between(hour)
+		return from.tint.lerp(to.tint, progress)
+	}
+
+	/**
+	 * La force des lampes à [hour], de 0 à 1 : elles n'éclairent que la nuit.
+	 * Encore éteintes au crépuscule, elles montent pendant que la nuit tombe ;
+	 * elles baissent quand elle s'en va et sont éteintes à l'aube.
+	 */
+	fun light(hour: Double = hour()): Double {
+		val (from, to, progress) = between(hour)
+		return from.light + (to.light - from.light) * progress
+	}
+
+	/** Les deux repères qui encadrent [hour], et où l'on en est de l'un à l'autre (0 à 1). */
+	private fun between(hour: Double): Triple<Moment, Moment, Double> {
 		val time = ((hour % 24.0) + 24.0) % 24.0
 		val next = KEYS.indexOfFirst { it.first > time }.takeIf { it > 0 } ?: (KEYS.size - 1)
 		val (fromHour, from) = KEYS[next - 1]
 		val (toHour, to) = KEYS[next]
 		val progress = if (toHour > fromHour) (time - fromHour) / (toHour - fromHour) else 0.0
-		return from.tint.lerp(to.tint, progress)
+		return Triple(from, to, progress)
 	}
 
 	/** Le moment imposé en ce moment, ou null si l'on est à l'heure réelle. */
