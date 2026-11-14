@@ -40,6 +40,8 @@ y_sort_enabled = true
 
 [node name="Alix" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(328, 184)
+display_name = "Alix"
+gender = "female"
 appearance = "aroma_girl"
 text = "Bienvenue à la bibliothèque.|Tout ce qui est écrit sur le village est ici."
 states = PackedStringArray("bell_told > La cloche ? Ta grand-mère en parle encore ?|Le registre des Veillées doit être quelque part dans ces rayons.|Cherche au fond, à gauche : c'est là que dorment les vieux papiers.|Si tu le trouves, il est à toi. Moi, je ne grimpe plus à l'échelle.", "bell_register > Tu l'as trouvé ! Je le cherchais depuis des années.")

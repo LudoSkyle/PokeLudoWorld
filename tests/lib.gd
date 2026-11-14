@@ -512,6 +512,22 @@ func place(c: Vector2i) -> void:
 func node(path: String) -> Node:
 	return level().get_node_or_null(path)
 
+# --- encart du nom, au-dessus de la boite de dialogue
+
+func speaker_tag() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Speaker")
+
+# Le nom affiche, ou "" si l'encart est cache.
+func speaker_name() -> String:
+	return speaker_tag().get_node("Name").text if speaker_tag().visible else ""
+
+# La couleur du nom : "red", "blue", ou "ink" pour l'encre ordinaire du texte.
+func speaker_color() -> String:
+	var c: Color = speaker_tag().get_node("Name").get_theme_color("font_color")
+	if c.r > 0.7 and c.b < 0.3: return "red"
+	if c.b > 0.7 and c.r < 0.3: return "blue"
+	return "ink"
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.

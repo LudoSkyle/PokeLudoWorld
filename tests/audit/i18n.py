@@ -38,6 +38,9 @@ def sources():
             add(re.sub(r"^\s*\w+\s*>", "", text).replace('\\"', '"'), path)
         for text in re.findall(r'^metadata/location = "(.*)"$', body, re.M):
             add(text, path)
+        # Le nom d'un personnage, affiche au-dessus de la boite de dialogue.
+        for text in re.findall(r'^display_name = "(.*)"$', body, re.M):
+            add(text, path)
 
     for path in sorted(glob.glob(ROOT + "scripts/**/*.kt", recursive=True)):
         body = open(path, encoding="utf-8").read()

@@ -209,6 +209,11 @@ village qui a oublié pourquoi il a un socle vide.
 
 ## Les personnages
 
+Odile, Alix, Roland et le Professeur ont un **nom affiché** quand ils parlent
+(`display_name` : « Mémé Odile », « Alix », « Roland », « Professeur »), en
+rouge pour Odile et Alix, en bleu pour Roland et le Professeur (`gender`). Les
+autres n'en ont pas.
+
 | Qui | Apparence | Où | Rôle |
 |---|---|---|---|
 | **Mémé Odile** | `socialite`, pour le moment | salon de `ludo_house`, puis la place | **notre grand-mère.** Elle lance la quête et reçoit la cloche |
