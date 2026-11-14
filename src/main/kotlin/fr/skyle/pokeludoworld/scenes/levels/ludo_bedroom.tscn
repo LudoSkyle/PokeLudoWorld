@@ -50,11 +50,11 @@ exit_direction = Vector2(-1, 0)
 
 [node name="Books00" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(232, 120)
-text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 
 [node name="Books01" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(248, 120)
-text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 
 [node name="Tv02" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(264, 120)
@@ -66,11 +66,11 @@ kind = "tv"
 
 [node name="Books04" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(232, 136)
-text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 
 [node name="Books05" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(248, 136)
-text = "Une bibliotheque pleine de livres.|Ils ont l air tres interessants !"
+text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 
 [node name="Tv06" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(264, 136)

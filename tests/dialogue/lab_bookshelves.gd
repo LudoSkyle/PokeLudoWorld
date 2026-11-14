@@ -9,5 +9,5 @@ func start() -> Vector2i:
 	return Vector2i(21, 8)
 
 func test() -> void:
-	await examine("bibliotheque du fond", Vector2i(21, 8), "bibliotheque")
-	await examine("bibliotheque du milieu", Vector2i(11, 14), "bibliotheque")
+	await examine("bibliotheque du fond", Vector2i(21, 8), "bibliothèque")
+	await examine("bibliotheque du milieu", Vector2i(11, 14), "bibliothèque")

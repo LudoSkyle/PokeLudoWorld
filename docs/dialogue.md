@@ -56,7 +56,7 @@ Instancier `sign.tscn` sous `World`, le placer sur un centre de case, et
 remplir `text`. Une **barre verticale `|` sépare deux boîtes successives** :
 
 ```
-text = "Maison de Ludo.|La porte n est jamais fermee, entrez donc."
+text = "Maison de Ludo.|La porte n'est jamais fermée, entrez donc."
 ```
 
 Un tableau exporté serait plus propre en théorie, mais plus pénible à éditer
@@ -92,7 +92,15 @@ Un corps est posé sur **chaque case solide** du meuble, pour qu'on puisse
 l'examiner de n'importe quel côté. Une horloge est au mur : son corps est sur
 la case **en dessous**, celle qu'on regarde depuis le sol.
 
-La police n'a ni accents ni apostrophe : les textes s'écrivent sans.
+La police est **Pokémon DP Pro** (`assets/fonts/pokemon-dp-pro.ttf`,
+crystalwalrein, CC BY-SA 3.0), la même que dans les menus, en **64 px** sans
+lissage : un pixel de la police vaut quatre pixels écran, comme le décor. Elle
+a les accents et l'apostrophe. Encre `#585850`, ombre `#a8b8b8` à droite, en dessous et en diagonale
+(`PixelShadow`, voir [menu.md](menu.md)).
+
+La boîte fait 960×168 px, centrée en bas de l'écran. Elle tient **deux lignes**
+d'environ 43 caractères ; au-delà, couper avec `|`. Le bandeau de lieu, lui,
+garde Pokémon Emerald Pro en 48 px.
 
 ## L'interaction
 
