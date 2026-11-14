@@ -9,3 +9,7 @@ jvm
 # Métadonnées macOS / Windows
 .DS_Store
 Thumbs.db
+
+# Polices dont la licence interdit la redistribution : chacun pose la sienne.
+src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/local/*
+!src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/local/README.md

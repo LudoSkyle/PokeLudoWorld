@@ -71,6 +71,7 @@ class PauseMenu : CanvasLayer() {
 			(getNode("Control/Menu/Frame") as? NinePatchRect)?.texture = texture
 		}
 
+		UiFonts.applyMenuFont(menu)
 		menu?.visible = false
 	}
 

@@ -60,7 +60,7 @@ qu'on la change, sans validation.
 
 | Ligne | Valeurs | Effet |
 |---|---|---|
-| Vitesse du texte | Lente, Normale, Rapide (défaut), Instant | secondes par lettre de la boîte de dialogue : 0,08 / 0,04 / 0,02 / 0 |
+| Texte (vitesse du texte) | Lente, Normale, Rapide (défaut), Instant | secondes par lettre de la boîte de dialogue : 0,08 / 0,04 / 0,02 / 0 |
 
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
@@ -72,3 +72,16 @@ plus à `ListFrame`.
 
 Les tests forcent la vitesse Rapide au démarrage (`tests/lib.gd`) : ils ne
 dépendent pas du réglage enregistré par le joueur.
+
+## La police des menus
+
+Les menus veulent la police de Rouge Feu/Vert Feuille, dont la licence interdit
+la redistribution : elle n'est **pas dans le dépôt**. Elle se pose à la main en
+`assets/fonts/local/menu.ttf` (dossier ignoré par git, voir son `README.md`).
+`UiFonts.applyMenuFont` l'applique alors à tous les libellés des menus, en
+40 px : un pixel de la police vaut 4 pixels écran, comme les cadres.
+
+Sans ce fichier — sur un clone neuf — les menus gardent Pokémon Emerald Pro en
+48 px, la police écrite dans leurs scènes. Les deux tiennent dans les cadres.
+
+Le curseur fait 5×9 px, dessiné à l'échelle 4.

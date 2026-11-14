@@ -75,10 +75,10 @@ patch_margin_bottom = 8
 
 [node name="Cursor" type="TextureRect" parent="Control/Screen"]
 layout_mode = 0
-offset_left = 100.0
-offset_top = 236.0
+offset_left = 104.0
+offset_top = 238.0
 offset_right = 124.0
-offset_bottom = 276.0
+offset_bottom = 274.0
 mouse_filter = 2
 texture = ExtResource("4_cursor")
 expand_mode = 1
@@ -99,7 +99,7 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="Name" type="Label" parent="Control/Screen/Rows/TextSpeed"]
-custom_minimum_size = Vector2(376, 64)
+custom_minimum_size = Vector2(180, 64)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
 theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
@@ -107,13 +107,13 @@ theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 48
-text = "Vitesse du texte"
+text = "Texte"
 vertical_alignment = 1
 
 [node name="Choices" type="HBoxContainer" parent="Control/Screen/Rows/TextSpeed"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 32
+theme_override_constants/separation = 24
 
 [node name="Slow" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
 custom_minimum_size = Vector2(0, 64)
