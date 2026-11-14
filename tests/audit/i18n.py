@@ -19,9 +19,9 @@ def sources():
 
     def add(text, where):
         for box in boxes(text):
-            # "@give:objet " ou "@flag:drapeau " en tete d'une boite sont des
-            # consignes, pas du texte.
-            box = re.sub(r"^(@(give|flag):\w+(\*\d+)? )+", "", box)
+            # "@give:objet ", "@take:objet " ou "@flag:drapeau " en tete d'une
+            # boite sont des consignes, pas du texte.
+            box = re.sub(r"^(@(give|take|flag):\w+(\*\d+)? )+", "", box)
             if not SAME.match(box):
                 found.setdefault(box, where)
 

@@ -48,6 +48,9 @@ object Items {
 		Item("old_rod", N("Vieille canne"), N("Une canne à pêche usée. Le bois est lisse à force d'avoir servi."), Pocket.KEY_ITEMS, "frlg:216"),
 		Item("town_map", N("Carte du village"), N("Un plan de Bourg-Ludo et de ses environs, dessiné à la main."), Pocket.KEY_ITEMS, "frlg:219"),
 		Item("dusty_register", N("Registre poussiéreux"), N("Le vieux registre des Veillées. Sa dernière page parle d'une cloche mise à l'abri."), Pocket.KEY_ITEMS, "dex:00:A:D"),
+		Item("tarnished_bell", N("Cloche ternie"), N("Une petite cloche de bronze noircie, sortie de la vase du lac souterrain."), Pocket.KEY_ITEMS, "dex:0B:1:C"),
+		Item("clear_bell", N("Cloche claire"), N("La cloche de Bourg-Ludo, nettoyée. Son bronze a retrouvé sa couleur."), Pocket.KEY_ITEMS, "dex:0B:1:2"),
+		Item("vigil_ribbon", N("Ruban de la Veillée"), N("Le ruban que Mémé Odile portait à la dernière Veillée. Un souvenir."), Pocket.KEY_ITEMS, "dex:07:F:2"),
 	)
 
 	private val byId = ALL.associateBy { it.id }

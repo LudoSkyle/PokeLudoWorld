@@ -42,6 +42,9 @@ dans un cadre de menu (`ItemReveal.kt`). Elle reste **une seconde** une fois le
 texte écrit, puis le dialogue passe seul à la boîte suivante, ou se ferme : les
 touches ne pressent pas ce passage, elles ne font que finir d'écrire le texte.
 
+Une boîte qui commence par **`@take:<id>`** le **retire** du sac de la même
+façon (`@take:<id>*3`).
+
 Un objet **à ramasser** sur une carte est un `Readable` de `kind = "item"` :
 il donne son objet par ce même `@give:`, une seule fois
 ([quests.md](quests.md)).

@@ -482,6 +482,18 @@ func wait_text(expected: String, t: float = 4.0) -> void:
 		await process_frame
 	await wait(2)
 
+# Met un objet dans le sac comme le ferait un dialogue : un panneau de test
+# pose sur la case voisine le donne par @give:, puis disparait.
+func receive(item: String, at: Vector2i, facing: String) -> void:
+	var giver := await spawn("sign", "TestGiver", at, {"text": "@give:%s Objet de test." % item})
+	await interact_facing(facing)
+	var end := Time.get_ticks_msec() + 6000
+	while Time.get_ticks_msec() < end and box().visible:
+		await tap("interact")
+		await secs(0.2)
+	giver.free()
+	await wait(4)
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.

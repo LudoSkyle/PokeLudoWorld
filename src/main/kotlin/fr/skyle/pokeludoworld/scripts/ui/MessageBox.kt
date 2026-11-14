@@ -21,7 +21,8 @@ import godot.api.RichTextLabel
  * qui ouvre la boîte ne peut pas la faire avancer dans la foulée.
  *
  * Une boîte peut commencer par des consignes, qui s'exécutent au moment où
- * elle s'affiche : `@give:<objet>` et `@flag:<drapeau>` (voir [directives]).
+ * elle s'affiche : `@give:<objet>`, `@take:<objet>` et `@flag:<drapeau>` (voir
+ * [directives]).
  * [ask] pose d'abord une question Oui / Non.
  */
 @Script
@@ -234,6 +235,7 @@ class MessageBox : CanvasLayer() {
 	 *
 	 * - `@give:<objet>` ou `@give:<objet>*<nombre>` met l'objet dans le sac ;
 	 *   un objet rare est alors montré au centre de l'écran ;
+	 * - `@take:<objet>` ou `@take:<objet>*<nombre>` le retire du sac ;
 	 * - `@flag:<drapeau>` pose un drapeau d'histoire.
 	 */
 	private fun directives(message: String): String {
@@ -243,6 +245,9 @@ class MessageBox : CanvasLayer() {
 			val (order, name, amount, rest) = match.destructured
 			when (order) {
 				"give" -> give(name, amount.toIntOrNull() ?: 1)
+				"take" -> if (!Inventory.remove(name, amount.toIntOrNull() ?: 1)) {
+					Logger.e("Objet à reprendre absent du sac : $name")
+				}
 				"flag" -> StoryFlags.set(name)
 			}
 			text = rest
@@ -268,4 +273,4 @@ class MessageBox : CanvasLayer() {
 private const val REVEAL_SECONDS = 1.0
 private const val YES = 0
 private const val NO = 1
-private val DIRECTIVE = Regex("""@(give|flag):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
+private val DIRECTIVE = Regex("""@(give|take|flag):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)

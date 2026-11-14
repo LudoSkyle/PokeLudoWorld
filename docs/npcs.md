@@ -104,6 +104,7 @@ enfoncée, sinon la scène repartirait en boucle.
 | `Triggers/WestRoadblock` | (5,8) | la case du milieu ; garde : `GuardNorth` |
 | `GrassWatcher` | départ (8,4) | chasseur d'insectes : erre dans les hautes herbes, à 2 cases/s, un geste toutes les 2 à 5 s |
 | `Runner` | départ (13,9) | coureur : boucle sur le chemin entre les maisons, à 3 cases/s |
+| `Roland` | (39,3) | ancien de la grotte, à droite de son entrée ; ses répliques suivent la quête ([quests.md](quests.md)) |
 | `Fisher` | (40,17) | pêcheur les pieds dans l'eau claire, au bord de l'eau profonde, tourné vers le large |
 
 Les gardes ne sont pas au bord de la carte : plus à l'ouest, la cime des arbres

@@ -139,6 +139,7 @@ combinent dans n'importe quel ordre.
 | Consigne | Effet |
 |---|---|
 | `@give:<id>`, `@give:<id>*3` | met l'objet dans le sac ; un objet rare est montré au centre de l'écran — voir [bag.md](bag.md) |
+| `@take:<id>`, `@take:<id>*3` | retire l'objet du sac |
 | `@flag:<drapeau>` | pose un drapeau d'histoire — voir [quests.md](quests.md) |
 
 ## Une question dans un dialogue

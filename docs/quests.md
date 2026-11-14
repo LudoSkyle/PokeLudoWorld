@@ -98,6 +98,14 @@ Elle vaut partout où un texte passe par la boîte de dialogue : `text`, une
 entrée de `states`, un panneau. Un dialogue ne s'interrompt pas : poser le
 drapeau sur la première ou la dernière boîte revient au même pour l'histoire.
 
+**`@take:<id>`** (ou `@take:<id>*3`) est la sœur de `@give:` : elle **retire**
+l'objet du sac quand sa boîte s'affiche. C'est ainsi que la Cloche ternie
+laisse la place à la Cloche claire :
+
+```gdscript
+"bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !"
+```
+
 ### La question avant d'agir : `ask`
 
 Un `Npc` ou un `Readable` peut poser une question Oui / Non avant de dire son
@@ -167,9 +175,6 @@ dans une carte du jeu.
 
 ### Ce que le socle ne fait pas
 
-- **Retirer un objet du sac dans un dialogue.** `@give:` donne, rien ne
-  reprend : le jour où la Cloche ternie devient la Cloche claire, il faudra une
-  consigne sœur (`@take:<id>`), ou accepter que les deux restent dans le sac.
 - **Faire apparaître ou disparaître un nœud sans recharger la carte** : la
   présence se décide au chargement.
 - **Une condition sur le contenu du sac** : tout passe par les drapeaux.
@@ -192,10 +197,10 @@ village qui a oublié pourquoi il a un socle vide.
 
 | Qui | Apparence | Où | Rôle |
 |---|---|---|---|
-| **Mémé Odile** | `socialite` (voir *À trancher*) | salon de `ludo_house`, puis la place | **notre grand-mère.** Elle lance la quête et reçoit la cloche |
+| **Mémé Odile** | `socialite`, pour le moment | salon de `ludo_house`, puis la place | **notre grand-mère.** Elle lance la quête et reçoit la cloche |
 | **Alix** | `aroma_girl` | la bibliothèque | oriente vers le rayon des archives |
 | **Roland** | `ruin_maniac` | devant l'entrée de la grotte | confirme qu'il y a quelque chose en bas |
-| **Le Professeur** | `professor_elm` | `lab_house` — **à ajouter, le labo n'a aucun PNJ** | identifie le bronze, envoie vers la machine de soin |
+| **Le Professeur** | `professor_elm` | `lab_house`, près des serveurs | identifie le bronze, envoie vers la machine de soin |
 | *Le chasseur d'insectes* | `bug_catcher` | existe déjà | témoin, puis commentaire final |
 | *Le pêcheur* | `fisher` | existe déjà | témoin, puis monte à la fête |
 | *Le coureur* | `triathlete_m` | existe déjà | change de parcours à la fin |
@@ -226,7 +231,8 @@ d'origine.
 > |Tu as vu le socle vide, sur la place ? Il y avait une cloche dessus.
 > |On la sonnait le dernier soir de l'été. Tout le village venait.
 > |Même les Pokémon descendaient écouter, disait ma mère.
-> |Personne ne sait où elle est passée. Demande à Alix, à la bibliothèque.
+> |Personne ne sait où elle est passée.
+> |Peut-être qu'Alix, la bibliothécaire, sait quelque chose.
 
 → `bell_told`
 
@@ -410,9 +416,9 @@ Les répliques d'après :
 | Objet | À quoi ça ressemble | Rôle |
 |---|---|---|
 | **Registre poussiéreux** | vieux livre relié, tranche abîmée — **en place** : `dusty_register`, icône `dex:00:A:D` | l'indice |
-| **Cloche ternie** | petite cloche de bronze noircie | la trouvaille |
-| **Cloche claire** | la même, dorée — un recolor suffit | après la machine de soin |
-| **Ruban de la Veillée** | ruban de tissu, bleu ou rouge | le souvenir, sans usage |
+| **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `dex:0B:1:C` | la trouvaille |
+| **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `dex:0B:1:2` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
+| **Ruban de la Veillée** | nœud de tissu rouge — **en place** : `vigil_ribbon`, icône `dex:07:F:2` | le souvenir, sans usage |
 | **Socle** *(décor)* | pilier de pierre, **deux versions : vide et avec cloche** | la place |
 | **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo | décor, sans rapport avec la quête |
 | **Silhouette de Pokémon** | un sprite, même sans animation | la grotte et les herbes |
@@ -479,16 +485,33 @@ bibliothèque (21,13) / labo (28,7). Elle porte le socle, un banc, et la statue.
 passe par ce tronçon de chemin, et deux points consécutifs doivent rester reliés
 par un trajet libre ([npcs.md](npcs.md)).
 
-### Le laboratoire
+### Le laboratoire, la grotte, le salon — en place
 
-Ajouter le Professeur sous `World/Entities`, et un `Readable` sur les cases
-solides de la machine de soin (`x 16-17, y 5-7` du calque `Props`), examinable
-depuis la première rangée de sol.
+| Nœud | Carte, case | Ce qu'il fait |
+|---|---|---|
+| `Odile` | `ludo_house` (17,11), sur le tabouret de droite, tournée vers la table | lance la quête (`bell_told` sur sa dernière boîte) ; avec `bell_clean`, la question puis le Ruban (`bell_ribbon`) |
+| `Roland` | `start_town` (39,3), à droite de l'entrée de la grotte | trois répliques : défaut, `bell_register`, `bell_tarnished` |
+| `Readables/Bell` | `cave_b2f` (23,14), **le caillou de la plaque de vase** au sud-est du lac | la trouvaille : `kind = "item"`, `flag = "bell_tarnished"`, donne `tarnished_bell` |
+| `Professor` | `lab_house` (12,10) | trois répliques : défaut, `bell_tarnished`, `bell_clean` |
+| `Readables/Healer0`, `Healer1` | `lab_house` (16,7) et (17,7), examinées depuis la rangée `y 8` | la machine de soin : la question avec `bell_tarnished`, puis `@take:` la ternie, `@give:` la claire, `bell_clean` |
 
-### La grotte
+La cloche n'a pas de sprite : c'est le caillou, seul repère dans la vase, qu'on
+examine. Une fois prise, il n'y a plus rien à lire et le caillou reste un
+caillou. Elle se trouve **sans condition** : on peut descendre la chercher
+avant d'avoir lu le Registre, la suite s'enchaîne quand même.
 
-Rien à redessiner. Poser la Cloche ternie au bord du lac de `cave_b2f`, et
-Roland dans `start_town`, à côté de la porte `Grotte`.
+Répliques écrites pour combler le cahier des charges, **à relire** :
+
+- le Professeur, avant la quête : « Ah, bonjour ! Ne fais pas attention au
+  désordre. / Je range ce laboratoire depuis des années. » ;
+- le Professeur, la cloche nettoyée : « Regarde-moi ce bronze. Elle est comme
+  neuve. / Je me demande quel son elle a. » ;
+- Mémé, une fois le Ruban donné : elle redit sa dernière phrase, « Allez, va.
+  Et sonne fort, que je l'entende d'ici. » ;
+- la machine, une fois la cloche nettoyée : son texte d'avant.
+
+Tests : `tests/run.sh dialogue/odile dialogue/roland dialogue/professor
+quests/odile_gift quests/heal_machine quests/cave_bell quests/text_take`.
 
 ## Ordre d'implémentation
 
@@ -500,7 +523,7 @@ suivantes et ne contiennent pas une ligne de scénario.
 3. **Objets ramassables et question** (briques 3 et 4) — **fait**.
 4. **La bibliothèque** : la carte, Alix, les archives, le Registre — **fait**.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine
-   de soin, la cloche au B2F.
+   de soin, la cloche au B2F — **fait**.
 6. **La place et la Veillée** : le socle, et tout ce que `bell_hung` change.
 
 Chaque lot ajoute ses textes à `locale/en.po` **boîte par boîte** et passe
@@ -510,10 +533,6 @@ accessibilité et parcours réel ([levels.md](levels.md),
 
 ## À trancher
 
-- **Le prénom de la mémé.** « Odile » est un bouche-trou.
-- **Son apparence.** Le catalogue n'a aucune planche de personne âgée.
-  `socialite` est la plus proche (cheveux gris, tenue sobre) ; sinon, déposer
-  une planche de 128×192 dans `assets/characters`, voir [npcs.md](npcs.md).
 - **La silhouette de Pokémon.** Le dépôt n'en contient aucun sprite aujourd'hui.
   Sans lui, la quête tient quand même : la ligne « quelque chose file le long de
   la paroi » se suffit à elle-même.
