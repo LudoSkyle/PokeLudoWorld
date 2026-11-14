@@ -14,6 +14,7 @@ func test() -> void:
 	await interact_facing("ui_left")
 	await wait_ask()
 	check("elle attend qu'on lui montre la cloche", box_text() == "Montrer la cloche à Mémé ?" and ask_choices().visible, box_text())
+	check("son nom est affiche pendant la question", speaker_name() == "Mémé Odile", speaker_name())
 	await tap("ui_down")
 	await tap("interact")
 	check("Non : rien ne se passe", not box().visible and not flag("bell_ribbon"))

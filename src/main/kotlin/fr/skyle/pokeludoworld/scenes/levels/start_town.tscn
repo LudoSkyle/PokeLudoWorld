@@ -240,6 +240,8 @@ forbidden_flag = "bell_hung"
 
 [node name="Roland" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(632, 56)
+display_name = "Roland"
+gender = "male"
 appearance = "ruin_maniac"
 text = "Cette grotte, j'y ai passé vingt ans.|Elle a encore des choses à dire, je le sens."
 states = PackedStringArray("bell_register > Tout en bas, près du lac souterrain...|...il y a quelque chose qui accroche la lumière.|Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe devant.")
@@ -247,6 +249,8 @@ forbidden_flag = "bell_hung"
 
 [node name="OdileAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(488, 248)
+display_name = "Mémé Odile"
+gender = "female"
 appearance = "socialite"
 text = "J'ai finalement fait le déplacement. Je voulais l'entendre de près.|Merci.|*Kraak* ...MON DOS !!!"
 required_flag = "bell_hung"
@@ -260,6 +264,8 @@ required_flag = "bell_hung"
 
 [node name="AlixAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(472, 216)
+display_name = "Alix"
+gender = "female"
 appearance = "aroma_girl"
 facing = Vector2(1, 0)
 text = "J'ai fermé la bibliothèque pour ce soir.|Il y a des choses qu'on n'apprend pas dans les livres."
@@ -267,6 +273,8 @@ required_flag = "bell_hung"
 
 [node name="RolandAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(536, 216)
+display_name = "Roland"
+gender = "male"
 appearance = "ruin_maniac"
 facing = Vector2(-1, 0)
 text = "Vingt ans que je passais devant sans la voir."

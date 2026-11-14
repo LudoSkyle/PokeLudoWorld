@@ -44,6 +44,19 @@ class Npc : CharacterBody2D() {
 	@Export
 	var appearance: String = "worker"
 
+	/**
+	 * Son nom, s'il en a un : il s'affiche au-dessus de la boîte de dialogue
+	 * quand il parle. En français, traduit à l'affichage.
+	 */
+	@Category("Apparence")
+	@Export
+	var displayName: String = ""
+
+	/** `female` ou `male` : son nom s'écrit en rouge ou en bleu. Vide : à l'encre du texte. */
+	@Category("Apparence")
+	@Export
+	var gender: String = ""
+
 	/** Direction regardée au repos. */
 	@Category("Apparence")
 	@Export
@@ -196,7 +209,7 @@ class Npc : CharacterBody2D() {
 
 	/** Dit son texte du moment, sans se tourner. */
 	fun speak() {
-		StoryText.say(text, states, ask)
+		StoryText.say(text, states, ask, displayName, gender)
 	}
 
 	/**

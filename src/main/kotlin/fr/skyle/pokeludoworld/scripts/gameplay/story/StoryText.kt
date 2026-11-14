@@ -22,11 +22,16 @@ object StoryText {
 	/**
 	 * Dit le texte en vigueur dans la boîte de dialogue. Si [ask] porte sur
 	 * lui, la question est posée d'abord et le texte ne vient qu'après un Oui.
+	 * [speaker] est le nom de celui qui parle, s'il en a un, et [gender] son genre.
 	 */
-	fun say(text: String, states: PackedStringArray, ask: String) {
+	fun say(text: String, states: PackedStringArray, ask: String, speaker: String = "", gender: String = "") {
 		val lines = boxes(current(text, states))
 		val question = question(ask, states)
-		if (question == null) MessageBox.instance?.play(lines) else MessageBox.instance?.ask(question, lines)
+		if (question == null) {
+			MessageBox.instance?.play(lines, speaker, gender)
+		} else {
+			MessageBox.instance?.ask(question, lines, speaker, gender)
+		}
 	}
 
 	/** La question à poser avant le texte en vigueur, s'il y en a une. */

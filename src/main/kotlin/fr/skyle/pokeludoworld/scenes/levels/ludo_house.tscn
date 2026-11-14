@@ -40,6 +40,8 @@ y_sort_enabled = true
 
 [node name="Odile" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(280, 184)
+display_name = "Mémé Odile"
+gender = "female"
 appearance = "socialite"
 facing = Vector2(-1, 0)
 text = "Te voilà debout. J'ai gardé du pain pour toi.|Tu as vu le socle vide, sur la place ? Il y avait une cloche dessus.|On la sonnait le dernier soir de l'été. Tout le village venait.|Même les Pokémon descendaient écouter, disait ma mère.|Personne ne sait où elle est passée.|@flag:bell_told Peut-être qu'Alix, la bibliothécaire, sait quelque chose."

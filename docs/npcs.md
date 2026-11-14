@@ -14,6 +14,8 @@ joueur : `CharacterMovement` pour les pas, `CharacterAnimation` pour le sprite.
 | Propriété (`.tscn`) | Rôle |
 |---|---|
 | `appearance` | nom d'une planche de `assets/characters`, sans l'extension |
+| `display_name` | son nom, s'il en a un : affiché au-dessus de la boîte quand il parle ([dialogue.md](dialogue.md)) |
+| `gender` | `female` ou `male` : le nom s'écrit en rouge ou en bleu ; vide, à l'encre du texte |
 | `facing` | direction regardée au repos |
 | `text` | ce qu'il dit, avec `|` entre deux boîtes |
 | `states` | ce qu'il dit selon l'histoire : `drapeau > texte`, voir [quests.md](quests.md) |

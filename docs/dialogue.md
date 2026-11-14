@@ -10,12 +10,31 @@ lissée.
 ```
 MessageBox (CanvasLayer)   MessageBox.kt
 └── Control
-    └── Box (NinePatchRect)
-        └── Text (RichTextLabel)
+    ├── Speaker (Control)      l'encart du nom
+    ├── Box (NinePatchRect)
+    │   └── Text (RichTextLabel)
+    └── Choices (ChoiceBox)    Oui / Non d'une question
 ```
 
 Le texte s'affiche lettre par lettre (`secondsPerLetter`, 0,02 s). `MessageBox`
 s'expose en singleton par `MessageBox.instance`, comme `Globals`.
+
+## Le nom de celui qui parle
+
+Un PNJ qui a un nom (`display_name`, voir [npcs.md](npcs.md)) le voit affiché
+dans un **encart au-dessus de la boîte, à gauche** (`Control/Speaker`), le temps
+de son dialogue. L'encart prend la largeur du nom.
+
+- Un personnage sans nom, un panneau, un meuble : pas d'encart.
+- Une boîte qui **donne un objet** (`@give:`) est dite par le jeu, pas par le
+  personnage : l'encart s'efface le temps de cette boîte, puis revient.
+- Le nom est écrit en français et traduit à l'affichage, comme un texte.
+- **Sa couleur dit le genre**, comme dans les jeux d'origine : rouge pour une
+  femme (`gender = "female"`), bleu pour un homme (`"male"`), l'encre du
+  texte si le genre n'est pas donné.
+
+C'est un encart et non un préfixe « Alix : » dans le texte : une boîte tient
+deux lignes, et plusieurs répliques les remplissent déjà.
 
 ## Une seule lecture de la touche
 

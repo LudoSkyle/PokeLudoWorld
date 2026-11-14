@@ -12,7 +12,10 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CanvasLayer
 import godot.api.Control
+import godot.api.Label
 import godot.api.RichTextLabel
+import godot.core.Color
+import godot.core.Vector2
 
 /**
  * Boîte de dialogue, affichée lettre par lettre.
@@ -25,6 +28,10 @@ import godot.api.RichTextLabel
  * elle s'affiche : `@give:<objet>`, `@take:<objet>`, `@flag:<drapeau>` et
  * `@reload` (voir [directives]).
  * [ask] pose d'abord une question Oui / Non.
+ *
+ * Quand celui qui parle a un nom, il s'affiche dans un encart au-dessus de la
+ * boîte, à gauche — en rouge pour une femme, en bleu pour un homme. Une boîte qui donne un objet est dite par le jeu, pas par
+ * lui : l'encart s'efface le temps de cette boîte.
  */
 @Script
 class MessageBox : CanvasLayer() {
@@ -56,6 +63,13 @@ class MessageBox : CanvasLayer() {
 	private var asking = false
 	private var afterYes: List<String> = emptyList()
 
+	/** L'encart du nom, et le nom de celui qui parle (vide : personne). */
+	private var speakerTag: Control? = null
+	private var speakerLabel: Label? = null
+	private var speaker = ""
+	private var speakerGender = ""
+	private var narrated = false
+
 	/** Demandé par `@reload` : la carte est rechargée quand le dialogue se referme. */
 	private var reloadWhenClosed = false
 
@@ -72,6 +86,10 @@ class MessageBox : CanvasLayer() {
 		box = getNode("Control/Box") as? Control
 		label = getNode("Control/Box/Text") as? RichTextLabel
 		choices = getNode("Control/Choices") as? ChoiceBox
+		speakerTag = getNode("Control/Speaker") as? Control
+		speakerLabel = getNode("Control/Speaker/Name") as? Label
+		PixelShadow.attachAll(speakerLabel)
+		speakerTag?.visible = false
 		PixelShadow.attachAll(label)
 		box?.visible = false
 
@@ -106,10 +124,16 @@ class MessageBox : CanvasLayer() {
 		PixelShadow.setText(label, fullText.substring(0, shown))
 	}
 
-	/** Ouvre la boîte sur une suite de messages. Sans effet si elle est déjà ouverte. */
-	fun play(messages: List<String>) {
+	/**
+	 * Ouvre la boîte sur une suite de messages. Sans effet si elle est déjà
+	 * ouverte. [speaker] est le nom de celui qui parle, en français, et
+	 * [gender] son genre (`female`, `male`), qui donne sa couleur au nom.
+	 */
+	fun play(messages: List<String>, speaker: String = "", gender: String = "") {
 		if (isOpen || messages.isEmpty()) return
 
+		this.speaker = speaker
+		speakerGender = gender
 		pending.clear()
 		pending.addAll(messages)
 		box?.visible = true
@@ -122,9 +146,13 @@ class MessageBox : CanvasLayer() {
 	 * touche du menu — referme la boîte sans rien dire de plus. Sans effet si
 	 * la boîte est déjà ouverte.
 	 */
-	fun ask(question: String, then: List<String>) {
+	fun ask(question: String, then: List<String>, speaker: String = "", gender: String = "") {
 		if (isOpen) return
 
+		this.speaker = speaker
+		speakerGender = gender
+		narrated = false
+		showSpeaker()
 		pending.clear()
 		asking = true
 		afterYes = then
@@ -176,6 +204,8 @@ class MessageBox : CanvasLayer() {
 	 * questions (voir SaveMenu). Le texte est dit tel quel, déjà traduit.
 	 */
 	fun say(text: String) {
+		speaker = ""
+		showSpeaker()
 		pending.clear()
 		box?.visible = true
 		fullText = text
@@ -185,6 +215,8 @@ class MessageBox : CanvasLayer() {
 	}
 
 	fun close() {
+		speaker = ""
+		showSpeaker()
 		reloadWhenClosed = false
 		asking = false
 		choices?.close()
@@ -219,6 +251,8 @@ class MessageBox : CanvasLayer() {
 		val message = pending.removeFirstOrNull()
 
 		if (message == null) {
+			speaker = ""
+			showSpeaker()
 			box?.visible = false
 			fullText = ""
 			shown = 0
@@ -232,10 +266,28 @@ class MessageBox : CanvasLayer() {
 		}
 
 		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
+		narrated = false
 		fullText = T(directives(message))
+		showSpeaker()
 		shown = 0
 		elapsed = 0.0
 		PixelShadow.setText(label, "")
+	}
+
+	/** Montre l'encart du nom, à la largeur du nom, ou le cache s'il n'y a personne à nommer. */
+	private fun showSpeaker() {
+		val tag = speakerTag ?: return
+		if (speaker.isBlank() || narrated) {
+			tag.visible = false
+			return
+		}
+
+		speakerLabel?.addThemeColorOverride("font_color", SPEAKER_COLORS[speakerGender] ?: SPEAKER_INK)
+		PixelShadow.setText(speakerLabel, T(speaker))
+		val width = (speakerLabel?.getMinimumSize()?.x ?: 0.0) + SPEAKER_MARGINS
+		speakerLabel?.setSize(Vector2(width - SPEAKER_MARGINS, speakerLabel?.getSize()?.y ?: 64.0))
+		tag.setSize(Vector2(width, tag.getSize().y))
+		tag.visible = true
 	}
 
 	/**
@@ -279,6 +331,8 @@ class MessageBox : CanvasLayer() {
 		}
 
 		Inventory.add(id, amount)
+		// « Vous recevez... » : c'est le jeu qui le dit, pas le personnage.
+		narrated = true
 		if (item.isKey) {
 			revealing = true
 			held = 0.0
@@ -288,6 +342,14 @@ class MessageBox : CanvasLayer() {
 }
 
 private const val REVEAL_SECONDS = 1.0
+private const val SPEAKER_MARGINS = 56.0
+
+/** Couleur du nom selon le genre, comme dans les jeux d'origine ; sans genre, l'encre du texte. */
+private val SPEAKER_INK = Color(0.345098, 0.345098, 0.313725, 1.0)
+private val SPEAKER_COLORS = mapOf(
+	"female" to Color(0.878431, 0.188235, 0.156863, 1.0),
+	"male" to Color(0.188235, 0.313725, 0.784314, 1.0),
+)
 private const val RELOAD = "@reload "
 private const val YES = 0
 private const val NO = 1

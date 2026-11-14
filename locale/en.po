@@ -553,3 +553,15 @@ msgstr "The west road runs deep into the forest."
 
 msgid "Le chemin n'est pas encore tracé au-delà."
 msgstr "The way beyond has not been cleared yet."
+
+msgid "Mémé Odile"
+msgstr "Granny Odile"
+
+msgid "Alix"
+msgstr "Alix"
+
+msgid "Roland"
+msgstr "Roland"
+
+msgid "Professeur"
+msgstr "Professor"
