@@ -6,6 +6,7 @@ import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerCamera
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerInput
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.LocationBanner
 import godot.annotation.Category
@@ -102,12 +103,14 @@ class SceneManager : Node() {
 		// Une partie sauvegardée reprend là où elle s'est arrêtée.
 		playSeconds = 0.0
 		Inventory.clear()
+		StoryFlags.clear()
 		restore = if (loadSave) SaveGame.read() else null
 		restore?.let {
 			if (ResourceLoader.exists(it.scene)) {
 				pendingScene = it.scene
 				playSeconds = it.seconds
 				Inventory.restore(it.items)
+				StoryFlags.restore(it.flags)
 			} else {
 				Logger.e("Sauvegarde ignoree, carte introuvable : ${it.scene}")
 				restore = null
@@ -243,7 +246,7 @@ class SceneManager : Node() {
 
 	/**
 	 * Enregistre la partie : la carte, la place et le regard du joueur, le
-	 * temps de jeu. À n'appeler qu'entre deux pas (le menu ne s'ouvre que là).
+	 * temps de jeu, le sac et les drapeaux d'histoire. À n'appeler qu'entre deux pas (le menu ne s'ouvre que là).
 	 */
 	fun save(): Boolean {
 		val current = player ?: return false
@@ -259,6 +262,7 @@ class SceneManager : Node() {
 				banner = banner,
 				seconds = playSeconds,
 				items = Inventory.snapshot(),
+				flags = StoryFlags.snapshot(),
 			),
 		)
 	}

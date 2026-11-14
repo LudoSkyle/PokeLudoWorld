@@ -417,6 +417,14 @@ func wait_choices() -> void:
 		await process_frame
 	await wait(4)
 
+# --- drapeaux d'histoire
+
+func flag(name: String) -> bool:
+	return root.get_node("Globals").has_flag(name)
+
+func set_flag(name: String) -> void:
+	root.get_node("Globals").set_flag(name)
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
