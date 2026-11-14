@@ -91,6 +91,13 @@ class PauseMenu : CanvasLayer() {
 	fun handle(interact: Boolean) {
 		if (!isOpen) return
 
+		// Un écran ouvert depuis le menu prend la main, et la rend en se fermant.
+		val options = OptionsMenu.instance
+		if (options != null && options.isOpen) {
+			options.handle(interact)
+			return
+		}
+
 		// La touche qui a ouvert le menu le referme.
 		if (Input.isActionJustPressed(ACTION)) {
 			close()
@@ -111,7 +118,8 @@ class PauseMenu : CanvasLayer() {
 	private fun confirm() {
 		when (selectedName) {
 			"Quit" -> close()
-			// Sac et Options n'ouvrent encore rien.
+			"Options" -> OptionsMenu.instance?.open()
+			// Le Sac n'ouvre encore rien.
 			else -> Logger.i("Menu : $selectedName (pas encore branche)")
 		}
 	}

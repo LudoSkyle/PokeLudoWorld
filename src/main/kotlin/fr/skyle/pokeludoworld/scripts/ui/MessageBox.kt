@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.Settings
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -24,6 +25,7 @@ class MessageBox : CanvasLayer() {
 			private set
 	}
 
+	/** Réglée par les options (voir Settings) ; 0 = le texte apparaît d'un coup. */
 	@Category("Affichage")
 	@Export
 	var secondsPerLetter: Double = 0.02
@@ -49,6 +51,9 @@ class MessageBox : CanvasLayer() {
 		box = getNode("Control/Box") as? Control
 		label = getNode("Control/Box/Text") as? RichTextLabel
 		box?.visible = false
+
+		Settings.load()
+		secondsPerLetter = Settings.secondsPerLetter
 
 		Logger.i("Loading message box ...")
 	}
