@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.core.Settings
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
@@ -25,8 +26,9 @@ import godot.core.Vector2
  * qui ouvre la boîte ne peut pas la faire avancer dans la foulée.
  *
  * Une boîte peut commencer par des consignes, qui s'exécutent au moment où
- * elle s'affiche : `@give:<objet>`, `@take:<objet>`, `@flag:<drapeau>` et
- * `@reload` (voir [directives]).
+ * elle s'affiche : `@give:<objet>`, `@take:<objet>`, `@flag:<drapeau>`,
+ * `@sound:<jingle>` et `@reload` (voir [directives]). Tant qu'un jingle joue,
+ * la boîte ne passe pas à la suite.
  * [ask] pose d'abord une question Oui / Non.
  *
  * Quand celui qui parle a un nom, il s'affiche dans un encart au-dessus de la
@@ -76,6 +78,10 @@ class MessageBox : CanvasLayer() {
 	val isOpen: Boolean
 		get() = box?.visible == true
 
+	/** Vrai pendant une question : Oui / Non attend sa réponse. */
+	val isAsking: Boolean
+		get() = asking
+
 	/** Vrai tant que le texte courant n'est pas entièrement affiché. */
 	val isScrolling: Boolean
 		get() = shown < fullText.length
@@ -107,7 +113,8 @@ class MessageBox : CanvasLayer() {
 			// Objet rare à l'écran : une seconde une fois le texte écrit, puis la suite.
 			if (!revealing || ItemReveal.instance?.isFullyShown == false) return
 			held += delta
-			if (held >= REVEAL_SECONDS) {
+			// Au moins une seconde, et jusqu'au bout du jingle de l'objet.
+			if (held >= REVEAL_SECONDS && AudioManager.instance?.isJinglePlaying != true) {
 				revealing = false
 				ItemReveal.instance?.dismiss()
 				next()
@@ -241,8 +248,8 @@ class MessageBox : CanvasLayer() {
 		}
 
 		// Pendant qu'un objet rare est montré, aucune touche ne presse la suite ;
-		// une question attend sa réponse (voir handle).
-		if (revealing || asking) return
+		// une question attend sa réponse (voir handle) ; un jingle se laisse finir.
+		if (revealing || asking || AudioManager.instance?.isJinglePlaying == true) return
 
 		next()
 	}
@@ -299,6 +306,7 @@ class MessageBox : CanvasLayer() {
 	 *   un objet rare est alors montré au centre de l'écran ;
 	 * - `@take:<objet>` ou `@take:<objet>*<nombre>` le retire du sac ;
 	 * - `@flag:<drapeau>` pose un drapeau d'histoire ;
+	 * - `@sound:<jingle>` joue un jingle, musique en pause (voir AudioManager) ;
 	 * - `@reload` recharge la carte dans un fondu **une fois le dialogue
 	 *   refermé** : c'est au chargement que se décide qui est sur la carte.
 	 */
@@ -318,6 +326,7 @@ class MessageBox : CanvasLayer() {
 					Logger.e("Objet à reprendre absent du sac : $name")
 				}
 				"flag" -> StoryFlags.set(name)
+				"sound" -> AudioManager.instance?.jingle(name)
 			}
 			text = rest
 		}
@@ -333,6 +342,7 @@ class MessageBox : CanvasLayer() {
 		Inventory.add(id, amount)
 		// « Vous recevez... » : c'est le jeu qui le dit, pas le personnage.
 		narrated = true
+		AudioManager.instance?.jingle(if (item.isKey) "key_item" else "item")
 		if (item.isKey) {
 			revealing = true
 			held = 0.0
@@ -353,4 +363,4 @@ private val SPEAKER_COLORS = mapOf(
 private const val RELOAD = "@reload "
 private const val YES = 0
 private const val NO = 1
-private val DIRECTIVE = Regex("""@(give|take|flag):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
+private val DIRECTIVE = Regex("""@(give|take|flag|sound):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)

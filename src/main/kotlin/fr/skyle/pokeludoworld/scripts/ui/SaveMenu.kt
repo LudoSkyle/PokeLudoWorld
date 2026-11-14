@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import fr.skyle.pokeludoworld.scripts.core.SaveGame
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import godot.annotation.Category
@@ -120,6 +121,7 @@ class SaveMenu : CanvasLayer() {
 	private fun save() {
 		choices?.close()
 		SceneManager.instance?.save()
+		AudioManager.instance?.jingle("save")
 		held = 0.0
 		phase = Phase.SAVED
 		MessageBox.instance?.say(T("La partie est sauvegardée."))

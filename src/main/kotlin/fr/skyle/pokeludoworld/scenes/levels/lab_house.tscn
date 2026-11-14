@@ -8,6 +8,7 @@
 [node name="Level" type="Node2D"]
 metadata/location = "Laboratoire"
 metadata/banner = "metal"
+metadata/music = "elm_lab"
 
 [node name="Background" type="Node2D" parent="."]
 
@@ -171,11 +172,11 @@ text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 [node name="Healer0" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(264, 120)
 text = "Une machine de soin.|Elle n'a personne à soigner."
-states = PackedStringArray("bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
+states = PackedStringArray("bell_tarnished > @take:tarnished_bell @sound:healed La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
 ask = "bell_tarnished > Poser la Cloche ternie dans la machine ?"
 
 [node name="Healer1" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(280, 120)
 text = "Une machine de soin.|Elle n'a personne à soigner."
-states = PackedStringArray("bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
+states = PackedStringArray("bell_tarnished > @take:tarnished_bell @sound:healed La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
 ask = "bell_tarnished > Poser la Cloche ternie dans la machine ?"

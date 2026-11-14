@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ei8m8fho5p37"]
+[gd_scene load_steps=10 format=3 uid="uid://ei8m8fho5p37"]
 
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/message_box.tscn" id="2_msgbox"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/location_banner.tscn" id="4_banner"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/bag_menu.tscn" id="8_bag"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/item_reveal.tscn" id="9_reveal"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/core/SceneManager.kt" id="3_scenemgr"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/core/AudioManager.kt" id="10_audio"]
 
 [node name="GameManager" type="Node" unique_id=1125087688]
 
@@ -66,3 +67,6 @@ color = Color(0, 0, 0, 0)
 
 [node name="SceneManager" type="Node" parent="Control/SubViewportContainer/SubViewport"]
 script = ExtResource("3_scenemgr")
+
+[node name="AudioManager" type="Node" parent="Control/SubViewportContainer/SubViewport"]
+script = ExtResource("10_audio")

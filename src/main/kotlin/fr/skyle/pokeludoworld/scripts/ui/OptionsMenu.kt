@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import fr.skyle.pokeludoworld.scripts.core.Settings
 import godot.annotation.Register
 import godot.annotation.Script
@@ -78,6 +79,9 @@ class OptionsMenu : CanvasLayer() {
 			return
 		}
 
+		if (Input.isActionJustPressed("ui_right") || Input.isActionJustPressed("ui_left")) {
+			AudioManager.instance?.sfx("cursor")
+		}
 		if (MenuKeys.down()) row = (row + 1) % rows.size
 		if (MenuKeys.up()) row = (row - 1 + rows.size) % rows.size
 

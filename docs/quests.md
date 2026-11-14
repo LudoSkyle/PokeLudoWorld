@@ -118,6 +118,14 @@ village :
 "bell_ribbon > @flag:bell_hung @take:clear_bell @reload Vous accrochez la cloche. Elle tient."
 ```
 
+### Faire entendre un jingle : `@sound:`
+
+Une boîte qui commence par **`@sound:<nom>`** joue un jingle au moment où elle
+s'affiche : la musique se met en pause, et le dialogue ne passe à la suite
+qu'une fois le jingle fini ([audio.md](audio.md)). La cloche sonne ainsi quand
+on l'accroche (`@sound:bell`), la machine de soin chante ses trois notes
+(`@sound:healed`). Un objet donné par `@give:` a déjà le sien.
+
 ### La question avant d'agir : `ask`
 
 Un `Npc` ou un `Readable` peut poser une question Oui / Non avant de dire son
@@ -201,8 +209,6 @@ dans une carte du jeu.
 
 - **Faire apparaître ou disparaître un nœud sans recharger la carte** : la
   présence se décide au chargement ; `@reload` la recharge dans un fondu.
-- **Jouer un son.** Le projet n'a encore aucun audio : la cloche s'accroche
-  en silence.
 - **Une condition sur le contenu du sac** : tout passe par les drapeaux.
 
 ---
@@ -637,7 +643,7 @@ suivantes et ne contiennent pas une ligne de scénario.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine
    de soin, la cloche au B2F — **fait**.
 6. **La place et la Veillée** : le socle, et tout ce que `bell_hung` change — **fait**,
-   sauf la silhouette de Pokémon et le son de la cloche.
+   sauf la silhouette de Pokémon.
 
 Chaque lot ajoute ses textes à `locale/en.po` **boîte par boîte** et passe
 `tests/run.sh i18n` ([i18n.md](i18n.md)). La carte se vérifie comme les autres :

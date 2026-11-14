@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import godot.api.Engine
 import godot.api.Input
 import godot.api.Time
@@ -55,6 +56,8 @@ object MenuKeys {
 			}
 			else -> false
 		}
+		// Chaque cran du curseur s'entend.
+		if (key.fired) AudioManager.instance?.sfx("cursor")
 		return key.fired
 	}
 

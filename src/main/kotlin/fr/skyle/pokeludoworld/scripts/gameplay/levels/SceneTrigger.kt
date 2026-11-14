@@ -46,7 +46,7 @@ class SceneTrigger : Area2D() {
 	/** Déclenchement explicite, appelé par le joueur pour une sortie. */
 	fun activate() {
 		if (targetScene.isEmpty()) return
-		SceneManager.instance?.changeLevel(targetScene, targetDoor)
+		SceneManager.instance?.changeLevel(targetScene, targetDoor, isExit)
 	}
 
 	private var fired = false
@@ -85,6 +85,6 @@ class SceneTrigger : Area2D() {
 		if (fired || targetScene.isEmpty()) return
 
 		fired = true
-		manager.changeLevel(targetScene, targetDoor)
+		manager.changeLevel(targetScene, targetDoor, isExit)
 	}
 }

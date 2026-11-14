@@ -23,6 +23,7 @@ func test() -> void:
 	await tap("interact")
 	await wait_text("Vous recevez une Potion !")
 	check("le jeu annonce un objet : pas de nom sur cette boite", speaker_name() == "", speaker_name())
+	await wait_jingle()
 	await tap("interact")
 	await wait_text("Prends-en soin.")
 	check("il reprend la parole : son nom revient", speaker_name() == "Camille", speaker_name())

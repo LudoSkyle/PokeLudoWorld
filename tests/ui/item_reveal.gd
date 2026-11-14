@@ -17,13 +17,13 @@ func test() -> void:
 	await tap("interact")
 	check("une touche ne le fait pas passer", reveal().visible and box_text() == "Vous recevez la Vieille canne !", box_text())
 	var t0 := Time.get_ticks_msec()
-	while Time.get_ticks_msec() - t0 < 4000 and box_text() != "Vous recevez la Carte du village !":
+	while Time.get_ticks_msec() - t0 < 9000 and box_text() != "Vous recevez la Carte du village !":
 		await process_frame
 	check("la suite arrive toute seule", box_text().begins_with("Vous recevez la Carte"), box_text())
 	await secs(0.8)
 	check("le second objet a sa propre icone", reveal().visible and reveal().get_node("Icon").texture.region != first)
 	t0 = Time.get_ticks_msec()
-	while Time.get_ticks_msec() - t0 < 4000 and box().visible:
+	while Time.get_ticks_msec() - t0 < 9000 and box().visible:
 		await process_frame
 	check("apres le dernier, le dialogue se ferme seul", not box().visible)
 	await secs(0.4)

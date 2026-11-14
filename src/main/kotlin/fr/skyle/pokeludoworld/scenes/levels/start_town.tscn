@@ -19,6 +19,7 @@ size = Vector2(16, 16)
 [node name="Level" type="Node2D" unique_id=1312979652]
 metadata/location = "Bourg-Ludo"
 metadata/banner = "wood"
+metadata/music = "new_bark_town"
 position = Vector2(0, 3)
 
 [node name="Background" type="Node2D" parent="." unique_id=783938042]
@@ -80,7 +81,7 @@ position = Vector2(504, 207)
 collision_mask = 0
 script = ExtResource("6_readable_script")
 text = "Un socle de pierre. Il manque quelque chose dessus."
-states = PackedStringArray("bell_ribbon > @flag:bell_hung @take:clear_bell @reload Vous accrochez la cloche. Elle tient.")
+states = PackedStringArray("bell_ribbon > @flag:bell_hung @take:clear_bell @reload @sound:bell Vous accrochez la cloche. Elle tient.")
 ask = "bell_ribbon > Accrocher la Cloche claire ?"
 forbidden_flag = "bell_hung"
 
