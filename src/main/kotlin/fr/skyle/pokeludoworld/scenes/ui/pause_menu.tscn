@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/PauseMenu.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/rse_01.png" id="2_frame"]
 [ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-dp-pro.ttf" id="3_font"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/cursor.png" id="4_cursor"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/choice_box.tscn" id="5_choices"]
 
 [sub_resource type="FontVariation" id="menu_font"]
 base_font = ExtResource("3_font")
@@ -123,3 +124,9 @@ theme_override_fonts/font = SubResource("menu_font")
 theme_override_font_sizes/font_size = 64
 text = "Quitter"
 vertical_alignment = 1
+
+[node name="DebugChoices" parent="Control" instance=ExtResource("5_choices")]
+offset_left = 224.0
+offset_top = 64.0
+offset_right = 736.0
+offset_bottom = 384.0

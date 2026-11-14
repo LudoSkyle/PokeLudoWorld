@@ -4,6 +4,7 @@ extends "res://tests/lib.gd"
 
 func test() -> void:
 	await menu_pick("Debug")
+	await tap("interact")
 	await secs(1.2)
 	check("d'abord un message ordinaire, sans objet a l'ecran", box().visible and not reveal().visible, box_text())
 	await tap("interact")

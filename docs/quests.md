@@ -179,6 +179,18 @@ ne fait que le donner. Un objet rare est montré au centre de l'écran, comme
 pour tout `@give:`. Une trouvaille sans `flag` ou sans `@give:` est signalée
 dans les logs au chargement.
 
+### Sauter à une étape : l'entrée Debug
+
+Pour ne pas rejouer toute la quête à chaque essai, l'entrée **Debug** du menu
+de pause a deux outils : **Quête : suite** franchit la prochaine étape, **Quête :
+fin** toutes celles qui restent ([menu.md](menu.md)). `BellQuest.kt` liste les
+étapes dans l'ordre, avec ce que chacune met dans le sac ou en retire ; une
+nouvelle étape de la quête s'y ajoute aussi.
+
+Les drapeaux, comme le sac, **font partie de la sauvegarde** : il suffit de
+sauvegarder depuis le menu pour les retrouver au lancement suivant. Il n'y a
+pas de sauvegarde automatique.
+
 ### Tests
 
 `tests/run.sh quests` : un fichier par brique, sur des nœuds que le test pose

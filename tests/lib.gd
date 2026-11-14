@@ -371,10 +371,11 @@ func bag_line() -> int:
 	var cursor: Control = bag("Cursor")
 	return floori((cursor.position.y + cursor.size.y / 2.0 - bag("Names").position.y) / 64.0)
 
-# Remplit le sac par l'entree Debug du menu, comme le ferait le joueur :
+# Remplit le sac par l'entree Debug du menu (premier outil), comme le ferait le joueur :
 # huit objets (x3 a x10), des Poke Balls (x11) et deux objets rares.
 func fill_bag() -> void:
 	await menu_pick("Debug")
+	await tap("interact")
 	# Le premier message se passe a la touche ; les deux objets rares
 	# s'annoncent ensuite et passent tout seuls, sans tenir compte des touches.
 	var end := Time.get_ticks_msec() + 15000
@@ -527,6 +528,28 @@ func speaker_color() -> String:
 	if c.r > 0.7 and c.b < 0.3: return "red"
 	if c.b > 0.7 and c.r < 0.3: return "blue"
 	return "ink"
+
+# --- outils de l'entree Debug
+
+func debug_choices() -> Control:
+	return game.get_node(VP + "/PauseMenu/Control/DebugChoices")
+
+# Ouvre Debug et valide son outil numero n (0 = remplir le sac, 1 = quete : suite,
+# 2 = quete : fin), puis passe le message et attend le rechargement eventuel.
+func debug_tool(n: int) -> void:
+	await menu_pick("Debug")
+	for i in n:
+		await tap("ui_down")
+	await tap("interact")
+	await secs(1.2)
+	var id := level_id()
+	var reloads := box_text().begins_with("La quête de la cloche a") or box_text() == "La quête de la cloche est terminée."
+	await close_box()
+	if reloads:
+		var end := Time.get_ticks_msec() + 4000
+		while Time.get_ticks_msec() < end and level_id() == id:
+			await process_frame
+		await secs(0.6)
 
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
