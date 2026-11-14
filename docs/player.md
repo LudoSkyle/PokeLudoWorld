@@ -49,7 +49,24 @@ Le ressenti Pokémon vient du seuil de maintien (`holdThreshold`, 0,12 s) :
 - pression brève → le personnage **pivote** sans avancer ;
 - pression maintenue → il **marche**, et enchaîne tant que la touche est tenue.
 
-Vitesse : `tilesPerSecond = 4`.
+Vitesse : `walk_pace`, 4 cases par seconde.
+
+### Courir
+
+**Maj maintenue** (action `run` de `project.godot`) : le personnage va à
+`run_pace`, 8 cases par seconde, deux fois l'allure de la marche.
+
+- L'allure se décide **au départ de chaque pas** : un pas engagé va au bout à
+  l'allure où il a commencé, et relâcher Maj fait marcher dès le pas suivant.
+- La touche seule ne fait rien : il faut une direction. Le pivot sur place
+  (pression brève) ne change pas.
+- La planche du joueur n'a **pas d'images de course** : c'est l'animation de
+  marche qui s'accélère (`speed_scale = 2`). Une vraie course demande une
+  planche en plus.
+- Une scène qui déplace le joueur le fait au pas : repoussé par un garde alors
+  qu'il arrivait en courant, il recule en marchant.
+
+On court partout, intérieurs compris.
 
 ## Collisions
 
