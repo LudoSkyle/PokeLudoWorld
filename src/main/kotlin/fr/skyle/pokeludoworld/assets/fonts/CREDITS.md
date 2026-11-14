@@ -5,8 +5,8 @@ Projet personnel, non commercial. Chaque police garde sa licence ou son readme
 
 | Fichier | Police | Auteur | Usage |
 |---|---|---|---|
-| `pokemon-emerald-pro.ttf` | Pokémon Emerald Pro | crystalwalrein (FontStruct), CC BY-SA 3.0 | dialogues, bandeau de lieu — 48 px |
-| `pokemon-dp-pro.ttf` | Pokémon DP Pro | crystalwalrein (FontStruct), CC BY-SA 3.0 | menus — 64 px |
+| `pokemon-emerald-pro.ttf` | Pokémon Emerald Pro | crystalwalrein (FontStruct), CC BY-SA 3.0 | bandeau de lieu — 48 px |
+| `pokemon-dp-pro.ttf` | Pokémon DP Pro | crystalwalrein (FontStruct), CC BY-SA 3.0 | menus et dialogues — 64 px |
 | `pokepixel-gba.ttf` | PokePixel GBA | PokéPrint (pokeprint.kimbachu.com) | essayée pour les menus, non retenue |
 | `pokemon-firered-leafgreen.ttf` | Pokémon FireRed & LeafGreen Font Recreation | SHR16 (FontStruct) | essayée pour les menus, non retenue |
 | `zarbi.ttf` | Zarbi | KnilinK (FontStruct) | en réserve |

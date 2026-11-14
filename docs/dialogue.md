@@ -92,11 +92,15 @@ Un corps est posé sur **chaque case solide** du meuble, pour qu'on puisse
 l'examiner de n'importe quel côté. Une horloge est au mur : son corps est sur
 la case **en dessous**, celle qu'on regarde depuis le sol.
 
-La police est **Pokémon Emerald Pro** (`assets/fonts/pokemon-emerald-pro.ttf`,
-crystalwalrein, CC BY-SA 3.0). Elle a les accents et l'apostrophe : les textes
-s'écrivent en français correct. Elle s'affiche en **48 px**, sans lissage : un
-pixel de la police vaut alors exactement trois pixels écran. Une boîte tient
-**deux lignes** d'environ 30 caractères ; au-delà, couper avec `|`.
+La police est **Pokémon DP Pro** (`assets/fonts/pokemon-dp-pro.ttf`,
+crystalwalrein, CC BY-SA 3.0), la même que dans les menus, en **64 px** sans
+lissage : un pixel de la police vaut quatre pixels écran, comme le décor. Elle
+a les accents et l'apostrophe. Encre `#585850`, ombre `#a8b8b8` décalée d'un
+pixel de police.
+
+La boîte fait 960×168 px, centrée en bas de l'écran. Elle tient **deux lignes**
+d'environ 43 caractères ; au-delà, couper avec `|`. Le bandeau de lieu, lui,
+garde Pokémon Emerald Pro en 48 px.
 
 ## L'interaction
 
