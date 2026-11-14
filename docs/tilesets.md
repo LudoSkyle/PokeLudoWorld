@@ -27,6 +27,8 @@ pas de séparation. Deux sources :
 | `5` | `environments` | tuiles 1×1 (sol, chemins, maisons, décors, falaises) |
 | `6` | `border_environments` | grosses tuiles 3×3 et 3×4 (arbres) |
 | `7` | `interiors` | meubles d'intérieur recalés sur la grille — voir [levels.md](levels.md) |
+| `8` | `cave` | la roche de grotte nettoyée — voir [levels.md](levels.md) |
+| `9` | `grass_front` | le bas des touffes de hautes herbes, par bandes de 16×4 — voir plus bas |
 
 **Les grosses tuiles sont centrées sur leur case d'ancrage**, pas ancrées en
 haut à gauche. Une tuile 3×3 posée en `(x, y)` couvre `x-1..x+1` et `y-1..y+1`.
@@ -108,6 +110,53 @@ collision :
 La liste se recalcule : croiser les cases non solides mesurées en jeu avec les
 cases couvertes par `Cliffs`, `Props` et `Houses`. Les grosses tuiles d'arbres
 sont exclues — là on veut justement passer derrière.
+
+## Les hautes herbes
+
+Comme dans les jeux d'origine, une case de hautes herbes est faite de **deux
+tuiles superposées** :
+
+| Calque | Tuile | Rôle |
+|---|---|---|
+| `Background/Grass` | `5:6,0`, la touffe entière | dessinée **sous** les personnages |
+| `World/GrassFront` | `9:6,0`, ses 4 pixels du bas | dessinée **par-dessus** celui qui se tient sur la case |
+
+Le personnage a ainsi l'air d'être dans l'herbe jusqu'à la taille. **Les deux
+tuiles sont fixées à la case** : rien n'est attaché au personnage, donc rien ne
+le suit quand il marche.
+
+- **On ne peint que `Background/Grass`**, avec la touffe `5:6,0`. Le calque de
+  devant est créé au chargement, sur les mêmes cases (`TallGrass.kt`).
+- La source `9` (`grass_front`) lit le même atlas par bandes de 16×4 : sa tuile
+  `x,0` est le bas de la tuile `5:x,0`. Elle est décalée au bas de la case
+  (`texture_origin`) et **triée en Y à 2 px sous le centre** (`y_sort_origin`) :
+  devant le personnage de sa case, derrière la tête de celui de la case du
+  dessous.
+- **Pourquoi 2 et pas plus.** Le tri se fait sur la position pendant le pas.
+  Un personnage qui monte vers une case d'herbe passe derrière sa bande dès
+  qu'il est à moins de `y_sort_origin` pixels de l'arrivée. À 7, la bande lui
+  barrait la taille à mi-pas puis descendait le long des jambes ; à 2, elle
+  n'apparaît que sur les pieds, à la toute fin du pas.
+- 4 pixels, parce que les personnages en font une quinzaine de haut : avec 8,
+  on ne voyait plus que leur tête.
+
+La touffe a trois états, côte à côte dans l'atlas : `6` dressée, `7` qui
+s'écarte, `8` écartée. Quand un personnage entre sur une case, elle **bruisse
+sur place** : ses deux tuiles passent par `7, 8, 8, 7` puis reviennent à `6`
+(0,07 s par état). À l'arrêt l'herbe est normale. Touche tenue, les cases
+qu'on vient de quitter bruissent encore derrière soi.
+
+C'est le composant `TallGrass.kt`, un nœud `Grass` du joueur comme de chaque
+PNJ : rien à régler par carte, il suffit que le calque s'appelle
+`Background/Grass`.
+
+Deux essais écartés, pour mémoire : un cache d'herbe attaché au personnage (il
+glisse sur l'herbe pendant le pas), et la touffe qui reste couchée tant qu'on
+est dessus, comme dans le projet de référence (le personnage n'a plus l'air
+d'être dans l'herbe). Ce projet tire aussi, au même endroit, la chance d'une
+rencontre quand le joueur entre : à brancher ici le jour où il y a des Pokémon.
+
+Le même calque sert de zone d'errance à un PNJ ([npcs.md](npcs.md)).
 
 ## Ce qui reste à déclarer
 
