@@ -147,8 +147,8 @@ class BagMenu : CanvasLayer() {
 		}
 
 		// La liste non plus : Retour en est le bout.
-		if (Input.isActionJustPressed("ui_down") && line < entries.size) move(line + 1)
-		if (Input.isActionJustPressed("ui_up") && line > 0) move(line - 1)
+		if (MenuKeys.down() && line < entries.size) move(line + 1)
+		if (MenuKeys.up() && line > 0) move(line - 1)
 
 		if (!interact) return
 		if (line == entries.size) close() else askAction()
@@ -207,8 +207,8 @@ class BagMenu : CanvasLayer() {
 
 		val most = entries.getOrNull(line)?.second ?: 1
 		// La quantité boucle : sous 1 on saute au maximum, et inversement.
-		if (Input.isActionJustPressed("ui_up")) amount = if (amount >= most) 1 else amount + 1
-		if (Input.isActionJustPressed("ui_down")) amount = if (amount <= 1) most else amount - 1
+		if (MenuKeys.up()) amount = if (amount >= most) 1 else amount + 1
+		if (MenuKeys.down()) amount = if (amount <= 1) most else amount - 1
 		showAmount()
 
 		if (!interact) return

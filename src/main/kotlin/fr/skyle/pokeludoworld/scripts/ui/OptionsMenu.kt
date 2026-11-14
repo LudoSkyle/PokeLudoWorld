@@ -78,8 +78,8 @@ class OptionsMenu : CanvasLayer() {
 			return
 		}
 
-		if (Input.isActionJustPressed("ui_down")) row = (row + 1) % rows.size
-		if (Input.isActionJustPressed("ui_up")) row = (row - 1 + rows.size) % rows.size
+		if (MenuKeys.down()) row = (row + 1) % rows.size
+		if (MenuKeys.up()) row = (row - 1 + rows.size) % rows.size
 
 		when (rows.getOrNull(row)?.name?.toString()) {
 			"TextSpeed" -> {
