@@ -521,7 +521,7 @@ La pièce fait **14 colonnes** (`x 9-22`), mur en `y 5-7`, **7 rangées de sol**
 y 5-6    mur ......... fenêtre (15-16) ..........
 y 7-8    AA AA AA AA BB BB  .  .  BB BB BB BB BB BB   adossés au mur
 y 9       .  .  .  .  .  .  .  .  .  .  .  .  .  .   allée du fond
-y 10-11   . BB BB BB BB  .  .  BB BB BB BB Al CC CC   rangée centrale, Alix, son bureau
+y 10-11   . BB BB BB BB  .  .  BB BB BB BB Al CC CC   rangée centrale (on passe derrière, en y 10), Alix, son bureau
 y 12      .  t  t  t  .  .  .  .  .  .  .  .  .  .   (haut de table : on passe derrière)
 y 13     pl TT TT TT  .  .  .  .  .  .  .  .  .  pl  table de lecture, feuillages
 y 14     PL tb tb  .  .  .  MM MM  .  .  .  .  .  PL  pots, tabourets, paillasson

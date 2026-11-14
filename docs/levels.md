@@ -158,6 +158,16 @@ Règle de collision : une rangée d'un meuble est solide si le meuble en couvre
 au moins la moitié. La rangée du haut d'une table basse reste donc
 franchissable — on passe derrière, et elle couvre les jambes.
 
+**On passe aussi derrière le haut d'un meuble haut.** La rangée du haut d'une
+bibliothèque (les quatre modèles) et le dôme de la machine aux trois Poké Balls
+ne bloquent pas : seul leur pied bloque. Le joueur s'y glisse et le meuble le
+recouvre, sa tête dépassant au-dessus. Contre un mur ça ne change rien — la
+rangée du mur bloque déjà ; ça compte pour un meuble posé au milieu d'une
+pièce, dont on peut ainsi faire le tour par derrière.
+
+Un `Readable` ne se pose donc que sur les cases **du pied** d'un tel meuble :
+c'est un corps solide, posé sur la rangée du haut il la refermerait.
+
 ### L'escalier
 
 `environments.png` n'a pas d'escalier de maison. Ceux de `interiors.png`
