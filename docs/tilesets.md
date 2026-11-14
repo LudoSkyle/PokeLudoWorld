@@ -158,6 +158,32 @@ rencontre quand le joueur entre : à brancher ici le jour où il y a des Pokémo
 
 Le même calque sert de zone d'errance à un PNJ ([npcs.md](npcs.md)).
 
+## L'eau qui bouge
+
+Aucun des atlas n'a d'images d'animation pour l'eau. Elle bouge par un
+**shader**, `resources/shaders/water.gdshader`, attaché aux tuiles d'eau
+elles-mêmes dans `level.tres` :
+
+```
+9:31/0/material = SubResource("ShaderMaterial_water")
+```
+
+Des rides claires glissent en biais, par crans (4 par seconde), comptées en
+pixels du décor. Elles ne touchent que les **pixels bleus** : sur une tuile de
+rivage, le sable ne bouge pas ; sur le lac de la grotte, la vase non plus.
+
+| Tuiles qui portent le shader | |
+|---|---|
+| `5:9,31` | eau claire |
+| `5:5,34` `5:6,34` `5:6,35` | eau profonde |
+| `5:16,33` `5:17,32` `5:17,33` `5:19,32` | rivage |
+| `5:13,32` `5:13,33` `5:14,33` | plantes aquatiques, rochers dans l'eau |
+| `8:12-14,0-2` | le lac de la grotte |
+
+**Une nouvelle tuile d'eau ne bouge pas tant qu'on ne lui a pas donné ce
+matériau** — une ligne, comme pour une collision. `steps_per_second` et
+`strength` se règlent sur le matériau.
+
 ## Ce qui reste à déclarer
 
 Les collisions couvrent les ~150 tuiles que `start_town` utilise réellement.
