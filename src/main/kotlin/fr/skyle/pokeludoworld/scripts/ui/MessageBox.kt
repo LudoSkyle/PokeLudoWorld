@@ -50,6 +50,7 @@ class MessageBox : CanvasLayer() {
 		instance = this
 		box = getNode("Control/Box") as? Control
 		label = getNode("Control/Box/Text") as? RichTextLabel
+		PixelShadow.attachAll(label)
 		box?.visible = false
 
 		Settings.load()
@@ -68,7 +69,7 @@ class MessageBox : CanvasLayer() {
 			shown++
 		}
 
-		label?.text = fullText.substring(0, shown)
+		PixelShadow.setText(label, fullText.substring(0, shown))
 	}
 
 	/** Ouvre la boîte sur une suite de messages. Sans effet si elle est déjà ouverte. */
@@ -88,7 +89,7 @@ class MessageBox : CanvasLayer() {
 	fun advance() {
 		if (isScrolling) {
 			shown = fullText.length
-			label?.text = fullText
+			PixelShadow.setText(label, fullText)
 			return
 		}
 
@@ -102,13 +103,13 @@ class MessageBox : CanvasLayer() {
 			box?.visible = false
 			fullText = ""
 			shown = 0
-			label?.text = ""
+			PixelShadow.setText(label, "")
 			return
 		}
 
 		fullText = message
 		shown = 0
 		elapsed = 0.0
-		label?.text = ""
+		PixelShadow.setText(label, "")
 	}
 }

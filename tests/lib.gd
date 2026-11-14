@@ -272,7 +272,7 @@ func menu_selected() -> String:
 func options_open() -> bool:
 	return game.get_node(VP + "/OptionsMenu/Control/Screen").visible
 
-# Nom du choix de vitesse affiche en rouge : Slow, Normal, Fast, Instant.
+# Nom du choix de vitesse affiche en rouge : Half, One, Two, Four.
 func options_speed() -> String:
 	var red := ""
 	for label in game.get_node(VP + "/OptionsMenu/Control/Screen/Rows/TextSpeed/Choices").get_children():

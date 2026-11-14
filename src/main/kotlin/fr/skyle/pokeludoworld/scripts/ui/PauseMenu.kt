@@ -44,7 +44,7 @@ class PauseMenu : CanvasLayer() {
 	private var cursor: Control? = null
 	private var entries: List<Control> = emptyList()
 
-	/** Entrée sous le curseur. Conservée d'une ouverture à l'autre. */
+	/** Entrée sous le curseur. Revient à la première à chaque ouverture. */
 	var selected: Int = 0
 		private set
 
@@ -71,11 +71,14 @@ class PauseMenu : CanvasLayer() {
 			(getNode("Control/Menu/Frame") as? NinePatchRect)?.texture = texture
 		}
 
+		PixelShadow.attachAll(menu)
 		menu?.visible = false
 	}
 
 	fun open() {
 		if (isOpen || entries.isEmpty()) return
+		// Chaque ouverture repart de la première entrée.
+		selected = 0
 		menu?.visible = true
 		placeCursor()
 	}
