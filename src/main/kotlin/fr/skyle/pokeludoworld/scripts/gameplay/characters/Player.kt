@@ -100,7 +100,7 @@ class Player : CharacterBody2D() {
 		}
 
 		if (box != null && box.isOpen) {
-			if (interact) box.advance()
+			box.handle(interact)
 			sprite?.refresh(currentInput.direction, false)
 			return
 		}

@@ -19,8 +19,9 @@ def sources():
 
     def add(text, where):
         for box in boxes(text):
-            # "@give:objet " en tete d'une boite est une consigne, pas du texte.
-            box = re.sub(r"^@give:\w+(\*\d+)? ", "", box)
+            # "@give:objet " ou "@flag:drapeau " en tete d'une boite sont des
+            # consignes, pas du texte.
+            box = re.sub(r"^(@(give|flag):\w+(\*\d+)? )+", "", box)
             if not SAME.match(box):
                 found.setdefault(box, where)
 
@@ -32,6 +33,9 @@ def sources():
         for states in re.findall(r"^states = PackedStringArray\((.*)\)$", body, re.M):
             for text in re.findall(r'"((?:[^"\\]|\\.)*)"', states):
                 add(re.sub(r"^\s*\w+\s*>", "", text).replace('\\"', '"').replace("\\n", "\n"), path)
+        # Question avant d'agir : "Question ?" ou "drapeau > Question ?".
+        for text in re.findall(r'^ask = "((?:[^"\\]|\\.)*)"$', body, re.M):
+            add(re.sub(r"^\s*\w+\s*>", "", text).replace('\\"', '"'), path)
         for text in re.findall(r'^metadata/location = "(.*)"$', body, re.M):
             add(text, path)
 

@@ -82,14 +82,97 @@ et de texte d'un coup.
 > **Rappel.** Un `@Export` Kotlin devient du `snake_case` côté Godot :
 > `requiredFlag` s'écrit `required_flag` dans le `.tscn`.
 
-## Ce qui manque dans le moteur
+### Poser un drapeau dans un dialogue : `@flag:`
 
-Deux briques, réutilisables par les quêtes suivantes.
+Une boîte qui commence par **`@flag:<drapeau>`** pose ce drapeau **au moment où
+elle s'affiche**, sur le modèle de `@give:` ([bag.md](bag.md)). La consigne ne
+s'affiche pas. Les deux se combinent, dans n'importe quel ordre, chacune suivie
+d'une espace :
 
-| # | Brique | Où | Ce que c'est |
-|---|---|---|---|
-| 3 | **Objets ramassables** | `Readable` | un `kind = "item"` qui annonce une trouvaille et pose un drapeau |
-| 4 | **Question avant action** | `Readable`, `Npc` | un export `ask` qui passe par `ChoiceBox` — la classe existe déjà, écrite pour la sauvegarde |
+```gdscript
+text = "Te voilà debout.|@flag:bell_told Demande à Alix, à la bibliothèque."
+text = "Tiens, prends ça.|@flag:bell_ribbon @give:vigil_ribbon Vous recevez le Ruban de la Veillée !"
+```
+
+Elle vaut partout où un texte passe par la boîte de dialogue : `text`, une
+entrée de `states`, un panneau. Un dialogue ne s'interrompt pas : poser le
+drapeau sur la première ou la dernière boîte revient au même pour l'histoire.
+
+### La question avant d'agir : `ask`
+
+Un `Npc` ou un `Readable` peut poser une question Oui / Non avant de dire son
+texte. La question s'écrit dans la boîte de dialogue, puis **Oui / Non**
+apparaît au-dessus d'elle, le curseur sur Oui — la même `ChoiceBox` que pour la
+sauvegarde.
+
+| `ask` | La question est posée… |
+|---|---|
+| `"Question ?"` | avant le texte par défaut, `text` |
+| `"drapeau > Question ?"` | avant le texte de **cet état-là**, quand c'est lui qui est en vigueur |
+
+```gdscript
+text = "Une machine de soin.|Elle n'a personne à soigner."
+states = PackedStringArray(
+    "bell_tarnished > @flag:bell_clean La machine s'allume et chante trois notes.|...",
+    "bell_clean > ...")
+ask = "bell_tarnished > Poser la Cloche ternie dans la machine ?"
+```
+
+- **Oui** enchaîne sur le texte : c'est lui qui agit, par ses consignes `@flag:`
+  et `@give:`.
+- **Non**, ou la touche du menu, referme la boîte : rien n'est dit, rien n'est
+  fait, et la question se reposera.
+- Hors de l'étape visée, le nœud parle sans rien demander.
+
+Une seule question par nœud. C'est `MessageBox.ask(question, suite)` qui la
+pose ([dialogue.md](dialogue.md)).
+
+### Les trouvailles : `kind = "item"`
+
+Un `Readable` de `kind = "item"` est un objet à ramasser. Il reste un corps
+invisible posé sur une case : l'objet n'a pas de sprite sur la carte.
+
+| Propriété | Rôle |
+|---|---|
+| `flag` | le drapeau de **cette** trouvaille — un par trouvaille, c'est lui qui dit qu'elle est prise |
+| `text` | ce qu'on lit en la prenant ; **une de ses boîtes donne l'objet par `@give:`** |
+| `states` | ce qu'on lit ensuite, en réexaminant la case |
+| `ask` | une question avant de prendre, si l'on veut |
+
+```gdscript
+kind = "item"
+flag = "bell_tarnished"
+text = "Quelque chose est à moitié enfoncé dans la vase.|@give:tarnished_bell Vous trouvez la Cloche ternie !"
+states = PackedStringArray("bell_tarnished > ...")
+```
+
+- Tant que `flag` n'est pas posé, il dit `text`, et **pose `flag` dès la
+  première boîte** — après le Oui s'il y a une question. Il n'y a rien d'autre à
+  écrire pour qu'on ne ramasse pas deux fois.
+- Une fois pris, `text` ne se redit plus : il ne dit que ses `states`.
+- **Sans `states`**, il quitte la carte dès qu'il est pris — sa case se
+  libère — et n'y revient pas aux chargements suivants. C'est la forme d'un
+  objet posé au sol.
+
+L'objet lui-même est une ligne du catalogue ([bag.md](bag.md)) : la trouvaille
+ne fait que le donner. Un objet rare est montré au centre de l'écran, comme
+pour tout `@give:`. Une trouvaille sans `flag` ou sans `@give:` est signalée
+dans les logs au chargement.
+
+### Tests
+
+`tests/run.sh quests` : un fichier par brique, sur des nœuds que le test pose
+lui-même avec `spawn()` et des drapeaux `test_…`. Aucun de ces nœuds n'est
+dans une carte du jeu.
+
+### Ce que le socle ne fait pas
+
+- **Retirer un objet du sac dans un dialogue.** `@give:` donne, rien ne
+  reprend : le jour où la Cloche ternie devient la Cloche claire, il faudra une
+  consigne sœur (`@take:<id>`), ou accepter que les deux restent dans le sac.
+- **Faire apparaître ou disparaître un nœud sans recharger la carte** : la
+  présence se décide au chargement.
+- **Une condition sur le contenu du sac** : tout passe par les drapeaux.
 
 ---
 
@@ -178,8 +261,9 @@ La troisième, en plus :
 
 ### 3 — L'indice · au moment du ramassage
 
-Il n'y a pas de sac : le Registre se lit quand on le prend, et se relit en
-réexaminant le rayon.
+Le Registre est un **objet rare** : il entre dans le sac par `@give:`, et son
+texte se lit au moment où on le prend. Le sac n'a pas d'action « lire » : on
+n'y retrouve que sa description.
 
 > Vous trouvez le Registre poussiéreux !
 > |« ...la cloche a été descendue à l'abri pour l'hiver, »
@@ -212,7 +296,7 @@ Au bord du lac de `cave_b2f` — une salle qui ne contient **rien** aujourd'hui 
 → `bell_tarnished`
 
 La silhouette est le premier Pokémon du jeu : on le voit, on ne peut rien en
-faire. C'est exactement ce qu'on veut tant qu'il n'y a ni sac ni combat.
+faire. C'est exactement ce qu'on veut tant qu'il n'y a pas de combat.
 
 *Roland, après :*
 > Alors c'était ça qui brillait.
@@ -330,9 +414,16 @@ Les répliques d'après :
 | **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo | décor, sans rapport avec la quête |
 | **Silhouette de Pokémon** | un sprite, même sans animation | la grotte et les herbes |
 
-Les quatre premiers ne sont jamais posés sur la carte : ils ne sont que nommés
-dans une boîte de dialogue. Une icône 16×16 ou 32×32 suffirait le jour où un sac
-existera ; aujourd'hui, **ils n'ont besoin d'aucun asset pour fonctionner**.
+Les quatre premiers ne sont jamais posés sur la carte, mais ce sont de **vrais
+objets rares** : une ligne chacun dans le catalogue (`Items.kt`, poche
+`KEY_ITEMS`), donnés par `@give:` et montrés au centre de l'écran quand on les
+reçoit ([bag.md](bag.md)). Il leur faut donc à chacun :
+
+- un identifiant, un nom et une description, avec leurs traductions ;
+- une **icône** : une référence dans l'un des deux atlas de `assets/items/`
+  (267 icônes officielles, 1382 de l'ItemDex — voir leur `CREDITS.md`). Un
+  livre, une cloche et un ruban s'y trouvent sans doute ; sinon, un asset à
+  fournir. Une référence fausse affiche un point d'interrogation.
 
 ## Les retouches de carte
 
@@ -400,7 +491,7 @@ suivantes et ne contiennent pas une ligne de scénario.
 
 1. **Les drapeaux** (brique 1) — **fait**.
 2. **Textes conditionnels et présence conditionnelle** (briques 2 et 5) — **fait**.
-3. **Objets ramassables et question** (briques 3 et 4).
+3. **Objets ramassables et question** (briques 3 et 4) — **fait**.
 4. **La bibliothèque** : la carte, Alix, les archives, le Registre.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine
    de soin, la cloche au B2F.

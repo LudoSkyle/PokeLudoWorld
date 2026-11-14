@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.gameplay.levels
 
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryText
+import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.T
 import godot.annotation.Category
@@ -18,29 +19,48 @@ import java.time.LocalTime
  *
  * Le meuble lui-même reste une tuile ; ceci est un corps invisible posé sur sa
  * case, que le joueur trouve par la requête physique devant lui. Contrairement
- * à un panneau, ce qu'il dit peut dépendre du moment : l'heure, une émission.
+ * à un panneau, ce qu'il dit peut dépendre du moment : l'heure, une émission,
+ * l'avancée de l'histoire.
+ *
+ * Avec `kind = item`, c'est une **trouvaille** : la première fois, il dit
+ * [text] — dont une boîte donne l'objet par `@give:` — et pose [flag]. Ensuite
+ * il ne dit plus que ses [states] ; s'il n'en a pas, il quitte la carte dès
+ * qu'on l'a prise.
  */
 @Script
 class Readable : StaticBody2D() {
 
-	/** `text` (défaut), `clock` ou `tv`. */
+	/** `text` (défaut), `clock`, `tv` ou `item`. */
 	@Category("Contenu")
 	@Export
 	var kind: String = "text"
 
-	/** Pour `kind = text`. Une barre verticale `|` sépare deux boîtes. */
+	/** Pour `kind = text` ou `item`. Une barre verticale `|` sépare deux boîtes. */
 	@Category("Contenu")
 	@MultilineText
 	@Export
 	var text: String = ""
 
 	/**
-	 * Pour `kind = text` : ce qu'il dit selon l'histoire : des entrées `drapeau > texte`, lues de
+	 * Pour `kind = text` ou `item` : ce qu'il dit selon l'histoire : des entrées `drapeau > texte`, lues de
 	 * bas en haut. [text] reste le défaut (voir StoryText).
 	 */
 	@Category("Contenu")
 	@Export
 	var states: PackedStringArray = PackedStringArray()
+
+	/**
+	 * Question Oui / Non posée avant d'agir : `Question ?` devant [text],
+	 * `drapeau > Question ?` devant le texte de cet état. Non ne dit rien.
+	 */
+	@Category("Contenu")
+	@Export
+	var ask: String = ""
+
+	/** Pour `kind = item` : le drapeau posé par la trouvaille. Un par trouvaille. */
+	@Category("Contenu")
+	@Export
+	var flag: String = ""
 
 	/** Drapeau sans lequel le meuble n'est pas sur la carte. */
 	@Category("Histoire")
@@ -55,24 +75,56 @@ class Readable : StaticBody2D() {
 	@Register
 	override fun _ready() {
 		// Absent de cette étape de l'histoire : il quitte la carte avant d'y avoir servi.
-		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) queueFree()
+		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) {
+			queueFree()
+			return
+		}
+		// Seule une trouvaille sans suite guette le moment où on la prend.
+		setProcess(kind == ITEM && states.size == 0)
+		if (kind != ITEM) return
+
+		if (flag.isBlank()) Logger.e("Trouvaille sans drapeau : ${name}")
+		if (!text.contains("@give:")) Logger.e("Trouvaille qui ne donne rien (pas de @give:) : ${name}")
+	}
+
+	/** Ramassée, et plus rien à en dire : elle quitte la carte, sa case se libère. */
+	@Register
+	override fun _process(delta: Double) {
+		if (isTaken) queueFree()
 	}
 
 	fun read() {
-		MessageBox.instance?.play(messages())
+		when (kind) {
+			"clock" -> {
+				val now = LocalTime.now()
+				MessageBox.instance?.play(listOf(T("L'horloge indique %d h %02d.").format(now.hour, now.minute)))
+			}
+
+			"tv" -> MessageBox.instance?.play(StoryText.boxes(TV_PROGRAMS.random()))
+			ITEM -> find()
+			else -> StoryText.say(text, states, ask)
+		}
 	}
 
-	private fun messages(): List<String> = when (kind) {
-		"clock" -> {
-			val now = LocalTime.now()
-			listOf(T("L'horloge indique %d h %02d.").format(now.hour, now.minute))
+	private val isTaken: Boolean
+		get() = flag.isNotBlank() && StoryFlags.has(flag)
+
+	/**
+	 * La trouvaille : son drapeau est posé par la première boîte, donc après
+	 * un Oui s'il y a une question. Une fois prise, [text] ne se redit plus.
+	 */
+	private fun find() {
+		if (isTaken) {
+			StoryText.say("", states, ask)
+			return
 		}
 
-		"tv" -> StoryText.boxes(TV_PROGRAMS.random())
-		else -> StoryText.boxes(StoryText.current(text, states))
+		StoryText.say("@flag:$flag $text", states, ask)
 	}
 
 	companion object {
+		private const val ITEM = "item"
+
 		/**
 		 * Dans l'esprit des jeux d'origine : la télé décrit en une phrase ce
 		 * qui passe, et le héros repart. Aucun Pokémon pour l'instant.

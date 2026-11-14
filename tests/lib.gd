@@ -453,6 +453,35 @@ func spawn(kind: String, name: String, at: Vector2i, props: Dictionary = {}) -> 
 	await wait(4)
 	return node
 
+# --- question dans un dialogue
+
+func ask_choices() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Choices")
+
+# Attend que la question soit ecrite et que Oui/Non apparaisse.
+func wait_ask() -> void:
+	var end := Time.get_ticks_msec() + 4000
+	while Time.get_ticks_msec() < end and not ask_choices().visible:
+		await process_frame
+	await wait(4)
+
+# Ligne (0 = Oui, 1 = Non) en face de laquelle le curseur de la question est dessine.
+func ask_line() -> int:
+	var cursor: Control = ask_choices().get_node("Cursor")
+	return floori((cursor.position.y + cursor.size.y / 2.0 - ask_choices().get_node("Entries").position.y) / 64.0)
+
+# Se tourne vers la case voisine et l'examine, sans rien verifier.
+func interact_facing(facing: String) -> void:
+	await tap(facing)
+	await tap("interact")
+
+# Attend qu'un texte soit entierement ecrit dans la boite (au plus t secondes).
+func wait_text(expected: String, t: float = 4.0) -> void:
+	var end := Time.get_ticks_msec() + int(t * 1000.0)
+	while Time.get_ticks_msec() < end and box_text() != expected:
+		await process_frame
+	await wait(2)
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.

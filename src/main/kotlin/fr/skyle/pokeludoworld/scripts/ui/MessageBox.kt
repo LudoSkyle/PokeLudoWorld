@@ -3,6 +3,7 @@ package fr.skyle.pokeludoworld.scripts.ui
 import fr.skyle.pokeludoworld.scripts.core.Settings
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
+import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -15,9 +16,13 @@ import godot.api.RichTextLabel
 /**
  * Boîte de dialogue, affichée lettre par lettre.
  *
- * Elle ne lit jamais l'entrée elle-même : c'est le joueur qui appelle
- * [advance]. Un seul endroit lit la touche, donc la pression qui ouvre la
- * boîte ne peut pas la faire avancer dans la foulée.
+ * Elle ne lit jamais la touche d'interaction elle-même : c'est le joueur qui
+ * la lui passe par [handle]. Un seul endroit lit la touche, donc la pression
+ * qui ouvre la boîte ne peut pas la faire avancer dans la foulée.
+ *
+ * Une boîte peut commencer par des consignes, qui s'exécutent au moment où
+ * elle s'affiche : `@give:<objet>` et `@flag:<drapeau>` (voir [directives]).
+ * [ask] pose d'abord une question Oui / Non.
  */
 @Script
 class MessageBox : CanvasLayer() {
@@ -44,6 +49,11 @@ class MessageBox : CanvasLayer() {
 	private var revealing = false
 	private var held = 0.0
 
+	/** Oui / Non, au-dessus de la boîte, pendant une question. */
+	private var choices: ChoiceBox? = null
+	private var asking = false
+	private var afterYes: List<String> = emptyList()
+
 	val isOpen: Boolean
 		get() = box?.visible == true
 
@@ -56,6 +66,7 @@ class MessageBox : CanvasLayer() {
 		instance = this
 		box = getNode("Control/Box") as? Control
 		label = getNode("Control/Box/Text") as? RichTextLabel
+		choices = getNode("Control/Choices") as? ChoiceBox
 		PixelShadow.attachAll(label)
 		box?.visible = false
 
@@ -101,6 +112,60 @@ class MessageBox : CanvasLayer() {
 	}
 
 	/**
+	 * Ouvre la boîte sur une question. Oui / Non apparaît une fois la question
+	 * écrite, le curseur sur Oui. **Oui** enchaîne sur [then] ; **Non** — ou la
+	 * touche du menu — referme la boîte sans rien dire de plus. Sans effet si
+	 * la boîte est déjà ouverte.
+	 */
+	fun ask(question: String, then: List<String>) {
+		if (isOpen) return
+
+		pending.clear()
+		asking = true
+		afterYes = then
+		box?.visible = true
+		fullText = T(question)
+		shown = 0
+		elapsed = 0.0
+		PixelShadow.setText(label, "")
+	}
+
+	/**
+	 * À appeler à chaque image tant que la boîte d'un dialogue est ouverte.
+	 * [interact] est la pression d'interaction lue par le joueur.
+	 */
+	fun handle(interact: Boolean) {
+		if (!asking) {
+			if (interact) advance()
+			return
+		}
+
+		// La question s'écrit d'abord ; une pression la termine d'un coup.
+		if (isScrolling) {
+			if (interact) advance()
+			return
+		}
+
+		val answers = choices ?: return
+		if (!answers.isOpen) {
+			answers.open()
+			return
+		}
+
+		when (answers.handle(interact)) {
+			YES -> {
+				asking = false
+				answers.close()
+				pending.addAll(afterYes)
+				next()
+			}
+
+			NO -> close()
+			else -> {}
+		}
+	}
+
+	/**
 	 * Écrit un texte et le laisse à l'écran : aucune touche ne le fait passer,
 	 * c'est l'appelant qui enchaîne ou qui referme avec [close]. Sert aux
 	 * questions (voir SaveMenu). Le texte est dit tel quel, déjà traduit.
@@ -115,6 +180,8 @@ class MessageBox : CanvasLayer() {
 	}
 
 	fun close() {
+		asking = false
+		choices?.close()
 		revealing = false
 		ItemReveal.instance?.dismiss()
 		pending.clear()
@@ -135,8 +202,9 @@ class MessageBox : CanvasLayer() {
 			return
 		}
 
-		// Pendant qu'un objet rare est montré, aucune touche ne presse la suite.
-		if (revealing) return
+		// Pendant qu'un objet rare est montré, aucune touche ne presse la suite ;
+		// une question attend sa réponse (voir handle).
+		if (revealing || asking) return
 
 		next()
 	}
@@ -153,37 +221,51 @@ class MessageBox : CanvasLayer() {
 		}
 
 		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
-		fullText = T(give(message))
+		fullText = T(directives(message))
 		shown = 0
 		elapsed = 0.0
 		PixelShadow.setText(label, "")
 	}
 
 	/**
-	 * Un message qui commence par `@give:<objet>` (ou `@give:<objet>*<nombre>`)
-	 * met l'objet dans le sac au moment où il s'affiche. Si c'est un objet
-	 * rare, il est montré au centre de l'écran. Renvoie le texte sans le
-	 * préfixe.
+	 * Exécute les consignes en tête d'une boîte, au moment où elle s'affiche,
+	 * et renvoie le texte sans elles. Plusieurs peuvent se suivre, chacune
+	 * terminée par une espace :
+	 *
+	 * - `@give:<objet>` ou `@give:<objet>*<nombre>` met l'objet dans le sac ;
+	 *   un objet rare est alors montré au centre de l'écran ;
+	 * - `@flag:<drapeau>` pose un drapeau d'histoire.
 	 */
-	private fun give(message: String): String {
-		val match = GIVE.matchEntire(message) ?: return message
-		val (id, amount, text) = match.destructured
-		val item = Items.get(id)
+	private fun directives(message: String): String {
+		var text = message
+		while (true) {
+			val match = DIRECTIVE.matchEntire(text) ?: return text
+			val (order, name, amount, rest) = match.destructured
+			when (order) {
+				"give" -> give(name, amount.toIntOrNull() ?: 1)
+				"flag" -> StoryFlags.set(name)
+			}
+			text = rest
+		}
+	}
 
+	private fun give(id: String, amount: Int) {
+		val item = Items.get(id)
 		if (item == null) {
 			Logger.e("Objet inconnu dans un dialogue : $id")
-			return text
+			return
 		}
 
-		Inventory.add(id, amount.toIntOrNull() ?: 1)
+		Inventory.add(id, amount)
 		if (item.isKey) {
 			revealing = true
 			held = 0.0
 			ItemReveal.instance?.reveal(item)
 		}
-		return text
 	}
 }
 
 private const val REVEAL_SECONDS = 1.0
-private val GIVE = Regex("""@give:(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
+private const val YES = 0
+private const val NO = 1
+private val DIRECTIVE = Regex("""@(give|flag):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
