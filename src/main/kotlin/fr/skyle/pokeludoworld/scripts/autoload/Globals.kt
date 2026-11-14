@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.autoload
 
 import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
+import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildEncounters
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -51,5 +52,18 @@ class Globals : Node() {
 	@Register
 	fun setHour(hour: Double) {
 		DayNight.forcedHour = hour.takeIf { it >= 0.0 }
+	}
+
+	/**
+	 * Les rencontres sauvages, vues de Godot. [forceEncounters] impose le sort :
+	 * 1, chaque pas dans l'herbe donne une rencontre ; 0, aucun ; négatif, le
+	 * hasard reprend la main.
+	 */
+	@Register
+	fun encounters(): Int = WildEncounters.count
+
+	@Register
+	fun forceEncounters(mode: Int) {
+		WildEncounters.forced = if (mode < 0) null else mode > 0
 	}
 }

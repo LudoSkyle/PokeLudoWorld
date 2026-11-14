@@ -23,6 +23,7 @@ metadata/location = "Bourg-Ludo"
 metadata/banner = "wood"
 metadata/music = "new_bark_town"
 metadata/daylight = true
+metadata/encounter_rate = 10
 position = Vector2(0, 3)
 
 [node name="Background" type="Node2D" parent="." unique_id=783938042]

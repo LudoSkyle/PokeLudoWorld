@@ -339,6 +339,9 @@ func boot(load_save: bool) -> void:
 	scenes.start_scene = LEVELS + scene() + ".tscn"
 	scenes.load_save = load_save
 	root.add_child(game)
+	# Aucune rencontre sauvage par hasard : un test qui traverse l'herbe ne doit
+	# pas s'arreter sur une boite. Ceux qui en veulent une la demandent.
+	force_encounters(0)
 	await wait(20)
 
 # Quitte le jeu et le relance en reprenant la sauvegarde.
@@ -435,6 +438,15 @@ func flag(name: String) -> bool:
 
 func set_flag(name: String) -> void:
 	root.get_node("Globals").set_flag(name)
+
+# --- rencontres sauvages
+
+# 1 : chaque pas dans l'herbe donne une rencontre ; 0 : aucun ; -1 : le hasard.
+func force_encounters(mode: int) -> void:
+	root.get_node("Globals").force_encounters(mode)
+
+func encounters() -> int:
+	return root.get_node("Globals").encounters()
 
 # --- noeuds de test
 #

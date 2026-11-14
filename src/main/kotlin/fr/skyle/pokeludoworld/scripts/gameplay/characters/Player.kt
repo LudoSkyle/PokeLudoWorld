@@ -7,6 +7,7 @@ import fr.skyle.pokeludoworld.scripts.gameplay.levels.Roadblock
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Sign
 import fr.skyle.pokeludoworld.scripts.log.Logger
+import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildEncounters
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.PauseMenu
 import godot.annotation.Category
@@ -111,6 +112,11 @@ class Player : CharacterBody2D() {
 		// avant que la touche tenue n'engage le pas suivant.
 		if (wasWalking && !currentMovement.isWalking && !isLocked) {
 			(currentMovement.areaUnderfoot() as? Roadblock)?.intercept(this)
+			// Un pas dans l'herbe peut faire surgir un Pokémon sauvage — sauf si
+			// le pas a déclenché autre chose : un garde, une porte.
+			if (!isLocked && MessageBox.instance?.isOpen != true && SceneManager.instance?.isChanging != true) {
+				WildEncounters.step(this)
+			}
 		}
 
 		// Pendant un fondu, le pas engagé se termine mais plus aucune entrée
