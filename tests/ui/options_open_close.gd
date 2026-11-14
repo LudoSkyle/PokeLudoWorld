@@ -16,7 +16,8 @@ func test() -> void:
 	check("X ne ferme pas le menu derriere", menu_open() and menu_selected() == "Options", menu_selected())
 	await tap("interact")
 	check("on rouvre les options", options_open())
-	await tap("ui_down")
+	# Haut depuis la premiere ligne boucle sur la derniere : Retour
+	await tap("ui_up")
 	await tap("interact")
 	check("Retour ferme les options", not options_open())
 	check("Retour ramene au menu", menu_open())

@@ -32,6 +32,7 @@ class OptionsMenu : CanvasLayer() {
 	private var cursor: Control? = null
 	private var rows: List<Control> = emptyList()
 	private var speeds: List<Label> = emptyList()
+	private var languages: List<Label> = emptyList()
 
 	private var row = 0
 
@@ -49,6 +50,9 @@ class OptionsMenu : CanvasLayer() {
 
 		val choices = getNode("Control/Screen/Rows/TextSpeed/Choices")
 		speeds = (0 until (choices?.getChildCount() ?: 0)).mapNotNull { choices?.getChild(it) as? Label }
+
+		val tongues = getNode("Control/Screen/Rows/Language/Choices")
+		languages = (0 until (tongues?.getChildCount() ?: 0)).mapNotNull { tongues?.getChild(it) as? Label }
 
 		PixelShadow.attachAll(screen)
 		screen?.visible = false
@@ -83,6 +87,10 @@ class OptionsMenu : CanvasLayer() {
 				if (Input.isActionJustPressed("ui_right")) setTextSpeed(Settings.textSpeed + 1)
 				if (Input.isActionJustPressed("ui_left")) setTextSpeed(Settings.textSpeed - 1)
 			}
+			"Language" -> {
+				if (Input.isActionJustPressed("ui_right")) Settings.setLanguage(Settings.language + 1)
+				if (Input.isActionJustPressed("ui_left")) Settings.setLanguage(Settings.language - 1)
+			}
 			"Back" -> if (interact) {
 				close()
 				return
@@ -100,6 +108,9 @@ class OptionsMenu : CanvasLayer() {
 	private fun refresh() {
 		speeds.forEachIndexed { index, label ->
 			label.addThemeColorOverride("font_color", if (index == Settings.textSpeed) CHOSEN else INK)
+		}
+		languages.forEachIndexed { index, label ->
+			label.addThemeColorOverride("font_color", if (index == Settings.language) CHOSEN else INK)
 		}
 
 		val current = rows.getOrNull(row) ?: return

@@ -18,7 +18,8 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
 | cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
 | PNJ, leurs déplacements, passages gardés | [docs/npcs.md](docs/npcs.md) |
-| menu de pause | [docs/menu.md](docs/menu.md) |
+| menu de pause, options | [docs/menu.md](docs/menu.md) |
+| textes, traductions | [docs/i18n.md](docs/i18n.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
 | vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
 

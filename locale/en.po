@@ -1,0 +1,177 @@
+# English translation of PokeLudoWorld.
+# The game is written in French: each msgid is a French text exactly as it
+# appears in a scene or in the code. Check with tests/run.sh i18n.
+msgid ""
+msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Grotte - Entrée"
+msgstr "Cave - Entrance"
+
+msgid "Grotte - Sous-sol 1"
+msgstr "Cave - Basement 1"
+
+msgid "Grotte - Sous-sol 2"
+msgstr "Cave - Basement 2"
+
+msgid "Un serveur qui ronronne doucement."
+msgstr "A server humming quietly."
+
+msgid "Il a l'air de contenir des données très importantes."
+msgstr "It seems to hold very important data."
+
+msgid "Une bibliothèque pleine de livres."
+msgstr "A bookshelf full of books."
+
+msgid "Ils ont l'air très intéressants !"
+msgstr "They look really interesting!"
+
+msgid "La poubelle est vide."
+msgstr "The bin is empty."
+
+msgid "Laboratoire"
+msgstr "Laboratory"
+
+msgid "Maison de Ludo"
+msgstr "Ludo's House"
+
+msgid "Maison des voisins"
+msgstr "Neighbours' House"
+
+msgid "Maison des voisins."
+msgstr "The neighbours' house."
+
+msgid "Frappez avant d'entrer."
+msgstr "Please knock before entering."
+
+msgid "Maison de Ludo."
+msgstr "Ludo's house."
+
+msgid "La porte n'est jamais fermée, entrez donc."
+msgstr "The door is never locked, do come in."
+
+msgid "Désolé, le passage est fermé."
+msgstr "Sorry, the way is closed."
+
+msgid "C'est dangereux par là : la route n'est pas encore sûre."
+msgstr "It's dangerous over there: the road isn't safe yet."
+
+msgid "Ces herbes sont si hautes qu'on s'y perd."
+msgstr "This grass is so tall you could get lost in it."
+
+msgid "Je cherche des insectes, mais je n'ai encore rien trouvé."
+msgstr "I'm looking for bugs, but I haven't found any yet."
+
+msgid "Pff... pff... Je fais le tour du village tous les matins."
+msgstr "Huff... huff... I run around the village every morning."
+
+msgid "Ne reste pas au milieu du chemin, je perds mon rythme."
+msgstr "Don't stand in the middle of the path, I'm losing my pace."
+
+msgid "Chut... Ça ne mord pas fort aujourd'hui."
+msgstr "Shh... They're not biting much today."
+
+msgid "Il paraît qu'il y a de gros poissons au fond du lac."
+msgstr "They say there are big fish at the bottom of the lake."
+
+msgid "Bourg-Ludo"
+msgstr "Ludo Town"
+
+msgid "Vitesse du texte"
+msgstr "Text speed"
+
+msgid "Langue"
+msgstr "Language"
+
+msgid "Retour"
+msgstr "Back"
+
+msgid "Sac"
+msgstr "Bag"
+
+msgid "Quitter"
+msgstr "Exit"
+
+msgid "L'horloge indique %d h %02d."
+msgstr "The clock reads %d:%02d."
+
+msgid "C'est la météo."
+msgstr "It's the weather forecast."
+
+msgid "Grand soleil sur tout le village aujourd'hui !"
+msgstr "Bright sunshine over the whole village today!"
+
+msgid "Quelques nuages ce soir, mais pas une goutte de pluie."
+msgstr "A few clouds tonight, but not a drop of rain."
+
+msgid "Un petit vent frais soufflera sur la côte demain matin."
+msgstr "A cool breeze will blow along the coast tomorrow morning."
+
+msgid "Il y a un film à la télé."
+msgstr "There's a movie on TV."
+
+msgid "Quatre garçons marchent le long d'une voie ferrée."
+msgstr "Four boys are walking along a railway track."
+
+msgid "Je ferais mieux d'y aller aussi."
+msgstr "I'd better get going too."
+
+msgid "Deux hommes dansent sur un piano géant."
+msgstr "Two men are dancing on a giant piano."
+
+msgid "Bon, il est temps de bouger !"
+msgstr "Right, time to get moving!"
+
+msgid "Une émission de cuisine."
+msgstr "A cooking show."
+
+msgid "Le chef rate sa crêpe, le public applaudit quand même."
+msgstr "The chef drops his pancake, the audience claps anyway."
+
+msgid "Un documentaire sur les grottes de la région."
+msgstr "A documentary about the local caves."
+
+msgid "Il paraît qu'on s'y perd facilement."
+msgstr "They say it's easy to get lost in them."
+
+msgid "Un jeu télévisé."
+msgstr "A game show."
+
+msgid "Le candidat hésite... Ah, mauvaise réponse !"
+msgstr "The contestant hesitates... Oh, wrong answer!"
+
+msgid "C'est le journal."
+msgstr "It's the news."
+
+msgid "Rien à signaler au village, et c'est très bien comme ça."
+msgstr "Nothing to report in the village, and that's just fine."
+
+msgid "Une publicité pour des chaussures de course."
+msgstr "An ad for running shoes."
+
+msgid "Avec elles on irait deux fois plus vite, paraît-il."
+msgstr "They say you'd go twice as fast in them."
+
+msgid "Sauvegarder"
+msgstr "Save"
+
+msgid "Oui"
+msgstr "Yes"
+
+msgid "Non"
+msgstr "No"
+
+msgid "Temps de jeu"
+msgstr "Play time"
+
+msgid "Voulez-vous sauvegarder la partie ?"
+msgstr "Would you like to save the game?"
+
+msgid "Une sauvegarde existe déjà.\nVoulez-vous l'écraser ?"
+msgstr "There is already a saved file.\nIs it OK to overwrite it?"
+
+msgid "La partie est sauvegardée."
+msgstr "The game was saved."

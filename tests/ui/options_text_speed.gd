@@ -24,7 +24,7 @@ func test() -> void:
 		await tap("ui_right")
 	check("Droite jusqu'au bout : x4", speed_is("Four", 0.005), "%s %.3f" % [options_speed(), letter_seconds()])
 	var saved := ConfigFile.new()
-	saved.load("user://settings.cfg")
+	saved.load("user://test_settings.cfg")
 	check("le reglage est enregistre", saved.get_value("options", "text_speed_factor", -1) == 3, str(saved.get_value("options", "text_speed_factor", -1)))
 
 	# effet reel : en x4, les 15 lettres du panneau sont la en un dixieme de seconde
@@ -36,14 +36,3 @@ func test() -> void:
 	await secs(0.15)
 	check("x4 : le texte est deja entier", box().visible and box_text() == "Maison de Ludo.", box_text())
 	await close_box()
-
-	# on remet x1, la valeur par defaut
-	await tap("menu")
-	await tap("ui_down")
-	await tap("interact")
-	for i in 3:
-		await tap("ui_left")
-	await tap("ui_right")
-	check("remis sur x1", options_speed() == "One", options_speed())
-	await tap("menu")
-	await tap("menu")
