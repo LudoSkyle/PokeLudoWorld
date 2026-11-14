@@ -6,7 +6,7 @@ début de ligne.
 
 | Touche | Effet |
 |---|---|
-| **X** (action `menu`) | ouvre le menu ; le referme s'il est ouvert |
+| **X** ou **Échap** (action `menu`) | ouvre le menu ; le referme s'il est ouvert |
 | Haut / Bas | déplace le curseur, qui **boucle** aux deux bouts |
 | interaction | valide l'entrée sous le curseur |
 
@@ -53,7 +53,7 @@ par-dessus le menu resté ouvert : un cadre de titre, un cadre de lignes.
 |---|---|
 | Haut / Bas | change de ligne |
 | Gauche / Droite | change la valeur de la ligne ; pas de boucle, les bouts sont des butées |
-| interaction sur **Retour**, ou **X** | ramène au menu de pause |
+| interaction sur **Retour**, **X** ou **Échap** | ramène au menu de pause |
 
 Le choix en cours est en **rouge**. Une valeur s'applique et s'enregistre dès
 qu'on la change, sans validation.
