@@ -50,8 +50,8 @@ Un objet **à ramasser** sur une carte est un `Readable` de `kind = "item"` :
 il donne son objet par ce même `@give:`, une seule fois
 ([quests.md](quests.md)).
 
-Rien dans le jeu ne donne encore d'objet. En attendant, l'entrée **Debug** du
-menu de pause remplit le sac (`PauseMenu.debug`) : huit objets, des Poké Balls,
+Pour la mise au point, l'outil **Remplir le sac** de l'entrée **Debug** du
+menu de pause remplit le sac (`PauseMenu.fillBag`, voir [menu.md](menu.md)) : huit objets, des Poké Balls,
 et deux objets rares donnés par `@give:` pour voir leur présentation.
 
 ## L'écran du sac

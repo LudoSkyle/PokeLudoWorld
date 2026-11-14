@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
+import fr.skyle.pokeludoworld.scripts.gameplay.story.BellQuest
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -46,6 +47,9 @@ class PauseMenu : CanvasLayer() {
 	private var cursor: Control? = null
 	private var entries: List<Control> = emptyList()
 
+	/** Les outils de l'entrée Debug, dans une boîte de choix. */
+	private var debugChoices: ChoiceBox? = null
+
 	/** Entrée sous le curseur. Revient à la première à chaque ouverture. */
 	var selected: Int = 0
 		private set
@@ -74,6 +78,8 @@ class PauseMenu : CanvasLayer() {
 			(getNode("Control/Menu/Frame") as? NinePatchRect)?.texture = texture
 		}
 
+		debugChoices = getNode("Control/DebugChoices") as? ChoiceBox
+
 		PixelShadow.attachAll(menu)
 		menu?.visible = false
 	}
@@ -89,6 +95,7 @@ class PauseMenu : CanvasLayer() {
 
 	fun close() {
 		isOpen = false
+		debugChoices?.close()
 		menu?.visible = false
 	}
 
@@ -126,6 +133,18 @@ class PauseMenu : CanvasLayer() {
 			return
 		}
 
+		val tools = debugChoices
+		if (tools != null && tools.isOpen) {
+			when (tools.handle(interact)) {
+				null -> {}
+				DEBUG_BAG -> fillBag()
+				DEBUG_NEXT -> advanceQuest(all = false)
+				DEBUG_FINISH -> advanceQuest(all = true)
+				else -> tools.close()
+			}
+			return
+		}
+
 		// La touche qui a ouvert le menu le referme.
 		if (Input.isActionJustPressed(ACTION)) {
 			close()
@@ -155,10 +174,15 @@ class PauseMenu : CanvasLayer() {
 	}
 
 	/**
-	 * Outils de mise au point. Pour l'instant : remplir le sac d'un peu de
-	 * tout, puisque rien dans le jeu ne donne encore d'objet.
+	 * Outils de mise au point : une boîte de choix. Retour, ou la touche du
+	 * menu, ramène au menu de pause.
 	 */
 	private fun debug() {
+		debugChoices?.open(DEBUG_TOOLS.map { T(it) })
+	}
+
+	/** Remplit le sac d'un peu de tout, et donne deux objets rares pour voir leur présentation. */
+	private fun fillBag() {
 		Items.ALL.filter { !it.isKey }.forEachIndexed { index, item -> Inventory.add(item.id, index + 3) }
 		close()
 		MessageBox.instance?.play(
@@ -170,6 +194,22 @@ class PauseMenu : CanvasLayer() {
 		)
 	}
 
+	/**
+	 * Fait avancer la quête de la cloche d'une étape, ou jusqu'au bout : ses
+	 * drapeaux sont posés, le sac mis à jour, et la carte se recharge une fois
+	 * le message refermé pour montrer ce que l'étape change.
+	 */
+	private fun advanceQuest(all: Boolean) {
+		val moved = if (all) BellQuest.finish() else BellQuest.advance()
+		close()
+		val message = when {
+			!moved -> N("La quête de la cloche est déjà terminée.")
+			BellQuest.isFinished -> "@reload " + N("La quête de la cloche est terminée.")
+			else -> "@reload " + N("La quête de la cloche avance d'une étape.")
+		}
+		MessageBox.instance?.play(listOf(message))
+	}
+
 	private fun placeCursor() {
 		val entry = entries.getOrNull(selected) ?: return
 		val list = entry.getParent() as? Control ?: return
@@ -178,5 +218,10 @@ class PauseMenu : CanvasLayer() {
 		arrow.setPosition(Vector2(arrow.getPosition().x, y))
 	}
 }
+
+private const val DEBUG_BAG = 0
+private const val DEBUG_NEXT = 1
+private const val DEBUG_FINISH = 2
+private val DEBUG_TOOLS = listOf(N("Remplir le sac"), N("Quête : suite"), N("Quête : fin"), N("Retour"))
 
 private const val FRAMES_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/"

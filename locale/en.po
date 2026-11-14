@@ -565,3 +565,21 @@ msgstr "Roland"
 
 msgid "Professeur"
 msgstr "Professor"
+
+msgid "Remplir le sac"
+msgstr "Fill the bag"
+
+msgid "Quête : suite"
+msgstr "Quest: next"
+
+msgid "Quête : fin"
+msgstr "Quest: finish"
+
+msgid "La quête de la cloche est déjà terminée."
+msgstr "The bell quest is already complete."
+
+msgid "La quête de la cloche est terminée."
+msgstr "The bell quest is complete."
+
+msgid "La quête de la cloche avance d'une étape."
+msgstr "The bell quest moves one step forward."

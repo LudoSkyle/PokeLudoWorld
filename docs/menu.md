@@ -12,7 +12,7 @@ début de ligne.
 
 Entrées actuelles : **Sac** (voir [bag.md](bag.md)), **Sauvegarder** (voir
 [save.md](save.md)), **Options** (ouvre l'écran des options), **Debug** (outils
-de mise au point : remplit le sac d'objets de test), **Quitter** (ferme le
+de mise au point, voir plus bas), **Quitter** (ferme le
 menu). Le menu est collé au coin haut droit
 de l'écran, comme dans les jeux d'origine. À chaque ouverture, le curseur repart de la **première entrée** ; il ne garde
 sa place que le temps d'un aller-retour dans un écran ouvert depuis le menu.
@@ -109,3 +109,18 @@ lettre, elle passe donc par `PixelShadow.setText`.
 
 Le curseur (`assets/ui/cursor.png`, 6×10 avec son ombre) est extrait de la même
 capture, et dessiné à l'échelle 4.
+
+## Les outils de Debug
+
+L'entrée **Debug** ouvre une boîte de choix (`Control/DebugChoices`, une
+`ChoiceBox`). Retour, ou la touche du menu, ramène au menu de pause.
+
+| Outil | Effet |
+|---|---|
+| **Remplir le sac** | huit objets, des Poké Balls, et deux objets rares donnés par `@give:` pour voir leur présentation ([bag.md](bag.md)) |
+| **Quête : suite** | franchit la prochaine étape de la quête de la cloche : son drapeau est posé, le sac mis à jour, et la carte se recharge une fois le message refermé |
+| **Quête : fin** | franchit toutes les étapes restantes d'un coup |
+
+Les étapes et ce que chacune met dans le sac sont dans `BellQuest.kt`
+([quests.md](quests.md)). Ce qu'on débloque ainsi **part dans la sauvegarde**
+si l'on sauvegarde ensuite : les drapeaux en font partie.
