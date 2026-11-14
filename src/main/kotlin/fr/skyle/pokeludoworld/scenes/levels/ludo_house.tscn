@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="3_readable"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/npc.tscn" id="4_npc"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Maison de Ludo"
@@ -36,6 +37,14 @@ tile_set = ExtResource("1_tileset")
 
 [node name="Entities" type="Node2D" parent="World"]
 y_sort_enabled = true
+
+[node name="Odile" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(280, 184)
+appearance = "socialite"
+facing = Vector2(-1, 0)
+text = "Te voilà debout. J'ai gardé du pain pour toi.|Tu as vu le socle vide, sur la place ? Il y avait une cloche dessus.|On la sonnait le dernier soir de l'été. Tout le village venait.|Même les Pokémon descendaient écouter, disait ma mère.|Personne ne sait où elle est passée.|@flag:bell_told Peut-être qu'Alix, la bibliothécaire, sait quelque chose."
+states = PackedStringArray("bell_told > Alors ? Alix t'a trouvé quelque chose ?|Prends ton temps. Moi, je ne bouge plus d'ici.", "bell_clean > Oh...|Elle est comme dans mon souvenir. Exactement comme ça.|Non, garde-la. Mes jambes ne montent plus jusque là-haut.|Tiens, prends aussi ça. Je l'ai porté à la dernière Veillée.|@flag:bell_ribbon @give:vigil_ribbon Vous recevez le Ruban de la Veillée !|Allez, va. Et sonne fort, que je l'entende d'ici.", "bell_ribbon > Allez, va. Et sonne fort, que je l'entende d'ici.")
+ask = "bell_clean > Montrer la cloche à Mémé ?"
 
 [node name="Doors" type="Node2D" parent="."]
 

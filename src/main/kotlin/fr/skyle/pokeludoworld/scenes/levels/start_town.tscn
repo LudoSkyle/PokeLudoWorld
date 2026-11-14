@@ -133,6 +133,12 @@ appearance = "fisher"
 facing = Vector2(1, 0)
 text = "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au fond du lac."
 
+[node name="Roland" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(632, 56)
+appearance = "ruin_maniac"
+text = "Cette grotte, j'y ai passé vingt ans.|Elle a encore des choses à dire, je le sens."
+states = PackedStringArray("bell_register > Tout en bas, près du lac souterrain...|...il y a quelque chose qui accroche la lumière.|Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe devant.")
+
 [node name="Triggers" type="Node2D" parent="."]
 
 [node name="WestRoadblock" parent="Triggers" instance=ExtResource("5_roadblock")]

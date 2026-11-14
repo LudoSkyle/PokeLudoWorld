@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="3_readable"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/npc.tscn" id="4_npc"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Laboratoire"
@@ -36,6 +37,12 @@ tile_set = ExtResource("1_tileset")
 
 [node name="Entities" type="Node2D" parent="World"]
 y_sort_enabled = true
+
+[node name="Professor" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(200, 168)
+appearance = "professor_elm"
+text = "Ah, bonjour ! Ne fais pas attention au désordre.|Je range ce laboratoire depuis des années."
+states = PackedStringArray("bell_tarnished > Fais voir ça... Du bronze de l'ancienne mine.|On n'en coule plus depuis bien avant moi.|Pose-la dans la machine de soin, là-bas. Elle nettoie tout.", "bell_clean > Regarde-moi ce bronze. Elle est comme neuve.|Je me demande quel son elle a.")
 
 [node name="Doors" type="Node2D" parent="."]
 
@@ -158,3 +165,15 @@ text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
 [node name="Books25" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(360, 216)
 text = "Une bibliothèque pleine de livres.|Ils ont l'air très intéressants !"
+
+[node name="Healer0" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(264, 120)
+text = "Une machine de soin.|Elle n'a personne à soigner."
+states = PackedStringArray("bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
+ask = "bell_tarnished > Poser la Cloche ternie dans la machine ?"
+
+[node name="Healer1" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(280, 120)
+text = "Une machine de soin.|Elle n'a personne à soigner."
+states = PackedStringArray("bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !", "bell_clean > Une machine de soin.|Elle n'a personne à soigner.")
+ask = "bell_tarnished > Poser la Cloche ternie dans la machine ?"

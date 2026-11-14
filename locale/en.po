@@ -331,3 +331,132 @@ msgstr "This is where the register came from."
 
 msgid "Le vide dans la rangée se voit encore."
 msgstr "You can still see the gap in the row."
+
+msgid "Cloche ternie"
+msgstr "Tarnished Bell"
+
+msgid "Une petite cloche de bronze noircie, sortie de la vase du lac souterrain."
+msgstr "A small blackened bronze bell, pulled out of the mud of the underground lake."
+
+msgid "Cloche claire"
+msgstr "Clear Bell"
+
+msgid "La cloche de Bourg-Ludo, nettoyée. Son bronze a retrouvé sa couleur."
+msgstr "The bell of Bourg-Ludo, cleaned. Its bronze has its colour back."
+
+msgid "Ruban de la Veillée"
+msgstr "Vigil Ribbon"
+
+msgid "Le ruban que Mémé Odile portait à la dernière Veillée. Un souvenir."
+msgstr "The ribbon Granny Odile wore at the last Vigil. A keepsake."
+
+msgid "Te voilà debout. J'ai gardé du pain pour toi."
+msgstr "There you are, up at last. I kept some bread for you."
+
+msgid "Tu as vu le socle vide, sur la place ? Il y avait une cloche dessus."
+msgstr "Have you seen the empty stand on the square? There used to be a bell on it."
+
+msgid "On la sonnait le dernier soir de l'été. Tout le village venait."
+msgstr "We rang it on the last evening of summer. The whole village came."
+
+msgid "Même les Pokémon descendaient écouter, disait ma mère."
+msgstr "Even the Pokémon came down to listen, my mother used to say."
+
+msgid "Personne ne sait où elle est passée."
+msgstr "Nobody knows where it went."
+
+msgid "Peut-être qu'Alix, la bibliothécaire, sait quelque chose."
+msgstr "Maybe Alix, the librarian, knows something."
+
+msgid "Alors ? Alix t'a trouvé quelque chose ?"
+msgstr "Well? Did Alix find something for you?"
+
+msgid "Prends ton temps. Moi, je ne bouge plus d'ici."
+msgstr "Take your time. I'm not going anywhere."
+
+msgid "Montrer la cloche à Mémé ?"
+msgstr "Show the bell to Granny?"
+
+msgid "Oh..."
+msgstr "Oh..."
+
+msgid "Elle est comme dans mon souvenir. Exactement comme ça."
+msgstr "It's just as I remember it. Exactly like that."
+
+msgid "Non, garde-la. Mes jambes ne montent plus jusque là-haut."
+msgstr "No, keep it. My legs won't carry me up there anymore."
+
+msgid "Tiens, prends aussi ça. Je l'ai porté à la dernière Veillée."
+msgstr "Here, take this too. I wore it at the last Vigil."
+
+msgid "Vous recevez le Ruban de la Veillée !"
+msgstr "You received the Vigil Ribbon!"
+
+msgid "Allez, va. Et sonne fort, que je l'entende d'ici."
+msgstr "Go on, now. And ring it loud, so I can hear it from here."
+
+msgid "Cette grotte, j'y ai passé vingt ans."
+msgstr "I spent twenty years in that cave."
+
+msgid "Elle a encore des choses à dire, je le sens."
+msgstr "It still has things to say, I can feel it."
+
+msgid "Tout en bas, près du lac souterrain..."
+msgstr "All the way down, near the underground lake..."
+
+msgid "...il y a quelque chose qui accroche la lumière."
+msgstr "...there is something that catches the light."
+
+msgid "Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent."
+msgstr "I don't go down there anymore. Too dark, too many loose stones."
+
+msgid "Alors c'était ça qui brillait."
+msgstr "So that's what was shining."
+
+msgid "Une cloche. Vingt ans que je passe devant."
+msgstr "A bell. Twenty years I've been walking past it."
+
+msgid "Quelque chose est à moitié enfoncé dans la vase."
+msgstr "Something is half buried in the mud."
+
+msgid "Vous trouvez la Cloche ternie !"
+msgstr "You found the Tarnished Bell!"
+
+msgid "Quelque chose file le long de la paroi et disparaît dans le noir."
+msgstr "Something darts along the wall and vanishes into the dark."
+
+msgid "Ah, bonjour ! Ne fais pas attention au désordre."
+msgstr "Ah, hello! Never mind the mess."
+
+msgid "Je range ce laboratoire depuis des années."
+msgstr "I have been tidying this laboratory for years."
+
+msgid "Fais voir ça... Du bronze de l'ancienne mine."
+msgstr "Let me see that... Bronze from the old mine."
+
+msgid "On n'en coule plus depuis bien avant moi."
+msgstr "Nobody has cast any since long before my time."
+
+msgid "Pose-la dans la machine de soin, là-bas. Elle nettoie tout."
+msgstr "Put it in the healing machine over there. It cleans anything."
+
+msgid "Regarde-moi ce bronze. Elle est comme neuve."
+msgstr "Look at that bronze. It's as good as new."
+
+msgid "Je me demande quel son elle a."
+msgstr "I wonder what it sounds like."
+
+msgid "Une machine de soin."
+msgstr "A healing machine."
+
+msgid "Elle n'a personne à soigner."
+msgstr "It has no one to heal."
+
+msgid "Poser la Cloche ternie dans la machine ?"
+msgstr "Put the Tarnished Bell in the machine?"
+
+msgid "La machine s'allume et chante trois notes."
+msgstr "The machine lights up and sings three notes."
+
+msgid "Vous récupérez la Cloche claire !"
+msgstr "You got the Clear Bell back!"

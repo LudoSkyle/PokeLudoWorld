@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/readable.tscn" id="3_readable"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Grotte - Sous-sol 2"
@@ -40,3 +41,11 @@ position = Vector2(376, 56)
 target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/cave_b1f.tscn"
 target_door = "TunnelD"
 entry_direction = Vector2(0, 1)
+
+[node name="Readables" type="Node2D" parent="."]
+
+[node name="Bell" parent="Readables" instance=ExtResource("3_readable")]
+position = Vector2(376, 232)
+kind = "item"
+text = "Quelque chose est à moitié enfoncé dans la vase.|@give:tarnished_bell Vous trouvez la Cloche ternie !|Quelque chose file le long de la paroi et disparaît dans le noir."
+flag = "bell_tarnished"
