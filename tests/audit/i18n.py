@@ -19,6 +19,8 @@ def sources():
 
     def add(text, where):
         for box in boxes(text):
+            # "@give:objet " en tete d'une boite est une consigne, pas du texte.
+            box = re.sub(r"^@give:\w+(\*\d+)? ", "", box)
             if not SAME.match(box):
                 found.setdefault(box, where)
 

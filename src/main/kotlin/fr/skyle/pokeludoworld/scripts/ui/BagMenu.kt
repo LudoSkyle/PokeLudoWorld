@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Item
+import fr.skyle.pokeludoworld.scripts.gameplay.items.ItemIcons
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Pocket
 import godot.annotation.Register
 import godot.annotation.Script
@@ -23,7 +24,8 @@ import godot.core.Vector2
  * - Gauche / Droite : changer de poche.
  * - Retour, ou la touche du menu : refermer le sac.
  *
- * Valider un objet ne fait encore rien : il n'y a pas d'usage à leur donner.
+ * Valider un objet ouvre ses **actions** : Annuler seul pour un objet rare,
+ * Jeter et Annuler pour les autres. Jeter demande combien, puis confirmation.
  */
 @Script
 class BagMenu : CanvasLayer() {
@@ -32,6 +34,8 @@ class BagMenu : CanvasLayer() {
 		var instance: BagMenu? = null
 			private set
 	}
+
+	private enum class Mode { LIST, ACTIONS, AMOUNT, CONFIRM, DONE }
 
 	private var screen: Control? = null
 	private var title: Label? = null
@@ -45,11 +49,19 @@ class BagMenu : CanvasLayer() {
 	private var description: Label? = null
 	private var names: List<Label> = emptyList()
 	private var amounts: List<Label> = emptyList()
+	private var choices: ChoiceBox? = null
+	private var amountPanel: Control? = null
+	private var amountLabel: Label? = null
 
+	private var mode = Mode.LIST
 	private var pocket = 0
 	private var line = 0
 	private var top = 0
 	private var entries: List<Pair<Item, Int>> = emptyList()
+
+	/** Actions proposées pour l'objet choisi, dans l'ordre de la boîte. */
+	private var actions: List<String> = emptyList()
+	private var amount = 1
 
 	val isOpen: Boolean
 		get() = screen?.visible == true
@@ -69,8 +81,14 @@ class BagMenu : CanvasLayer() {
 		description = getNode("Control/Screen/Description") as? Label
 		names = labels("Control/Screen/Names")
 		amounts = labels("Control/Screen/Amounts")
+		choices = getNode("Control/Screen/Choices") as? ChoiceBox
+		amountPanel = getNode("Control/Screen/Amount") as? Control
+		amountLabel = getNode("Control/Screen/Amount/Value") as? Label
 
-		PixelShadow.attachAll(screen)
+		// La boîte de choix pose elle-même ses ombres.
+		listOf(title, description, amountLabel).forEach { PixelShadow.attachAll(it) }
+		(names + amounts).forEach { PixelShadow.attachAll(it) }
+		amountPanel?.visible = false
 		screen?.visible = false
 	}
 
@@ -78,11 +96,15 @@ class BagMenu : CanvasLayer() {
 	fun open() {
 		if (isOpen) return
 		pocket = 0
+		mode = Mode.LIST
 		showPocket()
 		screen?.visible = true
 	}
 
 	fun close() {
+		choices?.close()
+		amountPanel?.visible = false
+		mode = Mode.LIST
 		screen?.visible = false
 	}
 
@@ -90,6 +112,25 @@ class BagMenu : CanvasLayer() {
 	fun handle(interact: Boolean) {
 		if (!isOpen) return
 
+		when (mode) {
+			Mode.LIST -> browse(interact)
+			Mode.ACTIONS -> when (actions.getOrNull(choices?.handle(interact) ?: -1)) {
+				TOSS -> askAmount()
+				CANCEL -> backToList()
+			}
+			Mode.AMOUNT -> pickAmount(interact)
+			Mode.CONFIRM -> when (choices?.handle(interact)) {
+				YES -> toss()
+				NO -> backToList()
+			}
+			// Le message de fin attend une touche, n'importe laquelle.
+			Mode.DONE -> if (interact || Input.isActionJustPressed(PauseMenu.ACTION)) backToList()
+		}
+	}
+
+	// --- la liste
+
+	private fun browse(interact: Boolean) {
 		if (Input.isActionJustPressed(PauseMenu.ACTION)) {
 			close()
 			return
@@ -109,7 +150,8 @@ class BagMenu : CanvasLayer() {
 		if (Input.isActionJustPressed("ui_down") && line < entries.size) move(line + 1)
 		if (Input.isActionJustPressed("ui_up") && line > 0) move(line - 1)
 
-		if (interact && line == entries.size) close()
+		if (!interact) return
+		if (line == entries.size) close() else askAction()
 	}
 
 	/** Affiche la poche courante depuis le haut. */
@@ -122,10 +164,95 @@ class BagMenu : CanvasLayer() {
 
 	private fun move(to: Int) {
 		line = to
-		// La fenêtre suit le curseur.
+		follow()
+		refresh()
+	}
+
+	/** La fenêtre de six lignes suit le curseur. */
+	private fun follow() {
 		if (line < top) top = line
 		if (line >= top + names.size) top = line - names.size + 1
+		// Jamais de vide en bas si la liste peut remplir la fenêtre.
+		top = top.coerceIn(0, maxOf(0, entries.size + 1 - names.size))
+	}
+
+	// --- les actions sur un objet
+
+	private val selected: Item?
+		get() = entries.getOrNull(line)?.first
+
+	private fun askAction() {
+		val item = selected ?: return
+		// Un objet rare ne se jette pas.
+		actions = if (item.isKey) listOf(CANCEL) else listOf(TOSS, CANCEL)
+		mode = Mode.ACTIONS
+		say(T("Objet choisi : %s.").format(T(item.name)))
+		choices?.open(actions.map { T(it) })
+	}
+
+	private fun askAmount() {
+		choices?.close()
+		amount = 1
+		mode = Mode.AMOUNT
+		say(T("Combien en jeter ?"))
+		amountPanel?.visible = true
+		showAmount()
+	}
+
+	private fun pickAmount(interact: Boolean) {
+		if (Input.isActionJustPressed(PauseMenu.ACTION)) {
+			backToList()
+			return
+		}
+
+		val most = entries.getOrNull(line)?.second ?: 1
+		// La quantité boucle : sous 1 on saute au maximum, et inversement.
+		if (Input.isActionJustPressed("ui_up")) amount = if (amount >= most) 1 else amount + 1
+		if (Input.isActionJustPressed("ui_down")) amount = if (amount <= 1) most else amount - 1
+		showAmount()
+
+		if (!interact) return
+		val item = selected ?: return
+		amountPanel?.visible = false
+		mode = Mode.CONFIRM
+		say(T("Jeter %s x%d ?").format(T(item.name), amount))
+		choices?.open(listOf(T(N("Oui")), T(N("Non"))))
+	}
+
+	private fun toss() {
+		val item = selected ?: return
+		choices?.close()
+		Inventory.remove(item.id, amount)
+		mode = Mode.DONE
+		say(T("Vous jetez %s x%d.").format(T(item.name), amount))
+		// La liste montre tout de suite ce qu'il reste ; le message, lui, attend une touche.
+		reload()
+		drawList()
+	}
+
+	private fun backToList() {
+		choices?.close()
+		amountPanel?.visible = false
+		mode = Mode.LIST
+		reload()
 		refresh()
+	}
+
+	/** Relit la poche sans bouger le curseur, sauf s'il pointait une ligne disparue. */
+	private fun reload() {
+		entries = Inventory.contents(POCKETS[pocket])
+		line = line.coerceAtMost(entries.size)
+		follow()
+	}
+
+	private fun showAmount() {
+		PixelShadow.setText(amountLabel, "x$amount")
+	}
+
+	// --- l'affichage
+
+	private fun say(text: String) {
+		PixelShadow.setText(description, text)
 	}
 
 	private fun refresh() {
@@ -135,7 +262,15 @@ class BagMenu : CanvasLayer() {
 		left?.visible = pocket > 0
 		right?.visible = pocket < POCKETS.size - 1
 
-		// Les lignes : les objets, puis Retour, puis du vide.
+		drawList()
+
+		val item = selected
+		say(item?.description ?: BACK_DESCRIPTION)
+		icon?.texture = ItemIcons.of(item?.icon ?: ItemIcons.BACK)
+	}
+
+	/** Les lignes : les objets, puis Retour, puis du vide. */
+	private fun drawList() {
 		names.forEachIndexed { row, label ->
 			val index = top + row
 			val entry = entries.getOrNull(index)
@@ -147,23 +282,15 @@ class BagMenu : CanvasLayer() {
 					else -> ""
 				},
 			)
-			PixelShadow.setText(amounts.getOrNull(row), if (entry != null && entry.first.counted) "x${entry.second}" else "")
+			PixelShadow.setText(amounts.getOrNull(row), if (entry != null && !entry.first.isKey) "x${entry.second}" else "")
 		}
 		up?.visible = top > 0
 		down?.visible = top + names.size < entries.size + 1
 
-		names.getOrNull(line - top)?.let { label ->
-			val list = label.getParent() as? Control
-			val arrow = cursor
-			if (list != null && arrow != null) {
-				val y = list.getPosition().y + label.getPosition().y + (label.getSize().y - arrow.getSize().y) / 2.0
-				arrow.setPosition(Vector2(arrow.getPosition().x, y))
-			}
-		}
-
-		val selected = entries.getOrNull(line)?.first
-		PixelShadow.setText(description, selected?.description ?: BACK_DESCRIPTION)
-		icon?.texture = texture("$ITEMS_DIR${selected?.id ?: "_back"}.png") ?: texture("${ITEMS_DIR}_unknown.png")
+		val arrow = cursor ?: return
+		val list = names.firstOrNull()?.getParent() as? Control ?: return
+		val y = list.getPosition().y + ROW * (line - top) + (ROW - arrow.getSize().y) / 2.0
+		arrow.setPosition(Vector2(arrow.getPosition().x, y))
 	}
 
 	private fun labels(path: String): List<Label> {
@@ -178,5 +305,9 @@ class BagMenu : CanvasLayer() {
 private val POCKETS = Pocket.entries
 private val BACK = N("Retour")
 private val BACK_DESCRIPTION = N("Refermer le sac.")
+private val TOSS = N("Jeter")
+private val CANCEL = N("Annuler")
+private const val YES = 0
+private const val NO = 1
+private const val ROW = 64.0
 private const val UI_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/bag/"
-private const val ITEMS_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/"

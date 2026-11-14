@@ -1,6 +1,8 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.core.Settings
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -38,6 +40,10 @@ class MessageBox : CanvasLayer() {
 	private var shown: Int = 0
 	private var elapsed: Double = 0.0
 
+	/** Vrai pendant qu'un objet rare est montré : la boîte passe seule à la suite. */
+	private var revealing = false
+	private var held = 0.0
+
 	val isOpen: Boolean
 		get() = box?.visible == true
 
@@ -61,7 +67,19 @@ class MessageBox : CanvasLayer() {
 
 	@Register
 	override fun _process(delta: Double) {
-		if (!isOpen || !isScrolling) return
+		if (!isOpen) return
+
+		if (!isScrolling) {
+			// Objet rare à l'écran : une seconde une fois le texte écrit, puis la suite.
+			if (!revealing || ItemReveal.instance?.isFullyShown == false) return
+			held += delta
+			if (held >= REVEAL_SECONDS) {
+				revealing = false
+				ItemReveal.instance?.dismiss()
+				next()
+			}
+			return
+		}
 
 		elapsed += delta
 		while (elapsed >= secondsPerLetter && shown < fullText.length) {
@@ -77,8 +95,7 @@ class MessageBox : CanvasLayer() {
 		if (isOpen || messages.isEmpty()) return
 
 		pending.clear()
-		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
-		pending.addAll(messages.map { T(it) })
+		pending.addAll(messages)
 		box?.visible = true
 		next()
 	}
@@ -98,6 +115,8 @@ class MessageBox : CanvasLayer() {
 	}
 
 	fun close() {
+		revealing = false
+		ItemReveal.instance?.dismiss()
 		pending.clear()
 		box?.visible = false
 		fullText = ""
@@ -116,6 +135,9 @@ class MessageBox : CanvasLayer() {
 			return
 		}
 
+		// Pendant qu'un objet rare est montré, aucune touche ne presse la suite.
+		if (revealing) return
+
 		next()
 	}
 
@@ -130,9 +152,38 @@ class MessageBox : CanvasLayer() {
 			return
 		}
 
-		fullText = message
+		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
+		fullText = T(give(message))
 		shown = 0
 		elapsed = 0.0
 		PixelShadow.setText(label, "")
 	}
+
+	/**
+	 * Un message qui commence par `@give:<objet>` (ou `@give:<objet>*<nombre>`)
+	 * met l'objet dans le sac au moment où il s'affiche. Si c'est un objet
+	 * rare, il est montré au centre de l'écran. Renvoie le texte sans le
+	 * préfixe.
+	 */
+	private fun give(message: String): String {
+		val match = GIVE.matchEntire(message) ?: return message
+		val (id, amount, text) = match.destructured
+		val item = Items.get(id)
+
+		if (item == null) {
+			Logger.e("Objet inconnu dans un dialogue : $id")
+			return text
+		}
+
+		Inventory.add(id, amount.toIntOrNull() ?: 1)
+		if (item.isKey) {
+			revealing = true
+			held = 0.0
+			ItemReveal.instance?.reveal(item)
+		}
+		return text
+	}
 }
+
+private const val REVEAL_SECONDS = 1.0
+private val GIVE = Regex("""@give:(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)

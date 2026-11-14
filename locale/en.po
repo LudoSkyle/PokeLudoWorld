@@ -214,3 +214,69 @@ msgstr "A hand-drawn map of Ludo Town and its surroundings."
 
 msgid "Des objets de test ont été ajoutés au sac."
 msgstr "Test items were added to the bag."
+
+msgid "Super Potion"
+msgstr "Super Potion"
+
+msgid "Un spray plus concentré que la Potion. Il soigne les blessures sérieuses."
+msgstr "A spray stronger than the Potion. It heals serious wounds."
+
+msgid "Hyper Potion"
+msgstr "Hyper Potion"
+
+msgid "Le spray des grands jours. Il remet sur pied presque n'importe qui."
+msgstr "The spray for big days. It gets almost anyone back on their feet."
+
+msgid "Antidote"
+msgstr "Antidote"
+
+msgid "Un spray qui chasse le poison. À garder sous la main en forêt."
+msgstr "A spray that drives out poison. Keep it handy in the forest."
+
+msgid "Rappel"
+msgstr "Revive"
+
+msgid "Un éclat doré qui ranime celui qui s'est évanoui."
+msgstr "A golden shard that revives someone who has fainted."
+
+msgid "Eau Fraîche"
+msgstr "Fresh Water"
+
+msgid "Une eau de source très pure. Elle désaltère et requinque."
+msgstr "Very pure spring water. It quenches thirst and perks you up."
+
+msgid "Soda Cool"
+msgstr "Soda Pop"
+
+msgid "Une boisson pétillante et sucrée. Elle redonne du tonus."
+msgstr "A sweet, fizzy drink. It puts some pep back in you."
+
+msgid "Limonade"
+msgstr "Lemonade"
+
+msgid "Une limonade bien fraîche. Rien de tel après une longue marche."
+msgstr "A nice cold lemonade. Nothing better after a long walk."
+
+msgid "Vous recevez la Vieille canne !"
+msgstr "You received the Old Rod!"
+
+msgid "Vous recevez la Carte du village !"
+msgstr "You received the Village Map!"
+
+msgid "Jeter"
+msgstr "Toss"
+
+msgid "Annuler"
+msgstr "Cancel"
+
+msgid "Objet choisi : %s."
+msgstr "%s is selected."
+
+msgid "Combien en jeter ?"
+msgstr "Toss out how many?"
+
+msgid "Jeter %s x%d ?"
+msgstr "Throw away %s x%d?"
+
+msgid "Vous jetez %s x%d."
+msgstr "You threw away %s x%d."

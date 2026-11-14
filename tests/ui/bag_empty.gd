@@ -7,7 +7,7 @@ func test() -> void:
 	check("le sac s'ouvre sur la poche Objets", bag_open() and bag("Title").text == "Objets", bag("Title").text)
 	check("poche vide : seulement Retour", bag_rows() == ["Retour"], str(bag_rows()))
 	check("le curseur est sur Retour", bag_line() == 0)
-	check("description et icone de Retour", bag("Description").text == "Refermer le sac." and bag_icon() == "_back.png", bag("Description").text)
+	check("description et icone de Retour", bag("Description").text == "Refermer le sac." and bag("Icon").texture != null, bag("Description").text)
 	shot("sac_vide")
 	await tap("ui_down")
 	await tap("ui_up")

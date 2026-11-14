@@ -32,8 +32,9 @@ se cache et laisse la place à :
 - un **résumé** en haut à gauche : le lieu, le temps de jeu ;
 - la **question** dans la boîte de dialogue ;
 - **Oui / Non** dans une petite boîte au-dessus d'elle, qui n'apparaît qu'une
-  fois la question entièrement écrite (`ChoiceBox.kt`, réutilisable pour toute
-  question).
+  fois la question entièrement écrite (`ChoiceBox.kt`, la même boîte que pour
+  les actions du sac ; `scenes/ui/choice_box.tscn` en est la version à
+  réponses libres).
 
 Déroulé :
 
