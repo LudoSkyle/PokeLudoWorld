@@ -6,12 +6,13 @@ import godot.api.Texture2D
 import godot.core.Rect2
 
 /**
- * Icônes d'objets, découpées à la demande dans les deux atlas de
+ * Icônes d'objets, découpées à la demande dans les trois atlas de
  * `assets/items` (voir son CREDITS.md pour retrouver une icône) :
  *
  * - `frlg:<numéro>` — les icônes officielles, numérotées de 0 à 266 ;
  * - `dex:<bloc>:<rangée>:<colonne>` — l'ItemDex, en hexadécimal comme sur la
- *   planche d'origine : `dex:01:0:3`.
+ *   planche d'origine : `dex:01:0:3` ;
+ * - `custom:<numéro>` — les icônes faites pour le jeu, à partir de 0.
  */
 object ItemIcons {
 
@@ -20,7 +21,7 @@ object ItemIcons {
 
 	private const val DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/"
 	private const val SIZE = 24.0
-	private const val FRLG_COLUMNS = 16
+	private const val ROW_COLUMNS = 16
 	private const val DEX_BLOCKS_PER_ROW = 4
 	private const val DEX_BLOCK_CELLS = 16
 
@@ -32,7 +33,8 @@ object ItemIcons {
 	private fun cut(ref: String): Texture2D? = cache.getOrPut(ref) {
 		val parts = ref.split(":")
 		val cell = when (parts[0]) {
-			"frlg" -> parts.getOrNull(1)?.toIntOrNull()?.let { (it % FRLG_COLUMNS) to (it / FRLG_COLUMNS) }
+			"frlg", "custom" -> parts.getOrNull(1)?.toIntOrNull()?.takeIf { it >= 0 }
+				?.let { (it % ROW_COLUMNS) to (it / ROW_COLUMNS) }
 			"dex" -> {
 				val block = parts.getOrNull(1)?.toIntOrNull(16)
 				val row = parts.getOrNull(2)?.toIntOrNull(16)
@@ -47,8 +49,16 @@ object ItemIcons {
 			else -> null
 		} ?: return@getOrPut null
 
-		val sheet = ResourceLoader.load(DIR + (if (parts[0] == "frlg") "frlg.png" else "itemdex.png")) as? Texture2D
-			?: return@getOrPut null
+		val file = when (parts[0]) {
+			"frlg" -> "frlg.png"
+			"custom" -> "custom.png"
+			else -> "itemdex.png"
+		}
+		val sheet = ResourceLoader.load(DIR + file) as? Texture2D ?: return@getOrPut null
+		// Une case hors de la planche ne montre rien : autant dire que la référence est fausse.
+		if ((cell.first + 1) * SIZE > sheet.getWidth() || (cell.second + 1) * SIZE > sheet.getHeight()) {
+			return@getOrPut null
+		}
 
 		AtlasTexture().apply {
 			atlas = sheet

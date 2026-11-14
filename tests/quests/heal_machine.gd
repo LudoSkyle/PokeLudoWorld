@@ -23,6 +23,7 @@ func test() -> void:
 	await wait_text("Vous récupérez la Cloche claire !")
 	await secs(0.4)
 	check("la Cloche claire est montree, bell_clean est pose", reveal().visible and flag("bell_clean"), box_text())
+	check("avec son icone maison", reveal().get_node("Icon").texture.atlas.resource_path.ends_with("custom.png") and reveal().get_node("Icon").texture.region.position == Vector2(0, 0))
 	shot("cloche_claire")
 	var end := Time.get_ticks_msec() + 4000
 	while Time.get_ticks_msec() < end and box().visible:
