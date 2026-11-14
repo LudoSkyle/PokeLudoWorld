@@ -84,9 +84,14 @@ Sa ligne fait 18 px, deux de trop pour des entrées espacées de 16 : les scène
 passent par une `FontVariation` qui retire 4 px écran en haut et en bas
 (`spacing_top`, `spacing_bottom`), sans rogner les lettres.
 
-**L'ombre n'est pas dans la police** : c'est le réglage d'ombre des `Label`,
-décalé d'un pixel de police (4 px écran) vers le bas et la droite. Encre
-`#585850`, ombre `#a8b8b8`, relevées sur la capture de référence.
+**L'ombre n'est pas dans la police.** Dans les jeux d'origine, chaque pixel de
+lettre porte une ombre à droite, en dessous **et** en diagonale. Godot ne
+décale l'ombre d'un texte que dans une direction : le `Label` garde la
+diagonale (4 px écran, soit un pixel de police), et `PixelShadow.attachAll`
+glisse derrière lui deux copies du texte, couleur d'ombre, décalées à droite et
+vers le bas. Encre `#585850`, ombre `#a8b8b8`, relevées sur la capture de
+référence. La boîte de dialogue fait de même ; son texte change à chaque
+lettre, elle passe donc par `PixelShadow.setText`.
 
 Le curseur (`assets/ui/cursor.png`, 6×10 avec son ombre) est extrait de la même
 capture, et dessiné à l'échelle 4.

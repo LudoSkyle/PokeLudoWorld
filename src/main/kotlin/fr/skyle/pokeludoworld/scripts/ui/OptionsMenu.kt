@@ -50,6 +50,7 @@ class OptionsMenu : CanvasLayer() {
 		val choices = getNode("Control/Screen/Rows/TextSpeed/Choices")
 		speeds = (0 until (choices?.getChildCount() ?: 0)).mapNotNull { choices?.getChild(it) as? Label }
 
+		PixelShadow.attachAll(screen)
 		screen?.visible = false
 	}
 

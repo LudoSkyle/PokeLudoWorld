@@ -71,6 +71,7 @@ class PauseMenu : CanvasLayer() {
 			(getNode("Control/Menu/Frame") as? NinePatchRect)?.texture = texture
 		}
 
+		PixelShadow.attachAll(menu)
 		menu?.visible = false
 	}
 

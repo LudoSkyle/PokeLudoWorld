@@ -95,8 +95,8 @@ la case **en dessous**, celle qu'on regarde depuis le sol.
 La police est **Pokémon DP Pro** (`assets/fonts/pokemon-dp-pro.ttf`,
 crystalwalrein, CC BY-SA 3.0), la même que dans les menus, en **64 px** sans
 lissage : un pixel de la police vaut quatre pixels écran, comme le décor. Elle
-a les accents et l'apostrophe. Encre `#585850`, ombre `#a8b8b8` décalée d'un
-pixel de police.
+a les accents et l'apostrophe. Encre `#585850`, ombre `#a8b8b8` à droite, en dessous et en diagonale
+(`PixelShadow`, voir [menu.md](menu.md)).
 
 La boîte fait 960×168 px, centrée en bas de l'écran. Elle tient **deux lignes**
 d'environ 43 caractères ; au-delà, couper avec `|`. Le bandeau de lieu, lui,
