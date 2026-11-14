@@ -280,6 +280,14 @@ func options_speed() -> String:
 			red += str(label.name)
 	return red
 
+# Nom du choix de langue affiche en rouge : French, English.
+func options_language() -> String:
+	var red := ""
+	for label in game.get_node(VP + "/OptionsMenu/Control/Screen/Rows/Language/Choices").get_children():
+		if not str(label.name).begins_with("PixelShadow") and label.get_theme_color("font_color").r > 0.8:
+			red += str(label.name)
+	return red
+
 func letter_seconds() -> float:
 	return game.get_node(VP + "/MessageBox").seconds_per_letter
 
@@ -314,12 +322,15 @@ func test() -> void:
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
+	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
+	# Ce sont des fichiers de test, ceux du joueur ne sont jamais touches.
+	for file in ["user://test_settings.cfg", "user://test_save.cfg"]:
+		if FileAccess.file_exists(file):
+			DirAccess.remove_absolute(file)
 	game = packed.instantiate()
 	game.get_node(VP + "/SceneManager").start_scene = LEVELS + scene() + ".tscn"
 	root.add_child(game)
 	await wait(20)
-	# Les tests ne dependent pas de la vitesse de texte que le joueur a reglee.
-	game.get_node(VP + "/MessageBox").seconds_per_letter = 0.02
 	if start() != Vector2i(-1, -1):
 		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)
 		await wait(10)

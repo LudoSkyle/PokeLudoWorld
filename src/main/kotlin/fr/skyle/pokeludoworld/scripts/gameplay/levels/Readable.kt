@@ -1,6 +1,7 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.levels
 
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
+import fr.skyle.pokeludoworld.scripts.ui.T
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.MultilineText
@@ -36,7 +37,7 @@ class Readable : StaticBody2D() {
 	private fun messages(): List<String> = when (kind) {
 		"clock" -> {
 			val now = LocalTime.now()
-			listOf("L'horloge indique %d h %02d.".format(now.hour, now.minute))
+			listOf(T("L'horloge indique %d h %02d.").format(now.hour, now.minute))
 		}
 
 		"tv" -> split(TV_PROGRAMS.random())
@@ -51,8 +52,9 @@ class Readable : StaticBody2D() {
 		 * Dans l'esprit des jeux d'origine : la télé décrit en une phrase ce
 		 * qui passe, et le héros repart. Aucun Pokémon pour l'instant.
 		 */
+		// i18n
 		private val TV_PROGRAMS = listOf(
-			"C'est la météo.|Grand soleil sur tout le village aujourd hui !",
+			"C'est la météo.|Grand soleil sur tout le village aujourd'hui !",
 			"C'est la météo.|Quelques nuages ce soir, mais pas une goutte de pluie.",
 			"C'est la météo.|Un petit vent frais soufflera sur la côte demain matin.",
 			"Il y a un film à la télé.|Quatre garçons marchent le long d'une voie ferrée.|Je ferais mieux d'y aller aussi.",

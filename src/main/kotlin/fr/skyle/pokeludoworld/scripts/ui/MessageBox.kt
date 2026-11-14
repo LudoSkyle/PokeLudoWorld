@@ -77,7 +77,8 @@ class MessageBox : CanvasLayer() {
 		if (isOpen || messages.isEmpty()) return
 
 		pending.clear()
-		pending.addAll(messages)
+		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
+		pending.addAll(messages.map { T(it) })
 		box?.visible = true
 		next()
 	}

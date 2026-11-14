@@ -34,6 +34,11 @@ menu={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://locale/en.po")
+locale/fallback="fr"
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

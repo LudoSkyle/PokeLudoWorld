@@ -6,6 +6,7 @@
 #   tests/run.sh doors                  tout un dossier
 #   tests/run.sh doors/cave             tous ceux dont le chemin commence ainsi
 #   tests/run.sh audit                  l'audit d'accessibilite des cartes fermees
+#   tests/run.sh i18n                   chaque texte du jeu a-t-il sa traduction ?
 #   tests/run.sh --list                 la liste
 #   tests/run.sh                        tout (long : a eviter)
 #
@@ -21,7 +22,10 @@ all_tests() {
   find tests -mindepth 2 -name '*.gd' -not -path 'tests/audit/*' | sed 's|^tests/||; s|\.gd$||' | sort
 }
 
-if [ "$1" = "--list" ]; then all_tests; echo audit; exit 0; fi
+if [ "$1" = "--list" ]; then all_tests; echo audit; echo i18n; exit 0; fi
+
+# Pas besoin de Godot pour celui-la.
+if [ "$1" = "i18n" ] && [ $# -eq 1 ]; then python3 tests/audit/i18n.py | grep -vE "^  --"; exit "${PIPESTATUS[0]}"; fi
 
 # La fenetre de jeu ignore SIGTERM : on filtre sur l'executable et on tue net.
 kill_godot() {
@@ -31,7 +35,9 @@ kill_godot() {
 # run_script <script res://> <log> <motif de fin> <secondes max>
 run_script() {
   kill_godot
-  ("$GODOT" --path "$PWD" --script "$1" > "$2" 2>&1 &)
+  # "-- --test" : le jeu ecrit ses reglages et sa sauvegarde dans des fichiers
+  # de test, pas dans ceux du joueur (voir GameFiles.kt).
+  ("$GODOT" --path "$PWD" --script "$1" -- --test > "$2" 2>&1 &)
   local ticks=0
   while [ "$ticks" -lt $(($4 * 2)) ]; do
     sleep 0.5; ticks=$((ticks + 1))

@@ -62,6 +62,7 @@ qu'on la change, sans validation.
 | Ligne | Valeurs | Effet |
 |---|---|---|
 | Vitesse du texte | x0.5, x1 (défaut), x2, x4 | multiplie la vitesse de la boîte de dialogue ; x1 = 0,02 s par lettre |
+| Langue | Français (défaut), English | langue de tout le jeu, voir [i18n.md](i18n.md) |
 
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
@@ -71,8 +72,9 @@ passe la main à l'écran des options tant qu'il est ouvert (`PauseMenu.handle`)
 sa valeur dans `Settings`, un cas dans `OptionsMenu.handle`, et 16 px de jeu de
 plus à `ListFrame`.
 
-Les tests forcent la vitesse Rapide au démarrage (`tests/lib.gd`) : ils ne
-dépendent pas du réglage enregistré par le joueur.
+Lancé par `tests/run.sh`, le jeu écrit ses réglages dans un fichier de test
+(`GameFiles.kt`), effacé au début de chaque test : les tests ne lisent ni ne
+modifient les réglages du joueur.
 
 ## La police et le curseur
 
