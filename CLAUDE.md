@@ -20,6 +20,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | PNJ, leurs déplacements, passages gardés | [docs/npcs.md](docs/npcs.md) |
 | menu de pause, options | [docs/menu.md](docs/menu.md) |
 | textes, traductions | [docs/i18n.md](docs/i18n.md) |
+| sauvegarde, reprise au lancement | [docs/save.md](docs/save.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
 | vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
 

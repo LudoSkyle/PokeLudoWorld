@@ -17,9 +17,7 @@ func test() -> void:
 	check("francais au depart", TranslationServer.get_locale() == "fr", TranslationServer.get_locale())
 	check("le panneau est en francais", await read_sign() == "Maison de Ludo.")
 
-	await tap("menu")
-	await tap("ui_down")
-	await tap("interact")
+	await menu_pick("Options")
 	await tap("ui_down")
 	check("Francais est le choix en rouge", options_language() == "French", options_language())
 	await tap("ui_left")
@@ -36,9 +34,7 @@ func test() -> void:
 	await tap("menu")
 	check("le panneau est en anglais", await read_sign() == "Ludo's house.")
 
-	await tap("menu")
-	await tap("ui_down")
-	await tap("interact")
+	await menu_pick("Options")
 	await tap("ui_down")
 	await tap("ui_right")
 	check("Droite sur le dernier choix : butee", options_language() == "English", options_language())

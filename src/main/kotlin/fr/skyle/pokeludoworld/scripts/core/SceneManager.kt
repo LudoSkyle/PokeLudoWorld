@@ -53,6 +53,23 @@ class SceneManager : Node() {
 	@Export
 	var fadeSeconds: Double = 0.25
 
+	/** Reprendre la sauvegarde au lancement, s'il y en a une. Les tests s'en passent. */
+	@Category("Sauvegarde")
+	@Export
+	var loadSave: Boolean = true
+
+	/** Temps de jeu total de la partie, en secondes. */
+	var playSeconds: Double = 0.0
+		private set
+
+	/** Nom du lieu où l'on se trouve, en français. */
+	var location: String = ""
+		private set
+
+	private var banner = ""
+	private var currentScene = ""
+	private var restore: SaveGame.State? = null
+
 	private var levelHost: Node? = null
 	private var fade: ColorRect? = null
 	private var level: Node2D? = null
@@ -80,6 +97,19 @@ class SceneManager : Node() {
 
 		pendingScene = startScene
 		pendingDoor = ""
+
+		// Une partie sauvegardée reprend là où elle s'est arrêtée.
+		playSeconds = 0.0
+		restore = if (loadSave) SaveGame.read() else null
+		restore?.let {
+			if (ResourceLoader.exists(it.scene)) {
+				pendingScene = it.scene
+				playSeconds = it.seconds
+			} else {
+				Logger.e("Sauvegarde ignoree, carte introuvable : ${it.scene}")
+				restore = null
+			}
+		}
 		// Le premier chargement attend la frame suivante : pendant `_ready` le
 		// parent construit encore ses enfants et refuse un `add_child`.
 
@@ -88,6 +118,9 @@ class SceneManager : Node() {
 
 	@Register
 	override fun _process(delta: Double) {
+		// Comme dans les jeux d'origine, le temps de jeu tourne aussi dans les menus.
+		playSeconds += delta
+
 		if (!bootstrapped) {
 			bootstrapped = true
 			swap()
@@ -144,6 +177,9 @@ class SceneManager : Node() {
 
 		host.addChild(next)
 		level = next
+		currentScene = pendingScene
+		location = next.getMeta(LOCATION_META, "").toString()
+		banner = next.getMeta(BANNER_META, "").toString()
 
 		// Le bandeau attend que le fondu d'arrivée soit levé pour descendre.
 		LocationBanner.instance?.announce(
@@ -164,6 +200,15 @@ class SceneManager : Node() {
 
 		val door = arrivalDoor(next, pendingDoor)
 		currentPlayer.position = arrivalPosition(next, door)
+
+		// Reprise d'une sauvegarde : la place et le regard d'alors, une seule fois.
+		val saved = restore
+		restore = null
+		if (saved != null) {
+			currentPlayer.position = saved.position
+			(if (currentPlayer.hasNode("Input")) currentPlayer.getNode("Input") else null)
+				.let { it as? PlayerInput }?.face(saved.facing)
+		}
 
 		if (currentPlayer.hasNode("Input")) {
 			val input = currentPlayer.getNode("Input") as? PlayerInput
@@ -191,6 +236,27 @@ class SceneManager : Node() {
 		if (currentPlayer.hasNode("Camera")) {
 			(currentPlayer.getNode("Camera") as? PlayerCamera)?.applyLimits()
 		}
+	}
+
+	/**
+	 * Enregistre la partie : la carte, la place et le regard du joueur, le
+	 * temps de jeu. À n'appeler qu'entre deux pas (le menu ne s'ouvre que là).
+	 */
+	fun save(): Boolean {
+		val current = player ?: return false
+		if (currentScene.isEmpty()) return false
+
+		val input = (if (current.hasNode("Input")) current.getNode("Input") else null) as? PlayerInput
+		return SaveGame.write(
+			SaveGame.State(
+				scene = currentScene,
+				position = current.position,
+				facing = input?.direction ?: Vector2.DOWN,
+				location = location,
+				banner = banner,
+				seconds = playSeconds,
+			),
+		)
 	}
 
 	private fun arrivalDoor(target: Node2D, door: String): SceneTrigger? {

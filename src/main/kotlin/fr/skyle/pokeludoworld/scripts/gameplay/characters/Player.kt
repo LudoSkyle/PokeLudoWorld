@@ -89,6 +89,16 @@ class Player : CharacterBody2D() {
 		val interact = Input.isActionJustPressed("interact")
 		val box = MessageBox.instance
 
+		// Menu ouvert : les flèches déplacent son curseur, plus le personnage.
+		// Il passe avant la boîte de dialogue, dont ses écrans se servent pour
+		// poser leurs questions.
+		val menu = PauseMenu.instance
+		if (menu != null && menu.isOpen) {
+			menu.handle(interact)
+			sprite?.refresh(currentInput.direction, false)
+			return
+		}
+
 		if (box != null && box.isOpen) {
 			if (interact) box.advance()
 			sprite?.refresh(currentInput.direction, false)
@@ -97,14 +107,6 @@ class Player : CharacterBody2D() {
 
 		if (isLocked) {
 			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
-			return
-		}
-
-		// Menu ouvert : les flèches déplacent son curseur, plus le personnage.
-		val menu = PauseMenu.instance
-		if (menu != null && menu.isOpen) {
-			menu.handle(interact)
-			sprite?.refresh(currentInput.direction, false)
 			return
 		}
 
