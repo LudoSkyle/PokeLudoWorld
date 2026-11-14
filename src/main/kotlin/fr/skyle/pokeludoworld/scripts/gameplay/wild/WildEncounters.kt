@@ -3,6 +3,7 @@ package fr.skyle.pokeludoworld.scripts.gameplay.wild
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.ui.N
+import fr.skyle.pokeludoworld.scripts.ui.T
 import godot.api.Node
 import godot.api.Node2D
 import godot.api.TileMapLayer
@@ -13,19 +14,30 @@ import kotlin.random.Random
  *
  * Chaque fois que le joueur **se pose** sur une case d'herbe, on tire au sort :
  * la carte donne la chance d'une rencontre, en pour cent par pas
- * (`metadata/encounter_rate` sur son nœud `Level`). Sans ce réglage, ou à 0,
- * ses herbes sont vides.
+ * (`metadata/encounter_rate` sur son nœud `Level`), et qui l'on y croise
+ * (`metadata/wild`, voir [WildTable]). Sans l'un ou l'autre, ses herbes sont
+ * vides.
  *
- * Pour l'instant une rencontre ne fait que s'annoncer : il n'y a ni espèces ni
- * combat. C'est ici qu'ils se brancheront.
+ * Pour l'instant une rencontre ne fait que s'annoncer, par le nom de l'espèce :
+ * il n'y a pas encore de combat. C'est ici qu'il se branchera.
  */
 object WildEncounters {
 
 	/** Le réglage de la carte : la chance d'une rencontre à chaque pas dans l'herbe, de 0 à 100. */
 	const val RATE_META = "encounter_rate"
 
-	/** L'annonce d'une rencontre, en attendant le combat. */
-	val ANNOUNCE = N("Un Pokémon sauvage apparaît !")
+	/** Le réglage de la carte : sa table de rencontres. */
+	const val TABLE_META = "wild"
+
+	/** L'annonce d'une rencontre, en attendant le combat. Le trou est le nom de l'espèce. */
+	val ANNOUNCE = N("Un %s sauvage apparaît !")
+
+	/** Le hasard des rencontres. Les tests le remplacent par un hasard à graine, rejouable. */
+	var random: Random = Random.Default
+
+	/** Le dernier Pokémon rencontré, ou null s'il n'y en a pas encore eu. */
+	var last: WildPokemon? = null
+		private set
 
 	/**
 	 * Le sort imposé : true, chaque pas dans l'herbe d'une carte peuplée donne
@@ -47,15 +59,25 @@ object WildEncounters {
 		val rate = rateOf(level)
 		if (rate <= 0 || !inGrass(level, player)) return false
 		if (!roll(rate)) return false
+		val wild = tableOf(level).pick(random) ?: return false
 
 		count++
-		Logger.i("Wild encounter! (rate $rate %)")
-		MessageBox.instance?.play(listOf(ANNOUNCE))
+		last = wild
+		Logger.i("Wild encounter! ${wild.species.id} level ${wild.level} (rate $rate %)")
+		// La phrase est déjà traduite, nom compris : la boîte la dira telle quelle.
+		MessageBox.instance?.play(listOf(T(ANNOUNCE).format(T(wild.species.name))))
 		return true
 	}
 
 	/** Tire au sort : vrai [rate] fois sur cent. */
-	fun roll(rate: Int): Boolean = forced ?: (Random.nextInt(100) < rate)
+	fun roll(rate: Int): Boolean = forced ?: (random.nextInt(100) < rate)
+
+	/** La table de rencontres de la carte [level]. Ses entrées mal écrites sont signalées au journal. */
+	fun tableOf(level: Node): WildTable {
+		val table = WildTable.parse(level.getMeta(TABLE_META, "").toString())
+		table.errors.forEach { Logger.e("Wild table: $it") }
+		return table
+	}
 
 	/** La chance d'une rencontre sur la carte [level], bornée de 0 à 100. */
 	fun rateOf(level: Node): Int =

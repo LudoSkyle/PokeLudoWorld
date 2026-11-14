@@ -6,6 +6,9 @@ extends "res://tests/lib.gd"
 func start() -> Vector2i:
 	return Vector2i(12, 5)
 
+# Les especes de la table de Bourg-Ludo, et leur nom.
+const NAMES := {"mulotin": "Mulotin", "piafeuille": "Piafeuille", "chenibulle": "Chenibulle"}
+
 func in_grass(c: Vector2i) -> bool:
 	return level().get_node("Background/Grass").get_cell_source_id(c) != -1
 
@@ -28,8 +31,11 @@ func test() -> void:
 	var at: Vector2 = player().position
 	await wait(6)
 	check("elle arrive une fois pose sur la case, et l'y arrete", cell() == Vector2i(10, 5) and player().position == at, str(player().position))
-	await wait_text("Un Pokémon sauvage apparaît !")
-	check("l'annonce est dite", box_text() == "Un Pokémon sauvage apparaît !", box_text())
+	var met := last_encounter().split(":")
+	check("le Pokemon rencontre vient de la table de la carte", met.size() == 2 and NAMES.has(met[0]) and int(met[1]) >= 2 and int(met[1]) <= 5, last_encounter())
+	var announce: String = "Un %s sauvage apparaît !" % NAMES.get(met[0], "?")
+	await wait_text(announce)
+	check("l'annonce le nomme", box_text() == announce, box_text())
 	# La touche est restee enfoncee : le joueur ne repart pas tant que la boite est la.
 	await secs(0.5)
 	check("le joueur ne bouge plus pendant l'annonce", cell() == Vector2i(10, 5), str(cell()))
@@ -48,4 +54,11 @@ func test() -> void:
 	level().set_meta("encounter_rate", 0)
 	await walk("herbes vides", Vector2i(11, 5), false)
 	check("carte a 0 : pas de rencontre", encounters() == before and not box().visible, str(encounters()))
+
+	# Une carte qui a une chance mais pas de table n'a personne a montrer.
+	level().set_meta("encounter_rate", 100)
+	level().set_meta("wild", "")
+	await walk("retour hors de l'herbe", Vector2i(12, 5), false)
+	await walk("herbes sans table", Vector2i(11, 5), false)
+	check("carte sans table : pas de rencontre", encounters() == before and not box().visible, str(encounters()))
 	force_encounters(0)

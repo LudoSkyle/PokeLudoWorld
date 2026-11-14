@@ -448,6 +448,18 @@ func force_encounters(mode: int) -> void:
 func encounters() -> int:
 	return root.get_node("Globals").encounters()
 
+# Le dernier Pokemon rencontre, "espece:niveau" ; vide s'il n'y en a pas eu.
+func last_encounter() -> String:
+	return root.get_node("Globals").last_encounter()
+
+# n tirages "espece:niveau" dans une table ecrite comme sur une carte.
+func wild_draws(table: String, n: int, seed_value: int = 1) -> Array:
+	var drawn: String = root.get_node("Globals").wild_draws(table, n, seed_value)
+	return [] if drawn == "" else Array(drawn.split(","))
+
+func wild_errors(table: String) -> String:
+	return root.get_node("Globals").wild_errors(table)
+
 # --- noeuds de test
 #
 # Les briques de quete se verifient sans scenario : le test pose lui-meme un
