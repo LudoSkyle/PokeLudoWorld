@@ -13,6 +13,7 @@ import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.Register
 import godot.annotation.Script
+import godot.api.CanvasModulate
 import godot.api.ColorRect
 import godot.api.Node
 import godot.api.Node2D
@@ -42,6 +43,10 @@ class SceneManager : Node() {
 
 		/** Métadonnée de la racine d'une carte : le bandeau qui porte ce nom. */
 		private const val BANNER_META = "banner"
+
+		/** Métadonnée de la racine d'une carte : vrai si elle est dehors, sous le ciel. */
+		private const val DAYLIGHT_META = "daylight"
+		private const val DAYLIGHT_NODE = "Daylight"
 
 		/** Métadonnée de la racine d'une carte : sa musique. */
 		private const val MUSIC_META = "music"
@@ -81,6 +86,9 @@ class SceneManager : Node() {
 	private var levelHost: Node? = null
 	private var fade: ColorRect? = null
 	private var level: Node2D? = null
+
+	/** La teinte du jour sur la carte courante, si elle est dehors. */
+	private var daylight: CanvasModulate? = null
 	private var player: Node2D? = null
 
 	private var phase = Phase.IDLE
@@ -135,6 +143,9 @@ class SceneManager : Node() {
 	override fun _process(delta: Double) {
 		// Comme dans les jeux d'origine, le temps de jeu tourne aussi dans les menus.
 		playSeconds += delta
+
+		// Dehors, la teinte suit l'heure.
+		daylight?.color = DayNight.tint()
 
 		if (!bootstrapped) {
 			bootstrapped = true
@@ -196,6 +207,16 @@ class SceneManager : Node() {
 		if (next == null) {
 			Logger.e("Scene introuvable : $pendingScene")
 			return
+		}
+
+		// Une carte d'extérieur prend la teinte de l'heure ; un intérieur reste éclairé.
+		daylight = null
+		if (next.getMeta(DAYLIGHT_META, false) == true) {
+			val sky = CanvasModulate()
+			sky.setName(DAYLIGHT_NODE)
+			sky.color = DayNight.tint()
+			next.addChild(sky)
+			daylight = sky
 		}
 
 		host.addChild(next)

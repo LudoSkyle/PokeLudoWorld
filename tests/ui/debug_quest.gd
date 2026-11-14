@@ -10,7 +10,7 @@ func test() -> void:
 	var answers := []
 	for label in debug_choices().get_node("Entries").get_children():
 		if label.visible: answers.append(label.text)
-	check("Debug ouvre ses outils", debug_choices().visible and answers == ["Remplir le sac", "Quête : suite", "Quête : fin", "Retour"], str(answers))
+	check("Debug ouvre ses outils", debug_choices().visible and answers.size() == 5 and answers[0] == "Remplir le sac" and answers[1] == "Quête : suite" and answers[2] == "Quête : fin" and answers[3].begins_with("Heure : ") and answers[4] == "Retour", str(answers))
 	shot("debug_outils")
 	await tap("menu")
 	check("la touche du menu referme les outils, pas le menu", not debug_choices().visible and menu_open())

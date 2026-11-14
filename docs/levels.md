@@ -288,6 +288,8 @@ metadata/banner = "wood"
   deux cartes du même lieu (rez-de-chaussée et étage) portent le même nom, et
   l'escalier ne le fait pas réapparaître. Sans nom, pas de bandeau.
 - `music` : la musique du lieu — voir [audio.md](audio.md).
+- `daylight` : vrai pour une carte d'extérieur, qui prend la teinte de
+  l'heure — voir [daynight.md](daynight.md).
 - `banner` : un fichier de `assets/ui/banners` — `wood` (défaut), `metal`,
   `stone`, `cave`, `forest`, `beach`, `water`, `sea`. Le texte passe en blanc
   sur les bandeaux sombres (`cave`, `forest`, `water`).

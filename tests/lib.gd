@@ -572,6 +572,18 @@ func wait_jingle() -> void:
 		await process_frame
 	await wait(4)
 
+# --- jour et nuit
+
+# Impose une heure au jeu (0 a 24) ; une valeur negative rend la main a l'horloge reelle.
+func set_hour(h: float) -> void:
+	root.get_node("Globals").set_hour(h)
+	await wait(4)
+
+# La teinte du jour sur la carte courante, ou blanc si la carte n'en porte pas.
+func daylight() -> Color:
+	var sky := level().get_node_or_null("Daylight")
+	return Color.WHITE if sky == null else sky.color
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
@@ -579,6 +591,8 @@ func _run() -> void:
 	for file in ["user://test_settings.cfg", "user://test_save.cfg"]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)
+	# Les tests se jouent en plein jour, sauf ceux qui imposent une autre heure.
+	root.get_node("Globals").set_hour(12.0)
 	await boot(false)
 	if start() != Vector2i(-1, -1):
 		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)

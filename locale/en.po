@@ -583,3 +583,18 @@ msgstr "The bell quest is complete."
 
 msgid "La quête de la cloche avance d'une étape."
 msgstr "The bell quest moves one step forward."
+
+msgid "Heure : réelle"
+msgstr "Time: real"
+
+msgid "Heure : aube"
+msgstr "Time: dawn"
+
+msgid "Heure : jour"
+msgstr "Time: day"
+
+msgid "Heure : crépuscule"
+msgstr "Time: dusk"
+
+msgid "Heure : nuit"
+msgstr "Time: night"

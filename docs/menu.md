@@ -120,6 +120,7 @@ L'entrée **Debug** ouvre une boîte de choix (`Control/DebugChoices`, une
 | **Remplir le sac** | huit objets, des Poké Balls, et deux objets rares donnés par `@give:` pour voir leur présentation ([bag.md](bag.md)) |
 | **Quête : suite** | franchit la prochaine étape de la quête de la cloche : son drapeau est posé, le sac mis à jour, et la carte se recharge une fois le message refermé |
 | **Quête : fin** | franchit toutes les étapes restantes d'un coup |
+| **Heure : …** | fait défiler les moments de la journée à chaque validation — réelle, aube, jour, crépuscule, nuit, puis de nouveau réelle. La boîte reste ouverte ([daynight.md](daynight.md)) |
 
 Les étapes et ce que chacune met dans le sac sont dans `BellQuest.kt`
 ([quests.md](quests.md)). Ce qu'on débloque ainsi **part dans la sauvegarde**

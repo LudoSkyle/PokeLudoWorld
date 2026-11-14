@@ -22,6 +22,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | menu de pause, options | [docs/menu.md](docs/menu.md) |
 | sac, objets, inventaire | [docs/bag.md](docs/bag.md) |
 | sons, musiques | [docs/audio.md](docs/audio.md) |
+| jour et nuit, teinte du dehors | [docs/daynight.md](docs/daynight.md) |
 | textes, traductions | [docs/i18n.md](docs/i18n.md) |
 | sauvegarde, reprise au lancement | [docs/save.md](docs/save.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
