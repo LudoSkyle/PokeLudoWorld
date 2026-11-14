@@ -463,8 +463,8 @@ moves/runner_after`.
 | Objet | À quoi ça ressemble | Rôle |
 |---|---|---|
 | **Registre poussiéreux** | vieux livre relié, tranche abîmée — **en place** : `dusty_register`, icône `dex:00:A:D` | l'indice |
-| **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `dex:0B:1:C` | la trouvaille |
-| **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `dex:0B:1:2` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
+| **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `custom:1` | la trouvaille |
+| **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `custom:0` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
 | **Ruban de la Veillée** | nœud de tissu rouge — **en place** : `vigil_ribbon`, icône `dex:07:F:2` | le souvenir, sans usage |
 | **Socle** *(décor)* | portique de pierre, **deux versions : vide et avec cloche** — **en place** : `assets/levels/bell_stand.png` | la place |
 | **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo — **en place** : deux petites statues de `environments.png`, à l'entrée de la place | décor, sans rapport avec la quête |

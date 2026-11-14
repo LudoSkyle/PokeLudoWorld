@@ -16,6 +16,7 @@ func test() -> void:
 	await wait_text("Vous trouvez la Cloche ternie !")
 	await secs(0.4)
 	check("la Cloche ternie est montree, bell_tarnished est pose", reveal().visible and flag("bell_tarnished"), box_text())
+	check("avec son icone maison", reveal().get_node("Icon").texture.atlas.resource_path.ends_with("custom.png") and reveal().get_node("Icon").texture.region.position == Vector2(24, 0))
 	shot("cloche_ternie")
 	await wait_text("Quelque chose file le long de la paroi et disparaît dans le noir.")
 	check("puis la silhouette qui s'enfuit", box_text().begins_with("Quelque chose file"), box_text())

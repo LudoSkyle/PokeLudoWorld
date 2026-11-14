@@ -9,7 +9,7 @@
 | `id` | identifiant ; c'est aussi sa ligne dans la sauvegarde |
 | `name`, `description` | en français, traduits à l'affichage ([i18n.md](i18n.md)) |
 | `pocket` | la poche : `ITEMS`, `KEY_ITEMS`, `BALLS` |
-| `icon` | référence dans un atlas : `frlg:12` ou `dex:01:0:3` (`ItemIcons.kt`) |
+| `icon` | référence dans un atlas : `frlg:12`, `dex:01:0:3` ou `custom:0` (`ItemIcons.kt`) |
 
 Un objet de la poche `KEY_ITEMS` est un **objet rare** (`isKey`) : unique, sans
 quantité affichée, impossible à jeter, et montré à l'écran quand on le reçoit.
@@ -21,9 +21,10 @@ fait partie de la sauvegarde ([save.md](save.md)).
 ### Ajouter un objet
 
 1. Une ligne dans `Items.ALL`, avec ses textes entre `N("...")`.
-2. Son icône : une référence vers l'un des deux atlas de `assets/items/`, qui
-   contiennent **toutes** les icônes des deux planches (267 officielles, 1382
-   de l'ItemDex). Le `CREDITS.md` du dossier explique comment lire le numéro
+2. Son icône : une référence vers l'un des atlas de `assets/items/`. Deux
+   contiennent **toutes** les icônes de leur planche (267 officielles, 1382 de
+   l'ItemDex) ; le troisième, `custom.png`, reçoit celles qu'on dessine pour
+   le jeu. Le `CREDITS.md` du dossier explique comment lire le numéro
    d'une icône sur la planche d'origine. Une référence fausse affiche un point
    d'interrogation.
 3. Ses deux textes dans `locale/en.po`, puis `tests/run.sh i18n`.
