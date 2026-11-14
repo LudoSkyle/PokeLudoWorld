@@ -68,6 +68,11 @@ class ChoiceBox : Control() {
 		open()
 	}
 
+	/** Change le texte d'une réponse sans refermer la boîte ni bouger le curseur. */
+	fun relabel(index: Int, text: String) {
+		labels.getOrNull(index)?.let { PixelShadow.setText(it, text) }
+	}
+
 	fun close() {
 		visible = false
 	}

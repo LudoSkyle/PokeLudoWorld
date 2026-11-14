@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.autoload
 
+import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
@@ -38,5 +39,17 @@ class Globals : Node() {
 	@Register
 	fun setFlag(flag: String) {
 		StoryFlags.set(flag)
+	}
+
+	/**
+	 * L'heure du jeu, vue de Godot. `set_hour(23.0)` impose une heure, de 0 à
+	 * 24 ; une valeur négative rend la main à l'horloge réelle.
+	 */
+	@Register
+	fun hour(): Double = DayNight.hour()
+
+	@Register
+	fun setHour(hour: Double) {
+		DayNight.forcedHour = hour.takeIf { it >= 0.0 }
 	}
 }

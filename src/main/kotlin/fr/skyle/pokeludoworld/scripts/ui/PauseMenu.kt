@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
 import fr.skyle.pokeludoworld.scripts.gameplay.story.BellQuest
@@ -140,6 +141,11 @@ class PauseMenu : CanvasLayer() {
 				DEBUG_BAG -> fillBag()
 				DEBUG_NEXT -> advanceQuest(all = false)
 				DEBUG_FINISH -> advanceQuest(all = true)
+				DEBUG_TIME -> {
+					// L'heure change sur place : la boîte reste ouverte, sur la même ligne.
+					DayNight.cycle()
+					tools.relabel(DEBUG_TIME, T(DayNight.label()))
+				}
 				else -> tools.close()
 			}
 			return
@@ -175,10 +181,13 @@ class PauseMenu : CanvasLayer() {
 
 	/**
 	 * Outils de mise au point : une boîte de choix. Retour, ou la touche du
-	 * menu, ramène au menu de pause.
+	 * menu, ramène au menu de pause. La ligne de l'heure fait défiler les
+	 * moments de la journée à chaque validation, puis revient à l'heure réelle.
 	 */
 	private fun debug() {
-		debugChoices?.open(DEBUG_TOOLS.map { T(it) })
+		debugChoices?.open(
+			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_NEXT_LABEL), T(DEBUG_FINISH_LABEL), T(DayNight.label()), T(DEBUG_BACK_LABEL)),
+		)
 	}
 
 	/** Remplit le sac d'un peu de tout, et donne deux objets rares pour voir leur présentation. */
@@ -222,6 +231,10 @@ class PauseMenu : CanvasLayer() {
 private const val DEBUG_BAG = 0
 private const val DEBUG_NEXT = 1
 private const val DEBUG_FINISH = 2
-private val DEBUG_TOOLS = listOf(N("Remplir le sac"), N("Quête : suite"), N("Quête : fin"), N("Retour"))
+private const val DEBUG_TIME = 3
+private val DEBUG_BAG_LABEL = N("Remplir le sac")
+private val DEBUG_NEXT_LABEL = N("Quête : suite")
+private val DEBUG_FINISH_LABEL = N("Quête : fin")
+private val DEBUG_BACK_LABEL = N("Retour")
 
 private const val FRAMES_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/"
