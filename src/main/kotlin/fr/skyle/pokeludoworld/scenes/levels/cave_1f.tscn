@@ -6,6 +6,7 @@
 [node name="Level" type="Node2D"]
 metadata/location = "Grotte - Entrée"
 metadata/banner = "cave"
+metadata/music = "union_cave"
 
 [node name="Background" type="Node2D" parent="."]
 

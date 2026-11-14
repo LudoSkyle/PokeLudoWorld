@@ -378,7 +378,7 @@ func fill_bag() -> void:
 	await tap("interact")
 	# Le premier message se passe a la touche ; les deux objets rares
 	# s'annoncent ensuite et passent tout seuls, sans tenir compte des touches.
-	var end := Time.get_ticks_msec() + 15000
+	var end := Time.get_ticks_msec() + 30000
 	while Time.get_ticks_msec() < end and box().visible:
 		await tap("interact")
 		await secs(0.2)
@@ -477,7 +477,7 @@ func interact_facing(facing: String) -> void:
 	await tap("interact")
 
 # Attend qu'un texte soit entierement ecrit dans la boite (au plus t secondes).
-func wait_text(expected: String, t: float = 4.0) -> void:
+func wait_text(expected: String, t: float = 9.0) -> void:
 	var end := Time.get_ticks_msec() + int(t * 1000.0)
 	while Time.get_ticks_msec() < end and box_text() != expected:
 		await process_frame
@@ -488,7 +488,7 @@ func wait_text(expected: String, t: float = 4.0) -> void:
 func receive(item: String, at: Vector2i, facing: String) -> void:
 	var giver := await spawn("sign", "TestGiver", at, {"text": "@give:%s Objet de test." % item})
 	await interact_facing(facing)
-	var end := Time.get_ticks_msec() + 6000
+	var end := Time.get_ticks_msec() + 12000
 	while Time.get_ticks_msec() < end and box().visible:
 		await tap("interact")
 		await secs(0.2)
@@ -550,6 +550,18 @@ func debug_tool(n: int) -> void:
 		while Time.get_ticks_msec() < end and level_id() == id:
 			await process_frame
 		await secs(0.6)
+
+# --- son
+
+func audio() -> Node:
+	return game.get_node(VP + "/AudioManager")
+
+# Attend la fin du jingle en cours : tant qu'il joue, le dialogue ne passe pas a la suite.
+func wait_jingle() -> void:
+	var end := Time.get_ticks_msec() + 9000
+	while Time.get_ticks_msec() < end and audio().jingle_playing():
+		await process_frame
+	await wait(4)
 
 func _run() -> void:
 	root.size = Vector2i(1152, 648)

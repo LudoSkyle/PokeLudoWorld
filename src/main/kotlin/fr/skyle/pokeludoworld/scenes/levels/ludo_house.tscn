@@ -8,6 +8,7 @@
 [node name="Level" type="Node2D"]
 metadata/location = "Maison de Ludo"
 metadata/banner = "wood"
+metadata/music = "new_bark_town"
 
 [node name="Background" type="Node2D" parent="."]
 

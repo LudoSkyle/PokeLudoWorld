@@ -43,6 +43,9 @@ class SceneManager : Node() {
 		/** Métadonnée de la racine d'une carte : le bandeau qui porte ce nom. */
 		private const val BANNER_META = "banner"
 
+		/** Métadonnée de la racine d'une carte : sa musique. */
+		private const val MUSIC_META = "music"
+
 		private const val SETTLE_FRAMES = 4
 	}
 
@@ -159,14 +162,20 @@ class SceneManager : Node() {
 		}
 	}
 
-	/** Demande un changement de carte. Ignoré si un fondu est déjà en cours. */
-	fun changeLevel(scenePath: String, door: String) {
+	/**
+	 * Demande un changement de carte. Ignoré si un fondu est déjà en cours.
+	 * [leaving] : on sort par un paillasson ou un tapis d'escalier.
+	 */
+	fun changeLevel(scenePath: String, door: String, leaving: Boolean = false) {
 		if (isChanging) return
 
 		pendingScene = scenePath
 		pendingDoor = door
 		progress = 0.0
 		phase = Phase.FADE_OUT
+
+		// On n'entend pas la même porte en entrant quelque part et en en sortant.
+		AudioManager.instance?.sfx(if (leaving) "door_exit" else "door")
 
 		Logger.i("Changing level to $scenePath (door=$door)")
 	}
@@ -194,6 +203,8 @@ class SceneManager : Node() {
 		currentScene = pendingScene
 		location = next.getMeta(LOCATION_META, "").toString()
 		banner = next.getMeta(BANNER_META, "").toString()
+
+		AudioManager.instance?.playMusic(next.getMeta(MUSIC_META, "").toString())
 
 		// Le bandeau attend que le fondu d'arrivée soit levé pour descendre.
 		LocationBanner.instance?.announce(

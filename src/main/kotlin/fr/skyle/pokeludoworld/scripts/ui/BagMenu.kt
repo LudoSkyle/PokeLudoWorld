@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Item
 import fr.skyle.pokeludoworld.scripts.gameplay.items.ItemIcons
@@ -138,10 +139,12 @@ class BagMenu : CanvasLayer() {
 
 		// Les poches ne bouclent pas : les flèches disent où l'on peut aller.
 		if (Input.isActionJustPressed("ui_right") && pocket < POCKETS.size - 1) {
+			AudioManager.instance?.sfx("cursor")
 			pocket++
 			showPocket()
 		}
 		if (Input.isActionJustPressed("ui_left") && pocket > 0) {
+			AudioManager.instance?.sfx("cursor")
 			pocket--
 			showPocket()
 		}

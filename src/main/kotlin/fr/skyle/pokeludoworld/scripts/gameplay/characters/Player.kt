@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.characters
 
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Readable
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.Roadblock
@@ -28,6 +29,9 @@ class Player : CharacterBody2D() {
 	private var input: PlayerInput? = null
 	private var movement: CharacterMovement? = null
 	private var sprite: CharacterAnimation? = null
+
+	/** Temps restant avant de pouvoir refaire entendre un choc contre un mur. */
+	private var bumpWait = 0.0
 
 	/** Vrai pendant une scène jouée par le jeu : le joueur ne répond plus aux touches. */
 	var isLocked: Boolean = false
@@ -93,13 +97,20 @@ class Player : CharacterBody2D() {
 		// Il passe avant la boîte de dialogue, dont ses écrans se servent pour
 		// poser leurs questions.
 		val menu = PauseMenu.instance
+		val audio = AudioManager.instance
+		bumpWait -= delta
 		if (menu != null && menu.isOpen) {
+			// Valider s'entend, refermer aussi.
+			if (interact) audio?.sfx("confirm")
+			if (Input.isActionJustPressed(PauseMenu.ACTION)) audio?.sfx("cancel")
 			menu.handle(interact)
 			sprite?.refresh(currentInput.direction, false)
 			return
 		}
 
 		if (box != null && box.isOpen) {
+			if (interact) audio?.sfx("confirm")
+			if (box.isAsking && Input.isActionJustPressed(PauseMenu.ACTION)) audio?.sfx("cancel")
 			box.handle(interact)
 			sprite?.refresh(currentInput.direction, false)
 			return
@@ -112,6 +123,7 @@ class Player : CharacterBody2D() {
 
 		// Il ne s'ouvre qu'entre deux pas, jamais au milieu d'une case.
 		if (menu != null && !currentMovement.isWalking && Input.isActionJustPressed(PauseMenu.ACTION)) {
+			audio?.sfx("menu")
 			menu.open()
 			sprite?.refresh(currentInput.direction, false)
 			return
@@ -133,8 +145,10 @@ class Player : CharacterBody2D() {
 					val door = currentMovement.areaUnderfoot() as? SceneTrigger
 					if (door != null && door.isExit && door.exitDirection == currentInput.direction) {
 						door.activate()
-					} else {
-						currentMovement.tryWalk(currentInput.direction)
+					} else if (!currentMovement.tryWalk(currentInput.direction) && bumpWait <= 0.0) {
+						// On bute : le choc s'entend, à la cadence des pas.
+						audio?.sfx("bump")
+						bumpWait = BUMP_SECONDS
 					}
 				}
 				MoveIntent.TURN -> sprite?.playTurn(currentInput.direction)
@@ -153,6 +167,10 @@ class Player : CharacterBody2D() {
 			is Sign -> target.read()
 			is Readable -> target.read()
 			is Npc -> target.talk(facing)
+			else -> return
 		}
+		AudioManager.instance?.sfx("confirm")
 	}
 }
+
+private const val BUMP_SECONDS = 0.3

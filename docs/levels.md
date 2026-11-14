@@ -277,6 +277,7 @@ metadata/banner = "wood"
 - `location` : le nom affiché. Le bandeau ne s'annonce que si ce nom **change** :
   deux cartes du même lieu (rez-de-chaussée et étage) portent le même nom, et
   l'escalier ne le fait pas réapparaître. Sans nom, pas de bandeau.
+- `music` : la musique du lieu — voir [audio.md](audio.md).
 - `banner` : un fichier de `assets/ui/banners` — `wood` (défaut), `metal`,
   `stone`, `cave`, `forest`, `beach`, `water`, `sea`. Le texte passe en blanc
   sur les bandeaux sombres (`cave`, `forest`, `water`).
