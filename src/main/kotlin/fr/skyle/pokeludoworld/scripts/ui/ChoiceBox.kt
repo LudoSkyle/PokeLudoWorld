@@ -81,8 +81,8 @@ class ChoiceBox : Control() {
 		if (!isOpen || count == 0) return null
 
 		if (Input.isActionJustPressed(PauseMenu.ACTION)) return count - 1
-		if (Input.isActionJustPressed("ui_down")) move(1)
-		if (Input.isActionJustPressed("ui_up")) move(-1)
+		if (MenuKeys.down()) move(1)
+		if (MenuKeys.up()) move(-1)
 		return if (interact) selected else null
 	}
 

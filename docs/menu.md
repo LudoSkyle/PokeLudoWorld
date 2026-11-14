@@ -17,6 +17,16 @@ menu). Le menu est collé au coin haut droit
 de l'écran, comme dans les jeux d'origine. À chaque ouverture, le curseur repart de la **première entrée** ; il ne garde
 sa place que le temps d'un aller-retour dans un écran ouvert depuis le menu.
 
+## Haut et Bas maintenus
+
+Dans tous les menus (pause, options, sac, boîtes de choix, quantité à jeter),
+Haut et Bas passent par `MenuKeys` : une pression avance d'un cran ; touche
+maintenue, le curseur repart après 0,35 s puis avance toutes les 0,11 s. Une
+touche déjà enfoncée à l'ouverture du menu ne fait rien défiler.
+
+Gauche et Droite ne se répètent pas : ils changent une poche ou un réglage, pas
+une position dans une liste.
+
 ## Qui lit les touches
 
 Comme pour la boîte de dialogue, **c'est le joueur** (`Player.kt`) : il ouvre le

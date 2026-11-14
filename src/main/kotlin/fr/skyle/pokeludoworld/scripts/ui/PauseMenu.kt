@@ -132,8 +132,8 @@ class PauseMenu : CanvasLayer() {
 			return
 		}
 
-		if (Input.isActionJustPressed("ui_down")) move(1)
-		if (Input.isActionJustPressed("ui_up")) move(-1)
+		if (MenuKeys.down()) move(1)
+		if (MenuKeys.up()) move(-1)
 		if (interact) confirm()
 	}
 
