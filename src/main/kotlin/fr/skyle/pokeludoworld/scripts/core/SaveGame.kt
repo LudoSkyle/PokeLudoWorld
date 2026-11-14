@@ -24,6 +24,8 @@ object SaveGame {
 		val banner: String,
 		/** Temps de jeu total, en secondes. */
 		val seconds: Double,
+		/** Contenu du sac : quantité par identifiant d'objet, dans l'ordre d'arrivée. */
+		val items: Map<String, Int> = emptyMap(),
 	)
 
 	fun exists(): Boolean = FileAccess.fileExists(GameFiles.save)
@@ -42,7 +44,19 @@ object SaveGame {
 			location = file.getValue(SECTION, "location", "").toString(),
 			banner = file.getValue(SECTION, "banner", "").toString(),
 			seconds = number(file, "seconds"),
+			items = items(file),
 		)
+	}
+
+	private fun items(file: ConfigFile): Map<String, Int> {
+		val found = LinkedHashMap<String, Int>()
+		if (!file.hasSection(ITEMS)) return found
+		val keys = file.getSectionKeys(ITEMS)
+		for (index in 0 until keys.size) {
+			val id = keys[index]
+			found[id] = (file.getValue(ITEMS, id, 0) as? Number)?.toInt() ?: 0
+		}
+		return found
 	}
 
 	fun write(state: State): Boolean {
@@ -55,6 +69,7 @@ object SaveGame {
 		file.setValue(SECTION, "location", state.location)
 		file.setValue(SECTION, "banner", state.banner)
 		file.setValue(SECTION, "seconds", state.seconds)
+		state.items.forEach { (id, amount) -> file.setValue(ITEMS, id, amount) }
 
 		val saved = file.save(GameFiles.save) == Error.OK
 		if (!saved) Logger.e("Sauvegarde impossible : ${GameFiles.save}")
@@ -71,4 +86,5 @@ object SaveGame {
 		(file.getValue(SECTION, key, 0.0) as? Number)?.toDouble() ?: 0.0
 
 	private const val SECTION = "save"
+	private const val ITEMS = "items"
 }

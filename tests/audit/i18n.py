@@ -7,7 +7,7 @@ import glob, re, sys
 
 ROOT = "src/main/kotlin/fr/skyle/pokeludoworld/"
 # Libelles qui se lisent pareil dans toutes les langues.
-SAME = re.compile(r"^(x[0-9.]+|Français|English|Options|[0-9:]+|)$")
+SAME = re.compile(r"^(x[0-9.]+|Français|English|Options|Debug|[0-9:]+|)$")
 
 
 def boxes(text):
@@ -31,7 +31,7 @@ def sources():
 
     for path in sorted(glob.glob(ROOT + "scripts/**/*.kt", recursive=True)):
         body = open(path, encoding="utf-8").read()
-        for text in re.findall(r'\bT\("((?:[^"\\]|\\.)*)"\)', body):
+        for text in re.findall(r'\b[TN]\("((?:[^"\\]|\\.)*)"\)', body):
             add(text.replace("\\n", "\n"), path)
         # Listes de textes dits tels quels par la boite de dialogue.
         for block in re.findall(r"// i18n\n(.*?)\n\t\t\)", body, re.S):

@@ -10,9 +10,10 @@ début de ligne.
 | Haut / Bas | déplace le curseur, qui **boucle** aux deux bouts |
 | interaction | valide l'entrée sous le curseur |
 
-Entrées actuelles : **Sac** (ne fait encore rien), **Sauvegarder** (voir
-[save.md](save.md)), **Options** (ouvre l'écran des options), **Quitter**
-(ferme le menu). Le menu est collé au coin haut droit
+Entrées actuelles : **Sac** (voir [bag.md](bag.md)), **Sauvegarder** (voir
+[save.md](save.md)), **Options** (ouvre l'écran des options), **Debug** (outils
+de mise au point : remplit le sac d'objets de test), **Quitter** (ferme le
+menu). Le menu est collé au coin haut droit
 de l'écran, comme dans les jeux d'origine. À chaque ouverture, le curseur repart de la **première entrée** ; il ne garde
 sa place que le temps d'un aller-retour dans un écran ouvert depuis le menu.
 

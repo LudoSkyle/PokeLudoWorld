@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://ei8m8fho5p37"]
+[gd_scene load_steps=8 format=3 uid="uid://ei8m8fho5p37"]
 
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/message_box.tscn" id="2_msgbox"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/location_banner.tscn" id="4_banner"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/pause_menu.tscn" id="5_menu"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/options_menu.tscn" id="6_options"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/save_menu.tscn" id="7_save"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/bag_menu.tscn" id="8_bag"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/core/SceneManager.kt" id="3_scenemgr"]
 
 [node name="GameManager" type="Node" unique_id=1125087688]
@@ -45,6 +46,8 @@ render_target_update_mode = 4
 [node name="OptionsMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("6_options")]
 
 [node name="SaveMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("7_save")]
+
+[node name="BagMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("8_bag")]
 
 [node name="Fade" type="CanvasLayer" parent="Control/SubViewportContainer/SubViewport"]
 layer = 10

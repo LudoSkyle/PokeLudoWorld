@@ -12,4 +12,11 @@ import godot.core.asStringName
  * Tout texte passé ici doit avoir son entrée dans `locale/en.po` — c'est
  * vérifié par `tests/run.sh i18n`.
  */
+/**
+ * Marque un texte français qui sera traduit plus tard, à l'affichage : le nom
+ * d'un objet, le titre d'une poche. Ne fait rien, sinon le signaler à
+ * `tests/run.sh i18n`.
+ */
+fun N(text: String): String = text
+
 fun T(text: String): String = TranslationServer.translate(text.asStringName()).toString()

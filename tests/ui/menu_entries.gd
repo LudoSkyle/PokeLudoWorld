@@ -5,8 +5,9 @@ extends "res://tests/lib.gd"
 
 func test() -> void:
 	await menu_pick("Bag")
-	check("Sac valide : le menu reste ouvert", menu_open() and menu_selected() == "Bag", menu_selected())
-	check("Sac valide : pas de boite de dialogue", not box().visible)
+	check("Sac valide : le sac s'ouvre", bag_open())
+	await tap("menu")
+	check("de retour au menu, sur Sac", menu_open() and not bag_open() and menu_selected() == "Bag", menu_selected())
 	await menu_pick("Options")
 	check("Options valide : l'ecran des options s'ouvre", options_open())
 	await tap("menu")

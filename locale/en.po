@@ -175,3 +175,42 @@ msgstr "There is already a saved file.\nIs it OK to overwrite it?"
 
 msgid "La partie est sauvegardée."
 msgstr "The game was saved."
+
+msgid "Objets"
+msgstr "Items"
+
+msgid "Objets rares"
+msgstr "Key Items"
+
+msgid "Poké Balls"
+msgstr "Poké Balls"
+
+msgid "Refermer le sac."
+msgstr "Close the bag."
+
+msgid "Potion"
+msgstr "Potion"
+
+msgid "Un spray qui soigne les blessures. Il rend quelques forces à qui en a besoin."
+msgstr "A spray that heals wounds. It gives a little strength back to whoever needs it."
+
+msgid "Poké Ball"
+msgstr "Poké Ball"
+
+msgid "Une capsule que l'on lance pour attraper un Pokémon sauvage."
+msgstr "A capsule you throw to catch a wild Pokémon."
+
+msgid "Vieille canne"
+msgstr "Old Rod"
+
+msgid "Une canne à pêche usée. Le bois est lisse à force d'avoir servi."
+msgstr "A worn fishing rod. The wood is smooth from years of use."
+
+msgid "Carte du village"
+msgstr "Village Map"
+
+msgid "Un plan de Bourg-Ludo et de ses environs, dessiné à la main."
+msgstr "A hand-drawn map of Ludo Town and its surroundings."
+
+msgid "Des objets de test ont été ajoutés au sac."
+msgstr "Test items were added to the bag."

@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.core
 
 import fr.skyle.pokeludoworld.scripts.autoload.Globals
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.CharacterMovement
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerCamera
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerInput
 import fr.skyle.pokeludoworld.scripts.gameplay.levels.SceneTrigger
@@ -100,11 +101,13 @@ class SceneManager : Node() {
 
 		// Une partie sauvegardée reprend là où elle s'est arrêtée.
 		playSeconds = 0.0
+		Inventory.clear()
 		restore = if (loadSave) SaveGame.read() else null
 		restore?.let {
 			if (ResourceLoader.exists(it.scene)) {
 				pendingScene = it.scene
 				playSeconds = it.seconds
+				Inventory.restore(it.items)
 			} else {
 				Logger.e("Sauvegarde ignoree, carte introuvable : ${it.scene}")
 				restore = null
@@ -255,6 +258,7 @@ class SceneManager : Node() {
 				location = location,
 				banner = banner,
 				seconds = playSeconds,
+				items = Inventory.snapshot(),
 			),
 		)
 	}
