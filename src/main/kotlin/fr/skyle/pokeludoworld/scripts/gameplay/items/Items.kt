@@ -47,6 +47,7 @@ object Items {
 		Item("poke_ball", N("Poké Ball"), N("Une capsule que l'on lance pour attraper un Pokémon sauvage."), Pocket.BALLS, "frlg:3"),
 		Item("old_rod", N("Vieille canne"), N("Une canne à pêche usée. Le bois est lisse à force d'avoir servi."), Pocket.KEY_ITEMS, "frlg:216"),
 		Item("town_map", N("Carte du village"), N("Un plan de Bourg-Ludo et de ses environs, dessiné à la main."), Pocket.KEY_ITEMS, "frlg:219"),
+		Item("dusty_register", N("Registre poussiéreux"), N("Le vieux registre des Veillées. Sa dernière page parle d'une cloche mise à l'abri."), Pocket.KEY_ITEMS, "dex:00:A:D"),
 	)
 
 	private val byId = ALL.associateBy { it.id }

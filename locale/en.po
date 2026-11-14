@@ -38,14 +38,14 @@ msgstr "Laboratory"
 msgid "Maison de Ludo"
 msgstr "Ludo's House"
 
-msgid "Maison des voisins"
-msgstr "Neighbours' House"
+msgid "Bibliothèque"
+msgstr "Library"
 
-msgid "Maison des voisins."
-msgstr "The neighbours' house."
+msgid "Bibliothèque de Bourg-Ludo."
+msgstr "Bourg-Ludo Library."
 
-msgid "Frappez avant d'entrer."
-msgstr "Please knock before entering."
+msgid "Entrée libre. On parle à voix basse."
+msgstr "Free entry. Please keep your voice down."
 
 msgid "Maison de Ludo."
 msgstr "Ludo's house."
@@ -280,3 +280,54 @@ msgstr "Throw away %s x%d?"
 
 msgid "Vous jetez %s x%d."
 msgstr "You threw away %s x%d."
+
+msgid "Registre poussiéreux"
+msgstr "Dusty Register"
+
+msgid "Le vieux registre des Veillées. Sa dernière page parle d'une cloche mise à l'abri."
+msgstr "The old register of the Vigils. Its last page speaks of a bell put away somewhere safe."
+
+msgid "Bienvenue à la bibliothèque."
+msgstr "Welcome to the library."
+
+msgid "Tout ce qui est écrit sur le village est ici."
+msgstr "Everything ever written about the village is here."
+
+msgid "La cloche ? Ta grand-mère en parle encore ?"
+msgstr "The bell? Your grandmother still talks about it?"
+
+msgid "Le registre des Veillées doit être quelque part dans ces rayons."
+msgstr "The register of the Vigils must be somewhere on these shelves."
+
+msgid "Cherche au fond, à gauche : c'est là que dorment les vieux papiers."
+msgstr "Look at the back, on the left: that's where the old papers sleep."
+
+msgid "Si tu le trouves, il est à toi. Moi, je ne grimpe plus à l'échelle."
+msgstr "If you find it, it's yours. I don't climb the ladder anymore."
+
+msgid "Tu l'as trouvé ! Je le cherchais depuis des années."
+msgstr "You found it! I had been looking for it for years."
+
+msgid "Des registres reliés, rangés par année."
+msgstr "Bound registers, sorted by year."
+
+msgid "L'un d'eux est beaucoup plus poussiéreux que les autres."
+msgstr "One of them is much dustier than the others."
+
+msgid "Vous trouvez le Registre poussiéreux !"
+msgstr "You found the Dusty Register!"
+
+msgid "« ...la cloche a été descendue à l'abri pour l'hiver, »"
+msgstr "\"...the bell was taken down to shelter for the winter,\""
+
+msgid "« au frais, là où l'eau dort sous la pierre. »"
+msgstr "\"in the cool, where the water sleeps under the stone.\""
+
+msgid "« On la remontera pour la Veillée prochaine. »"
+msgstr "\"We will bring it back up for the next Vigil.\""
+
+msgid "C'est de là que venait le registre."
+msgstr "This is where the register came from."
+
+msgid "Le vide dans la rangée se voit encore."
+msgstr "You can still see the gap in the row."

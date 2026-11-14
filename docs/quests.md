@@ -246,6 +246,9 @@ Avec `bell_told` :
 > |Cherche au fond, à gauche : c'est là que dorment les vieux papiers.
 > |Si tu le trouves, il est à toi. Moi, je ne grimpe plus à l'échelle.
 
+Avec `bell_register` :
+> Tu l'as trouvé ! Je le cherchais depuis des années.
+
 **Le rayon doit être montré du doigt.** Une bibliothèque entière à examiner case
 par case devient une corvée : la zone des archives fait **quatre cases**, au
 fond à gauche, et porte son propre texte pour qu'on sente qu'on est au bon
@@ -406,7 +409,7 @@ Les répliques d'après :
 
 | Objet | À quoi ça ressemble | Rôle |
 |---|---|---|
-| **Registre poussiéreux** | vieux livre relié, tranche abîmée | l'indice |
+| **Registre poussiéreux** | vieux livre relié, tranche abîmée — **en place** : `dusty_register`, icône `dex:00:A:D` | l'indice |
 | **Cloche ternie** | petite cloche de bronze noircie | la trouvaille |
 | **Cloche claire** | la même, dorée — un recolor suffit | après la machine de soin |
 | **Ruban de la Veillée** | ruban de tissu, bleu ou rouge | le souvenir, sans usage |
@@ -427,42 +430,45 @@ reçoit ([bag.md](bag.md)). Il leur faut donc à chacun :
 
 ## Les retouches de carte
 
-### La bibliothèque
+### La bibliothèque — en place
 
-La maison du centre devient la bibliothèque du village. Son intérieur actuel
-(`neighbor_house.tscn`) est déjà fait de deux bibliothèques et deux télés : il
-est réaménagé en bibliothèque pour de vrai, et renommé `library.tscn`. Les
-voisins auront une maison neuve plus tard.
+La maison du centre est la bibliothèque du village : `scenes/levels/library.tscn`
+(l'ancienne `neighbor_house.tscn`, réaménagée et renommée). Dans `start_town`,
+la porte s'appelle `Bibliotheque`, le panneau `SignLibrary`, et le bandeau de
+lieu dit « Bibliothèque ». Les voisins auront une maison neuve plus tard.
 
-À reprendre : `target_scene` de la porte `MaisonVoisins` dans `start_town`, le
-texte de `SignNeighbors`, et `metadata/location` (« Bibliothèque » tient dans
-les vingt caractères du bandeau).
-
-La pièce actuelle fait 12 colonnes, mur en `y 5-7`, sol en `y 8-13`. Pour une
-bibliothèque, l'élargir à **14 colonnes sur 7 rangées de sol** ; le cadre de
-32 × 20 cases de noir reste inchangé.
-
-Intention d'aménagement — les cases exactes se calent dans l'éditeur :
+La pièce fait **14 colonnes** (`x 9-22`), mur en `y 5-7`, **7 rangées de sol**
+(`y 8-14`), dans le cadre habituel de 32 × 20 cases de noir.
 
 ```
-mur    ██████████████     rangée haute, presque vide
-mur    █████  fe  █████   fenêtre dans la trouée, seul endroit sans meuble haut
-adossé AA AA BB ..  .. BB BB BB   archives à gauche, rayonnages à droite
-adossé AA AA BB ..  .. BB BB BB
-sol    .  .  .  .  .  .  .  .     allée du fond
-sol    .  BB BB .  BB BB .  CC    rangée centrale, deux allées, comptoir d'Alix
-sol    .  BB BB .  BB BB .  CC
-sol    .  .  .  .  .  .  .  .
-sol    PL TT TT .  .  .  .  PL    table de lecture, plantes aux coins
-sol    .  tb tb .  MM .  .  .     tabourets franchissables, paillasson centré
+      x  9 10 11 12 13 14 15 16 17 18 19 20 21 22
+y 5-6    mur ......... fenêtre (15-16) ..........
+y 7-8    AA AA AA AA BB BB  .  .  BB BB BB BB BB BB   adossés au mur
+y 9       .  .  .  .  .  .  .  .  .  .  .  .  .  .   allée du fond
+y 10-11   . BB BB BB BB  .  .  BB BB BB BB Al CC CC   rangée centrale, Alix, son bureau
+y 12      .  t  t  t  .  .  .  .  .  .  .  .  .  .   (haut de table : on passe derrière)
+y 13     pl TT TT TT  .  .  .  .  .  .  .  .  .  pl  table de lecture, feuillages
+y 14     PL tb tb  .  .  .  MM MM  .  .  .  .  .  PL  pots, tabourets, paillasson
 ```
 
-`AA` = les **quatre cases d'archives**, au fond à gauche, texte propre, le
-Registre dans la troisième. `BB` = rayonnages ordinaires, texte générique. Les
-règles de composition de [levels.md](levels.md) s'appliquent telles quelles :
-meuble adossé à partir de la rangée 2 du mur, fenêtre seulement au-dessus d'une
-colonne sans meuble haut, aucune poche de sol fermée, paillasson rouge centré
-sur la dernière rangée.
+`AA` = les **quatre cases d'archives** (`x 9-12`), un rayonnage d'un autre
+modèle que les autres ; le Registre est dans la troisième, `(11, 8)`, qu'on
+examine depuis `(11, 9)`. `BB` = rayonnages ordinaires, texte générique.
+
+Les nœuds de la quête, sous `Readables` et `World/Entities` :
+
+| Nœud | Ce qu'il fait |
+|---|---|
+| `Archives…` (7 cases) | texte générique ; avec `bell_told`, « Des registres reliés, rangés par année. » |
+| `ArchivesClosed` (11,8) | la troisième case tant que la quête n'a pas commencé : `forbidden_flag = "bell_told"` |
+| `Register` (11,8) | la trouvaille : `kind = "item"`, `required_flag = "bell_told"`, `flag = "bell_register"`, donne `dusty_register` |
+| `Alix` (20,11) | `aroma_girl`, à côté de son bureau ; ses `states` suivent `bell_told` puis `bell_register` |
+
+`ArchivesClosed` et `Register` partagent une case : un seul des deux est
+présent, selon `bell_told` au moment où l'on entre.
+
+Tests : `tests/run.sh quests/library dialogue/alix dialogue/library_shelves
+collisions/library doors/library`.
 
 ### La place
 
@@ -492,7 +498,7 @@ suivantes et ne contiennent pas une ligne de scénario.
 1. **Les drapeaux** (brique 1) — **fait**.
 2. **Textes conditionnels et présence conditionnelle** (briques 2 et 5) — **fait**.
 3. **Objets ramassables et question** (briques 3 et 4) — **fait**.
-4. **La bibliothèque** : la carte, Alix, les archives, le Registre.
+4. **La bibliothèque** : la carte, Alix, les archives, le Registre — **fait**.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine
    de soin, la cloche au B2F.
 6. **La place et la Veillée** : le socle, et tout ce que `bell_hung` change.
