@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/Player.kt" id="1_player"]
 [ext_resource type="SpriteFrames" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/spriteframes/player.tres" id="2_frames"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/PlayerInput.kt" id="4_input"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/CharacterMovement.kt" id="5_movement"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/PlayerCamera.kt" id="6_camera"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/characters/TallGrass.kt" id="9_grass"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(12, 12)
@@ -21,6 +22,9 @@ scale = Vector2(0.5, 0.5)
 sprite_frames = ExtResource("2_frames")
 animation = &"idle_down"
 script = ExtResource("3_anim")
+
+[node name="Grass" type="Node" parent="."]
+script = ExtResource("9_grass")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_player")
