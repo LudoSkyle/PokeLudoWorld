@@ -48,8 +48,9 @@ class PauseMenu : CanvasLayer() {
 	var selected: Int = 0
 		private set
 
-	val isOpen: Boolean
-		get() = menu?.visible == true
+	/** Vrai du moment où le menu s'ouvre à celui où il se ferme, écrans compris. */
+	var isOpen: Boolean = false
+		private set
 
 	/** Nom du nœud de l'entrée sous le curseur : `Bag`, `Options`, `Quit`. */
 	val selectedName: String
@@ -79,12 +80,22 @@ class PauseMenu : CanvasLayer() {
 		if (isOpen || entries.isEmpty()) return
 		// Chaque ouverture repart de la première entrée.
 		selected = 0
+		isOpen = true
 		menu?.visible = true
 		placeCursor()
 	}
 
 	fun close() {
+		isOpen = false
 		menu?.visible = false
+	}
+
+	/**
+	 * Cache ou remontre le panneau sans fermer le menu : l'écran de sauvegarde
+	 * prend sa place à l'écran, puis la lui rend si l'on répond Non.
+	 */
+	fun showPanel(shown: Boolean) {
+		if (isOpen) menu?.visible = shown
 	}
 
 	/**
@@ -98,6 +109,12 @@ class PauseMenu : CanvasLayer() {
 		val options = OptionsMenu.instance
 		if (options != null && options.isOpen) {
 			options.handle(interact)
+			return
+		}
+
+		val save = SaveMenu.instance
+		if (save != null && save.isOpen) {
+			save.handle(interact)
 			return
 		}
 
@@ -122,6 +139,7 @@ class PauseMenu : CanvasLayer() {
 		when (selectedName) {
 			"Quit" -> close()
 			"Options" -> OptionsMenu.instance?.open()
+			"Save" -> SaveMenu.instance?.open()
 			// Le Sac n'ouvre encore rien.
 			else -> Logger.i("Menu : $selectedName (pas encore branche)")
 		}

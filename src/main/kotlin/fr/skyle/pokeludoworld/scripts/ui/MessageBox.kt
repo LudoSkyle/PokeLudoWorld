@@ -84,6 +84,28 @@ class MessageBox : CanvasLayer() {
 	}
 
 	/**
+	 * Écrit un texte et le laisse à l'écran : aucune touche ne le fait passer,
+	 * c'est l'appelant qui enchaîne ou qui referme avec [close]. Sert aux
+	 * questions (voir SaveMenu). Le texte est dit tel quel, déjà traduit.
+	 */
+	fun say(text: String) {
+		pending.clear()
+		box?.visible = true
+		fullText = text
+		shown = 0
+		elapsed = 0.0
+		PixelShadow.setText(label, "")
+	}
+
+	fun close() {
+		pending.clear()
+		box?.visible = false
+		fullText = ""
+		shown = 0
+		PixelShadow.setText(label, "")
+	}
+
+	/**
 	 * Termine le défilement en cours, ou passe au message suivant s'il est déjà
 	 * entier. Ferme la boîte quand il n'y a plus rien à dire.
 	 */

@@ -61,12 +61,19 @@ object PixelShadow {
 	}
 
 	/** Change le texte d'un libellé et de ses ombres. */
-	fun setText(text: RichTextLabel?, value: String) {
+	fun setText(text: Control?, value: String) {
 		val label = text ?: return
-		label.text = value
+		write(label, value)
 		for (index in OFFSETS.indices) {
-			(if (label.hasNode("$PREFIX$index")) label.getNode("$PREFIX$index") else null)
-				.let { it as? RichTextLabel }?.text = value
+			if (label.hasNode("$PREFIX$index")) write(label.getNode("$PREFIX$index"), value)
+		}
+	}
+
+	private fun write(node: Node?, value: String) {
+		when (node) {
+			is RichTextLabel -> node.text = value
+			is Label -> node.text = value
+			else -> {}
 		}
 	}
 }

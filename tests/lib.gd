@@ -269,6 +269,17 @@ func menu_selected() -> String:
 	var line := menu_cursor_line()
 	return "" if line < 0 or line >= list.get_child_count() else str(list.get_child(line).name)
 
+# Ouvre le menu s'il est ferme, descend jusqu'a l'entree nommee (Bag, Save,
+# Options, Quit) et la valide.
+func menu_pick(entry: String) -> void:
+	if not menu_open():
+		await tap("menu")
+	var n := 0
+	while menu_selected() != entry and n < 8:
+		await tap("ui_down")
+		n += 1
+	await tap("interact")
+
 func options_open() -> bool:
 	return game.get_node(VP + "/OptionsMenu/Control/Screen").visible
 
@@ -319,18 +330,52 @@ func watch_banner(t: float, name: String = "") -> Array:
 func test() -> void:
 	pass
 
+# Lance le jeu. load_save = reprendre la sauvegarde de test, comme au vrai
+# lancement ; sinon on part de scene() et start().
+func boot(load_save: bool) -> void:
+	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
+	game = packed.instantiate()
+	var scenes := game.get_node(VP + "/SceneManager")
+	scenes.start_scene = LEVELS + scene() + ".tscn"
+	scenes.load_save = load_save
+	root.add_child(game)
+	await wait(20)
+
+# Quitte le jeu et le relance en reprenant la sauvegarde.
+func relaunch() -> void:
+	root.remove_child(game)
+	game.free()
+	await wait(5)
+	await boot(true)
+
+# --- sauvegarde
+
+func save_summary() -> Control:
+	return game.get_node(VP + "/SaveMenu/Control/Summary")
+
+func save_choices() -> Control:
+	return game.get_node(VP + "/SaveMenu/Control/Choices")
+
+func saved_file() -> ConfigFile:
+	var file := ConfigFile.new()
+	file.load("user://test_save.cfg")
+	return file
+
+# Attend que la question soit ecrite et que Oui/Non apparaisse.
+func wait_choices() -> void:
+	var end := Time.get_ticks_msec() + 4000
+	while Time.get_ticks_msec() < end and not save_choices().visible:
+		await process_frame
+	await wait(4)
+
 func _run() -> void:
 	root.size = Vector2i(1152, 648)
-	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
 	# Ce sont des fichiers de test, ceux du joueur ne sont jamais touches.
 	for file in ["user://test_settings.cfg", "user://test_save.cfg"]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)
-	game = packed.instantiate()
-	game.get_node(VP + "/SceneManager").start_scene = LEVELS + scene() + ".tscn"
-	root.add_child(game)
-	await wait(20)
+	await boot(false)
 	if start() != Vector2i(-1, -1):
 		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)
 		await wait(10)

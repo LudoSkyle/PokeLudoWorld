@@ -3,9 +3,7 @@ extends "res://tests/lib.gd"
 # L'ecran des options s'ouvre depuis le menu et y ramene, par Retour ou par X.
 
 func test() -> void:
-	await tap("menu")
-	await tap("ui_down")
-	await tap("interact")
+	await menu_pick("Options")
 	check("Options valide : l'ecran s'ouvre", options_open())
 	shot("options")
 	var before := cell()

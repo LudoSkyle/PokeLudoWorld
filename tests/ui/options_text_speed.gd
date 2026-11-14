@@ -9,9 +9,7 @@ func speed_is(node: String, seconds: float) -> bool:
 	return options_speed() == node and is_equal_approx(letter_seconds(), seconds)
 
 func test() -> void:
-	await tap("menu")
-	await tap("ui_down")
-	await tap("interact")
+	await menu_pick("Options")
 	for i in 5:
 		await tap("ui_left")
 	check("Gauche jusqu'au bout : x0.5", speed_is("Half", 0.04), "%s %.3f" % [options_speed(), letter_seconds()])
