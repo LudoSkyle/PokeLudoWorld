@@ -3,12 +3,14 @@ package fr.skyle.pokeludoworld.scripts.autoload
 import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildEncounters
+import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildTable
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
 import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.Node
+import kotlin.random.Random
 
 @Script
 class Globals : Node() {
@@ -66,4 +68,30 @@ class Globals : Node() {
 	fun forceEncounters(mode: Int) {
 		WildEncounters.forced = if (mode < 0) null else mode > 0
 	}
+
+	/** Le dernier Pokémon sauvage rencontré, écrit `espèce:niveau` ; vide s'il n'y en a pas eu. */
+	@Register
+	fun lastEncounter(): String = WildEncounters.last?.let { "${it.species.id}:${it.level}" } ?: ""
+
+	/** Donne une graine au hasard des rencontres : les mêmes tirages à chaque fois. */
+	@Register
+	fun seedEncounters(seed: Int) {
+		WildEncounters.random = Random(seed)
+	}
+
+	/**
+	 * Tire [count] Pokémon dans la table [table], écrite comme sur une carte,
+	 * avec la graine [seed]. Renvoie les tirages `espèce:niveau` séparés par
+	 * des virgules : de quoi vérifier une table sans marcher dans l'herbe.
+	 */
+	@Register
+	fun wildDraws(table: String, count: Int, seed: Int): String {
+		val parsed = WildTable.parse(table)
+		val random = Random(seed)
+		return (0 until count).mapNotNull { parsed.pick(random) }.joinToString(",") { "${it.species.id}:${it.level}" }
+	}
+
+	/** Les entrées mal écrites de la table [table], une par ligne ; vide si tout est bon. */
+	@Register
+	fun wildErrors(table: String): String = WildTable.parse(table).errors.joinToString("\n")
 }

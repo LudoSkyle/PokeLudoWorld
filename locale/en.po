@@ -599,5 +599,14 @@ msgstr "Time: dusk"
 msgid "Heure : nuit"
 msgstr "Time: night"
 
-msgid "Un Pokémon sauvage apparaît !"
-msgstr "A wild Pokémon appeared!"
+msgid "Un %s sauvage apparaît !"
+msgstr "A wild %s appeared!"
+
+msgid "Mulotin"
+msgstr "Scurrit"
+
+msgid "Piafeuille"
+msgstr "Leafwing"
+
+msgid "Chenibulle"
+msgstr "Bubblegrub"
