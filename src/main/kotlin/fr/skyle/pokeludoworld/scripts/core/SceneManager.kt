@@ -18,6 +18,7 @@ import godot.api.ColorRect
 import godot.api.Node
 import godot.api.Node2D
 import godot.api.PackedScene
+import godot.api.RenderingServer
 import godot.api.ResourceLoader
 import godot.core.Color
 import godot.core.Vector2
@@ -47,6 +48,11 @@ class SceneManager : Node() {
 		/** Métadonnée de la racine d'une carte : vrai si elle est dehors, sous le ciel. */
 		private const val DAYLIGHT_META = "daylight"
 		private const val DAYLIGHT_NODE = "Daylight"
+
+		/** Ce que lit le shader des fenêtres : la teinte du dehors, et la force des lumières. */
+		private const val TINT_UNIFORM = "day_tint"
+		private const val LIGHT_UNIFORM = "night_light"
+		private val DAY = Color(1.0, 1.0, 1.0, 1.0)
 
 		/** Métadonnée de la racine d'une carte : sa musique. */
 		private const val MUSIC_META = "music"
@@ -144,8 +150,12 @@ class SceneManager : Node() {
 		// Comme dans les jeux d'origine, le temps de jeu tourne aussi dans les menus.
 		playSeconds += delta
 
-		// Dehors, la teinte suit l'heure.
-		daylight?.color = DayNight.tint()
+		// Dehors, la teinte suit l'heure, et les fenêtres s'allument avec la nuit.
+		val sky = daylight
+		val tint = if (sky != null) DayNight.tint() else DAY
+		sky?.color = tint
+		RenderingServer.globalShaderParameterSet(TINT_UNIFORM, tint)
+		RenderingServer.globalShaderParameterSet(LIGHT_UNIFORM, if (sky != null) DayNight.light() else 0.0)
 
 		if (!bootstrapped) {
 			bootstrapped = true
