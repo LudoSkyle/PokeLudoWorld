@@ -82,12 +82,12 @@ Level (Node2D)
 
 ## Les intérieurs
 
-Quatre cartes, une par bâtiment du village :
+Quatre cartes pour les trois bâtiments du village :
 
 | Bâtiment sur `start_town` | Porte (case) | Carte |
 |---|---|---|
 | maison en bas à gauche — **Ludo** | `MaisonLudo` (8,15) | `ludo_house` (salon) + `ludo_bedroom` (étage) |
-| maison du centre — **les voisins**, PNJ à venir | `MaisonVoisins` (21,13) | `neighbor_house`, de plain-pied |
+| maison du centre — **la bibliothèque** | `Bibliotheque` (21,13) | `library`, de plain-pied — plan dans [quests.md](quests.md) |
 | grand bâtiment en haut à droite, à la Poké Ball — **le laboratoire** | `Laboratoire` (28,7) | `lab_house` |
 
 Chaque pièce est posée au milieu d'une grille de **32 × 20 cases de noir**. Ce
