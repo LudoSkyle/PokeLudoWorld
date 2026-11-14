@@ -72,8 +72,8 @@ un passage gardé retiré laisse passer.
 
 **La présence se décide au chargement de la carte.** Un drapeau posé pendant
 qu'on s'y trouve ne fait disparaître ni apparaître personne sous nos yeux : le
-changement se voit à la prochaine entrée sur la carte, ou après un fondu qui
-la recharge.
+changement se voit à la prochaine entrée sur la carte, ou après le fondu de
+`@reload`, plus bas.
 
 Deux nœuds `Npc` pour un même personnage — l'un `forbidden_flag`, l'autre
 `required_flag` sur le même drapeau — le font changer de place, d'itinéraire
@@ -104,6 +104,18 @@ laisse la place à la Cloche claire :
 
 ```gdscript
 "bell_tarnished > @take:tarnished_bell La machine s'allume et chante trois notes.|@flag:bell_clean @give:clear_bell Vous récupérez la Cloche claire !"
+```
+
+### Recharger la carte après un dialogue : `@reload`
+
+Une boîte qui commence par **`@reload`** fait **recharger la carte dans un
+fondu, une fois le dialogue refermé**. Le joueur garde sa place et son regard ;
+tout le reste repart du chargement, donc de ce que disent les drapeaux
+(`SceneManager.reload()`). C'est ce qui montre un drapeau qui change le
+village :
+
+```gdscript
+"bell_ribbon > @flag:bell_hung @take:clear_bell @reload Vous accrochez la cloche. Elle tient."
 ```
 
 ### La question avant d'agir : `ask`
@@ -176,7 +188,9 @@ dans une carte du jeu.
 ### Ce que le socle ne fait pas
 
 - **Faire apparaître ou disparaître un nœud sans recharger la carte** : la
-  présence se décide au chargement.
+  présence se décide au chargement ; `@reload` la recharge dans un fondu.
+- **Jouer un son.** Le projet n'a encore aucun audio : la cloche s'accroche
+  en silence.
 - **Une condition sur le contenu du sac** : tout passe par les drapeaux.
 
 ---
@@ -366,6 +380,9 @@ Puis la sonnerie et un fondu court. → `bell_hung`
 
 ## Ce qui change avec `bell_hung`
 
+> **En place**, sauf la silhouette de Pokémon (aucun sprite). Le tableau
+> ci-dessous est l'intention ; les nœuds réels sont listés après les répliques.
+
 Tout passe par `required_flag` / `forbidden_flag` : les nœuds d'avant
 disparaissent, ceux d'après apparaissent. Deux nœuds `Npc` pour un même
 personnage quand il bouge **et** change de texte.
@@ -396,9 +413,10 @@ Les répliques d'après :
 **Le pêcheur** :
 > J'ai laissé ma canne là-bas. Pour une fois.
 
-**Mémé Odile**, sous la cloche :
-> Je l'ai entendue. De mes propres oreilles, encore une fois.
+**Mémé Odile**, sous la cloche — elle qui ne devait plus bouger de chez elle :
+> J'ai finalement fait le déplacement. Je voulais l'entendre de près.
 > |Merci.
+> |*Kraak* ...MON DOS !!!
 
 **Alix** :
 > J'ai fermé la bibliothèque pour ce soir.
@@ -411,6 +429,35 @@ Les répliques d'après :
 > La route de l'ouest est ouverte.
 > |On a fini juste à temps pour la Veillée.
 
+### Les nœuds de la Veillée
+
+Tous dans `start_town`, sous `World/Entities`, avec `required_flag = "bell_hung"`.
+Ceux d'avant (`GuardNorth`, `GuardSouth`, `Triggers/WestRoadblock`, `Runner`,
+`Fisher`, `Roland`, et `Odile` / `Alix` dans leurs cartes) portent
+`forbidden_flag = "bell_hung"`.
+
+| Nœud | Case | Regard |
+|---|---|---|
+| `OdileAfter` | (30,15), au pied du socle — elle a fait le déplacement, et son dos le lui rappelle | vers le sud |
+| `FisherAfter` | (32,15) | vers la cloche |
+| `AlixAfter` | (29,13) | vers le socle |
+| `RolandAfter` | (33,13) — on lui parle depuis (33,12) | vers le socle |
+| `WorkerAfter`, `WorkerAfter2` | (36,14) et (35,16), sur l'herbe à l'est : les deux ouvriers de la route | vers la place |
+| `RunnerAfter` | départ (13,9) | sa boucle en sens inverse, avec un crochet par la rangée nord de la place |
+| `GrassWatcher` | inchangé | change de texte par `states` |
+| `Visitor…` (7) | autour de la place — sans `backpacker_m`, qui a cédé sa case au second ouvrier | vers la cloche |
+
+L'accrochage : `BellStandEmpty` pose `bell_hung`, reprend la Cloche claire
+(elle est sur le socle, plus dans le sac) et recharge la carte par `@reload`.
+Le Ruban reste dans le sac.
+
+Les **sept répliques des visiteurs** et celle du second ouvrier ne figuraient
+pas au cahier des charges : elles sont à relire dans `start_town.tscn`. Le
+Professeur, resté au labo, a lui aussi sa réplique d'après (`bell_hung`).
+
+Tests : `tests/run.sh quests/bell_stand_empty quests/bell_hung quests/vigil
+moves/runner_after`.
+
 ## Les objets à trouver en asset
 
 | Objet | À quoi ça ressemble | Rôle |
@@ -419,9 +466,9 @@ Les répliques d'après :
 | **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `dex:0B:1:C` | la trouvaille |
 | **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `dex:0B:1:2` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
 | **Ruban de la Veillée** | nœud de tissu rouge — **en place** : `vigil_ribbon`, icône `dex:07:F:2` | le souvenir, sans usage |
-| **Socle** *(décor)* | pilier de pierre, **deux versions : vide et avec cloche** | la place |
-| **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo | décor, sans rapport avec la quête |
-| **Silhouette de Pokémon** | un sprite, même sans animation | la grotte et les herbes |
+| **Socle** *(décor)* | portique de pierre, **deux versions : vide et avec cloche** — **en place** : `assets/levels/bell_stand.png` | la place |
+| **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo — **en place** : deux petites statues de `environments.png`, à l'entrée de la place | décor, sans rapport avec la quête |
+| **Silhouette de Pokémon** | un sprite, même sans animation — **toujours manquant** | la grotte et les herbes |
 
 Les quatre premiers ne sont jamais posés sur la carte, mais ce sont de **vrais
 objets rares** : une ligne chacun dans le catalogue (`Items.kt`, poche
@@ -476,14 +523,60 @@ présent, selon `bell_told` au moment où l'on entre.
 Tests : `tests/run.sh quests/library dialogue/alix dialogue/library_shelves
 collisions/library doors/library`.
 
-### La place
+### La place — en place
 
-Une place dallée au centre du village, dans le triangle maison de Ludo (8,15) /
-bibliothèque (21,13) / labo (28,7). Elle porte le socle, un banc, et la statue.
+Une place dallée sur **la pelouse à l'est du village, devant le laboratoire** :
+`x 27-35, y 11-15` de `start_town`, calque `Background/Plaza`.
 
-**Vérifier qu'elle ne coupe pas la boucle du coureur** : sa `route` de 52 cases
-passe par ce tronçon de chemin, et deux points consécutifs doivent rester reliés
-par un trajet libre ([npcs.md](npcs.md)).
+> **Écart avec l'intention de départ.** Le triangle maison de Ludo /
+> bibliothèque / labo ne laisse que deux colonnes d'herbe entre le chemin et la
+> clôture de la bibliothèque : pas la place d'un socle de trois cases. La
+> pelouse de l'est est le seul espace assez large sans déplacer de bâtiment.
+> Elle borde le chemin sans le recouvrir : la boucle du coureur n'est pas
+> touchée.
+
+```
+      x 27 28 29 30 31 32 33 34 35
+y 11     .  .  .  .  .  .  .  .  .    rangée nord, libre : le coureur y passe après la Veillée
+y 12     . St  .  ‾  ‾  ‾  . St  .    statues ; le linteau du socle
+y 13     .  .  .  S  ○  S  .  .  .    socle ; ○ = sous le portique
+y 14     B  B  .  S  ●  S  .  B  B    bancs ; ● = la marche
+y 15     .  .  .  .  .  .  .  .  .
+```
+
+| Élément | Comment | Origine |
+|---|---|---|
+| dallage | tuiles `5:5-7,47-49`, bordées d'herbe | `environments.png` |
+| bancs | tuiles `5:74,25` et `5:75,25`, solides (déclarées dans `level.tres`) | `environments.png` |
+| statues `StatueWest`, `StatueEast` | objets sous `World`, un sprite découpé dans l'atlas, en miroir l'un de l'autre | `environments.png` |
+| socle `BellStandEmpty`, `BellStand` | objets sous `World`, script `Readable`, 48×48 ; voir ci-dessous ce qui bloque | `bell_stand.png` ([CREDITS](../src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/CREDITS.md)) |
+
+**Ce qui bloque dans le socle.** Les deux montants et les deux rochers du bas,
+toujours. La colonne du milieu dépend de la cloche :
+
+| | `○` sous le portique (31,13) | `●` la marche (31,14) | on l'examine depuis |
+|---|---|---|---|
+| vide | **libre** — le fond du portique (31,12) bloque | libre | `○`, tourné vers le haut ou vers un montant |
+| avec la cloche | **bloqué** par la cloche | libre | `●`, tourné vers le haut |
+
+On accroche donc la cloche en se tenant sous le portique. La carte rechargée,
+la cloche occupe cette case : `SceneManager` fait alors **reculer le joueur
+d'une case**, sans le retourner, pendant que l'écran est encore noir
+(`CharacterMovement.stepOutOfSolid`). C'est vrai de tout `@reload` qui pose
+quelque chose sous les pieds du joueur.
+
+Le socle et les statues sont des **objets**, comme un panneau : ils ne tombent
+pas sur la grille des tuiles et le socle change d'image avec l'histoire. Les
+deux socles occupent la même case ; un seul est présent, selon `bell_hung`.
+
+Les planches et la caisse des ouvriers, qui étaient sur cette pelouse, sont
+**retirées de la carte** : la pelouse au sud de la place est dégagée.
+
+**Le bout de la route de l'ouest.** Les gardes partis, rien n'arrêtait plus le
+joueur au bord de la carte : il marchait dans le vide. Trois `Readable`
+(`Readables/RoadEnd…`, colonne `x 0`, `y 7-9`) ferment le passage et disent
+que le chemin n'est pas encore tracé. À retirer le jour où la carte de l'ouest
+existe.
 
 ### Le laboratoire, la grotte, le salon — en place
 
@@ -506,6 +599,8 @@ Répliques écrites pour combler le cahier des charges, **à relire** :
   désordre. / Je range ce laboratoire depuis des années. » ;
 - le Professeur, la cloche nettoyée : « Regarde-moi ce bronze. Elle est comme
   neuve. / Je me demande quel son elle a. » ;
+- le Professeur, la cloche accrochée : « Je l'ai entendue d'ici, par la fenêtre
+  ouverte. / Un son clair. Ma machine n'avait jamais aussi bien servi. » ;
 - Mémé, une fois le Ruban donné : elle redit sa dernière phrase, « Allez, va.
   Et sonne fort, que je l'entende d'ici. » ;
 - la machine, une fois la cloche nettoyée : son texte d'avant.
@@ -524,7 +619,8 @@ suivantes et ne contiennent pas une ligne de scénario.
 4. **La bibliothèque** : la carte, Alix, les archives, le Registre — **fait**.
 5. **Le reste de la chaîne** : Mémé chez nous, Roland, le Professeur, la machine
    de soin, la cloche au B2F — **fait**.
-6. **La place et la Veillée** : le socle, et tout ce que `bell_hung` change.
+6. **La place et la Veillée** : le socle, et tout ce que `bell_hung` change — **fait**,
+   sauf la silhouette de Pokémon et le son de la cloche.
 
 Chaque lot ajoute ses textes à `locale/en.po` **boîte par boîte** et passe
 `tests/run.sh i18n` ([i18n.md](i18n.md)). La carte se vérifie comme les autres :

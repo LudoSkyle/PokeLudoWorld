@@ -45,6 +45,7 @@ facing = Vector2(-1, 0)
 text = "Te voilà debout. J'ai gardé du pain pour toi.|Tu as vu le socle vide, sur la place ? Il y avait une cloche dessus.|On la sonnait le dernier soir de l'été. Tout le village venait.|Même les Pokémon descendaient écouter, disait ma mère.|Personne ne sait où elle est passée.|@flag:bell_told Peut-être qu'Alix, la bibliothécaire, sait quelque chose."
 states = PackedStringArray("bell_told > Alors ? Alix t'a trouvé quelque chose ?|Prends ton temps. Moi, je ne bouge plus d'ici.", "bell_clean > Oh...|Elle est comme dans mon souvenir. Exactement comme ça.|Non, garde-la. Mes jambes ne montent plus jusque là-haut.|Tiens, prends aussi ça. Je l'ai porté à la dernière Veillée.|@flag:bell_ribbon @give:vigil_ribbon Vous recevez le Ruban de la Veillée !|Allez, va. Et sonne fort, que je l'entende d'ici.", "bell_ribbon > Allez, va. Et sonne fort, que je l'entende d'ici.")
 ask = "bell_clean > Montrer la cloche à Mémé ?"
+forbidden_flag = "bell_hung"
 
 [node name="Doors" type="Node2D" parent="."]
 

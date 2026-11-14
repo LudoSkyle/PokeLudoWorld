@@ -42,7 +42,7 @@ y_sort_enabled = true
 position = Vector2(200, 168)
 appearance = "professor_elm"
 text = "Ah, bonjour ! Ne fais pas attention au désordre.|Je range ce laboratoire depuis des années."
-states = PackedStringArray("bell_tarnished > Fais voir ça... Du bronze de l'ancienne mine.|On n'en coule plus depuis bien avant moi.|Pose-la dans la machine de soin, là-bas. Elle nettoie tout.", "bell_clean > Regarde-moi ce bronze. Elle est comme neuve.|Je me demande quel son elle a.")
+states = PackedStringArray("bell_tarnished > Fais voir ça... Du bronze de l'ancienne mine.|On n'en coule plus depuis bien avant moi.|Pose-la dans la machine de soin, là-bas. Elle nettoie tout.", "bell_clean > Regarde-moi ce bronze. Elle est comme neuve.|Je me demande quel son elle a.", "bell_hung > Je l'ai entendue d'ici, par la fenêtre ouverte.|Un son clair. Ma machine n'avait jamais aussi bien servi.")
 
 [node name="Doors" type="Node2D" parent="."]
 

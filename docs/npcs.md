@@ -107,6 +107,10 @@ enfoncée, sinon la scène repartirait en boucle.
 | `Roland` | (39,3) | ancien de la grotte, à droite de son entrée ; ses répliques suivent la quête ([quests.md](quests.md)) |
 | `Fisher` | (40,17) | pêcheur les pieds dans l'eau claire, au bord de l'eau profonde, tourné vers le large |
 
+Après la Veillée (`bell_hung`), les gardes, le passage, le coureur, le pêcheur
+et Roland cèdent la place à leurs doubles « After » et aux visiteurs, sur la
+place : voir [quests.md](quests.md).
+
 Les gardes ne sont pas au bord de la carte : plus à l'ouest, la cime des arbres
 recouvre la rangée du bas et cachait l'un d'eux.
 

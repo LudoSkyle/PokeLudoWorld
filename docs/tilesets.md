@@ -57,6 +57,8 @@ Les cas particuliers en place :
 | Bouche de grotte `5:33,23` | **aucune** — c'est l'entrée |
 | Eau profonde (`5:5,34`, `5:6,34`, `5:6,35`) | pleine |
 | Eau claire `5:9,31` et plantes `5:13,32` | **aucune** — faible profondeur |
+| Bancs `5:74,25`, `5:75,25` | pleine |
+| Dallage de la place `5:5-7,47-49` | aucune |
 | Trait de côte, sable, chemins, herbes hautes, décors | aucune |
 
 Trois de ces règles viennent d'une partie de test, et valent d'être comprises

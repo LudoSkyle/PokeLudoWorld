@@ -1,5 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
+import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.core.Settings
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
@@ -21,8 +22,8 @@ import godot.api.RichTextLabel
  * qui ouvre la boîte ne peut pas la faire avancer dans la foulée.
  *
  * Une boîte peut commencer par des consignes, qui s'exécutent au moment où
- * elle s'affiche : `@give:<objet>`, `@take:<objet>` et `@flag:<drapeau>` (voir
- * [directives]).
+ * elle s'affiche : `@give:<objet>`, `@take:<objet>`, `@flag:<drapeau>` et
+ * `@reload` (voir [directives]).
  * [ask] pose d'abord une question Oui / Non.
  */
 @Script
@@ -54,6 +55,9 @@ class MessageBox : CanvasLayer() {
 	private var choices: ChoiceBox? = null
 	private var asking = false
 	private var afterYes: List<String> = emptyList()
+
+	/** Demandé par `@reload` : la carte est rechargée quand le dialogue se referme. */
+	private var reloadWhenClosed = false
 
 	val isOpen: Boolean
 		get() = box?.visible == true
@@ -181,6 +185,7 @@ class MessageBox : CanvasLayer() {
 	}
 
 	fun close() {
+		reloadWhenClosed = false
 		asking = false
 		choices?.close()
 		revealing = false
@@ -218,6 +223,11 @@ class MessageBox : CanvasLayer() {
 			fullText = ""
 			shown = 0
 			PixelShadow.setText(label, "")
+			// Le dialogue a changé le monde : la carte se recharge dans un fondu.
+			if (reloadWhenClosed) {
+				reloadWhenClosed = false
+				SceneManager.instance?.reload()
+			}
 			return
 		}
 
@@ -236,11 +246,18 @@ class MessageBox : CanvasLayer() {
 	 * - `@give:<objet>` ou `@give:<objet>*<nombre>` met l'objet dans le sac ;
 	 *   un objet rare est alors montré au centre de l'écran ;
 	 * - `@take:<objet>` ou `@take:<objet>*<nombre>` le retire du sac ;
-	 * - `@flag:<drapeau>` pose un drapeau d'histoire.
+	 * - `@flag:<drapeau>` pose un drapeau d'histoire ;
+	 * - `@reload` recharge la carte dans un fondu **une fois le dialogue
+	 *   refermé** : c'est au chargement que se décide qui est sur la carte.
 	 */
 	private fun directives(message: String): String {
 		var text = message
 		while (true) {
+			if (text.startsWith(RELOAD)) {
+				reloadWhenClosed = true
+				text = text.removePrefix(RELOAD)
+				continue
+			}
 			val match = DIRECTIVE.matchEntire(text) ?: return text
 			val (order, name, amount, rest) = match.destructured
 			when (order) {
@@ -271,6 +288,7 @@ class MessageBox : CanvasLayer() {
 }
 
 private const val REVEAL_SECONDS = 1.0
+private const val RELOAD = "@reload "
 private const val YES = 0
 private const val NO = 1
 private val DIRECTIVE = Regex("""@(give|take|flag):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
