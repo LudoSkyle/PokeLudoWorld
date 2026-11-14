@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb0skltn2t3f5"
-path="res://.godot/imported/_back.png-929a05354c1c1dc4aa098445465c0fd2.ctex"
+uid="uid://ooibbhliegld"
+path="res://.godot/imported/frlg.png-90a4f0568a418888be431342150e0067.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/_back.png"
-dest_files=["res://.godot/imported/_back.png-929a05354c1c1dc4aa098445465c0fd2.ctex"]
+source_file="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/frlg.png"
+dest_files=["res://.godot/imported/frlg.png-90a4f0568a418888be431342150e0067.ctex"]
 
 [params]
 
