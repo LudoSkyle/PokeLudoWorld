@@ -10,17 +10,20 @@ import godot.core.Error
  */
 object Settings {
 
-	/** Vitesses proposées, de la plus lente à la plus rapide : secondes par lettre. */
-	val TEXT_SPEEDS = listOf(0.08, 0.04, 0.02, 0.0)
+	/** Multiplicateurs proposés : x0.5, x1, x2, x4. */
+	val TEXT_SPEEDS = listOf(0.5, 1.0, 2.0, 4.0)
 
-	const val DEFAULT_TEXT_SPEED = 2
+	/** Secondes par lettre à la vitesse x1. */
+	const val BASE_SECONDS_PER_LETTER = 0.02
+
+	const val DEFAULT_TEXT_SPEED = 1
 
 	/** Indice dans [TEXT_SPEEDS]. */
 	var textSpeed: Int = DEFAULT_TEXT_SPEED
 		private set
 
 	val secondsPerLetter: Double
-		get() = TEXT_SPEEDS[textSpeed]
+		get() = BASE_SECONDS_PER_LETTER / TEXT_SPEEDS[textSpeed]
 
 	private var loaded = false
 
@@ -47,5 +50,6 @@ object Settings {
 
 	private const val PATH = "user://settings.cfg"
 	private const val SECTION = "options"
-	private const val TEXT_SPEED = "text_speed"
+	// Nouvelle clé : l'ancienne rangeait des vitesses nommées, dans un autre ordre.
+	private const val TEXT_SPEED = "text_speed_factor"
 }

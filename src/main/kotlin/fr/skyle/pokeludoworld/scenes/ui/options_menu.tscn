@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/OptionsMenu.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/rse_01.png" id="2_frame"]
-[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald-pro.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokepixel-gba.ttf" id="3_font"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/cursor.png" id="4_cursor"]
 
 [node name="OptionsMenu" type="CanvasLayer"]
@@ -50,12 +50,12 @@ offset_left = 104.0
 offset_top = 32.0
 offset_right = 600.0
 offset_bottom = 160.0
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 32
 text = "Options"
 vertical_alignment = 1
 
@@ -75,10 +75,10 @@ patch_margin_bottom = 8
 
 [node name="Cursor" type="TextureRect" parent="Control/Screen"]
 layout_mode = 0
-offset_left = 104.0
-offset_top = 238.0
+offset_left = 100.0
+offset_top = 236.0
 offset_right = 124.0
-offset_bottom = 274.0
+offset_bottom = 276.0
 mouse_filter = 2
 texture = ExtResource("4_cursor")
 expand_mode = 1
@@ -99,78 +99,78 @@ mouse_filter = 2
 theme_override_constants/separation = 0
 
 [node name="Name" type="Label" parent="Control/Screen/Rows/TextSpeed"]
-custom_minimum_size = Vector2(180, 64)
+custom_minimum_size = Vector2(420, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
-text = "Texte"
+theme_override_font_sizes/font_size = 32
+text = "Vitesse du texte"
 vertical_alignment = 1
 
 [node name="Choices" type="HBoxContainer" parent="Control/Screen/Rows/TextSpeed"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 24
+theme_override_constants/separation = 48
 
-[node name="Slow" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
+[node name="Half" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
-text = "Lente"
+theme_override_font_sizes/font_size = 32
+text = "x0.5"
 vertical_alignment = 1
 
-[node name="Normal" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
+[node name="One" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
-text = "Normale"
+theme_override_font_sizes/font_size = 32
+text = "x1"
 vertical_alignment = 1
 
-[node name="Fast" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
+[node name="Two" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
-text = "Rapide"
+theme_override_font_sizes/font_size = 32
+text = "x2"
 vertical_alignment = 1
 
-[node name="Instant" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
+[node name="Four" type="Label" parent="Control/Screen/Rows/TextSpeed/Choices"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
-text = "Instant"
+theme_override_font_sizes/font_size = 32
+text = "x4"
 vertical_alignment = 1
 
 [node name="Back" type="Label" parent="Control/Screen/Rows"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 32
 text = "Retour"
 vertical_alignment = 1

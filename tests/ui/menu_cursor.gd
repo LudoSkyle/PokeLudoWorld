@@ -18,4 +18,4 @@ func test() -> void:
 	check("Haut : Options", menu_selected() == "Options" and menu_cursor_line() == 1, menu_selected())
 	await tap("menu")
 	await tap("menu")
-	check("rouvert : le curseur est reste sur Options", menu_selected() == "Options" and menu_cursor_line() == 1, menu_selected())
+	check("rouvert : le curseur repart de la premiere entree", menu_selected() == "Bag" and menu_cursor_line() == 0, menu_selected())

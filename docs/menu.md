@@ -12,7 +12,8 @@ début de ligne.
 
 Entrées actuelles : **Sac** (ne fait encore rien), **Options** (ouvre l'écran
 des options), **Quitter** (ferme le menu). Le menu est collé au coin haut droit
-de l'écran, comme dans les jeux d'origine. Le curseur garde sa place d'une ouverture à l'autre.
+de l'écran, comme dans les jeux d'origine. À chaque ouverture, le curseur repart de la **première entrée** ; il ne garde
+sa place que le temps d'un aller-retour dans un écran ouvert depuis le menu.
 
 ## Qui lit les touches
 
@@ -60,7 +61,7 @@ qu'on la change, sans validation.
 
 | Ligne | Valeurs | Effet |
 |---|---|---|
-| Texte (vitesse du texte) | Lente, Normale, Rapide (défaut), Instant | secondes par lettre de la boîte de dialogue : 0,08 / 0,04 / 0,02 / 0 |
+| Vitesse du texte | x0.5, x1 (défaut), x2, x4 | multiplie la vitesse de la boîte de dialogue ; x1 = 0,02 s par lettre |
 
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
@@ -73,15 +74,15 @@ plus à `ListFrame`.
 Les tests forcent la vitesse Rapide au démarrage (`tests/lib.gd`) : ils ne
 dépendent pas du réglage enregistré par le joueur.
 
-## La police des menus
+## La police et le curseur
 
-Les menus veulent la police de Rouge Feu/Vert Feuille, dont la licence interdit
-la redistribution : elle n'est **pas dans le dépôt**. Elle se pose à la main en
-`assets/fonts/local/menu.ttf` (dossier ignoré par git, voir son `README.md`).
-`UiFonts.applyMenuFont` l'applique alors à tous les libellés des menus, en
-40 px : un pixel de la police vaut 4 pixels écran, comme les cadres.
+Les menus utilisent **PokePixel GBA** (`assets/fonts/pokepixel-gba.ttf`) en
+32 px : la police fait 8 px de haut, un de ses pixels vaut donc 4 pixels écran,
+comme les cadres et le décor. Encre `#585850`, ombre `#a8b8b8` décalée d'un
+pixel de police, relevées sur la capture de référence.
 
-Sans ce fichier — sur un clone neuf — les menus gardent Pokémon Emerald Pro en
-48 px, la police écrite dans leurs scènes. Les deux tiennent dans les cadres.
+Cette police n'a que **é** parmi les lettres accentuées (voir
+`assets/fonts/CREDITS.md`) : un libellé de menu évite è, à, ç, ù, ê, ô.
 
-Le curseur fait 5×9 px, dessiné à l'échelle 4.
+Le curseur (`assets/ui/cursor.png`, 6×10 avec son ombre) est extrait de la même
+capture, et dessiné à l'échelle 4.

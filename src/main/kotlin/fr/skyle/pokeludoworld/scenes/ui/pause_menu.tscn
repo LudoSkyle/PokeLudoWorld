@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/PauseMenu.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/rse_01.png" id="2_frame"]
-[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-emerald-pro.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokepixel-gba.ttf" id="3_font"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/cursor.png" id="4_cursor"]
 
 [node name="PauseMenu" type="CanvasLayer"]
@@ -42,10 +42,10 @@ patch_margin_bottom = 8
 
 [node name="Cursor" type="TextureRect" parent="Control/Menu"]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 46.0
+offset_left = 36.0
+offset_top = 44.0
 offset_right = 60.0
-offset_bottom = 82.0
+offset_bottom = 84.0
 mouse_filter = 2
 texture = ExtResource("4_cursor")
 expand_mode = 1
@@ -62,35 +62,35 @@ theme_override_constants/separation = 0
 [node name="Bag" type="Label" parent="Control/Menu/Entries"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 32
 text = "Sac"
 vertical_alignment = 1
 
 [node name="Options" type="Label" parent="Control/Menu/Entries"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 32
 text = "Options"
 vertical_alignment = 1
 
 [node name="Quit" type="Label" parent="Control/Menu/Entries"]
 custom_minimum_size = Vector2(0, 64)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.376471, 0.376471, 0.376471, 1)
-theme_override_colors/font_shadow_color = Color(0.815686, 0.815686, 0.784314, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 48
+theme_override_font_sizes/font_size = 32
 text = "Quitter"
 vertical_alignment = 1

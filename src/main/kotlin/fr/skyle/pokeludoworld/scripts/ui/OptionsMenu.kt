@@ -50,7 +50,6 @@ class OptionsMenu : CanvasLayer() {
 		val choices = getNode("Control/Screen/Rows/TextSpeed/Choices")
 		speeds = (0 until (choices?.getChildCount() ?: 0)).mapNotNull { choices?.getChild(it) as? Label }
 
-		UiFonts.applyMenuFont(screen)
 		screen?.visible = false
 	}
 
@@ -79,7 +78,7 @@ class OptionsMenu : CanvasLayer() {
 
 		when (rows.getOrNull(row)?.name?.toString()) {
 			"TextSpeed" -> {
-				// Pas de boucle ici : Lente et Instantanée sont les deux bouts.
+				// Pas de boucle ici : x0.5 et x4 sont les deux bouts.
 				if (Input.isActionJustPressed("ui_right")) setTextSpeed(Settings.textSpeed + 1)
 				if (Input.isActionJustPressed("ui_left")) setTextSpeed(Settings.textSpeed - 1)
 			}
@@ -110,5 +109,5 @@ class OptionsMenu : CanvasLayer() {
 	}
 }
 
-private val INK = Color(0.376471, 0.376471, 0.376471, 1.0)
+private val INK = Color(0.345098, 0.345098, 0.313725, 1.0)
 private val CHOSEN = Color(0.878431, 0.188235, 0.125490, 1.0)
