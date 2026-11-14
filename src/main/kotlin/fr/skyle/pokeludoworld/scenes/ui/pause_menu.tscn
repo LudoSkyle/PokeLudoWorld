@@ -1,9 +1,14 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/PauseMenu.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/rse_01.png" id="2_frame"]
-[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokepixel-gba.ttf" id="3_font"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-dp-pro.ttf" id="3_font"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/cursor.png" id="4_cursor"]
+
+[sub_resource type="FontVariation" id="menu_font"]
+base_font = ExtResource("3_font")
+spacing_top = -4
+spacing_bottom = -4
 
 [node name="PauseMenu" type="CanvasLayer"]
 layer = 2
@@ -66,8 +71,8 @@ theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
 text = "Sac"
 vertical_alignment = 1
 
@@ -78,8 +83,8 @@ theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
 text = "Options"
 vertical_alignment = 1
 
@@ -90,7 +95,7 @@ theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
 text = "Quitter"
 vertical_alignment = 1
