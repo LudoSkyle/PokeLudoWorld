@@ -9997,6 +9997,22 @@ texture = ExtResource("3_cave")
 19:2/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 20:2/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_grass_front"]
+resource_name = "grass_front"
+texture = ExtResource("1_hybgl")
+margins = Vector2i(1, 13)
+separation = Vector2i(0, 12)
+texture_region_size = Vector2i(16, 4)
+6:0/0 = 0
+6:0/0/texture_origin = Vector2i(0, -6)
+6:0/0/y_sort_origin = 2
+7:0/0 = 0
+7:0/0/texture_origin = Vector2i(0, -6)
+7:0/0/y_sort_origin = 2
+8:0/0 = 0
+8:0/0/texture_origin = Vector2i(0, -6)
+8:0/0/y_sort_origin = 2
+
 [resource]
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 1
@@ -10010,3 +10026,4 @@ sources/5 = SubResource("TileSetAtlasSource_a2xln")
 sources/6 = SubResource("TileSetAtlasSource_hybgl")
 sources/7 = SubResource("TileSetAtlasSource_interiors")
 sources/8 = SubResource("TileSetAtlasSource_cave")
+sources/9 = SubResource("TileSetAtlasSource_grass_front")

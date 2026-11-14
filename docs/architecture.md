@@ -10,7 +10,7 @@ Level (Node2D)
 │   ├── Ground                   terrain de base
 │   ├── Paths                    chemins (peints au pinceau terrain)
 │   ├── Decorations              fleurs, cailloux — purement décoratif
-│   └── Grass                    herbes hautes
+│   └── Grass                    herbes hautes — leur bas est redessiné devant les personnages (tilesets.md)
 ├── World (Node2D)               y_sort_enabled
 │   ├── Cliffs                   falaises, entrées de grotte
 │   ├── Props                    clôtures, panneaux, souches, rochers

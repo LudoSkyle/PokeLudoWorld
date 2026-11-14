@@ -34,6 +34,8 @@ joueur : `CharacterMovement` pour les pas, `CharacterAnimation` pour le sprite.
   dialogue fini, un PNJ `static` **reprend sa direction de repos**. S'il est
   en train de marcher, il **termine son pas** puis répond.
 - Personne ne bouge de soi-même pendant un dialogue ou un fondu.
+- Dans les hautes herbes, il y est jusqu'à la taille et elles bruissent sous
+  ses pas, comme pour le joueur ([tilesets.md](tilesets.md)).
 
 ### Errance (`wander`)
 
