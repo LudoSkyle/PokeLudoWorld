@@ -154,7 +154,8 @@ Deux essais écartés, pour mémoire : un cache d'herbe attaché au personnage (
 glisse sur l'herbe pendant le pas), et la touffe qui reste couchée tant qu'on
 est dessus, comme dans le projet de référence (le personnage n'a plus l'air
 d'être dans l'herbe). Ce projet tire aussi, au même endroit, la chance d'une
-rencontre quand le joueur entre : à brancher ici le jour où il y a des Pokémon.
+rencontre quand le joueur entre : chez nous c'est `WildEncounters`, voir
+[encounters.md](encounters.md).
 
 Le même calque sert de zone d'errance à un PNJ ([npcs.md](npcs.md)).
 

@@ -598,3 +598,6 @@ msgstr "Time: dusk"
 
 msgid "Heure : nuit"
 msgstr "Time: night"
+
+msgid "Un Pokémon sauvage apparaît !"
+msgstr "A wild Pokémon appeared!"
