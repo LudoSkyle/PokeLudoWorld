@@ -11,9 +11,9 @@ shader_type canvas_item;
 /** La couleur du voile : un blanc à peine bleuté. */
 uniform vec3 tint : source_color = vec3(0.93, 0.97, 1.0);
 /** L'opacité du voile là où il n'y a pas de nuage. */
-uniform float haze : hint_range(0.0, 0.5) = 0.09;
+uniform float haze : hint_range(0.0, 0.5) = 0.12;
 /** Ce qu'un nuage ajoute, en son cœur. */
-uniform float clouds : hint_range(0.0, 0.5) = 0.15;
+uniform float clouds : hint_range(0.0, 0.5) = 0.19;
 /** La taille d'un nuage, en pixels. */
 uniform float size = 170.0;
 /** La dérive, en pixels par seconde. */
