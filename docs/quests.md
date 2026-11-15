@@ -215,6 +215,34 @@ dans une carte du jeu.
 
 # La Cloche de Bourg-Ludo
 
+## Sur l'île : ce qui a changé
+
+La quête se joue maintenant sur `start_island` ([levels.md](levels.md)). Les
+drapeaux, les objets et l'ordre des étapes sont les mêmes ; **seul le lieu de
+la cloche change** : elle n'est plus au fond de la grotte, elle repose **sous
+le ponton de l'ouest**.
+
+| | Sur l'ancien village | Sur l'île |
+|---|---|---|
+| l'indice du registre | « là où l'eau dort sous la pierre » | « là où l'eau dort sous les planches » |
+| Roland | devant la grotte, parle du lac souterrain | en (11,32), au bord de l'eau sous la bibliothèque ; il a plongé vingt ans dans ces eaux |
+| la Cloche ternie | au bord du lac de `cave_b2f` | `Readables/Bell`, dans l'eau en (19,25) ; on la repêche depuis le ponton de l'ouest, en (19,26). Un éclat la signale |
+| la route fermée | la route de l'ouest | la trouée de la falaise du nord : deux gardes et quatre cases gardées en y 3 |
+| le pêcheur | au bord du lac | au bout de la jetée du sud |
+| la Veillée | dure tant que la partie dure | **prend fin quand on quitte l'île** : `metadata/on_leave = "bell_hung > vigil_over"`. Chacun retourne alors à ce qu'il faisait ; qui est où, avant, pendant et après : [npcs.md](npcs.md) |
+
+**Deux objets à ramasser** sur l'île, chacun une Poké Ball posée au sol (un
+`Readable` de `kind = item` sous `World`, avec son image, plein tant qu'on ne
+l'a pas pris) : une **Potion** au fond du recoin de la pointe de l'est (55,32),
+une **Poké Ball** au bord des hautes herbes du sud-ouest (5,40). Ce ne sont pas
+des objets rares : la boîte dit seulement « Vous trouvez une Potion ! », puis
+« Vous rangez la Potion dans la poche Objets. » — la tournure des jeux
+d'origine, à la deuxième personne comme le reste du jeu. Leurs drapeaux
+(`found_island_potion`, `found_island_ball`) ne font partie d'aucune quête.
+
+Les cartes de la grotte existent toujours, mais plus rien n'y mène. Le reste
+de ce document décrit le déroulé tel qu'il a été écrit pour l'ancien village.
+
 ## Pitch
 
 Autrefois, le dernier soir de l'été, on sonnait la cloche sur la place de

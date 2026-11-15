@@ -51,14 +51,14 @@ states = PackedStringArray("bell_tarnished > Fais voir ça... Du bronze de l'anc
 
 [node name="Entree" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(248, 248)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "Laboratoire"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)
 
 [node name="EntreeBis" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(264, 248)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "Laboratoire"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)

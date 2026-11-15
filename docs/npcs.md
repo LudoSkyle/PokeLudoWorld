@@ -106,6 +106,45 @@ zone sur le calque des portes, retrouvée par `areaUnderfoot()`.
 À la fin, la direction qui mène au passage est ignorée tant que sa touche reste
 enfoncée, sinon la scène repartirait en boucle.
 
+## Sur l'île (`start_island`)
+
+La Veillée est un **moment** : elle commence quand la cloche est accrochée
+(`bell_hung`) et finit dès qu'on quitte l'île (`vigil_over`, posé par
+`metadata/on_leave`). Chaque personnage a donc trois temps. Un nœud n'a qu'un
+drapeau requis et un drapeau interdit : un personnage qui change de place d'un
+temps à l'autre est fait de plusieurs nœuds.
+
+| Qui | Avant | Pendant la Veillée | Après |
+|---|---|---|---|
+| **Mémé Odile** | chez Ludo (`ludo_house`, `Odile`) : elle raconte la cloche, puis donne le Ruban | sur la place, devant la cloche (`OdileAfter`) : « …MON DOS !!! » | rentrée chez Ludo (`OdileBack`) : son dos va mieux, elle entend la cloche de chez elle |
+| **Alix** | à la bibliothèque (`Alix`) : elle met sur la piste du Registre | sur la place (`AlixAfter`) : elle a fermé pour ce soir | rouverte (`AlixBack`) : le Registre a une page de plus |
+| **Roland** | au bord de l'eau, sous la bibliothèque (11,32) : il a plongé vingt ans dans ces eaux | sur la place, à côté du socle (`RolandAfter`) | **il reste près de la cloche** : « je peux bien la regarder une heure » |
+| **le pêcheur** | au bout de la jetée (31,43) : ça ne mord pas | sur la place (`FisherAfter`) : il a laissé sa canne | de retour au bout de la jetée (`FisherLater`) : il entend la cloche d'ici |
+| **le coureur** | fait le tour de la place | le fait dans l'autre sens (`RunnerAfter`) : dix ans dans le mauvais sens | **court toujours** : à chaque tour, il salue la cloche |
+| **les deux ouvriers** | gardent la trouée (28,3) et (33,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis à côté de la trouée (27,5), l'autre range le quai (33,39) |
+| **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
+| **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un sur la route du nord (31,7), une vers la jetée (32,39), le karatéka sur la plage de la crique (29,9), bien en vue | repartis |
+| **la dame du banc** (12,14) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
+| **la baigneuse** (39,37), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |
+| **le nageur** (24,9), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
+| **le petit aux coquillages** (28,9) | n'a trouvé que des cailloux | *(à sa place)* | a un coquillage qui fait le bruit de la cloche |
+| **le marin** (53,18), au ponton du nord-est | les rochers ferment les passes | *(à sa place)* | une cloche, ça s'entend du large |
+| **le gamin** (25,7), devant les hautes herbes | n'ose pas y entrer | *(à sa place)* | y entrera… demain |
+| **la jardinière** (46,41), près de son banc | regarde pousser les fleurs | *(à sa place)* | jardine en fredonnant, faux |
+| **le chasseur d'insectes**, dans les hautes herbes | n'a rien trouvé | *(à sa place)* | félicite, et n'a toujours rien trouvé |
+
+Les sept derniers ne bougent pas : leur réplique change dès que la cloche est
+accrochée (`states = "bell_hung > …"`). Sur la place : personne avant, dix
+personnes pendant, deux après (Roland et le peintre), plus le coureur.
+
+`Triggers/NorthRoadblock0..3` (29–32,3) : les quatre cases entre les deux
+gardes ; chacune appelle le garde le plus proche.
+
+**Un personnage immobile ne gêne personne** ([mapping.md](mapping.md), K) :
+jamais sur le tour de la place, ni devant un escalier, ni dans un passage de
+deux cases, ni caché derrière un palmier. Le générateur le contrôle dans les
+trois temps, le test `island_quest` aussi.
+
 ## Dans `start_town`
 
 | Nœud | Case | Rôle |

@@ -50,6 +50,15 @@ states = PackedStringArray("bell_told > Alors ? Alix t'a trouvé quelque chose ?
 ask = "bell_clean > Montrer la cloche à Mémé ?"
 forbidden_flag = "bell_hung"
 
+[node name="OdileBack" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(280, 184)
+display_name = "Mémé Odile"
+gender = "female"
+appearance = "dppt_socialite"
+facing = Vector2(-1, 0)
+text = "Mon dos va mieux, merci.|Quand la cloche sonne, je l'entends d'ici. Ça me suffit."
+required_flag = "vigil_over"
+
 [node name="Doors" type="Node2D" parent="."]
 
 [node name="Escalier" parent="Doors" instance=ExtResource("2_door")]
@@ -61,14 +70,14 @@ exit_direction = Vector2(-1, 0)
 
 [node name="Entree" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(248, 232)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "MaisonLudo"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)
 
 [node name="EntreeBis" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(264, 232)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "MaisonLudo"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)

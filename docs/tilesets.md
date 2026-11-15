@@ -212,6 +212,135 @@ rivage, le sable ne bouge pas ; sur le lac de la grotte, la vase non plus.
 matériau** — une ligne, comme pour une collision. `steps_per_second` et
 `strength` se règlent sur le matériau.
 
+## Les terrains de l'île
+
+`start_island` reprend la plage de `start_town` et y ajoute le relief et les
+pontons. Chaque famille est un bloc 3×3 (coins, bords, centre) plus quatre
+coins rentrants ; aucune ne sait dessiner une matière **d'une seule case de
+large**. Les règles d'emploi sont dans [mapping.md](mapping.md).
+
+| Matière | Bloc 3×3 | Coins rentrants | Posée sur | Collision |
+|---|---|---|---|---|
+| la mer | `5:6,32` | — | toute case d'eau | pleine, et le shader de l'eau |
+| eau sous un ponton | `5:9,31` (même dessin) | — | sous chaque case de ponton | **aucune** : c'est ce qui laisse marcher dessus |
+| plage, bord côté herbe | `5:10-12,13-15` | `5:13-14,13-14` | la case de sable qui touche l'herbe | aucune |
+| plage, centre | `5:11,14` | — | le sable qui ne touche ni herbe ni eau | aucune |
+| rivage | `5:15-17,31-33` | `5:18-19,31-32` | **la case de sable** qui touche l'eau | aucune : on marche jusqu'au bord |
+| plateau d'herbe | `5:38-40,24-26` | `5:41,24` `5:43,24` `5:41,26` `5:43,26` | calque `Relief` ; la rangée du bas est la falaise | les flancs, le bas et les coins où la falaise se voit ; le dessus `5:39,25`, **le bord du haut `5:39,24`** et les deux coins rentrants du haut sont libres |
+| ponton de bois | source `10` (`island.png`, voir plus bas) ; pilotis `5:48,24` | — | calque `Bridges`, par-dessus l'eau | aucune |
+| dallage de la place | `5:5-7,47-49` | — | calque `Plaza`, sur le dessus d'un plateau | aucune |
+
+- **Le rivage est sur la case de sable, pas dans l'eau.** L'eau reste de
+  l'eau, entièrement ; ce qui a l'air de sable se foule.
+- **Une plage fait au moins deux cases de large** entre l'herbe et l'eau : une
+  même case ne peut pas porter le rivage et le bord d'herbe.
+- `5:6,32` et `5:9,31` sont le même dessin : l'une est solide (la mer), l'autre
+  non (l'eau claire de `start_town`, et l'eau sous les pontons).
+- **Un escalier est un bloc de la planche de l'île**, posé par-dessus une
+  case de bord de plateau qui prend sa variante sans collision (voir plus bas).
+- Un plateau se dessine entièrement dans le fond : son pourtour étant solide,
+  le joueur ne chevauche jamais un bord, il n'y a pas de tri à régler.
+
+Les rochers :
+
+| | Tuiles | Où |
+|---|---|---|
+| gros rochers dans l'eau, 2×2 | `5:26-39,32-33` | en chaîne dans les passes ; pas de collision à eux, la mer dessous est solide |
+| petits rochers dans l'eau, 1×1 | `10:8-11,2` | dans la chaîne (`10:11,2`) ou épars autour (`10:8-10,2`) ; pleins |
+| rochers de plage, 2×2 | `5:32-33,30-31`, `5:26-27,27-28`, `5:34-35,27-28` | un seul au bout d'une plage qui sort de la carte ; pleins |
+| cailloux, 1×1 | `5:39-42,29` | épars sur le sable sec, à l'écart des passages ; pleins, comme sur la première carte |
+| buissons, souche | `5:40,0` `5:41,0` `5:40,1`, `5:20,9` | au bord d'un bois ; pleins |
+
+**Jamais les rochers moussus** (`5:26-31,30-31`) ni l'arbre à fruits
+(`6:24,0`) : ce sont des éléments spéciaux, pas du décor
+([mapping.md](mapping.md)).
+
+## Les rebords
+
+Le bord du haut d'un plateau (`5:39,24`) est de l'herbe, avec un liseré tout en
+haut : on doit pouvoir s'y tenir, mais pas passer de là à la case du dessus —
+ni dans l'autre sens. C'est une passabilité **par direction**, que les
+collisions pleines ne savent pas dire.
+
+- Le TileSet a une seconde couche physique, `physics_layer_1` (couche de
+  collision **8**), où aucun corps ne vit. `5:39,24` y porte une bande de 3 px
+  le long de son bord du haut, et n'a plus rien sur la couche 0.
+- `CharacterMovement.tryWalk` teste la case visée comme avant (un point en son
+  centre, couche des obstacles), puis cherche un rebord **de part et d'autre de
+  la frontière** entre les deux cases (deux points à 2 px de la frontière,
+  couche 8). Joueur et PNJ passent par là.
+- Les tests ont `ledge_between(a, b)` et `can_step(a, b)` dans `tests/lib.gd` ;
+  `find_path` s'en sert. `is_free` seul ne suffit plus à dire qu'on passe.
+
+Un plateau adossé à la falaise n'a pas de bord du haut : il continue sous
+elle, et ses flancs montent jusqu'au mur.
+
+## La planche de l'île (`island.png`, source 10)
+
+`assets/levels/island.png` — 256 × 48, cases de 16 px sans marge. Ce sont les
+tuiles que `environments.png` n'a pas ; **rien n'y est dessiné à la main**,
+tout est dérivé de l'atlas par `tools/island_tiles.py`, qu'on relance pour la
+refaire à l'identique.
+
+| Cases | Contenu |
+|---|---|
+| rangée 0, colonnes 0–15 | planche de ponton, selon ses côtés à rambarde : gauche = 1, droite = 2, haut = 4, bas = 8, additionnés |
+| rangée 1, colonnes 0–3 puis 4–7 | planche de bout posée sur la rive, bout en haut puis en bas (rambarde gauche = 1, droite = 2) |
+| rangée 2, colonnes 0–3 puis 4–7 | bout à gauche puis à droite (rambarde haut = 1, bas = 2) |
+| rangée 2, colonnes 8–11 | petits rochers dans l'eau : les cailloux `5:39-42,29`, cernés d'écume |
+| rangée 2, colonne 12 | planches tournées d'un quart (ancien escalier de côté, plus posé) |
+| rangées 3–4, colonnes 0–7 | **escaliers à poteaux**, un bloc de 2×2 par côté de plateau : bas, haut, gauche, droite |
+| rangées 3–5, colonnes 11–14 | parasols bleu et orange, avec leur ombre (la rangée 5 est le pied) |
+| colonne 15, rangées 3–4 et 5–6 | serviettes de plage |
+| rangées 5–6, colonnes 0–2 | caisses empilées, une caisse, pot de fleurs |
+| rangée 6, colonne 3 | Poké Ball posée au sol : l'image d'un objet à ramasser (une région de texture, pas une tuile) |
+
+Pourquoi les fabriquer : dans l'atlas, le ponton n'a de rambarde que sur ses
+flancs gauche et droit (`5:47,22` et `5:49,22`). Un ponton est-ouest perdait
+donc son rebord gris, un angle n'avait pas de pièce, et rien ne le faisait
+arriver proprement sur le sable. Les rambardes du haut et du bas sont celles
+des flancs tournées d'un quart ; une planche de bout est une planche fermée
+d'un trait sombre, celui du contour du ponton.
+
+Les rangées 3 à 6 ne viennent pas de l'atlas : elles sont **découpées dans
+les planches de `sources/`** et recalées sur la grille (voir « Prendre un
+élément dans une planche source »). Les escaliers, les parasols, les
+serviettes, les caisses, le pot et la Poké Ball viennent de
+`town_compilation.png`. La liste `PIECES` du script dit d'où vient chaque bloc.
+Le banc, lui, est celui de l'atlas (`5:74-75,25`).
+
+**Un escalier** est un bloc de 2×2 posé sur le calque `Bridges`, par-dessus le
+bord du plateau : deux cases sur le bord, deux qui débordent de 6 px sur le
+dessus (le haut des poteaux). Celui de côté est celui du bas tourné d'un quart. La
+planche a aussi celui du haut, retourné, mais on ne le pose pas : un escalier
+vu à l'envers ne ressemble à rien. Dessous, la case de bord garde son dessin mais
+prend sa **variante 1, sans collision** (`39:26/1`, `39:24/1`, `38:25/1`,
+`40:25/1`) : c'est ce qui laisse passer.
+
+Collisions : les petits rochers, le pied des parasols, les caisses et le pot.
+Parasols, caisses et pot sont dans `Props` et se trient par leur pied ;
+pontons, escaliers et serviettes sont dans le fond.
+
+## Le vent dans les plantes
+
+Comme pour l'eau, aucune image d'animation : un shader,
+`resources/shaders/sway.gdshader`, décale la cime des plantes d'un pixel ou
+deux, par crans, le pied restant planté. Un pixel qui irait lire hors de sa
+tuile reste à sa place : sans ça la plante se troue.
+
+| Matériau | Sur | |
+|---|---|---|
+| `ShaderMaterial_sway_bottom` | le pied des grandes fleurs | `base = 0` |
+| `ShaderMaterial_sway_top` | leur cime, la tuile du dessus | `base = 1` : elle prolonge le mouvement du pied |
+| `ShaderMaterial_sway_palm` | le palmier `6:30,11` | une tuile de 64×64 (4×4 cases : son dessin fait 53 px de large), dont il faut donner le coin dans l'atlas (`origin`) |
+
+Deux sortes de plantes d'**une case de large sur deux de haut** :
+
+| | Tuiles | Collision | Tri |
+|---|---|---|---|
+| grandes fleurs | `5:0-7,3-4` | **aucune** : on marche dessus | pied `-15`, cime `1` — elles passent sous le joueur |
+| petits sapins | `5:33-38,0-1` | pied solide | pied `8`, cime `24` ; **pas de vent** : aussi larges que leur case, ils se déchireraient |
+
 ## Ce qui reste à déclarer
 
 Les collisions couvrent les ~150 tuiles que `start_town` utilise réellement.

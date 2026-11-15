@@ -27,7 +27,7 @@ func test() -> void:
 	check("il se lit quand on le prend", box_text().begins_with("« ...la cloche"), box_text())
 	await tap("interact")
 	await wait_text("« au frais, là où l'eau dort sous la pierre. »")
-	check("l'indice de la grotte", box_text().contains("l'eau dort sous la pierre"), box_text())
+	check("l'indice du ponton", box_text().contains("l'eau dort sous les planches"), box_text())
 	await close_box()
 	check("le drapeau bell_register est pose", flag("bell_register"))
 	await examine("le rayon, apres", Vector2i(11, 9), "c'est de là que venait")
