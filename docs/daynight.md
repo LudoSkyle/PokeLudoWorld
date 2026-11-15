@@ -110,6 +110,26 @@ faible. On en pose une par groupe de fenêtres, sous `World`, au centre des
 vitres. Dans `start_town` : `GlowLudoUp`, `GlowLudoDown`, `GlowLibrary`,
 `GlowLabLeft`, `GlowLabRight`, `GlowLabWing`.
 
+## Le voile du dehors
+
+Par-dessus toute carte d'extérieur, un **voile clair et nuageux** : une brume
+pâle, à peine bleutée, et des bancs de nuages plus clairs qui dérivent
+lentement. C'est ce qui donne au dehors son air lumineux, un peu céleste.
+
+- `resources/shaders/sky.gdshader`, sur un `ColorRect` nommé `Haze` que
+  `SceneManager` ajoute à la carte en même temps que `Daylight`
+  (`metadata/daylight`). Il couvre toute la carte, au-dessus du décor
+  (`z_index = 50`) et sous l'interface, qui vit sur ses propres calques.
+- Les nuages sont **ancrés au monde** : on marche dessous, ils ne suivent pas
+  la caméra. Un bruit en trois octaves, découpé en paliers nets et en grains de
+  2 px pour rester du pixel art.
+- Le voile est teinté par `Daylight` comme le reste, et **se retire presque la
+  nuit** (il lit l'uniforme global `night_light`) : la nuit, c'est la nuit qui
+  teinte.
+- Réglages (uniformes du shader) : `haze` (0,09, l'opacité partout), `clouds`
+  (0,15, ce qu'un nuage ajoute), `size` (170 px), `drift` (5 px/s vers l'est),
+  `grain`, `levels`, `tint`.
+
 ## Mise au point
 
 Comme l'heure est réelle, on ne verrait la nuit que la nuit. Deux moyens de
