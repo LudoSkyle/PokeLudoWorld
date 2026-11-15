@@ -53,3 +53,16 @@ tous sur la ligne 45 : c'est voulu, la pose de course est plus ramassée.
 
 Non repris : les sprites de combat (`Trainers/`) et les icônes de carte
 (`Pictures/`) du pack.
+
+## Les planches sources (`sources/`)
+
+Dossier ignoré par Godot (`.gdignore`) : des planches **telles qu'elles ont été
+téléchargées**, gardées dans le projet pour ne pas avoir à les rechercher. Le
+jeu n'en lit aucune ; ce qu'on en prend est sorti à part.
+
+| Fichier | Contenu | Auteur | Nom d'origine |
+|---|---|---|---|
+| `hgss_trainers_overworld.png` | les dresseurs et personnages d'Or HeartGold / Argent SoulSilver sur la carte, dans leur dessin d'origine (une planche de 957 × 1101, pas le format redessiné du Megapack) | Game Freak ; extrait publié sur The Spriters Resource | `DS _ DSi - Pokemon HeartGold _ SoulSilver - Overworld - Trainers (Overworld).png` |
+
+Téléchargée par Ludo le 15/11/2026, avec les planches de Pokémon de
+`assets/pokemon/sources/`.
