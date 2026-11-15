@@ -27,13 +27,24 @@ class CharacterAnimation : AnimatedSprite2D() {
 		play("turn_" + suffixOf(direction))
 	}
 
+	/**
+	 * Vrai quand le personnage court. S'il a une pose de course (`run_<direction>`),
+	 * elle remplace la marche ; sinon c'est la marche qui s'accélère.
+	 */
+	var running: Boolean = false
+
 	fun refresh(direction: Vector2, walking: Boolean) {
 		val suffix = suffixOf(direction)
 
 		// Laisser le sursaut aller au bout avant de retomber sur l'image fixe.
 		if (!walking && animation.toString() == "turn_$suffix" && isPlaying()) return
 
-		val next = (if (walking) "walk_" else "idle_") + suffix
+		val run = "run_$suffix"
+		val next = when {
+			!walking -> "idle_$suffix"
+			running && spriteFrames?.hasAnimation(run) == true -> run
+			else -> "walk_$suffix"
+		}
 
 		// Ne pas relancer l'animation en cours, sinon le cycle de marche repart
 		// à zéro à chaque frame et le personnage semble figé.

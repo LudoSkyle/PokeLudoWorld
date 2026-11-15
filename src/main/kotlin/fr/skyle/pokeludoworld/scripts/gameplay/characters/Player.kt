@@ -16,6 +16,8 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
 import godot.api.Input
+import godot.api.ResourceLoader
+import godot.api.Texture2D
 import godot.core.Vector2
 
 /**
@@ -38,6 +40,13 @@ class Player : CharacterBody2D() {
 	@Category("Deplacement")
 	@Export
 	var runPace: Double = 8.0
+
+	/**
+	 * La planche de la pose de course, au découpage de la marche. Vide : pas de
+	 * pose de course, c'est la marche qui s'accélère.
+	 */
+	@Export
+	var runSheet: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/characters/playable/renko_run.png"
 
 	/** Vrai si le pas en cours, ou le dernier fait, est un pas de course. */
 	var isRunning: Boolean = false
@@ -79,14 +88,27 @@ class Player : CharacterBody2D() {
 
 	/**
 	 * Règle l'allure du prochain pas. Elle ne change qu'entre deux pas : un pas
-	 * engagé va jusqu'au bout à l'allure où il a commencé. Les jambes suivent —
-	 * la planche n'a pas d'images de course, c'est la marche qui s'accélère.
+	 * engagé va jusqu'au bout à l'allure où il a commencé. Les jambes suivent :
+	 * la pose de course remplace la marche, et l'animation s'accélère d'autant.
 	 */
 	private fun setPace(running: Boolean) {
 		isRunning = running
 		val pace = if (running) runPace else walkPace
 		movement?.tilesPerSecond = pace
+		sprite?.running = running
 		sprite?.speedScale = (pace / walkPace).toFloat()
+	}
+
+	/** Ajoute la pose de course aux animations du joueur, si [runSheet] désigne une planche. */
+	private fun loadRunPose() {
+		if (runSheet.isEmpty()) return
+		val frames = sprite?.spriteFrames ?: return
+		val sheet = ResourceLoader.load(runSheet) as? Texture2D
+		if (sheet == null) {
+			Logger.e("Planche de course introuvable : $runSheet")
+			return
+		}
+		CharacterFrames.addRun(frames, sheet)
 	}
 
 	@Register
@@ -96,6 +118,7 @@ class Player : CharacterBody2D() {
 		sprite = getNode("Sprite") as? CharacterAnimation
 
 		movement?.attach(this)
+		loadRunPose()
 
 		Logger.i("Loading player ...")
 	}
