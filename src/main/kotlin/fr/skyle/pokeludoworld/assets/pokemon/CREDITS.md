@@ -34,9 +34,17 @@ Dossier ignoré par Godot (`.gdignore`) : les planches **telles qu'elles ont
 | `paldea_overworld.png`, `paldea_overworld_shiny.png` | génération 9 | **Darkus_Shadow, Princess-Phoenix, shaderr31, Wolfang62, CarmaNekko, EduarPokeN** ; publiées par darkusshadow, DeviantArt | `ow_gen_9_by_darkusshadow_dg06t9u.png`, `ow_gen_9_by_darkusshadow_dg06vh7.png` |
 | `alcremie_overworld.png` | toutes les formes de Charmilly | lasse00 | `hgss_all_alcremie_forms_overworld_sprites_by_lasse00_df33s4p.png` |
 
-Une planche d'un autre genre est rangée avec elles : `paldea_battle.png`, les
-**sprites de combat** de la génération 9 (face, dos, chromatiques), d'**imperio456**
-(DeviantArt, `pokemon_gen_9_by_imperio456_dgbgqty.png`). Rien ne s'en sert encore.
+### Les sprites de combat
+
+Rangés avec elles, téléchargés par Ludo le 15/11/2026 : des **sprites de combat**
+(face, dos, chromatiques) dans le style des jeux DS. Rien ne s'en sert encore.
+
+| Fichier | Contenu | Auteur | Nom d'origine |
+|---|---|---|---|
+| `ds_style_battle/` | des Pokémon des générations 7 et 8 (n° 753 à 895, et le 577), un fichier par numéro de Pokédex : 144 images de 256 × 64 (quatre poses de 64 × 64), et 139 icônes de 32 × 64 dans `icons/` | non indiqué dans le dossier | dossier `Gen VI DS-Style 64x64 Pokemon Sprite Resource` (sous-dossier `Icon Sprites` renommé `icons`) |
+| `alola_battle.png` | génération 7 | **leparagon**, DeviantArt | `genvii_ds_style_gba_sprites_by_leparagon_davylpt.png` |
+| `galar_battle.png` | génération 8 | **leparagon**, DeviantArt | `genviii_ds_style_gba_sprites_by_leparagon_de3s18e.png` |
+| `paldea_battle.png` | génération 9 | **imperio456**, DeviantArt | `pokemon_gen_9_by_imperio456_dgbgqty.png` |
 
 **Ce qui manque** au 15/11/2026 : les formes de Hisui non chromatiques — seule
 la planche chromatique était dans les téléchargements.
