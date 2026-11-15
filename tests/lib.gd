@@ -60,7 +60,30 @@ func is_free(c: Vector2i) -> bool:
 	q.position = level().global_position + Vector2(c.x * 16 + 8, c.y * 16 + 8)
 	return level().get_world_2d().direct_space_state.intersect_point(q, 1).is_empty()
 
+# Un rebord (le bord haut d'un plateau) separe-t-il ces deux cases voisines ? Les deux se
+# foulent, mais on ne passe pas de l'une a l'autre : la tuile porte une bande fine sur la
+# couche physique 8, que le deplacement cherche de part et d'autre de la frontiere.
+func ledge_between(a: Vector2i, b: Vector2i) -> bool:
+	var step := Vector2(b - a)
+	var border: Vector2 = level().global_position + Vector2(a.x * 16 + 8, a.y * 16 + 8) + step * 8.0
+	for off in [-2.0, 2.0]:
+		var q := PhysicsPointQueryParameters2D.new()
+		q.collide_with_bodies = true
+		q.collide_with_areas = false
+		q.collision_mask = 8
+		q.position = border + step * off
+		if not level().get_world_2d().direct_space_state.intersect_point(q, 1).is_empty():
+			return true
+	return false
+
+# Peut-on faire un pas de a vers sa voisine b ?
+func can_step(a: Vector2i, b: Vector2i) -> bool:
+	return is_free(b) and not ledge_between(a, b)
+
 func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
+	# Les bornes sont celles de la carte, a une case pres autour.
+	var ground: TileMapLayer = level().get_node_or_null("Background/Ground")
+	var area := Rect2i(-1, -1, 47, 27) if ground == null else ground.get_used_rect().grow(1)
 	var prev := {from: from}
 	var todo: Array = [from]
 	while not todo.is_empty():
@@ -69,9 +92,9 @@ func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
 			break
 		for d in DIRS.keys():
 			var n: Vector2i = c + d
-			if n.x < -1 or n.y < -1 or n.x > 45 or n.y > 25 or prev.has(n) or (n in avoid and n != to):
+			if not area.has_point(n) or prev.has(n) or (n in avoid and n != to):
 				continue
-			if is_free(n):
+			if can_step(c, n):
 				prev[n] = c
 				todo.append(n)
 	if not prev.has(to):

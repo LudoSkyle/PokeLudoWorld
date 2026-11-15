@@ -14,7 +14,8 @@ func test() -> void:
 	await hold_until_change("on ressort", "ui_down")
 	check("dehors a nouveau : la nuit", level().get_node_or_null("Daylight") != null and daylight().b > daylight().r, str(daylight()))
 	# L'interface est sur ses propres calques : la boite de dialogue garde ses couleurs.
-	await spawn("sign", "Night", Vector2i(9, 16), {"text": "Il fait nuit."})
+	# On ressort sur l'ile, devant chez Ludo : le panneau de test se pose a droite du joueur.
+	await spawn("sign", "Night", cell() + Vector2i(1, 0), {"text": "Il fait nuit."})
 	await interact_facing("ui_right")
 	await secs(0.8)
 	var by_night: Color = root.get_texture().get_image().get_pixel(640, 912)

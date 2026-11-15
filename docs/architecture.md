@@ -9,6 +9,9 @@ Level (Node2D)
 ├── Background (Node2D)          sous le joueur, jamais trié
 │   ├── Ground                   terrain de base
 │   ├── Paths                    chemins (peints au pinceau terrain)
+│   ├── Relief                   plateaux d'herbe et leurs falaises basses (l'île)
+│   ├── Plaza                    dallage de la place, posé sur son plateau (l'île)
+│   ├── Bridges                  pontons de bois, par-dessus l'eau (l'île)
 │   ├── Decorations              fleurs, cailloux — purement décoratif
 │   └── Grass                    herbes hautes — leur bas est redessiné devant les personnages (tilesets.md)
 ├── World (Node2D)               y_sort_enabled
@@ -73,14 +76,22 @@ Les valeurs en place, et pourquoi :
 |---|---|---|
 | Décors 1×1 (Props, Cliffs) | `8` | pied de la tuile |
 | Maisons | `9` | gagne les égalités, voir plus bas |
-| Arbres de bordure 3×3 | `22` | voir ci-dessous |
+| Arbres de bordure 3×3 | `14` | voir ci-dessous |
+| Palmier 4×4 | `22` | son pied est la case sous l'ancre |
 | Arbre isolé 3×4 | `28` | base du tronc |
 
-L'arbre 3×3 est à `22` et pas `24` à cause d'une **égalité de tri**. Son pied
-tombe au bas de la rangée `ancre+1` — exactement là où commence le toit du
-Centre Pokémon. Les deux triaient à 48, l'ordre devenait arbitraire et le tronc
-passait sur le toit. À 22 l'arbre trie à 46 : tout décor 1×1 de la même rangée
-passe devant, et l'arbre garde la main sur ce qui est strictement au-dessus.
+L'arbre 3×3 est à `14`. Il a d'abord été à `24` (le bas de son pied), puis à
+`22` à cause d'une **égalité de tri** : son pied tombe au bas de la rangée
+`ancre+1` — exactement là où commence le toit du Centre Pokémon. Les deux
+triaient à 48, l'ordre devenait arbitraire et le tronc passait sur le toit.
+
+À `22` il restait un défaut : son pied occupe deux rangées, et un personnage
+debout **à côté du tronc**, sur la rangée `ancre+1`, trie à `ancre×16 + 24` —
+avant l'arbre (`ancre×16 + 30`). Il passait donc derrière le pied de l'arbre.
+À `14` l'arbre trie à `ancre×16 + 22` : le personnage de la rangée `ancre+1`
+passe devant, celui de la rangée `ancre` reste derrière la cime. Rien d'autre
+ne change : tout décor posé sur une rangée entière trie soit avant 22, soit
+après 30.
 
 Les maisons sont à `9` et non `8` pour une raison voisine : une clôture et le
 faîte d'un toit partagent la rangée 9 devant la maison du milieu. À égalité de

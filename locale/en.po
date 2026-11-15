@@ -320,8 +320,8 @@ msgstr "You found the Dusty Register!"
 msgid "« ...la cloche a été descendue à l'abri pour l'hiver, »"
 msgstr "\"...the bell was taken down to shelter for the winter,\""
 
-msgid "« au frais, là où l'eau dort sous la pierre. »"
-msgstr "\"in the cool, where the water sleeps under the stone.\""
+msgid "« au frais, là où l'eau dort sous les planches. »"
+msgstr "\"in the cool, where the water sleeps under the planks.\""
 
 msgid "« On la remontera pour la Veillée prochaine. »"
 msgstr "\"We will bring it back up for the next Vigil.\""
@@ -610,3 +610,213 @@ msgstr "Leafwing"
 
 msgid "Chenibulle"
 msgstr "Bubblegrub"
+
+msgid "Laboratoire du Professeur."
+msgstr "The Professor's Laboratory."
+
+msgid "Les Pokémon blessés y sont soignés."
+msgstr "Injured Pokémon are healed here."
+
+msgid "Route du nord."
+msgstr "North road."
+
+msgid "Elle quitte l'île par la falaise."
+msgstr "It leaves the island through the cliff."
+
+msgid "Jetée du sud."
+msgstr "South pier."
+
+msgid "Attention : planches glissantes."
+msgstr "Careful: slippery planks."
+
+msgid "C'est dangereux par là : la route du nord n'est pas encore sûre."
+msgstr "It's dangerous that way: the north road isn't safe yet."
+
+msgid "Pff... pff... Je fais le tour de la place tous les matins."
+msgstr "Huff... huff... I run around the square every morning."
+
+msgid "Il paraît qu'il y a de gros poissons au large."
+msgstr "They say there are big fish out at sea."
+
+msgid "Ces eaux, j'y ai plongé vingt ans."
+msgstr "I dived in these waters for twenty years."
+
+msgid "Elles ont encore des choses à dire, je le sens."
+msgstr "They still have things to say, I can feel it."
+
+msgid "Sous le ponton de l'ouest, là où l'eau est profonde..."
+msgstr "Under the west boardwalk, where the water is deep..."
+
+msgid "Moi, je n'y plonge plus. Trop froid, trop de courant."
+msgstr "I don't dive there anymore. Too cold, too much current."
+
+msgid "Une cloche. Vingt ans que je passe au-dessus."
+msgstr "A bell. Twenty years I've been walking over it."
+
+msgid "Vingt ans que je passais au-dessus sans la voir."
+msgstr "Twenty years I walked over it without seeing it."
+
+msgid "La route du nord est ouverte."
+msgstr "The north road is open."
+
+msgid "On l'entendait depuis l'autre rive !"
+msgstr "We could hear it from the other shore!"
+
+msgid "La route du nord s'enfonce dans la montagne."
+msgstr "The north road runs into the mountain."
+
+msgid "Quelque chose brille au fond de l'eau, juste sous le ponton."
+msgstr "Something is shining at the bottom of the water, right under the boardwalk."
+
+msgid "Vous repêchez la Cloche ternie !"
+msgstr "You fished out the Tarnished Bell!"
+
+msgid "Un banc de poissons s'éparpille dans l'eau sombre."
+msgstr "A school of fish scatters in the dark water."
+
+msgid "Je viens m'asseoir ici tous les matins."
+msgstr "I come and sit here every morning."
+
+msgid "D'ici, on voit passer tout le village."
+msgstr "From here, you see the whole village go by."
+
+msgid "Le sable est chaud, l'eau est fraîche."
+msgstr "The sand is warm, the water is cool."
+
+msgid "Je ne bouge plus d'ici avant la nuit."
+msgstr "I'm not moving from here until nightfall."
+
+msgid "Je cherche des coquillages."
+msgstr "I'm looking for seashells."
+
+msgid "Pour l'instant, j'ai surtout trouvé des cailloux."
+msgstr "So far, I've mostly found pebbles."
+
+msgid "Tu vois ces rochers, au large ?"
+msgstr "See those rocks out there?"
+
+msgid "Le Professeur dit que des Pokémon vivent dans ces herbes."
+msgstr "The Professor says Pokémon live in that grass."
+
+msgid "Sans le mien, je n'ose pas y mettre un pied."
+msgstr "Without one of my own, I don't dare set foot in it."
+
+msgid "Ici, les fleurs poussent toutes seules."
+msgstr "Flowers grow all by themselves here."
+
+msgid "Je me contente de les regarder."
+msgstr "I just watch them."
+
+msgid "Je viens toujours m'asseoir ici le matin."
+msgstr "I still come and sit here in the morning."
+
+msgid "Maintenant, j'attends que la cloche sonne pour rentrer."
+msgstr "Now I wait for the bell to ring before I go home."
+
+msgid "J'ai entendu la cloche depuis ma serviette."
+msgstr "I heard the bell from my towel."
+
+msgid "Je n'ai pas bougé pour autant."
+msgstr "I didn't move, mind you."
+
+msgid "L'eau de la crique est la plus calme de l'île."
+msgstr "The water in the cove is the calmest on the island."
+
+msgid "Les vagues se cassent sur les rochers avant d'arriver."
+msgstr "The waves break on the rocks before they get here."
+
+msgid "J'étais dans l'eau quand la cloche a sonné."
+msgstr "I was in the water when the bell rang."
+
+msgid "J'ai bu la tasse. Ça valait le coup."
+msgstr "I swallowed half the cove. It was worth it."
+
+msgid "J'ai trouvé un coquillage qui fait le bruit de la cloche !"
+msgstr "I found a shell that sounds like the bell!"
+
+msgid "Bon, il faut l'écouter de très près."
+msgstr "Well, you have to listen very closely."
+
+msgid "Ils ferment toutes les passes."
+msgstr "They block every channel."
+
+msgid "Aucun bateau n'entre dans la baie, aucun n'en sort."
+msgstr "No boat gets into the bay, and none gets out."
+
+msgid "Les rochers ferment toujours les passes."
+msgstr "The rocks still block the channels."
+
+msgid "Mais une cloche, ça s'entend du large."
+msgstr "But a bell can be heard from the open sea."
+
+msgid "Les bateaux sauront qu'il y a un village ici."
+msgstr "Ships will know there is a village here."
+
+msgid "C'est toi qui as rapporté la cloche ? Tout seul ?"
+msgstr "You brought the bell back? All by yourself?"
+
+msgid "Alors moi, je peux bien entrer dans ces herbes. Demain."
+msgstr "Then I can walk into that grass. Tomorrow."
+
+msgid "Depuis la Veillée, je jardine en fredonnant."
+msgstr "Since the Vigil, I hum while I garden."
+
+msgid "Ma sœur dit que je chante faux. Les fleurs ne se plaignent pas."
+msgstr "My sister says I sing off key. The flowers don't complain."
+
+msgid "Je reste encore un peu."
+msgstr "I'll stay a little longer."
+
+msgid "Vingt ans à passer au-dessus : je peux bien la regarder une heure."
+msgstr "Twenty years rowing over it: I can look at it for an hour."
+
+msgid "Presque fini. Il me manque le reflet sur le bronze."
+msgstr "Almost done. I still need the glint on the bronze."
+
+msgid "Les autres sont repartis. Moi, je reste jusqu'au dernier coup de pinceau."
+msgstr "The others have left. I'm staying until the last brushstroke."
+
+msgid "Je cours dans le bon sens, maintenant. Enfin, je crois."
+msgstr "I'm running the right way round now. I think."
+
+msgid "À chaque tour, je salue la cloche."
+msgstr "Every lap, I nod to the bell."
+
+msgid "Chut... Ça ne mord pas plus qu'avant."
+msgstr "Shh... They aren't biting any more than before."
+
+msgid "Mais d'ici, maintenant, j'entends la cloche. Les poissons aussi, peut-être."
+msgstr "But from here, now, I can hear the bell. Maybe the fish can too."
+
+msgid "On surveille encore les éboulis, mais tu peux passer."
+msgstr "We're still watching for rockfalls, but you can go through."
+
+msgid "On range le matériel du chantier."
+msgstr "We're packing up the work site."
+
+msgid "Si tu pars vers le nord, bonne route !"
+msgstr "If you're heading north, safe travels!"
+
+msgid "Mon dos va mieux, merci."
+msgstr "My back is better, thank you."
+
+msgid "Quand la cloche sonne, je l'entends d'ici. Ça me suffit."
+msgstr "When the bell rings, I can hear it from here. That's enough for me."
+
+msgid "La bibliothèque a rouvert."
+msgstr "The library is open again."
+
+msgid "Le Registre a retrouvé son rayon, avec une page de plus."
+msgstr "The Register is back on its shelf, with one more page."
+
+msgid "Vous trouvez une Potion !"
+msgstr "You found a Potion!"
+
+msgid "Vous rangez la Potion dans la poche Objets."
+msgstr "You put the Potion away in the Items pocket."
+
+msgid "Vous trouvez une Poké Ball !"
+msgstr "You found a Poké Ball!"
+
+msgid "Vous rangez la Poké Ball dans la poche Poké Balls."
+msgstr "You put the Poké Ball away in the Poké Balls pocket."

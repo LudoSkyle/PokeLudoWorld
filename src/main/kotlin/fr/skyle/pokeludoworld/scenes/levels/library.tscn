@@ -48,18 +48,26 @@ text = "Bienvenue à la bibliothèque.|Tout ce qui est écrit sur le village est
 states = PackedStringArray("bell_told > La cloche ? Ta grand-mère en parle encore ?|Le registre des Veillées doit être quelque part dans ces rayons.|Cherche au fond, à gauche : c'est là que dorment les vieux papiers.|Si tu le trouves, il est à toi. Moi, je ne grimpe plus à l'échelle.", "bell_register > Tu l'as trouvé ! Je le cherchais depuis des années.")
 forbidden_flag = "bell_hung"
 
+[node name="AlixBack" parent="World/Entities" instance=ExtResource("4_npc")]
+position = Vector2(328, 184)
+display_name = "Alix"
+gender = "female"
+appearance = "frlg_aromalady"
+text = "La bibliothèque a rouvert.|Le Registre a retrouvé son rayon, avec une page de plus."
+required_flag = "vigil_over"
+
 [node name="Doors" type="Node2D" parent="."]
 
 [node name="Entree" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(248, 232)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "Bibliotheque"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)
 
 [node name="EntreeBis" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(264, 232)
-target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 target_door = "Bibliotheque"
 entry_direction = Vector2(0, -1)
 exit_direction = Vector2(0, 1)
@@ -104,7 +112,7 @@ forbidden_flag = "bell_told"
 [node name="Register" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(184, 136)
 kind = "item"
-text = "Des registres reliés, rangés par année.|L'un d'eux est beaucoup plus poussiéreux que les autres.|@give:dusty_register Vous trouvez le Registre poussiéreux !|« ...la cloche a été descendue à l'abri pour l'hiver, »|« au frais, là où l'eau dort sous la pierre. »|« On la remontera pour la Veillée prochaine. »"
+text = "Des registres reliés, rangés par année.|L'un d'eux est beaucoup plus poussiéreux que les autres.|@give:dusty_register Vous trouvez le Registre poussiéreux !|« ...la cloche a été descendue à l'abri pour l'hiver, »|« au frais, là où l'eau dort sous les planches. »|« On la remontera pour la Veillée prochaine. »"
 states = PackedStringArray("bell_register > C'est de là que venait le registre.|Le vide dans la rangée se voit encore.")
 flag = "bell_register"
 required_flag = "bell_told"

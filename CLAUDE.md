@@ -14,6 +14,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 |---|---|
 | scènes, calques, ordre de dessin, tri Y | [docs/architecture.md](docs/architecture.md) |
 | tuiles, collisions, terrains, atlas | [docs/tilesets.md](docs/tilesets.md) |
+| composer ou retoucher une carte : bords, arbres, rochers, objets | [docs/mapping.md](docs/mapping.md) |
 | le joueur, ses déplacements, sa caméra | [docs/player.md](docs/player.md) |
 | dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
 | cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
@@ -36,7 +37,7 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 ├── assets/levels/      textures sources (atlas PNG + .import)
 ├── resources/tilesets/ level.tres — LE TileSet, collisions comprises
 ├── scenes/core/        game_manager.tscn (point d'entrée)
-├── scenes/levels/      une scène par map
+├── scenes/levels/      une scène par map — le jeu démarre sur start_island
 ├── scenes/ui/          interface (boîte de dialogue)
 └── scripts/
     ├── autoload/       singletons déclarés dans project.godot
@@ -44,6 +45,9 @@ src/main/kotlin/fr/skyle/pokeludoworld/
     ├── log/            Logger, LogLevel, LogColor
     └── ui/             MessageBox
 ```
+
+`tools/` (hors Godot) : les scripts qui fabriquent une planche à partir d'une
+autre — `island_tiles.py` produit `assets/levels/island.png`.
 
 ## Règles qui ne se redemandent pas
 

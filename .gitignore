@@ -9,3 +9,6 @@ jvm
 # Métadonnées macOS / Windows
 .DS_Store
 Thumbs.db
+
+# Python
+__pycache__/

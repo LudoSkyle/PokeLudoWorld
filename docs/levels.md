@@ -88,9 +88,114 @@ Level (Node2D)
 └── SpawnPoint        seulement sur la carte de départ
 ```
 
+## L'île de départ
+
+`scenes/levels/start_island.tscn` — 62 × 49 cases. C'est **la carte où le jeu
+commence** (`SceneManager.start_scene`) et où mènent les sorties des
+intérieurs. L'ancien village, `start_town.tscn`, est gardé tel quel : plus rien
+n'y mène, mais la plupart des tests de mécanique s'en servent encore.
+
+Elle est composée selon [mapping.md](mapping.md) : une baie intérieure
+entourée de terres, pas une île au milieu de l'eau. Du relief partout : chaque
+maison est sur un **plateau**, la place aussi ; le laboratoire est même **un
+étage plus haut**, sur une terrasse adossée à la falaise.
+
+```
+ falaise du nord ═════════╗ trouée (gardée) ╔═════════ falaise du nord
+ lisière │ NORD-OUEST, plateau │  LA CRIQUE DU NORD : plage, banc,   │ NORD-EST : terrasse,   │ lisière
+         │ Ludo, maison orange │  parasol, hautes herbes             │ puis le labo au-dessus │
+ ≈passe≈      │ ponton (en T)   ~~~~~~~~~ la baie ~~~~~~~~~            ponton (en L) │
+         └────┴──────────────►  LA PLACE, sur son plateau  ◄─────────────────────────┘ ≈passe≈
+ lisière │ OUEST, plateau : bibliothèque ─ponton─►  (socle de la cloche)
+ ≈passe≈    (la cloche est sous ce ponton)        │
+ lisière │ SUD-OUEST : hautes herbes, butte   plage du sud, palmiers, jetée   SUD-EST, plateau │ lisière
+         └────── lisière ──────┘          ≈passe≈          └──── lisière ────┘  maison orange
+```
+
+**On n'arrive pas sur la place par le nord.** La crique où débouche la trouée
+ne touche pas l'île du centre : il faut passer par le nord-est (ou le
+nord-ouest), descendre son ponton et arriver par le côté. La place se monte par
+l'ouest, l'est et le sud.
+
+| Lieu | Case | |
+|---|---|---|
+| départ, devant chez Ludo | (8,11) | `SpawnPoint` |
+| `MaisonLudo` | (8,10) | → `ludo_house` |
+| `Bibliotheque` | (8,27) | → `library` |
+| `Laboratoire` | (48,10) | → `lab_house` ; deux escaliers en dessous, en (48–49,12) et (48–49,15) |
+| maisons orange | (15,9) et (48,37) | façades dans cette carte ; leurs portes s'ouvrent avec leurs intérieurs |
+| la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
+| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; le bout de la route en y 0 |
+| la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
+| la cloche | (19,25), dans l'eau | se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
+| la jetée du sud | x 30–31, y 42–43 | le pêcheur est au bout ; des caisses sur le quai |
+| hautes herbes | x 6–12, y 39–42 ; (12–15,15–16) ; (26–28,6–7) | |
+| objets à ramasser | Potion en (55,32), Poké Ball en (5,40) | une Poké Ball posée au sol ([quests.md](quests.md)) |
+
+**Les escaliers.** On monte sur un plateau par un escalier à poteaux de deux
+cases, posé sur son bord du bas ou d'un côté — jamais sur celui du haut.
+
+**Les rebords.** Le bord du haut d'un plateau est de l'herbe : on s'y tient,
+mais on ne le franchit pas ([tilesets.md](tilesets.md), « Les rebords »).
+
+**Derrière les maisons.** La rangée du haut d'un toit se franchit : on longe
+la falaise derrière chez Ludo, on passe derrière la bibliothèque.
+
+**Le mobilier.** Cinq bancs (au fond de la place, dans la crique, au pied du
+plateau de Ludo, sur la terrasse du labo, au pied du plateau du sud-est), un
+parasol et sa serviette dans la crique et sur la plage du sud, des caisses sur
+le quai, un pot de fleurs de chaque côté de la porte des maisons orange.
+
+**Les pontons** font deux cases de large, portent une rambarde sur chaque côté
+qui donne sur l'eau et arrivent sur la rive par une planche de bout. Celui du
+nord-ouest est en T (il relie aussi la terre de l'ouest), celui du nord-est en
+L. La terre de l'ouest ne tient au reste que par ses deux pontons.
+
+**Les bords sont fermés par le décor, à pied comme à la nage.** Une ceinture
+d'arbres court le long des bords ouest, est et sud ; une falaise ferme le
+nord. La mer ne touche le bord qu'à **quatre passes étroites**, chacune barrée
+par une chaîne de rochers qui va d'un rocher de plage à l'autre. Aucune case
+des 4 colonnes du bord (3 rangées en bas) n'est atteignable à pied, et un
+nageur n'atteint ni le bord ni la terre de la marge.
+
+**La Veillée prend fin quand on quitte l'île** : `metadata/on_leave =
+"bell_hung > vigil_over"` (une règle « drapeau posé > drapeau à poser », lue
+par `SceneManager` au changement de carte — un rechargement n'est pas un
+départ). Qui est où avant, pendant et après : [npcs.md](npcs.md).
+
+Trois calques de fond de plus que les autres cartes, entre `Paths` et
+`Decorations` : **`Relief`** (les plateaux), **`Plaza`** (le dallage, posé sur
+le plateau) et **`Bridges`** (les pontons et les escaliers). Leurs tuiles sont
+décrites dans [tilesets.md](tilesets.md).
+
+### Elle est produite par un générateur
+
+La carte n'a pas été peinte à la main : un script la calcule à partir d'un
+plan (terres, plateaux, pontons, bâtiments), pose les raccords de terrain,
+plante le décor en laissant des couloirs dégagés vers chaque lieu, puis
+**contrôle** avant d'écrire le `.tscn` : chaque lieu est accessible à pied,
+aucune case de la marge ne l'est, aucune barrière de rochers ne fuit, aucun
+ponton ne touche la terre par le flanc, aucun objet ni personnage n'étrangle
+un passage. Il n'est pas dans le dépôt : il est rangé avec les notes de
+session (`island_generator/` : `plan.py`, `gen.py`, `build.py`, et la sonde
+qui relève la grille du moteur). Retoucher la carte dans l'éditeur reste
+possible ; relancer le générateur écraserait ces retouches.
+
+Les tuiles que l'atlas n'avait pas (rambardes, planches de bout, petits
+rochers) sont fabriquées par `tools/island_tiles.py`, qui, lui, est dans le
+dépôt.
+
+`tests/run.sh island` : circulation (ce qui bloque, ce qui porte, les rebords,
+tout se rejoint, la marge à pied et à la nage, les pontons), portes, objets à
+ramasser, et la quête en trois temps.
+
 ## Les intérieurs
 
 Quatre cartes pour les trois bâtiments du village :
+
+Les sorties des trois bâtiments mènent maintenant à **l'île**
+(`start_island`), sur des portes de même nom ; le tableau donne leurs cases
+sur l'ancien village.
 
 | Bâtiment sur `start_town` | Porte (case) | Carte |
 |---|---|---|
