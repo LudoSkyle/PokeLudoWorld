@@ -40,7 +40,7 @@ musique du village, et que les trois niveaux de la grotte n'en font qu'un.
 
 | Carte | Musique |
 |---|---|
-| `start_town`, `ludo_house`, `ludo_bedroom` | `new_bark_town` |
+| `start_town`, `ludo_house`, `ludo_bedroom`, `orange_house_north`, `orange_house_south` | `new_bark_town` |
 | `library` | `sprout_tower` |
 | `lab_house` | `elm_lab` |
 | `cave_1f`, `cave_b1f`, `cave_b2f` | `union_cave` |

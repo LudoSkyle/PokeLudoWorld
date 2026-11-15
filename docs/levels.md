@@ -42,7 +42,10 @@ arriverait dessus et elle se redéclencherait, en boucle entre les deux cartes.
 
 La tuile sous une porte doit être praticable. Les deux portes du village
 (`atlas (14,99)` et `(9,99)`) ont perdu leur collision et portent
-`y_sort_origin = -15`, comme tout décor franchissable.
+`y_sort_origin = -15`, comme tout décor franchissable. Celles des deux maisons
+orange de l'île (`(19,99)` et `(23,99)`) aussi : triée depuis le bas de sa
+case, une porte se dessine **par-dessus le joueur qui entre**. Le test
+`island_doors` le contrôle sur les cinq portes.
 
 ## Ce que fait une arrivée
 
@@ -123,7 +126,8 @@ l'ouest, l'est et le sud.
 | `MaisonLudo` | (8,10) | → `ludo_house` |
 | `Bibliotheque` | (8,27) | → `library` |
 | `Laboratoire` | (48,10) | → `lab_house` ; deux escaliers en dessous, en (48–49,12) et (48–49,15) |
-| maisons orange | (15,9) et (48,37) | façades dans cette carte ; leurs portes s'ouvrent avec leurs intérieurs |
+| `MaisonNord` | (15,9) | → `orange_house_north`, chez Anselme |
+| `MaisonSud` | (48,37) | → `orange_house_south`, chez Solange |
 | la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
 | la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; le bout de la route en y 0 |
 | la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
@@ -191,7 +195,8 @@ ramasser, et la quête en trois temps.
 
 ## Les intérieurs
 
-Quatre cartes pour les trois bâtiments du village :
+Six cartes : quatre pour les trois bâtiments du village, deux pour les maisons
+orange de l'île.
 
 Les sorties des trois bâtiments mènent maintenant à **l'île**
 (`start_island`), sur des portes de même nom ; le tableau donne leurs cases
@@ -202,6 +207,16 @@ sur l'ancien village.
 | maison en bas à gauche — **Ludo** | `MaisonLudo` (8,15) | `ludo_house` (salon) + `ludo_bedroom` (étage) |
 | maison du centre — **la bibliothèque** | `Bibliotheque` (21,13) | `library`, de plain-pied — plan dans [quests.md](quests.md) |
 | grand bâtiment en haut à droite, à la Poké Ball — **le laboratoire** | `Laboratoire` (28,7) | `lab_house` |
+
+Les deux maisons orange n'existent que sur l'île. Le paillasson de chacune
+(`Doors/Entree`) ramène sur `start_island`, à la porte dont le nom suit :
+
+| Maison sur `start_island` | Porte visée | Carte | Pièce | Habitant |
+|---|---|---|---|---|
+| petite maison orange du nord-ouest | `MaisonNord` | `orange_house_north` | 12 × 6, parquet à chevrons | Anselme |
+| grande maison orange du sud-est | `MaisonSud` | `orange_house_south` | 16 × 8, tomettes | Solange |
+
+Leurs plans sont plus bas, sous « Les maisons orange ».
 
 Chaque pièce est posée au milieu d'une grille de **32 × 20 cases de noir**. Ce
 cadre n'est pas décoratif : les limites de caméra viennent de l'étendue du
@@ -247,6 +262,84 @@ l'atlas.
 
 En cas de doute sur une pièce, aller chercher une référence du jeu d'origine
 (Bulbapedia, Poképédia) avant de composer.
+
+### Les maisons orange
+
+Deux pièces de plain-pied, une par maison orange de l'île, chacune avec son
+habitant ([npcs.md](npcs.md)). Elles prennent dans l'atlas des pièces déjà
+déclarées qu'aucune carte ne posait encore — la table carrée, la vitrine, la
+grande table à nappe, le tapis vert, le tableau au cadre rouge, le tabouret
+vert — et un sol à elles : chevrons `5:63,47` au nord, tomettes `5:70,47` au
+sud. Le mur reste le papier peint des maisons, le seul qui porte une
+collision.
+
+Dans les deux, **le tapis n'est pas centré et ne porte pas la table** : il
+marque un coin de la pièce (lecture au nord, télé au sud) et la table est de
+l'autre côté. Les deux colonnes de la porte (`x 15-16`) restent nues du
+paillasson jusqu'à la fenêtre : on entre Haut tenu sans rien heurter.
+
+Dans les plans, sur le sol, une case en **majuscules bloque** ; en minuscules,
+on marche dessus ou on passe derrière. Les rangées du mur, elles, bloquent
+toutes.
+
+**`orange_house_north` — chez Anselme.** Un couple de retraités, peu de
+choses : de la vaisselle, des livres, une horloge. 12 colonnes (`x 10-21`),
+mur en `y 5-7`, 6 rangées de sol (`y 8-13`).
+
+```
+      x 10 11 12 13 14 15 16 17 18 19 20 21
+y 6      .  . ta ta ho FF FF  .  .  .  .  .   au mur : tableau, horloge, fenêtre
+y 7     vi vi co co  . FF FF bv bv et et  .   hauts des meubles adossés
+y 8     VI VI CO CO  .  . An BV BV ET ET  .   vitrine, commode, Anselme, bibliothèque, étagère
+y 9      .  .  .  .  .  .  .  .  .  .  .  .   allée du fond
+y 10     .  .  t  t  .  .  .  . tp tp tp  .   (haut de table : on passe derrière)
+y 11     . sv TT TT sr  .  .  . tp tp tp  .   tabourets, table carrée, tapis vert
+y 12    pl  . TT TT  .  .  .  . tp tp tp pl   feuillages
+y 13    PL  .  .  .  . MM MM  .  .  .  . PL   pots, paillasson
+```
+
+Anselme est en `(16, 8)`, **à la fenêtre**, dos à la porte, entre l'horloge et
+ses livres : c'est son poste. On lui parle depuis `(15, 8)` ou `(16, 9)`.
+L'horloge se lit depuis `(14, 8)` (un `Readable` sur la case de mur sous
+elle, comme au laboratoire), les livres depuis `(17-20, 9)`. Le tableau est
+au-dessus de la commode, qui est basse : son haut ne mord que de 7 px sur le
+mur et ne touche pas le cadre.
+
+**`orange_house_south` — chez Solange.** Deux sœurs, une grande pièce à
+vivre bien remplie et pas très rangée. 16 colonnes (`x 8-23`), mur en
+`y 4-6`, 8 rangées de sol (`y 7-14`).
+
+```
+      x  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+y 5      .  .  .  .  . li  . FF FF  .  .  .  .  .  .  .   au mur : liste épinglée, fenêtre
+y 6     bo bo cu cu fr  . ar FF FF ar tv tv bb bb bu bu   hauts des meubles adossés
+y 7     BO BO CU CU FR  . AR  .  . AR TV TV BB BB BU BU   bocaux, cuisinière et évier, frigo, arbustes, télé, livres, buffet
+y 8      .  .  . So  .  .  .  .  .  .  .  .  .  .  .  .   Solange, devant l'évier
+y 9      .  .  .  .  .  .  .  .  .  . tp tp tp  .  .  .   tapis bleu, devant la télé
+y 10     .  .  t  t  t  .  .  .  . cj tp tp tp  . co co   (hauts de table et de commode : on passe derrière)
+y 11     . sr TT TT TT sv  .  .  .  . tp tp tp  . CO CO   tabourets, grande table, commode
+y 12     .  .  . sb  .  .  .  .  .  .  .  . cb  f  f  .   tabouret, coussin, feuilles par terre
+y 13    pl  .  .  .  .  f  .  .  .  .  .  .  .  f  f pl   feuillages
+y 14    PL  .  .  .  .  .  . MM MM  .  .  .  .  .  . PL   pots, paillasson
+```
+
+À gauche la cuisine et la table, à droite le coin télé. Solange est en
+`(11, 8)`, **devant l'évier**, tournée vers la porte ; on lui parle depuis
+`(10, 8)`, `(12, 8)` ou `(11, 9)`. Le désordre dont elle s'excuse se voit :
+trois tabourets dépareillés, un coussin à gauche du tapis (`cj`) et un autre
+en dessous (`cb`), des feuilles par terre. Les deux arbustes qui encadrent la fenêtre et les
+plantes des coins sont ceux de sa sœur, qui jardine dehors. La télé se
+regarde depuis `(18-19, 8)`, les livres se lisent depuis `(20-21, 8)`.
+
+Deux choses apprises en les composant :
+
+- **Un coussin ne se pose pas sur un tapis** : tous deux sont dans `Decor`,
+  qui ne porte qu'une tuile par case. Il va à côté.
+- **Une table de deux cases ne se centre pas sur un tapis de trois.** La
+  table carrée (`7:21-22,0-2`) se pose donc sur le sol nu.
+
+Tests : `tests/run.sh doors/orange` (la case d'arrivée sur l'île reste à
+renseigner dans les deux fichiers) et `tests/run.sh audit`.
 
 ### L'atlas `interiors.png`
 

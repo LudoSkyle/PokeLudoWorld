@@ -836,3 +836,39 @@ msgstr "“%s”: the quest starts over."
 
 msgid "« %s » : la quête n'a pas encore commencé."
 msgstr "“%s”: the quest has not started yet."
+
+msgid "Maison d'Anselme"
+msgstr "Anselme's House"
+
+msgid "Maison de Solange"
+msgstr "Solange's House"
+
+msgid "Anselme"
+msgstr "Anselme"
+
+msgid "Solange"
+msgstr "Solange"
+
+msgid "Ma femme passe ses matinées sur le banc, dehors."
+msgstr "My wife spends her mornings on the bench outside."
+
+msgid "Moi, je garde la maison. Chacun son poste."
+msgstr "Me, I mind the house. To each their post."
+
+msgid "Tu l'as entendue sonner ? Les vitres en tremblaient."
+msgstr "Did you hear it ring? The windowpanes were shaking."
+
+msgid "Ça faisait bien longtemps."
+msgstr "It had been a very long time."
+
+msgid "Entre, entre ! Ne fais pas attention au désordre."
+msgstr "Come in, come in! Don't mind the mess."
+
+msgid "Ma sœur jardine du matin au soir. La maison, c'est moi."
+msgstr "My sister gardens from morning till night. The house is my job."
+
+msgid "Depuis la Veillée, ma sœur fredonne en jardinant."
+msgstr "Since the Vigil, my sister hums while she gardens."
+
+msgid "C'est nouveau. Et c'est faux."
+msgstr "That's new. And it's off-key."
