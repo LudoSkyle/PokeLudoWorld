@@ -66,3 +66,23 @@ jeu n'en lit aucune ; ce qu'on en prend est sorti à part.
 
 Téléchargée par Ludo le 15/11/2026, avec les planches de Pokémon de
 `assets/pokemon/sources/`.
+
+### `sources/teraleak/` — « Teraleak OWs & Assets »
+
+Un pack de **PurpleZaffre** : 264 images tirées de versions bêta des jeux,
+mises en planche par lui. Téléchargé par Ludo le 15/11/2026.
+
+| Dossier | Dossier du pack | Images | Contenu |
+|---|---|---|---|
+| `rs_pt_hgss/` | `RS, PT & HGSS` | 92 | personnages et dresseurs sur la carte (`HGSS_Beta…`, `Pt_Beta…`, `…BetaTrainer…`), quelques Pokémon (Lugia, Ho-Oh, les formes de Motisma), et des écrans de sac, de menu et d'options, des icônes, deux cartes, un arbre, un rocher, un panneau |
+| `bw_b2w2/` | `BW & B2W2` | 172 | personnages sur la carte (`BW_Beta…`, `B2W2_Beta…`), des Pokémon d'Unys (Reshiram, Zekrom, Kyurem, Victini, Meloetta, Cobaltium, Terrakium, Viridium, et deux planches mêlées), des icônes, deux portraits, des objets, effets et animations |
+
+Les planches de personnages font 256 × 256 : quatre colonnes de marche, quatre
+rangées — bas, gauche, droite, haut — soit des cases de 64 × 64, le double de
+la taille du jeu. Les noms de fichiers sont ceux du pack ; seuls les deux
+dossiers ont été renommés.
+
+**Licence** : [`sources/teraleak/Credits.txt`](sources/teraleak/Credits.txt),
+copié tel quel, demande de **créditer PurpleZaffre** et de **ne pas
+redistribuer** le pack. Il est versionné ici sur décision de Ludo (projet
+personnel, non commercial).
