@@ -15,8 +15,11 @@ import godot.api.CanvasLayer
 import godot.api.Control
 import godot.api.Label
 import godot.api.RichTextLabel
+import godot.api.TextParagraph
+import godot.api.TextServer
 import godot.core.Color
 import godot.core.Vector2
+import godot.core.asStringName
 
 /**
  * Boîte de dialogue, affichée lettre par lettre.
@@ -30,6 +33,11 @@ import godot.core.Vector2
  * `@sound:<jingle>` et `@reload` (voir [directives]). Tant qu'un jingle joue,
  * la boîte ne passe pas à la suite.
  * [ask] pose d'abord une question Oui / Non.
+ *
+ * La boîte montre deux lignes. Un message qui en demande plus se lit **page
+ * par page** : deux lignes s'écrivent, la touche d'interaction amène les
+ * suivantes, et le message d'après ne vient qu'une fois la dernière page lue
+ * (voir [paginate]). Il n'y a jamais de barre de défilement.
  *
  * Quand celui qui parle a un nom, il s'affiche dans un encart au-dessus de la
  * boîte, à gauche — en rouge pour une femme, en bleu pour un homme. Une boîte qui donne un objet est dite par le jeu, pas par
@@ -52,6 +60,11 @@ class MessageBox : CanvasLayer() {
 	private var label: RichTextLabel? = null
 
 	private val pending = ArrayDeque<String>()
+
+	/** Les pages du message en cours qui restent à lire, quand il ne tient pas dans la boîte. */
+	private val pages = ArrayDeque<String>()
+
+	/** La page en cours d'écriture — le message entier, s'il tient dans la boîte. */
 	private var fullText: String = ""
 	private var shown: Int = 0
 	private var elapsed: Double = 0.0
@@ -82,7 +95,7 @@ class MessageBox : CanvasLayer() {
 	val isAsking: Boolean
 		get() = asking
 
-	/** Vrai tant que le texte courant n'est pas entièrement affiché. */
+	/** Vrai tant que la page courante n'est pas entièrement affichée. */
 	val isScrolling: Boolean
 		get() = shown < fullText.length
 
@@ -164,10 +177,7 @@ class MessageBox : CanvasLayer() {
 		asking = true
 		afterYes = then
 		box?.visible = true
-		fullText = T(question)
-		shown = 0
-		elapsed = 0.0
-		PixelShadow.setText(label, "")
+		write(T(question))
 	}
 
 	/**
@@ -180,8 +190,9 @@ class MessageBox : CanvasLayer() {
 			return
 		}
 
-		// La question s'écrit d'abord ; une pression la termine d'un coup.
-		if (isScrolling) {
+		// La question s'écrit d'abord ; une pression la termine d'un coup, ou
+		// amène sa page suivante si elle ne tient pas dans la boîte.
+		if (isScrolling || pages.isNotEmpty()) {
 			if (interact) advance()
 			return
 		}
@@ -208,12 +219,15 @@ class MessageBox : CanvasLayer() {
 	/**
 	 * Écrit un texte et le laisse à l'écran : aucune touche ne le fait passer,
 	 * c'est l'appelant qui enchaîne ou qui referme avec [close]. Sert aux
-	 * questions (voir SaveMenu). Le texte est dit tel quel, déjà traduit.
+	 * questions (voir SaveMenu). Le texte est dit tel quel, déjà traduit — et
+	 * d'un seul tenant : sans touche pour tourner la page, il doit tenir dans
+	 * les deux lignes de la boîte.
 	 */
 	fun say(text: String) {
 		speaker = ""
 		showSpeaker()
 		pending.clear()
+		pages.clear()
 		box?.visible = true
 		fullText = text
 		shown = 0
@@ -230,6 +244,7 @@ class MessageBox : CanvasLayer() {
 		revealing = false
 		ItemReveal.instance?.dismiss()
 		pending.clear()
+		pages.clear()
 		box?.visible = false
 		fullText = ""
 		shown = 0
@@ -237,8 +252,9 @@ class MessageBox : CanvasLayer() {
 	}
 
 	/**
-	 * Termine le défilement en cours, ou passe au message suivant s'il est déjà
-	 * entier. Ferme la boîte quand il n'y a plus rien à dire.
+	 * Termine le défilement en cours ou, si la page est déjà entière, passe à
+	 * la suite : la page suivante du message, sinon le message suivant. Ferme
+	 * la boîte quand il n'y a plus rien à dire.
 	 */
 	fun advance() {
 		if (isScrolling) {
@@ -248,13 +264,22 @@ class MessageBox : CanvasLayer() {
 		}
 
 		// Pendant qu'un objet rare est montré, aucune touche ne presse la suite ;
-		// une question attend sa réponse (voir handle) ; un jingle se laisse finir.
-		if (revealing || asking || AudioManager.instance?.isJinglePlaying == true) return
+		// un jingle se laisse finir.
+		if (revealing || AudioManager.instance?.isJinglePlaying == true) return
+		// Une question attend sa réponse (voir handle) — une fois sa dernière page écrite.
+		if (asking && pages.isEmpty()) return
 
 		next()
 	}
 
 	private fun next() {
+		// Le message en cours n'est pas fini : sa page suivante passe avant le
+		// message suivant. Ses consignes ont déjà été exécutées, à sa première page.
+		if (pages.isNotEmpty()) {
+			turnPage()
+			return
+		}
+
 		val message = pending.removeFirstOrNull()
 
 		if (message == null) {
@@ -274,11 +299,66 @@ class MessageBox : CanvasLayer() {
 
 		// Les textes arrivent en français, la boîte les dit dans la langue choisie.
 		narrated = false
-		fullText = T(directives(message))
+		val text = T(directives(message))
 		showSpeaker()
+		write(text)
+	}
+
+	/**
+	 * Commence à écrire un texte déjà traduit. S'il ne tient pas dans la boîte,
+	 * seule sa première page s'écrit ; les suivantes attendent dans [pages].
+	 */
+	private fun write(text: String) {
+		pages.clear()
+		pages.addAll(paginate(text))
+		turnPage()
+	}
+
+	/** Efface la boîte et y écrit, lettre à lettre, la page suivante du message en cours. */
+	private fun turnPage() {
+		fullText = pages.removeFirstOrNull() ?: ""
 		shown = 0
 		elapsed = 0.0
 		PixelShadow.setText(label, "")
+	}
+
+	/**
+	 * Découpe un texte en pages de [LINES_PER_PAGE] lignes, comme dans les jeux
+	 * d'origine. Les coupes tombent là où le texte irait de toute façon à la
+	 * ligne : c'est le moteur qui les calcule (`TextParagraph`), avec la
+	 * police, la largeur et les règles de césure du libellé. Chaque page y
+	 * retrouve donc ses deux lignes, sans rien qui dépasse.
+	 *
+	 * Un texte qui tient dans la boîte revient tel quel, en une seule page.
+	 */
+	private fun paginate(text: String): List<String> {
+		val target = label ?: return listOf(text)
+		val font = target.getThemeFont("normal_font".asStringName()) ?: return listOf(text)
+		val padding = target.getThemeStylebox("normal".asStringName())?.getMinimumSize()?.x ?: 0.0
+		val width = target.getSize().x - padding
+		if (width <= 0.0) return listOf(text)
+
+		val paragraph = TextParagraph()
+		paragraph.setBreakFlags(WORD_WRAP or target.getAutowrapTrimFlags())
+		paragraph.setWidth(width.toFloat())
+		paragraph.addString(text, font, target.getThemeFontSize("normal_font_size".asStringName()))
+		val lines = paragraph.getLineCount()
+		if (lines <= LINES_PER_PAGE) return listOf(text)
+
+		// Le moteur compte en caractères Unicode, une String Kotlin en UTF-16.
+		val length = text.codePointCount(0, text.length)
+		fun index(character: Int) = text.offsetByCodePoints(0, character.coerceIn(0, length))
+
+		return (0 until lines step LINES_PER_PAGE)
+			.map { first ->
+				val last = minOf(first + LINES_PER_PAGE, lines) - 1
+				val from = index(paragraph.getLineRange(first).x)
+				val to = index(paragraph.getLineRange(last).y)
+				// L'espace où la ligne a été coupée ne s'écrit pas.
+				if (from < to) text.substring(from, to).trim() else ""
+			}
+			.filter { it.isNotEmpty() }
+			.ifEmpty { listOf(text) }
 	}
 
 	/** Montre l'encart du nom, à la largeur du nom, ou le cache s'il n'y a personne à nommer. */
@@ -353,6 +433,18 @@ class MessageBox : CanvasLayer() {
 
 private const val REVEAL_SECONDS = 1.0
 private const val SPEAKER_MARGINS = 56.0
+
+/** Ce que la boîte montre à la fois ; un message plus long se lit page par page. */
+private const val LINES_PER_PAGE = 2
+
+/**
+ * Les règles de retour à la ligne du libellé (`autowrap_mode` laissé à
+ * « mots, intelligent ») : aux `\n`, entre deux mots, et dans un mot
+ * seulement s'il est plus large que la boîte à lui seul.
+ */
+private val WORD_WRAP = TextServer.LineBreakFlag.BREAK_MANDATORY or
+	TextServer.LineBreakFlag.BREAK_WORD_BOUND or
+	TextServer.LineBreakFlag.BREAK_ADAPTIVE
 
 /** Couleur du nom selon le genre, comme dans les jeux d'origine ; sans genre, l'encre du texte. */
 private val SPEAKER_INK = Color(0.345098, 0.345098, 0.313725, 1.0)
