@@ -19,11 +19,16 @@ mouse_filter = 2
 
 [node name="Panel" type="Control" parent="Control"]
 visible = false
-layout_mode = 0
-offset_left = 480.0
-offset_top = 136.0
-offset_right = 672.0
-offset_bottom = 328.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -96.0
+offset_top = -512.0
+offset_right = 96.0
+offset_bottom = -320.0
 mouse_filter = 2
 
 [node name="Frame" type="NinePatchRect" parent="Control/Panel"]

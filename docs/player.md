@@ -33,11 +33,27 @@ une case de large, une case et demie de haut. Sans cette mise à l'échelle le
 personnage est deux fois trop gros pour le décor. Son décalage `(0, -4)` place
 ses pieds au bas de la case.
 
-Caméra en `zoom = 4` — le viewport fait 1152×648, on voit donc 18 cases de
-large et 10 de haut, plus un liseré de la onzième. Rester sur un zoom
-**entier** : un zoom fractionnaire donne des pixels de largeurs inégales qui
-scintillent en marchant. Elle est bornée à l'étendue du calque `Background/Ground` lue par
-`getUsedRect()` : rien à régler quand la map change de taille.
+Caméra en `zoom = 4` — l'écran est en **4:3**, 1280×960 (`[display]` dans
+`project.godot`, et le `SubViewport` de `game_manager.tscn`) : on voit
+**20 cases de large et 15 de haut**, soit 320×240 pixels de jeu. Rester sur un
+zoom **entier** : un zoom fractionnaire donne des pixels de largeurs inégales
+qui scintillent en marchant.
+
+Elle est bornée à **l'étendue de la carte** (`PlayerCamera.contentRect`) : le
+sol de `Background/Ground` sans son noir de remplissage, plus les autres
+calques du fond (les murs dépassent du sol). Rien à régler quand la map change
+de taille.
+
+- Carte plus grande que l'écran : la caméra suit le joueur et s'arrête aux bords.
+- Carte **plus petite que l'écran** sur un axe (une pièce d'intérieur) : elle
+  est **centrée** sur cet axe et la caméra n'y bouge plus
+  (`tests/run.sh room_centered`). Le noir de remplissage — la tuile `5:65,49`
+  de `Ground` — sert alors de bordure autour de la pièce ; il doit couvrir tout
+  l'écran, sinon on voit le gris de fond.
+
+L'interface est dessinée ×4 dans ces 1280×960. Boîte de dialogue, nom, Oui/Non,
+menu de pause et objet reçu sont **ancrés** (bas-centre ou bord droit) ; le sac
+et les options gardent leur planche de 1152×648, centrée sur un fond uni.
 
 ## Déplacement
 

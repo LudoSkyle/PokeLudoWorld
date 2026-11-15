@@ -597,7 +597,7 @@ func daylight() -> Color:
 	return Color.WHITE if sky == null else sky.color
 
 func _run() -> void:
-	root.size = Vector2i(1152, 648)
+	root.size = Vector2i(1280, 960)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
 	# Ce sont des fichiers de test, ceux du joueur ne sont jamais touches.
 	for file in ["user://test_settings.cfg", "user://test_save.cfg"]:

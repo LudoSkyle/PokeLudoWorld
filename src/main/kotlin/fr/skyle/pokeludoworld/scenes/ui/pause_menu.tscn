@@ -27,10 +27,15 @@ mouse_filter = 2
 
 [node name="Menu" type="Control" parent="Control"]
 visible = false
-layout_mode = 0
-offset_left = 768.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -384.0
 offset_top = 0.0
-offset_right = 1152.0
+offset_right = 0.0
 offset_bottom = 384.0
 mouse_filter = 2
 
@@ -126,7 +131,11 @@ text = "Quitter"
 vertical_alignment = 1
 
 [node name="DebugChoices" parent="Control" instance=ExtResource("5_choices")]
-offset_left = 224.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -928.0
 offset_top = 64.0
-offset_right = 736.0
+offset_right = -416.0
 offset_bottom = 384.0

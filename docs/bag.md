@@ -99,8 +99,10 @@ en bas du panneau signale ce qui reste (`tests/ui/bag_scroll.gd`).
 
 ## Le fond
 
-Le fond d'origine fait 240×160 ; il est élargi à 288×162, la taille de l'écran
-du jeu (`assets/ui/bag/CREDITS.md`). Repères, en pixels de jeu : titre de poche
+Le fond d'origine fait 240×160 ; il est élargi à 288×162
+(`assets/ui/bag/CREDITS.md`), l'ancien format de l'écran. L'écran est passé en
+4:3 (320×240) : le sac garde sa planche, **centrée** sur un fond uni bleu
+(`Screen/Backdrop`), en attendant un fond redessiné à la bonne taille. Repères, en pixels de jeu : titre de poche
 centré sur `x 6-82, y 3-19` ; sac en `(8, 31)` ; lignes de la liste tous les
 16 px à partir de `y 8`, texte à `x 100`, quantité calée à droite sur `x 276` ;
 icône en `(9, 126)` ; description à partir de `(40, 114)`, trois lignes au plus.
