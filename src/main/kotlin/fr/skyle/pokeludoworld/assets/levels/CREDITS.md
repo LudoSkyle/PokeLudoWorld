@@ -3,6 +3,7 @@
 | Fichier | Contenu | Origine |
 |---|---|---|
 | `bell_stand.png` | le socle de la cloche, 96×48 : **vide** à gauche, **avec sa cloche** à droite (48×48 chacun) | découpé dans le tileset ci-dessous |
+| `island.png` | les tuiles de l'île que l'atlas n'a pas, 256×112 : pontons à rambardes, planches de bout, petits rochers dans l'eau ; escaliers à poteaux, parasols, serviettes, caisses, pot de fleurs, Poké Ball posée au sol | fabriqué par `tools/island_tiles.py`, aucun pixel dessiné à la main : trois rangées **dérivées de `environments.png`**, le reste **découpé dans `sources/town_compilation.png`** (auteur à retrouver) |
 
 ## Le socle de la cloche
 
