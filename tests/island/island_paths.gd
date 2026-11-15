@@ -12,7 +12,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(8, 11)
+	return Vector2i(8, 10)
 
 func layer(path: String) -> TileMapLayer:
 	return level().get_node(path)
@@ -55,13 +55,13 @@ func test() -> void:
 	var bridges := layer("Background/Bridges")
 	var props := layer("World/Props")
 	check("la carte fait 62 cases sur 49", ground.get_used_rect() == Rect2i(0, 0, W, H), str(ground.get_used_rect()))
-	check("on demarre devant la porte de Ludo", cell() == Vector2i(8, 11), str(cell()))
+	check("on demarre devant la porte de Ludo", cell() == Vector2i(8, 10), str(cell()))
 	check("la carte donne sa chance de rencontre et sa table", int(level().get_meta("encounter_rate", 0)) == 10 and str(level().get_meta("wild", "")).contains("mulotin"))
 	# Ce qui bloque.
 	check("la mer bloque", not is_free(Vector2i(24, 14)) and not is_free(Vector2i(38, 14)) and not is_free(Vector2i(48, 24)) and not is_free(Vector2i(10, 34)))
-	check("le flanc et le bas d'un plateau bloquent", not is_free(Vector2i(12, 13)) and not is_free(Vector2i(6, 9)) and not is_free(Vector2i(23, 22)) and not is_free(Vector2i(43, 36)))
+	check("le flanc et le bas d'un plateau bloquent", not is_free(Vector2i(12, 12)) and not is_free(Vector2i(6, 9)) and not is_free(Vector2i(23, 22)) and not is_free(Vector2i(43, 36)))
 	check("la falaise du nord bloque", not is_free(Vector2i(13, 1)) and not is_free(Vector2i(50, 2)))
-	check("le corps d'une maison bloque", not is_free(Vector2i(8, 8)) and not is_free(Vector2i(15, 8)) and not is_free(Vector2i(48, 35)))
+	check("le corps d'une maison bloque", not is_free(Vector2i(8, 8)) and not is_free(Vector2i(14, 7)) and not is_free(Vector2i(48, 35)))
 	# Ce qui porte.
 	check("on marche sur le sable jusqu'au bord de l'eau, pas plus loin", is_free(Vector2i(20, 14)) and not is_free(Vector2i(21, 14)))
 	check("un ponton se traverse", is_free(Vector2i(10, 19)) and is_free(Vector2i(16, 21)) and is_free(Vector2i(45, 20)) and is_free(Vector2i(51, 19)) and is_free(Vector2i(17, 26)) and is_free(Vector2i(30, 42)))
@@ -71,8 +71,8 @@ func test() -> void:
 	check("mais on ne franchit pas le rebord, ni dans un sens ni dans l'autre", ledge_between(Vector2i(34, 19), Vector2i(34, 18)) and ledge_between(Vector2i(34, 18), Vector2i(34, 19))
 		and not can_step(Vector2i(26, 20), Vector2i(26, 19)) and not ledge_between(Vector2i(34, 19), Vector2i(35, 19)) and can_step(Vector2i(34, 20), Vector2i(34, 19)))
 	# On passe derriere une maison : la rangee du haut de son toit se franchit.
-	check("on passe derriere les maisons", is_free(Vector2i(8, 5)) and is_free(Vector2i(14, 5)) and is_free(Vector2i(48, 5)) and is_free(Vector2i(8, 23)) and is_free(Vector2i(48, 32)))
-	check("derriere Ludo, on longe la falaise d'un bout a l'autre du plateau", not find_path(Vector2i(8, 11), Vector2i(8, 4)).is_empty())
+	check("on passe derriere les maisons, sous leur toit", is_free(Vector2i(8, 4)) and is_free(Vector2i(14, 4)) and is_free(Vector2i(48, 4)) and is_free(Vector2i(8, 23)) and is_free(Vector2i(48, 32)))
+	check("les maisons du nord sont contre la falaise : on se glisse derriere par la ruelle", not find_path(Vector2i(8, 10), Vector2i(8, 4)).is_empty() and not is_free(Vector2i(8, 3)))
 	# Un ponton ne touche la terre que par une planche d'arrivee, posee sur la rive.
 	var landings := 0
 	var loose := 0
@@ -106,8 +106,8 @@ func test() -> void:
 				steps_ok = false
 	check("neuf escaliers de deux cases, tous praticables", steps == 18 and steps_ok, "%d cases" % steps)
 	check("aucun escalier a l'envers", upside_down == 0, "%d" % upside_down)
-	check("le labo est un etage plus haut : deux escaliers l'un au-dessus de l'autre", is_free(Vector2i(48, 12)) and is_free(Vector2i(48, 15)) and not is_free(Vector2i(47, 12)) and not is_free(Vector2i(47, 15))
-		and not find_path(Vector2i(48, 17), Vector2i(48, 11)).is_empty())
+	check("le labo est un etage plus haut : deux escaliers l'un au-dessus de l'autre", is_free(Vector2i(48, 11)) and is_free(Vector2i(48, 14)) and not is_free(Vector2i(47, 11)) and not is_free(Vector2i(47, 14))
+		and not find_path(Vector2i(48, 16), Vector2i(48, 10)).is_empty())
 	# On ne monte pas sur la place par le nord, et le nord ne touche pas l'ile du centre.
 	check("la crique du nord est separee de l'ile du centre par la baie", not is_free(Vector2i(30, 13)) and not is_free(Vector2i(31, 16)))
 	var by_east: Array = find_path(Vector2i(30, 5), Vector2i(30, 27))
@@ -147,13 +147,13 @@ func test() -> void:
 	check("cinq bancs, pleins", benches == 5, "%d" % benches)
 	check("le pied d'un parasol et les caisses du quai arretent", not is_free(Vector2i(37, 37)) and not is_free(Vector2i(22, 9)) and not is_free(Vector2i(33, 41)) and not is_free(Vector2i(34, 41)))
 	check("on passe sous la toile d'un parasol et sur une serviette", is_free(Vector2i(37, 36)) and is_free(Vector2i(24, 8)) and is_free(Vector2i(39, 36)))
-	check("un pot de fleurs de chaque cote de la porte, jamais devant", not is_free(Vector2i(14, 10)) and not is_free(Vector2i(16, 10)) and is_free(Vector2i(15, 10)))
+	check("un pot de fleurs de chaque cote de la porte, jamais devant", not is_free(Vector2i(14, 9)) and not is_free(Vector2i(16, 9)) and is_free(Vector2i(15, 9)))
 	check("des habitants vivent la : pres d'un banc, d'un parasol, d'un ponton, des herbes",
-		cell_of("BenchLady") == Vector2i(12, 14) and cell_of("Sunbather") == Vector2i(39, 37) and cell_of("Swimmer") == Vector2i(24, 9) and cell_of("ShellKid") == Vector2i(28, 9)
+		cell_of("BenchLady") == Vector2i(12, 13) and cell_of("Sunbather") == Vector2i(39, 37) and cell_of("Swimmer") == Vector2i(24, 9) and cell_of("ShellKid") == Vector2i(28, 9)
 		and cell_of("Sailor") == Vector2i(53, 18) and cell_of("Youngster") == Vector2i(25, 7) and cell_of("Gardener") == Vector2i(46, 41))
 	# Tout se rejoint a pied, depuis le depart.
-	var from := Vector2i(8, 11)
-	for goal in [["la porte de la bibliotheque", Vector2i(8, 28)], ["la porte du labo", Vector2i(48, 11)], ["la maison orange du nord-ouest", Vector2i(15, 10)],
+	var from := Vector2i(8, 10)
+	for goal in [["la porte de la bibliotheque", Vector2i(8, 28)], ["la porte du labo", Vector2i(48, 10)], ["la maison orange du nord-ouest", Vector2i(15, 9)],
 			["la maison orange du sud-est", Vector2i(48, 38)], ["la place", Vector2i(30, 27)], ["le ponton de la cloche", Vector2i(19, 26)],
 			["le bout de la jetee du sud", Vector2i(30, 43)], ["les hautes herbes du sud-ouest", Vector2i(9, 41)], ["la trouee de la falaise", Vector2i(30, 4)],
 			["la crique du nord", Vector2i(30, 9)], ["la plage du sud-est", Vector2i(42, 42)], ["la pointe de l'est", Vector2i(56, 28)]]:
