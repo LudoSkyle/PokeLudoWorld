@@ -52,8 +52,11 @@ de taille.
   l'écran, sinon on voit le gris de fond.
 
 L'interface est dessinée ×4 dans ces 1280×960. Boîte de dialogue, nom, Oui/Non,
-menu de pause et objet reçu sont **ancrés** (bas-centre ou bord droit) ; le sac
-et les options gardent leur planche de 1152×648, centrée sur un fond uni.
+menu de pause et objet reçu sont **ancrés** : la boîte de dialogue en bas, d'un
+bord à l'autre, le nom et Oui/Non sur ses bords gauche et droit (voir
+[dialogue.md](dialogue.md)), le menu de pause au bord droit, l'objet reçu en
+bas au centre ; le sac et les options gardent leur planche de 1152×648, centrée
+sur un fond uni.
 
 ## Déplacement
 

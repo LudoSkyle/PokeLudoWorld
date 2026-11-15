@@ -19,11 +19,31 @@ MessageBox (CanvasLayer)   MessageBox.kt
 Le texte s'affiche lettre par lettre (`secondsPerLetter`, 0,02 s). `MessageBox`
 s'expose en singleton par `MessageBox.instance`, comme `Globals`.
 
+### Sa place à l'écran
+
+La boîte va **d'un bord à l'autre de l'écran de jeu**, en bas, avec la même
+marge de 16 px (4 pixels de jeu) à gauche, à droite et en dessous : 1248×168
+dans les 1280×960 de l'écran. Elle est ancrée aux deux bords (`anchor_left = 0`,
+`anchor_right = 1`), pas centrée sur une largeur fixe : si l'écran change de
+taille, elle suit.
+
+Ce qui l'accompagne se cale sur **ses** bords, pas sur le milieu de l'écran :
+
+| Nœud | Ancré | Place |
+|---|---|---|
+| `Speaker`, l'encart du nom | en bas à gauche | posé sur la boîte, 16 px en retrait de son bord gauche |
+| `Choices`, Oui / Non | en bas à droite | au-dessus de la boîte, contre son bord droit |
+
+L'écran de sauvegarde pose sa question dans la même boîte avec son propre
+Oui / Non (`save_menu.tscn`), ancré de la même façon. Tout cela est vérifié par
+`tests/run.sh message_box_width`.
+
 ## Le nom de celui qui parle
 
 Un PNJ qui a un nom (`display_name`, voir [npcs.md](npcs.md)) le voit affiché
 dans un **encart au-dessus de la boîte, à gauche** (`Control/Speaker`), le temps
-de son dialogue. L'encart prend la largeur du nom.
+de son dialogue. L'encart prend la largeur du nom ; il part toujours du même
+point, 16 px en retrait du bord gauche de la boîte.
 
 - Un personnage sans nom, un panneau, un meuble : pas d'encart.
 - Une boîte qui **donne un objet** (`@give:`) est dite par le jeu, pas par le
@@ -53,10 +73,43 @@ de machine à états tant qu'il n'y a que deux modes — voir
 ## `advance()` fait deux choses
 
 - texte en cours de défilement → l'affiche en entier d'un coup ;
-- texte déjà entier → passe au message suivant, et ferme s'il n'y en a plus.
+- texte déjà entier → passe à la suite : la page suivante du message s'il en
+  a une (voir plus bas), sinon le message suivant ; ferme s'il n'y a plus rien.
 
 C'est le comportement des jeux d'origine : une pression pour « accélérer », une
 autre pour « suivant ».
+
+## Un texte plus long que la boîte
+
+La boîte montre **deux lignes**. Un message qui en demande plus n'est ni coupé
+ni défilé : il se lit **page par page**, comme dans les jeux d'origine. Deux
+lignes s'écrivent lettre à lettre, la boîte attend la touche d'interaction,
+s'efface, écrit les deux suivantes — jusqu'au bout du message. Le message
+d'après (celui qui suit le `|`) ne vient qu'une fois la dernière page lue.
+
+- **Les coupes tombent là où le texte irait de toute façon à la ligne.**
+  `MessageBox.paginate` ne mesure rien lui-même : il confie le texte à un
+  `TextParagraph` du moteur, avec la police, la largeur et les règles de césure
+  du libellé, et prend les lignes deux par deux. Chaque page retrouve donc ses
+  deux lignes exactes une fois dans la boîte.
+- **Un message qui tient en deux lignes n'est pas touché** : il reste une seule
+  page, écrite telle quelle.
+- Les pages se découpent sur le texte **traduit** : l'anglais et le français
+  ne tournent pas la page au même endroit.
+- Les **consignes** (`@give:`, `@flag:`…) s'exécutent une fois, à la première
+  page ; l'encart du nom reste le même d'une page à l'autre.
+- Une **question** (`ask`) trop longue se lit de la même façon : Oui / Non
+  n'apparaît qu'à sa dernière page.
+- Une boîte qui montre un **objet rare** passe seule à sa page suivante, qui
+  se lit ensuite à la touche.
+- `MessageBox.say()` (sauvegarde) n'a pas de touche pour tourner la page : son
+  texte doit tenir en deux lignes.
+
+**Il n'y a jamais de barre de défilement** : le libellé a `scroll_active =
+false`. Avant la pagination, une troisième ligne en faisait apparaître une et
+la fin du texte restait hors d'atteinte.
+
+Vérifié par `tests/run.sh message_box_pages`.
 
 ## Les panneaux
 
@@ -128,9 +181,10 @@ lissage : un pixel de la police vaut quatre pixels écran, comme le décor. Elle
 a les accents et l'apostrophe. Encre `#585850`, ombre `#a8b8b8` à droite, en dessous et en diagonale
 (`PixelShadow`, voir [menu.md](menu.md)).
 
-La boîte fait 960×168 px, centrée en bas de l'écran. Elle tient **deux lignes**
-d'environ 43 caractères ; au-delà, couper avec `|`. Le bandeau de lieu, lui,
-garde Pokémon Emerald Pro en 48 px.
+La boîte fait 1248×168 px (voir « Sa place à l'écran »). Elle tient **deux
+lignes** d'environ 57 caractères ; au-delà elle pagine d'elle-même, mais couper
+avec `|` à un endroit choisi se lit mieux qu'une page tournée au milieu d'une
+phrase. Le bandeau de lieu, lui, garde Pokémon Emerald Pro en 48 px.
 
 ## L'interaction
 
@@ -167,9 +221,10 @@ combinent dans n'importe quel ordre.
 ## Une question dans un dialogue
 
 `MessageBox.ask(question, suite)` écrit la question, puis montre **Oui / Non**
-au-dessus de la boîte (`Control/Choices`, une `ChoiceBox`). Oui enchaîne sur la
-suite ; Non, ou la touche du menu, referme. Pendant la question, une pression
-ne fait que finir de l'écrire.
+au-dessus de la boîte, contre son bord droit (`Control/Choices`, une
+`ChoiceBox`). Oui enchaîne sur la suite ; Non, ou la touche du menu, referme.
+Pendant la question, une pression ne fait que finir de l'écrire — ou amener sa
+page suivante, si elle ne tient pas en deux lignes.
 
 C'est ce que fait l'export `ask` d'un PNJ ou d'un meuble
 ([quests.md](quests.md)). L'écran de sauvegarde et le sac posent leurs propres
