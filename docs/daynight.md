@@ -126,8 +126,8 @@ lentement. C'est ce qui donne au dehors son air lumineux, un peu céleste.
 - Le voile est teinté par `Daylight` comme le reste, et **se retire presque la
   nuit** (il lit l'uniforme global `night_light`) : la nuit, c'est la nuit qui
   teinte.
-- Réglages (uniformes du shader) : `haze` (0,09, l'opacité partout), `clouds`
-  (0,15, ce qu'un nuage ajoute), `size` (170 px), `drift` (5 px/s vers l'est),
+- Réglages (uniformes du shader) : `haze` (0,12, l'opacité partout), `clouds`
+  (0,19, ce qu'un nuage ajoute), `size` (170 px), `drift` (5 px/s vers l'est),
   `grain`, `levels`, `tint`.
 
 ## Mise au point
