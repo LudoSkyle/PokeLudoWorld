@@ -95,11 +95,16 @@ vertical_alignment = 1
 
 [node name="Choices" type="Control" parent="Control"]
 visible = false
-layout_mode = 0
-offset_left = 864.0
-offset_top = 264.0
-offset_right = 1056.0
-offset_bottom = 456.0
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = 288.0
+offset_top = -384.0
+offset_right = 480.0
+offset_bottom = -192.0
 mouse_filter = 2
 script = ExtResource("5_choices")
 

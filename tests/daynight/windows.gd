@@ -8,7 +8,7 @@ func start() -> Vector2i:
 # Couleur a l'ecran d'un pixel du monde (repere de la carte).
 func pixel(img: Image, world: Vector2) -> Color:
 	var cam: Camera2D = player().get_node("Camera")
-	var at := (level().global_position + world - cam.get_screen_center_position()) * 4.0 + Vector2(576, 324)
+	var at := (level().global_position + world - cam.get_screen_center_position()) * 4.0 + Vector2(640, 480)
 	return img.get_pixel(int(at.x) + 2, int(at.y) + 2)
 
 func test() -> void:

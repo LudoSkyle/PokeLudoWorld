@@ -18,7 +18,7 @@ func changed(a: Image, b: Image, r: Rect2i) -> int:
 func on_screen(c: Vector2i) -> Rect2i:
 	var cam: Camera2D = player().get_node("Camera")
 	var world := level().global_position + Vector2(c.x * 16, c.y * 16)
-	var at := (world - cam.get_screen_center_position()) * 4.0 + Vector2(576, 324)
+	var at := (world - cam.get_screen_center_position()) * 4.0 + Vector2(640, 480)
 	return Rect2i(int(at.x), int(at.y), 64, 64)
 
 func test() -> void:

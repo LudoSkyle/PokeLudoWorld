@@ -11,7 +11,7 @@ func test() -> void:
 	await secs(0.9)
 	check("l'objet rare apparait au centre, avec son annonce", reveal().visible and box_text() == "Vous recevez la Vieille canne !", box_text())
 	check("il est pleinement visible apres le fondu", is_equal_approx(reveal().modulate.a, 1.0), str(reveal().modulate.a))
-	check("au centre de l'ecran, au-dessus de la boite de dialogue", is_equal_approx(reveal().position.x + reveal().size.x / 2.0, 576.0) and reveal().position.y + reveal().size.y < 464.0)
+	check("au centre de l'ecran, au-dessus de la boite de dialogue", is_equal_approx(reveal().position.x + reveal().size.x / 2.0, 640.0) and reveal().position.y + reveal().size.y < 776.0)
 	var first: Rect2 = reveal().get_node("Icon").texture.region
 	shot("objet_rare")
 	await tap("interact")

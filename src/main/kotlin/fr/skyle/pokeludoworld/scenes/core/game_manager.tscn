@@ -34,8 +34,8 @@ stretch = true
 [node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer" unique_id=2012847285]
 canvas_item_default_texture_filter = 0
 handle_input_locally = false
-size = Vector2i(1152, 648)
-size_2d_override = Vector2i(1152, 648)
+size = Vector2i(1280, 960)
+size_2d_override = Vector2i(1280, 960)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 

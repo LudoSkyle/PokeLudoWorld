@@ -9,7 +9,7 @@ func _initialize() -> void:
 	_run.call_deferred()
 
 func _run() -> void:
-	root.size = Vector2i(1152, 648)
+	root.size = Vector2i(1280, 960)
 	for room in ROOMS:
 		var level: Node2D = load(BASE + room + ".tscn").instantiate()
 		root.add_child(level)
