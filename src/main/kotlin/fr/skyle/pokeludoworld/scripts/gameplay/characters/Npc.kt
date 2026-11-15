@@ -42,7 +42,7 @@ class Npc : CharacterBody2D() {
 	/** Nom d'une planche de `assets/characters`, sans l'extension. */
 	@Category("Apparence")
 	@Export
-	var appearance: String = "worker"
+	var appearance: String = "dppt_worker"
 
 	/**
 	 * Son nom, s'il en a un : il s'affiche au-dessus de la boîte de dialogue

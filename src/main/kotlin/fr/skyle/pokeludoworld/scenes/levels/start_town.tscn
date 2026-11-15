@@ -244,21 +244,21 @@ entry_direction = Vector2(0, 1)
 
 [node name="GuardNorth" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(88, 120)
-appearance = "worker"
+appearance = "dppt_worker"
 facing = Vector2(1, 0)
 text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
 forbidden_flag = "bell_hung"
 
 [node name="GuardSouth" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(88, 152)
-appearance = "worker"
+appearance = "dppt_worker"
 facing = Vector2(1, 0)
 text = "Désolé, le passage est fermé.|C'est dangereux par là : la route n'est pas encore sûre."
 forbidden_flag = "bell_hung"
 
 [node name="GrassWatcher" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(136, 72)
-appearance = "bug_catcher"
+appearance = "frlg_bugcatcher"
 facing = Vector2(0, 1)
 text = "Ces herbes sont si hautes qu'on s'y perd.|Je cherche des insectes, mais je n'ai encore rien trouvé."
 states = PackedStringArray("bell_hung > Il paraît que c'est toi qui as retrouvé la cloche ! Bravo !|Moi, toujours pas le moindre insecte.")
@@ -268,7 +268,7 @@ wander_layer = "Background/Grass"
 
 [node name="Runner" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(216, 152)
-appearance = "triathlete_m"
+appearance = "rse_triathlete_m"
 facing = Vector2(0, 1)
 text = "Pff... pff... Je fais le tour du village tous les matins.|Ne reste pas au milieu du chemin, je perds mon rythme."
 movement = "patrol"
@@ -278,7 +278,7 @@ forbidden_flag = "bell_hung"
 
 [node name="Fisher" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(648, 280)
-appearance = "fisher"
+appearance = "hgss_fisherman"
 facing = Vector2(1, 0)
 text = "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au fond du lac."
 forbidden_flag = "bell_hung"
@@ -287,7 +287,7 @@ forbidden_flag = "bell_hung"
 position = Vector2(632, 56)
 display_name = "Roland"
 gender = "male"
-appearance = "ruin_maniac"
+appearance = "frlg_ruinmaniac"
 text = "Cette grotte, j'y ai passé vingt ans.|Elle a encore des choses à dire, je le sens."
 states = PackedStringArray("bell_register > Tout en bas, près du lac souterrain...|...il y a quelque chose qui accroche la lumière.|Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe devant.")
 forbidden_flag = "bell_hung"
@@ -296,13 +296,13 @@ forbidden_flag = "bell_hung"
 position = Vector2(488, 248)
 display_name = "Mémé Odile"
 gender = "female"
-appearance = "socialite"
+appearance = "dppt_socialite"
 text = "J'ai finalement fait le déplacement. Je voulais l'entendre de près.|Merci.|*Kraak* ...MON DOS !!!"
 required_flag = "bell_hung"
 
 [node name="FisherAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(520, 248)
-appearance = "fisher"
+appearance = "hgss_fisherman"
 facing = Vector2(0, -1)
 text = "J'ai laissé ma canne là-bas. Pour une fois."
 required_flag = "bell_hung"
@@ -311,7 +311,7 @@ required_flag = "bell_hung"
 position = Vector2(472, 216)
 display_name = "Alix"
 gender = "female"
-appearance = "aroma_girl"
+appearance = "frlg_aromalady"
 facing = Vector2(1, 0)
 text = "J'ai fermé la bibliothèque pour ce soir.|Il y a des choses qu'on n'apprend pas dans les livres."
 required_flag = "bell_hung"
@@ -320,21 +320,21 @@ required_flag = "bell_hung"
 position = Vector2(536, 216)
 display_name = "Roland"
 gender = "male"
-appearance = "ruin_maniac"
+appearance = "frlg_ruinmaniac"
 facing = Vector2(-1, 0)
 text = "Vingt ans que je passais devant sans la voir."
 required_flag = "bell_hung"
 
 [node name="WorkerAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(584, 232)
-appearance = "worker"
+appearance = "dppt_worker"
 facing = Vector2(-1, 0)
 text = "La route de l'ouest est ouverte.|On a fini juste à temps pour la Veillée."
 required_flag = "bell_hung"
 
 [node name="RunnerAfter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(216, 152)
-appearance = "triathlete_m"
+appearance = "rse_triathlete_m"
 text = "Cette cloche m'a ouvert les yeux !|J'ai couru dans le mauvais sens pendant dix ans !"
 movement = "patrol"
 pace = 3.0
@@ -343,56 +343,56 @@ required_flag = "bell_hung"
 
 [node name="WorkerAfter2" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(568, 264)
-appearance = "worker"
+appearance = "dppt_worker"
 facing = Vector2(0, -1)
 text = "Les outils sont rangés.|Ce soir on ne répare rien : on écoute."
 required_flag = "bell_hung"
 
 [node name="VisitorHiker" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(536, 248)
-appearance = "backpacker_f"
+appearance = "hgss_picnicker"
 facing = Vector2(-1, 0)
 text = "On l'entendait depuis la route de l'ouest !"
 required_flag = "bell_hung"
 
 [node name="VisitorKalos" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(584, 200)
-appearance = "kalos_hiker"
+appearance = "hgss_hiker"
 facing = Vector2(-1, 0)
 text = "J'ai traversé toute la forêt pour venir. Ça valait la marche."
 required_flag = "bell_hung"
 
 [node name="VisitorChild" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(488, 280)
-appearance = "preschooler"
+appearance = "frlg_twins"
 facing = Vector2(0, -1)
 text = "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !"
 required_flag = "bell_hung"
 
 [node name="VisitorFestival" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(552, 248)
-appearance = "festival_girl"
+appearance = "hgss_lass"
 facing = Vector2(-1, 0)
 text = "Une Veillée ! Ma grand-mère m'en parlait tout le temps."
 required_flag = "bell_hung"
 
 [node name="VisitorPainter" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(568, 200)
-appearance = "painter"
+appearance = "frlg_painter"
 facing = Vector2(-1, 0)
 text = "Ne bouge pas... La lumière sur ce bronze est parfaite."
 required_flag = "bell_hung"
 
 [node name="VisitorWaitress" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(440, 216)
-appearance = "waitress"
+appearance = "rse_npc_pike_maid"
 facing = Vector2(1, 0)
 text = "Si j'avais su, j'aurais apporté de quoi nourrir tout ce monde."
 required_flag = "bell_hung"
 
 [node name="VisitorBlackBelt" parent="World/Entities" instance=ExtResource("4_npc")]
 position = Vector2(520, 280)
-appearance = "black_belt"
+appearance = "rse_blackbelt"
 facing = Vector2(0, -1)
 text = "Même au dojo, on s'est arrêtés pour écouter."
 required_flag = "bell_hung"

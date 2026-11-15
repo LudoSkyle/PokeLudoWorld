@@ -1,6 +1,6 @@
 [gd_resource type="SpriteFrames" load_steps=18 format=3]
 
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/characters/player.png" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://c07cwjwygxy82" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/characters/playable/renko.png" id="1_player"]
 
 [sub_resource type="AtlasTexture" id="down_0"]
 atlas = ExtResource("1_player")

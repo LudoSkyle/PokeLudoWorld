@@ -65,11 +65,17 @@ marcheurs partis en même temps vers la même case ne s'y retrouvent pas.
 
 ### Ajouter une apparence
 
-Déposer une planche de 128×192 dans `assets/characters/` (4 colonnes × 4
-rangées de 32×48, rangées bas, gauche, droite, haut, pieds sur la ligne 45) et
-la laisser importer. Son nom de fichier est la valeur d'`appearance` :
-`CharacterFrames` découpe les animations à la volée, il n'y a pas de `.tres` à
-écrire. Le catalogue et son origine sont dans `assets/characters/CREDITS.md`.
+Les planches viennent du « FRLG Accurate NPC Megapack » : `appearance` est le
+nom du fichier, préfixé par son dossier d'origine — `frlg_painter`,
+`rse_blackbelt`, `hgss_fisherman`, `dppt_worker`, `anime_brock`,
+`custom_npc_prof_elm`. Le catalogue, son origine et ses auteurs sont dans
+`assets/characters/CREDITS.md`.
+
+Pour en ajouter une : déposer dans `assets/characters/` une planche de 4
+colonnes × 4 rangées (128×192 en cases de 32×48 ; rangées bas, gauche, droite,
+haut ; pieds sur la ligne 45) et la laisser importer. `CharacterFrames` découpe
+les animations à la volée au quart de la largeur, il n'y a pas de `.tres` à
+écrire — une planche plus large (160 ou 192) marche donc aussi.
 
 ## Un passage gardé
 
