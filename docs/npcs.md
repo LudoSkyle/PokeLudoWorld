@@ -160,6 +160,35 @@ d'histoire : après la Veillée (`bell_hung`) ils **restent chez eux** et
 changent de réplique — les vitres d'Anselme en ont tremblé, la sœur de
 Solange fredonne faux. Aucun drapeau ne les fait apparaître ni disparaître.
 
+## Les Pokémon du décor
+
+Des Pokémon qui volent au-dessus de la carte : `scenes/levels/flyer.tscn`
+(`Flyer.kt`), posés sous un nœud `Sky` (`z_index = 40` : au-dessus de tout le
+décor, sous le voile du dehors). **Ce sont des décors** : aucun corps, on ne
+les heurte pas, on ne leur parle pas, ils survolent la mer comme la terre. Une
+ombre au sol, sous chacun, dit qu'il est en l'air.
+
+| Réglage | Rôle |
+|---|---|
+| `species` | le fichier de `assets/pokemon/overworld/`, sans extension : `wingull` (Goélise), `pelipper` (Bekipan) |
+| `zone` | la zone qu'il ne quitte pas, en cases (`Rect2i` : coin haut-gauche et taille) — dix sur dix sur l'île |
+| `pace` | sa vitesse, en cases par seconde (2,5) |
+| `rest` | le temps qu'il plane entre deux trajets, au moins et au plus (0,3 à 1,6 s) |
+| `seed` | une graine pour un vol rejouable ; 0 : un vrai hasard |
+
+**Son vol.** Il avance par **trajets d'une à trois cases** en ligne droite. À
+chaque trajet le hasard est rejoué — le sens et la longueur — mais il **ne
+rebrousse jamais chemin** : après être allé à gauche il peut monter, descendre
+ou continuer à gauche, pas repartir à droite. Un trajet qui sortirait de la
+zone est raccourci ; s'il ne reste aucune case dans ce sens, il en tire un
+autre. Entre deux trajets, il plane sur place en battant des ailes.
+
+Sur l'île : quatre Goélise (les deux moitiés de la baie, le bras de mer de
+l'ouest, la plage du sud) et deux Bekipan (la mer de l'est, la passe du
+nord-ouest). Un autre Pokémon volant demande son image dans
+`assets/pokemon/overworld/` (`tools/pokemon_overworld.py` la sort des planches
+de `sources/`) et un nœud sous `Sky`.
+
 ## Dans `start_town`
 
 | Nœud | Case | Rôle |

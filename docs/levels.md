@@ -154,6 +154,10 @@ plateau de Ludo, sur la terrasse du labo, au pied du plateau du sud-est), un
 parasol et sa serviette dans la crique et sur la plage du sud, des caisses sur
 le quai, un pot de fleurs de chaque côté de la porte des maisons orange.
 
+**Dans le ciel**, quatre Goélise et deux Bekipan volent au-dessus de la baie,
+des bras de mer et de la plage du sud, chacun dans sa zone de dix cases sur
+dix (nœud `Sky`, [npcs.md](npcs.md)).
+
 **Les pontons** font deux cases de large, portent une rambarde sur chaque côté
 qui donne sur l'eau et arrivent sur la rive par une planche de bout. Celui du
 nord-ouest est en T (il relie aussi la terre de l'ouest), celui du nord-est en
@@ -195,7 +199,7 @@ dépôt.
 
 `tests/run.sh island` : circulation (ce qui bloque, ce qui porte, les rebords,
 tout se rejoint, la marge à pied et à la nage, les pontons), portes, objets à
-ramasser, et la quête en trois temps.
+ramasser, la quête en trois temps, et le vol des oiseaux.
 
 ## Les intérieurs
 
