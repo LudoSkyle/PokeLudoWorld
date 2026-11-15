@@ -40,6 +40,33 @@ Deux autres sources complètent l'atlas principal : `7`, les meubles recalés
 (`interiors.png`), et `8`, la roche de grotte nettoyée (`cave.png`) — voir
 [levels.md](levels.md).
 
+## Prendre un élément dans une planche source
+
+`assets/levels/sources/` garde les planches téléchargées **telles quelles**
+(inventaire et auteurs : `assets/levels/CREDITS.md`). Godot ignore ce dossier,
+et **le TileSet ne s'y branche jamais**. Ce sont des planches de présentation :
+fond opaque, éléments posés librement sur la page, hors de toute grille.
+`environments.png` est justement une sélection de ces planches déjà recalée.
+
+Quand une carte a besoin d'un élément qui n'est pas dans les planches du jeu :
+
+1. **Le sortir à part.** On ne retouche pas `environments.png` à la main : les
+   éléments extraits vont dans une planche recomposée, une par thème, dans
+   `assets/levels/`, produite par un script à partir d'une liste « source,
+   rectangle → case de destination » — de quoi la régénérer.
+2. **Le détourer.** Le fond des planches « Dawn » est un blanc pur, uniforme,
+   sans pixels intermédiaires au bord des dessins : on l'enlève en partant de
+   l'extérieur de l'élément, pas en supprimant tout le blanc. Il reste
+   quelques pixels blancs enfermés dans le dessin (0,3 à 0,7 % du blanc) : ou
+   bien du vrai blanc (neige, reflet), ou bien un trou à vider (entre deux
+   barreaux). **Zoomer et trancher**, pièce par pièce.
+3. **Le recaler** sur la grille de 16, pieds en bas de case.
+4. **Le créditer** dans `CREDITS.md`.
+
+**Les collisions se posent au fil du besoin** : seulement pour les tuiles
+qu'une carte utilise vraiment, au moment où on les pose. On ne cartographie pas
+une planche entière d'avance.
+
 ## Couche physique
 
 Une seule : `physics_layer_0/collision_layer = 1`. Le polygone standard pour une
