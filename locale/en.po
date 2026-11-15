@@ -569,21 +569,6 @@ msgstr "Professor"
 msgid "Remplir le sac"
 msgstr "Fill the bag"
 
-msgid "Quête : suite"
-msgstr "Quest: next"
-
-msgid "Quête : fin"
-msgstr "Quest: finish"
-
-msgid "La quête de la cloche est déjà terminée."
-msgstr "The bell quest is already complete."
-
-msgid "La quête de la cloche est terminée."
-msgstr "The bell quest is complete."
-
-msgid "La quête de la cloche avance d'une étape."
-msgstr "The bell quest moves one step forward."
-
 msgid "Heure : réelle"
 msgstr "Time: real"
 
@@ -707,6 +692,7 @@ msgstr "Flowers grow all by themselves here."
 msgid "Je me contente de les regarder."
 msgstr "I just watch them."
 
+
 msgid "Je viens toujours m'asseoir ici le matin."
 msgstr "I still come and sit here in the morning."
 
@@ -820,3 +806,33 @@ msgstr "You found a Poké Ball!"
 
 msgid "Vous rangez la Poké Ball dans la poche Poké Balls."
 msgstr "You put the Poké Ball away in the Poké Balls pocket."
+
+msgid "Quêtes"
+msgstr "Quests"
+
+msgid "La cloche de la Veillée"
+msgstr "The Vigil bell"
+
+msgid "Repartir de zéro"
+msgstr "Start over"
+
+msgid "Étape suivante"
+msgstr "Next step"
+
+msgid "Finir la quête"
+msgstr "Finish the quest"
+
+msgid "« %s » : une étape de plus."
+msgstr "“%s”: one more step."
+
+msgid "« %s » : la quête est terminée."
+msgstr "“%s”: the quest is finished."
+
+msgid "« %s » : la quête est déjà terminée."
+msgstr "“%s”: the quest is already finished."
+
+msgid "« %s » : la quête repart de zéro."
+msgstr "“%s”: the quest starts over."
+
+msgid "« %s » : la quête n'a pas encore commencé."
+msgstr "“%s”: the quest has not started yet."

@@ -113,15 +113,33 @@ capture, et dessiné à l'échelle 4.
 ## Les outils de Debug
 
 L'entrée **Debug** ouvre une boîte de choix (`Control/DebugChoices`, une
-`ChoiceBox`). Retour, ou la touche du menu, ramène au menu de pause.
+`ChoiceBox`) **à trois pages**, dont le contenu change de l'une à l'autre.
+Retour, ou la touche du menu, remonte d'une page ; depuis la première, ramène
+au menu de pause.
+
+| Page | Lignes |
+|---|---|
+| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Retour |
+| **les quêtes** | une ligne par quête (`Quests.ALL`) · Retour |
+| **la quête choisie** | Repartir de zéro · Étape suivante · Finir la quête · Retour |
 
 | Outil | Effet |
 |---|---|
 | **Remplir le sac** | huit objets, des Poké Balls, et deux objets rares donnés par `@give:` pour voir leur présentation ([bag.md](bag.md)) |
-| **Quête : suite** | franchit la prochaine étape de la quête de la cloche : son drapeau est posé, le sac mis à jour, et la carte se recharge une fois le message refermé |
-| **Quête : fin** | franchit toutes les étapes restantes d'un coup |
 | **Heure : …** | fait défiler les moments de la journée à chaque validation — réelle, aube, jour, crépuscule, nuit, puis de nouveau réelle. La boîte reste ouverte ([daynight.md](daynight.md)) |
+| **Étape suivante** | franchit la prochaine étape de la quête : son drapeau est posé, le sac mis à jour, et la carte se recharge une fois le message refermé |
+| **Finir la quête** | franchit toutes les étapes restantes d'un coup |
+| **Repartir de zéro** | défait les étapes franchies, de la dernière à la première — le drapeau de chacune est retiré, ce qu'elle avait donné quitte le sac, ce qu'elle avait pris y revient — retire aussi les drapeaux de sa suite (`epilogue` : la fin de la Veillée), puis recharge la carte, où chacun reprend sa place d'avant |
 
-Les étapes et ce que chacune met dans le sac sont dans `BellQuest.kt`
-([quests.md](quests.md)). Ce qu'on débloque ainsi **part dans la sauvegarde**
-si l'on sauvegarde ensuite : les drapeaux en font partie.
+**Une quête de plus n'ajoute qu'une ligne**, à la deuxième page : elle se
+déclare dans `Quest.kt` ([quests.md](quests.md)) — un nom, ses étapes (le
+drapeau de chacune, ce qu'elle donne et ce qu'elle prend) — et s'ajoute à
+`Quests.ALL`. Les trois actions et leurs messages (« « La cloche de la
+Veillée » : une étape de plus. ») sont les mêmes pour toutes.
+
+Après « Repartir de zéro », si quelqu'un revient là où se tient le joueur (un
+garde, un personnage qui avait quitté sa place), le joueur s'écarte d'une case
+pendant que l'écran est noir, comme après tout rechargement. La boîte de choix
+ajoute d'elle-même les lignes qui lui manquent (`ChoiceBox.open`) et, au-delà
+de sa hauteur d'origine, grandit vers le bas. Ce qu'on débloque ainsi **part
+dans la sauvegarde** si l'on sauvegarde ensuite : les drapeaux en font partie.

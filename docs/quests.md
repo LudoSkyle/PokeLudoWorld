@@ -190,10 +190,16 @@ dans les logs au chargement.
 ### Sauter à une étape : l'entrée Debug
 
 Pour ne pas rejouer toute la quête à chaque essai, l'entrée **Debug** du menu
-de pause a deux outils : **Quête : suite** franchit la prochaine étape, **Quête :
-fin** toutes celles qui restent ([menu.md](menu.md)). `BellQuest.kt` liste les
-étapes dans l'ordre, avec ce que chacune met dans le sac ou en retire ; une
-nouvelle étape de la quête s'y ajoute aussi.
+de pause ouvre **Quêtes**, puis la quête, puis trois actions : **Étape
+suivante** franchit la prochaine étape, **Finir la quête** toutes celles qui
+restent, **Repartir de zéro** les défait toutes ([menu.md](menu.md)).
+`Quest.kt` déclare chaque quête : son nom, ses étapes dans l'ordre avec ce que
+chacune met dans le sac ou en retire, et son `epilogue` — les drapeaux que
+l'histoire pose d'elle-même ensuite (`vigil_over`, quand on quitte l'île), que
+repartir de zéro retire aussi. Une nouvelle quête s'ajoute à `Quests.ALL`.
+
+Un drapeau ne se retire jamais en jeu : seul « Repartir de zéro » le fait
+(`StoryFlags.unset`).
 
 Les drapeaux, comme le sac, **font partie de la sauvegarde** : il suffit de
 sauvegarder depuis le menu pour les retrouver au lancement suivant. Il n'y a

@@ -3,7 +3,8 @@ package fr.skyle.pokeludoworld.scripts.gameplay.story
 /**
  * Les drapeaux d'histoire : ce que le joueur a déjà fait. Un drapeau est un
  * nom (`bell_told`) ; il est posé ou il ne l'est pas, et une fois posé il le
- * reste. Les textes et la présence des personnages en dépendent.
+ * reste — seul l'outil de mise au point qui fait repartir une quête de zéro en
+ * retire. Les textes et la présence des personnages en dépendent.
  *
  * Ils font partie de la sauvegarde (voir SaveGame), comme le sac.
  */
@@ -15,6 +16,11 @@ object StoryFlags {
 
 	fun set(flag: String) {
 		if (flag.isNotBlank()) raised.add(flag.trim())
+	}
+
+	/** Retire un drapeau. Le jeu ne le fait jamais de lui-même : voir Quest.reset. */
+	fun unset(flag: String) {
+		raised.remove(flag.trim())
 	}
 
 	/**
