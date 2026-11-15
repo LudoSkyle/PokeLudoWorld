@@ -23,6 +23,10 @@ func on_screen(c: Vector2i) -> Rect2i:
 
 func test() -> void:
 	npc("Fisher").movement = "static"
+	# Le voile du dehors derive lentement : on le retire, pour ne juger que l'eau.
+	var haze := level().get_node_or_null("Haze")
+	if haze != null:
+		haze.visible = false
 	await secs(0.5)
 	var first := root.get_texture().get_image()
 	shot("eau_1")

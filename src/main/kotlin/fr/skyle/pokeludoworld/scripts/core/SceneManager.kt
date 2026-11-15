@@ -15,11 +15,15 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CanvasModulate
 import godot.api.ColorRect
+import godot.api.Control
 import godot.api.Node
 import godot.api.Node2D
 import godot.api.PackedScene
 import godot.api.RenderingServer
 import godot.api.ResourceLoader
+import godot.api.Shader
+import godot.api.ShaderMaterial
+import godot.api.TileMapLayer
 import godot.core.Color
 import godot.core.Vector2
 import kotlin.math.min
@@ -48,6 +52,11 @@ class SceneManager : Node() {
 		/** Métadonnée de la racine d'une carte : vrai si elle est dehors, sous le ciel. */
 		private const val DAYLIGHT_META = "daylight"
 		private const val DAYLIGHT_NODE = "Daylight"
+
+		/** Le voile clair et nuageux du dehors : un rectangle sur toute la carte, au-dessus du décor. */
+		private const val HAZE_NODE = "Haze"
+		private const val HAZE_SHADER = "res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/sky.gdshader"
+		private const val HAZE_Z = 50
 
 		/** Ce que lit le shader des fenêtres : la teinte du dehors, et la force des lumières. */
 		private const val TINT_UNIFORM = "day_tint"
@@ -210,6 +219,26 @@ class SceneManager : Node() {
 		Logger.i("Changing level to $scenePath (door=$door)")
 	}
 
+	/** Dehors, un voile clair et nuageux par-dessus toute la carte (voir sky.gdshader). */
+	private fun addHaze(map: Node2D) {
+		val ground = (if (map.hasNode("Background/Ground")) map.getNode("Background/Ground") else null) as? TileMapLayer ?: return
+		val shader = ResourceLoader.load(HAZE_SHADER) as? Shader ?: return
+		val rect = ground.getUsedRect()
+		val grid = Globals.instance.gridSize.toDouble()
+
+		val material = ShaderMaterial()
+		material.shader = shader
+
+		val haze = ColorRect()
+		haze.setName(HAZE_NODE)
+		haze.setPosition(Vector2(rect.position.x * grid, rect.position.y * grid))
+		haze.setSize(Vector2(rect.size.x * grid, rect.size.y * grid))
+		haze.setMouseFilter(Control.MouseFilter.IGNORE)
+		haze.zIndex = HAZE_Z
+		haze.material = material
+		map.addChild(haze)
+	}
+
 	/** Applique les règles `on_leave` de la carte qu'on quitte. Un rechargement n'est pas un départ. */
 	private fun leave(from: Node2D?) {
 		val rules = from?.getMeta(LEAVE_META, "")?.toString() ?: return
@@ -245,6 +274,7 @@ class SceneManager : Node() {
 			sky.color = DayNight.tint()
 			next.addChild(sky)
 			daylight = sky
+			addHaze(next)
 		}
 
 		host.addChild(next)
