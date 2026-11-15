@@ -57,12 +57,20 @@ class SceneManager : Node() {
 		/** Métadonnée de la racine d'une carte : sa musique. */
 		private const val MUSIC_META = "music"
 
+		/**
+		 * Métadonnée de la racine d'une carte : ce que la quitter change à
+		 * l'histoire. `drapeau posé > drapeau à poser`, plusieurs règles
+		 * séparées par `|`. Sur l'île : `bell_hung > vigil_over` — sortir de
+		 * l'île après la Veillée y met fin.
+		 */
+		private const val LEAVE_META = "on_leave"
+
 		private const val SETTLE_FRAMES = 4
 	}
 
 	@Category("Scenes")
 	@Export
-	var startScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_town.tscn"
+	var startScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
 
 	@Export
 	var playerScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/player.tscn"
@@ -190,6 +198,7 @@ class SceneManager : Node() {
 	fun changeLevel(scenePath: String, door: String, leaving: Boolean = false) {
 		if (isChanging) return
 
+		leave(level)
 		pendingScene = scenePath
 		pendingDoor = door
 		progress = 0.0
@@ -199,6 +208,15 @@ class SceneManager : Node() {
 		AudioManager.instance?.sfx(if (leaving) "door_exit" else "door")
 
 		Logger.i("Changing level to $scenePath (door=$door)")
+	}
+
+	/** Applique les règles `on_leave` de la carte qu'on quitte. Un rechargement n'est pas un départ. */
+	private fun leave(from: Node2D?) {
+		val rules = from?.getMeta(LEAVE_META, "")?.toString() ?: return
+		rules.split('|').forEach { rule ->
+			val parts = rule.split('>').map { it.trim() }
+			if (parts.size == 2 && parts[0].isNotEmpty() && parts[1].isNotEmpty() && StoryFlags.has(parts[0])) StoryFlags.set(parts[1])
+		}
 	}
 
 	private fun swap() {

@@ -58,6 +58,7 @@ entrée fausse ou une chance sans table.
 | Carte | `encounter_rate` | `wild` |
 |---|---|---|
 | `start_town` | 10 | Mulotin 2–4 (50), Piafeuille 2–5 (35), Chenibulle 3 (15) |
+| `start_island` | 10 | la même table, en attendant la liste des espèces de la région : Mulotin 2–4 (50), Piafeuille 2–5 (35), Chenibulle 3 (15) |
 
 ## Les espèces
 

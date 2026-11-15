@@ -66,6 +66,13 @@ class CharacterMovement : Node() {
 		// La case visée est testée en coordonnées globales, au centre de la case.
 		if (isBlocked(destination, mask)) return false
 
+		// Un rebord — le bord haut d'un plateau — ne se franchit pas, alors que
+		// les deux cases se foulent : la tuile porte une bande fine le long de
+		// son bord, sur sa propre couche. On la cherche de part et d'autre de
+		// la frontière entre les deux cases.
+		val border = node.globalPosition + step * 0.5
+		if (isBlocked(border - direction * LEDGE_REACH, LEDGE_MASK) || isBlocked(border + direction * LEDGE_REACH, LEDGE_MASK)) return false
+
 		// Un corps n'occupe sa case d'arrivée qu'à la fin du pas : sans cette
 		// réservation, deux personnages partis en même temps s'y retrouvent.
 		val key = cellKey(destination)
@@ -218,3 +225,9 @@ class CharacterMovement : Node() {
 		)
 	}
 }
+
+/** La couche physique des rebords (`physics_layer_1` du TileSet) : aucun corps n'y est, seulement des bandes de tuile. */
+private const val LEDGE_MASK = 8
+
+/** À combien de pixels de la frontière entre deux cases on cherche un rebord. */
+private const val LEDGE_REACH = 2.0
