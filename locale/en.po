@@ -792,8 +792,11 @@ msgstr "When the bell rings, I can hear it from here. That's enough for me."
 msgid "La bibliothèque a rouvert."
 msgstr "The library is open again."
 
-msgid "Le Registre a retrouvé son rayon, avec une page de plus."
-msgstr "The Register is back on its shelf, with one more page."
+msgid "Le Registre a une page de plus : celle de ce soir."
+msgstr "The Register has one more page: tonight's."
+
+msgid "Garde-le sur toi. Il a assez dormi au fond de mes rayons."
+msgstr "Keep it with you. It has slept at the back of my shelves long enough."
 
 msgid "Vous trouvez une Potion !"
 msgstr "You found a Potion!"

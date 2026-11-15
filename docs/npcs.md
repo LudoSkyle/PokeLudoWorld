@@ -117,7 +117,7 @@ temps à l'autre est fait de plusieurs nœuds.
 | Qui | Avant | Pendant la Veillée | Après |
 |---|---|---|---|
 | **Mémé Odile** | chez Ludo (`ludo_house`, `Odile`) : elle raconte la cloche, puis donne le Ruban | sur la place, devant la cloche (`OdileAfter`) : « …MON DOS !!! » | rentrée chez Ludo (`OdileBack`) : son dos va mieux, elle entend la cloche de chez elle |
-| **Alix** | à la bibliothèque (`Alix`) : elle met sur la piste du Registre | sur la place (`AlixAfter`) : elle a fermé pour ce soir | rouverte (`AlixBack`) : le Registre a une page de plus |
+| **Alix** | à la bibliothèque (`Alix`) : elle met sur la piste du Registre | sur la place (`AlixAfter`) : elle a fermé pour ce soir | rouverte (`AlixBack`) : le Registre a une page de plus, celle de ce soir — et **il reste au joueur** (« garde-le sur toi ») |
 | **Roland** | au bord de l'eau, sous la bibliothèque (11,32) : il a plongé vingt ans dans ces eaux | sur la place, à côté du socle (`RolandAfter`) | **il reste près de la cloche** : « je peux bien la regarder une heure » |
 | **le pêcheur** | au bout de la jetée (31,43) : ça ne mord pas | sur la place (`FisherAfter`) : il a laissé sa canne | de retour au bout de la jetée (`FisherLater`) : il entend la cloche d'ici |
 | **le coureur** | fait le tour de la place | le fait dans l'autre sens (`RunnerAfter`) : dix ans dans le mauvais sens | **court toujours** : à chaque tour, il salue la cloche |
