@@ -42,6 +42,27 @@ object CharacterFrames {
 		return frames
 	}
 
+	/**
+	 * Ajoute à [frames] la pose de course lue dans [sheet] : même découpage que
+	 * la marche, mais les quatre images d'une rangée sont toutes des foulées.
+	 * Elle tourne à la vitesse de la marche ; c'est `speed_scale` qui l'accélère.
+	 */
+	fun addRun(frames: SpriteFrames, sheet: Texture2D) {
+		val width = sheet.getWidth() / COLUMNS.toDouble()
+		val height = sheet.getHeight() / ROWS.size.toDouble()
+
+		ROWS.forEachIndexed { row, name ->
+			if (frames.hasAnimation("run_$name")) return@forEachIndexed
+			val cells = (0 until COLUMNS).map { column ->
+				AtlasTexture().apply {
+					atlas = sheet
+					region = Rect2(column * width, row * height, width, height)
+				}
+			}
+			add(frames, "run_$name", 8.0, true, listOf(cells[1], cells[2], cells[3], cells[0]))
+		}
+	}
+
 	private fun add(frames: SpriteFrames, name: String, speed: Double, loop: Boolean, cells: List<AtlasTexture>) {
 		frames.addAnimation(name)
 		frames.setAnimationSpeed(name, speed)

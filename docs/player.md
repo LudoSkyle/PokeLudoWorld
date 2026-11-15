@@ -82,9 +82,11 @@ Vitesse : `walk_pace`, 4 cases par seconde.
   l'allure où il a commencé, et relâcher Maj fait marcher dès le pas suivant.
 - La touche seule ne fait rien : il faut une direction. Le pivot sur place
   (pression brève) ne change pas.
-- La planche du joueur n'a **pas d'images de course** : c'est l'animation de
-  marche qui s'accélère (`speed_scale = 2`). Une vraie course demande une
-  planche en plus.
+- **Le joueur a une pose de course** : `run_sheet` (`playable/renko_run.png`),
+  une planche au découpage de la marche, chargée au démarrage en animations
+  `run_<direction>`. Elle remplace la marche tant qu'il court, et tourne deux
+  fois plus vite (`speed_scale = 2`). `run_sheet` vide, ou un PNJ sans planche
+  de course : c'est la marche qui s'accélère.
 - Une scène qui déplace le joueur le fait au pas : repoussé par un garde alors
   qu'il arrivait en courant, il recule en marchant.
 
