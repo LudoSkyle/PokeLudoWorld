@@ -12,7 +12,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(8, 10)
+	return Vector2i(8, 9)
 
 func layer(path: String) -> TileMapLayer:
 	return level().get_node(path)
@@ -55,13 +55,13 @@ func test() -> void:
 	var bridges := layer("Background/Bridges")
 	var props := layer("World/Props")
 	check("la carte fait 62 cases sur 49", ground.get_used_rect() == Rect2i(0, 0, W, H), str(ground.get_used_rect()))
-	check("on demarre devant la porte de Ludo", cell() == Vector2i(8, 10), str(cell()))
+	check("on demarre devant la porte de Ludo", cell() == Vector2i(8, 9), str(cell()))
 	check("la carte donne sa chance de rencontre et sa table", int(level().get_meta("encounter_rate", 0)) == 10 and str(level().get_meta("wild", "")).contains("mulotin"))
 	# Ce qui bloque.
 	check("la mer bloque", not is_free(Vector2i(24, 14)) and not is_free(Vector2i(38, 14)) and not is_free(Vector2i(48, 24)) and not is_free(Vector2i(10, 34)))
 	check("le flanc et le bas d'un plateau bloquent", not is_free(Vector2i(12, 12)) and not is_free(Vector2i(6, 9)) and not is_free(Vector2i(23, 22)) and not is_free(Vector2i(43, 36)))
 	check("la falaise du nord bloque", not is_free(Vector2i(13, 1)) and not is_free(Vector2i(50, 2)))
-	check("le corps d'une maison bloque", not is_free(Vector2i(8, 8)) and not is_free(Vector2i(14, 7)) and not is_free(Vector2i(48, 35)))
+	check("le corps d'une maison bloque", not is_free(Vector2i(9, 7)) and not is_free(Vector2i(14, 7)) and not is_free(Vector2i(48, 35)))
 	# Ce qui porte.
 	check("on marche sur le sable jusqu'au bord de l'eau, pas plus loin", is_free(Vector2i(20, 14)) and not is_free(Vector2i(21, 14)))
 	check("un ponton se traverse", is_free(Vector2i(10, 19)) and is_free(Vector2i(16, 21)) and is_free(Vector2i(45, 20)) and is_free(Vector2i(51, 19)) and is_free(Vector2i(17, 26)) and is_free(Vector2i(30, 42)))
@@ -71,8 +71,24 @@ func test() -> void:
 	check("mais on ne franchit pas le rebord, ni dans un sens ni dans l'autre", ledge_between(Vector2i(34, 19), Vector2i(34, 18)) and ledge_between(Vector2i(34, 18), Vector2i(34, 19))
 		and not can_step(Vector2i(26, 20), Vector2i(26, 19)) and not ledge_between(Vector2i(34, 19), Vector2i(35, 19)) and can_step(Vector2i(34, 20), Vector2i(34, 19)))
 	# On passe derriere une maison : la rangee du haut de son toit se franchit.
-	check("on passe derriere les maisons, sous leur toit", is_free(Vector2i(8, 4)) and is_free(Vector2i(14, 4)) and is_free(Vector2i(48, 4)) and is_free(Vector2i(8, 23)) and is_free(Vector2i(48, 32)))
-	check("les maisons du nord sont contre la falaise : on se glisse derriere par la ruelle", not find_path(Vector2i(8, 10), Vector2i(8, 4)).is_empty() and not is_free(Vector2i(8, 3)))
+	check("on passe derriere les maisons, sous leur toit", is_free(Vector2i(48, 4)) and is_free(Vector2i(8, 23)) and is_free(Vector2i(48, 32)))
+	check("chez Ludo et la maison orange du nord touchent le mur : rien ne passe derriere", not is_free(Vector2i(8, 3)) and not is_free(Vector2i(9, 4)) and not is_free(Vector2i(15, 3)) and not is_free(Vector2i(15, 4)))
+	# Le mur du nord : des gradins superposes, sans agrandir la carte ; la parcelle des deux maisons porte les arbres du pied du mur.
+	var mid: TileMapLayer = level().get_node("World/CliffsMid")
+	var top: TileMapLayer = level().get_node("World/CliffsTop")
+	var stacked := 0
+	for c in top.get_used_cells():
+		if mid.get_cell_source_id(c) == 5 and level().get_node("World/Cliffs").get_cell_source_id(c) == 5:
+			stacked += 1
+	check("le mur du nord tient dans ses quatre rangees, en trois gradins poses les uns sur les autres", stacked > 0 and mid.get_used_rect().end.y <= 3 and level().get_node("World/Cliffs").get_used_rect().size.y == 4, "%d cases a trois gradins" % stacked)
+	var raised := 0
+	for c in level().get_node("World/Trees").get_used_cells():
+		if c.x >= 18 and c.x <= 23 and c.y <= 5 and relief.get_cell_source_id(c) != -1:
+			raised += 1
+	check("la parcelle des deux maisons s'allonge vers l'est et porte les arbres du pied du mur", raised >= 2 and relief.get_cell_source_id(Vector2i(22, 5)) != -1 and is_free(Vector2i(24, 8)), "%d arbres" % raised)
+	check("pas de sentier de sable sur l'herbe au pied des escaliers", level().get_node("Background/Paths").get_cell_source_id(Vector2i(8, 14)) == -1 and level().get_node("Background/Paths").get_cell_source_id(Vector2i(48, 16)) == -1)
+	var seats: TileMapLayer = level().get_node("World/Props")
+	check("les bancs sont les bancs de bois", seats.get_cell_source_id(Vector2i(10, 13)) == 10 and seats.get_cell_atlas_coords(Vector2i(10, 13)) == Vector2i(4, 6) and seats.get_cell_atlas_coords(Vector2i(32, 19)) == Vector2i(4, 6))
 	# Un ponton ne touche la terre que par une planche d'arrivee, posee sur la rive.
 	var landings := 0
 	var loose := 0
@@ -142,18 +158,18 @@ func test() -> void:
 	# Le mobilier : de vrais bancs, pleins ; un parasol dont seul le pied arrete ; une serviette qui se foule.
 	var benches := 0
 	for c in props.get_used_cells():
-		if props.get_cell_source_id(c) == 5 and props.get_cell_atlas_coords(c) == Vector2i(74, 25) and not is_free(c) and not is_free(c + Vector2i.RIGHT):
+		if props.get_cell_source_id(c) == 10 and props.get_cell_atlas_coords(c) == Vector2i(4, 6) and not is_free(c) and not is_free(c + Vector2i.RIGHT):
 			benches += 1
-	check("cinq bancs, pleins", benches == 5, "%d" % benches)
+	check("cinq bancs de bois, pleins", benches == 5, "%d" % benches)
 	check("le pied d'un parasol et les caisses du quai arretent", not is_free(Vector2i(37, 37)) and not is_free(Vector2i(22, 9)) and not is_free(Vector2i(33, 41)) and not is_free(Vector2i(34, 41)))
 	check("on passe sous la toile d'un parasol et sur une serviette", is_free(Vector2i(37, 36)) and is_free(Vector2i(24, 8)) and is_free(Vector2i(39, 36)))
-	check("un pot de fleurs de chaque cote de la porte, jamais devant", not is_free(Vector2i(14, 9)) and not is_free(Vector2i(16, 9)) and is_free(Vector2i(15, 9)))
+	check("un pot de fleurs de chaque cote de la porte, jamais devant", not is_free(Vector2i(14, 8)) and not is_free(Vector2i(16, 8)) and is_free(Vector2i(15, 8)))
 	check("des habitants vivent la : pres d'un banc, d'un parasol, d'un ponton, des herbes",
 		cell_of("BenchLady") == Vector2i(12, 13) and cell_of("Sunbather") == Vector2i(39, 37) and cell_of("Swimmer") == Vector2i(24, 9) and cell_of("ShellKid") == Vector2i(28, 9)
 		and cell_of("Sailor") == Vector2i(53, 18) and cell_of("Youngster") == Vector2i(25, 7) and cell_of("Gardener") == Vector2i(46, 41))
 	# Tout se rejoint a pied, depuis le depart.
-	var from := Vector2i(8, 10)
-	for goal in [["la porte de la bibliotheque", Vector2i(8, 28)], ["la porte du labo", Vector2i(48, 10)], ["la maison orange du nord-ouest", Vector2i(15, 9)],
+	var from := Vector2i(8, 9)
+	for goal in [["la porte de la bibliotheque", Vector2i(8, 28)], ["la porte du labo", Vector2i(48, 10)], ["la maison orange du nord-ouest", Vector2i(15, 8)],
 			["la maison orange du sud-est", Vector2i(48, 38)], ["la place", Vector2i(30, 27)], ["le ponton de la cloche", Vector2i(19, 26)],
 			["le bout de la jetee du sud", Vector2i(30, 43)], ["les hautes herbes du sud-ouest", Vector2i(9, 41)], ["la trouee de la falaise", Vector2i(30, 4)],
 			["la crique du nord", Vector2i(30, 9)], ["la plage du sud-est", Vector2i(42, 42)], ["la pointe de l'est", Vector2i(56, 28)]]:

@@ -132,6 +132,12 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   haut, le mur monte derrière lui — et **en porter un autre** : le laboratoire
   est un étage plus haut que sa terrasse, deux escaliers l'un au-dessus de
   l'autre.
+- **Une montagne se fait en superposant ses tuiles** (demandé trois fois par
+  Ludovic, avec trois références, le 15/11/2026) : pas une bande de roche
+  plate, mais des blocs de roche **posés les uns sur les autres**, de largeurs
+  inégales, sur des calques empilés — le contour est irrégulier, les parois
+  se chevauchent. **Sans agrandir la carte** : la hauteur vient des étages, pas
+  de rangées en plus.
 - **Le bord du haut d'un plateau est de l'herbe : on s'y tient.** Ce qu'on ne
   franchit pas, c'est le rebord, entre cette case et celle du dessus — une
   bande fine sur la couche des rebords ([tilesets.md](tilesets.md)). Une rangée
@@ -199,6 +205,9 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   sable à vagues `5:10-14,13-15`, son rivage `5:15-19,31-33`, l'eau claire.
   Mélanger deux sables ou deux eaux donne une couture droite.
 - **Un seul sable par carte** : sentiers et plages dans la même matière.
+- **Pas de bande de sable posée sur l'herbe pour faire un chemin** : « le
+  sable ça fait bizarre pour le chemin » (Ludovic, 15/11/2026). Au pied d'un
+  escalier ou devant une porte, on laisse l'herbe.
 - **Le rivage est dessiné sur la case de sable, jamais dans la case d'eau.**
   Sinon la mer, solide, a l'air de sable et le joueur bute dessus.
 - **Une plage fait au moins deux cases de large** entre l'herbe et l'eau.
@@ -239,7 +248,9 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 - **On passe derrière une maison** (demandé deux fois par Ludovic) : la rangée
   du haut de son toit se franchit tout entière, et dans la deuxième les coins
   où le sol se voit ; le toit, trié devant, recouvre le joueur. Vrai pour
-  toutes les maisons, y compris celles de la première carte.
+  toutes les maisons, y compris celles de la première carte — **sauf celle
+  qui touche un mur** : son toit recouvre le pied de la falaise, il n'y a pas
+  de « derrière ».
 - **Avant de toucher une tuile partagée**, lister les cartes qui s'en servent
   et comparer leurs grilles dans le moteur, avant et après.
 - **Un même dessin, une même collision partout** : les cailloux sont solides
@@ -261,13 +272,16 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 - **Un passage gardé l'est à son endroit le plus étroit** : les gardes tiennent
   la trouée de la falaise, un contre chaque paroi, pas le milieu d'une plage.
 - **Le mobilier a sa place, et c'est ce qu'il a l'air d'être** : un banc est un
-  banc (`5:74-75,25`, pas une dalle de pierre), au bord d'un chemin ou face à
+  banc (le banc de bois, `10:4-5,5-6` de face, `10:8,3-5` et `10:9,3-5` de
+  profil — ni une dalle de pierre, ni le banc blanc bas `5:74-75,25` : « tu as
+  de meilleures options ailleurs »), au bord d'un chemin ou face à
   quelque chose ; un parasol et sa serviette vont sur le sable sec ; des
   caisses sur le quai à côté du lampadaire ; **un pot de fleurs de chaque côté
   d'une porte, jamais devant** — et l'on mesure dans le dessin où est la porte.
   Aucun ne coupe quoi que ce soit du reste de la carte.
 - **Un objet à ramasser est une Poké Ball posée au sol**, au bout d'un recoin
-  ou d'un détour : c'est la récompense du curieux.
+  ou d'un détour : c'est la récompense du curieux. Son image est celle de la
+  planche des intérieurs (`sources/public_indoor.png`), choisie par Ludovic.
 - **Chaque coin de la carte a quelqu'un**, près de ce qui l'occupe : un banc,
   un parasol, un ponton, des herbes. Et **pas de foule** : une dizaine de
   personnes au plus au même endroit, les autres répartis ailleurs.

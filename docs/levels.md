@@ -122,11 +122,11 @@ l'ouest, l'est et le sud.
 
 | Lieu | Case | |
 |---|---|---|
-| départ, devant chez Ludo | (8,10) | `SpawnPoint` |
-| `MaisonLudo` | (8,9) | → `ludo_house` |
+| départ, devant chez Ludo | (8,9) | `SpawnPoint` |
+| `MaisonLudo` | (8,8) | → `ludo_house` |
 | `Bibliotheque` | (8,27) | → `library` |
 | `Laboratoire` | (48,9) | → `lab_house` ; deux escaliers en dessous, en (48–49,11) et (48–49,14) |
-| `MaisonNord` | (15,8) | → `orange_house_north`, chez Anselme |
+| `MaisonNord` | (15,7) | → `orange_house_north`, chez Anselme |
 | `MaisonSud` | (48,37) | → `orange_house_south`, chez Solange |
 | la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
 | la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; le bout de la route en y 0 |
@@ -142,14 +142,25 @@ cases, posé sur son bord du bas ou d'un côté — jamais sur celui du haut.
 **Les rebords.** Le bord du haut d'un plateau est de l'herbe : on s'y tient,
 mais on ne le franchit pas ([tilesets.md](tilesets.md), « Les rebords »).
 
-**Les maisons sont serrées contre ce qui les borde.** Celles du nord sont
-adossées à la falaise, sans rangée perdue derrière, et leur plateau est
-ajusté autour d'elles ; le laboratoire remplit toute la largeur de son étage.
-La rangée du haut d'un toit se franchit tout de même : par la ruelle entre
-chez Ludo et la maison orange, on se glisse sous les toits, contre la falaise ;
-on passe aussi derrière la bibliothèque.
+**Le mur du nord est une montagne en gradins.** Il tient dans les rangées 0 à
+3 — la carte ne grandit pas — et sa hauteur vient de **blocs de roche posés
+les uns sur les autres** : un socle (`World/Cliffs`), des buttes de largeurs
+inégales dessus (`CliffsMid`), et une butte de plus sur les plus larges
+(`CliffsTop`). C'est le même bloc `5:26-28,22-23` à chaque étage ; ses coins
+arrondis laissent voir le gradin du dessous. La rangée 0 n'a pas de bord : la
+montagne continue au nord, hors de la carte.
 
-**Le mobilier.** Cinq bancs (au fond de la place, dans la crique, au pied du
+**Les maisons sont serrées contre ce qui les borde.** Chez Ludo et la maison
+orange du nord **touchent le mur** : la rangée du haut de leur toit recouvre
+le pied de la falaise, rien ne passe derrière. Leur plateau s'allonge vers
+l'est et porte les arbres du pied du mur. Le laboratoire remplit toute la
+largeur de son étage ; on passe derrière lui, derrière la bibliothèque et
+derrière la maison du sud, sous la rangée du haut de leur toit.
+
+**Pas de sentier de sable sur l'herbe** : au pied d'un escalier, c'est de
+l'herbe. Le sable, c'est la plage.
+
+**Le mobilier.** Cinq bancs de bois (au fond de la place, dans la crique, au pied du
 plateau de Ludo, sur la terrasse du labo, au pied du plateau du sud-est), un
 parasol et sa serviette dans la crique et sur la plage du sud, des caisses sur
 le quai, un pot de fleurs de chaque côté de la porte des maisons orange.

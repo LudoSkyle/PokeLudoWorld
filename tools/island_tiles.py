@@ -28,10 +28,14 @@ redonne exactement la même planche. Sa disposition est fixe (cases de 16 px, sa
     rangées 5-6, colonne 0       caisses empilées ; rangée 6, colonne 1 : une caisse
     rangées 5-6, colonne 2       pot de fleurs
     rangée 6, colonne 3          Poké Ball posée au sol (un objet à ramasser)
+    rangées 5-6, colonnes 4-5    banc de bois vu de face (rangée 5 : le haut du dossier)
+    rangées 3-5, colonne 8       banc de bois de profil, dossier à gauche ; colonne 9, dossier à droite
+                                 (rangée 3 : deux pixels qui dépassent ; le banc tient sur deux cases)
 
 Pourquoi : dans environments.png, le ponton n'a de rambarde que sur ses flancs gauche et
 droit, pas de pièce d'angle, et aucune planche pour finir proprement sur le sable ; il n'a
-ni escalier à poteaux, ni parasol, ni objet posé au sol. (Le banc, lui, y est : `5:74-75,25`.)
+ni escalier à poteaux, ni parasol, ni objet posé au sol. Ses bancs de bois, eux, y sont
+mais posés hors grille : ils sont recalés ici.
 """
 import os
 import struct
@@ -48,6 +52,8 @@ COLUMNS, ROWS = 16, 7
 #   (planche, (x, y, largeur, hauteur) dans la planche, transformation,
 #    (colonne, rangée) du bloc dans island.png, (colonnes, rangées) du bloc, calage dans le bloc)
 TOWN = 'town_compilation.png'
+INDOOR = 'public_indoor.png'
+ATLAS = 'environments.png'      # l'atlas du jeu lui-même : ses bancs de bois sont posés hors grille
 STAIRS = (TOWN, (392, 988, 32, 22))     # poteaux bruns, marches grises : 2 cases de large
 PIECES = [
     (STAIRS, None, (0, 3), (2, 2), 'bottom'),                       # la dernière marche au ras du sol d'en bas
@@ -61,7 +67,10 @@ PIECES = [
     ((TOWN, (770, 1029, 12, 27)), None, (0, 5), (1, 2), 'bottom'),        # caisses empilées
     ((TOWN, (754, 1041, 12, 15)), None, (1, 6), (1, 1), 'bottom'),        # une caisse
     ((TOWN, (752, 1017, 16, 23)), None, (2, 5), (1, 2), 'bottom'),        # pot de fleurs
-    ((TOWN, (1410, 978, 12, 11)), None, (3, 6), (1, 1), 'center'),        # Poké Ball posée au sol : un objet à ramasser
+    ((INDOOR, (899, 35, 9, 9)), None, (3, 6), (1, 1), 'center'),          # Poké Ball posée au sol : un objet à ramasser
+    ((ATLAS, (1121, 619, 32, 22)), None, (4, 5), (2, 2), 'bottom'),       # banc de bois vu de face, dossier au fond
+    ((ATLAS, (1089, 651, 14, 34)), None, (8, 3), (1, 3), 'bottom'),       # banc de bois de profil, dossier à gauche
+    ((ATLAS, (1107, 651, 14, 34)), None, (9, 3), (1, 3), 'bottom'),       # banc de bois de profil, dossier à droite
 ]
 RAIL = 4                      # largeur, en pixels, de la rambarde reprise sur le flanc du ponton
 FOAM = (190, 226, 244, 255)   # l'écume au pied des rochers de l'atlas
@@ -197,13 +206,15 @@ def pieces(sheets):
 
 _loaded = {}
 def source_sheet(name):
-    if name not in _loaded: _loaded[name] = load(os.path.join(SOURCES, name))[2]
+    if name not in _loaded: _loaded[name] = load(SOURCE if name == ATLAS else os.path.join(SOURCES, name))[2]
     return _loaded[name]
 
 
 def all_cells(atlas=None):
     """Toute la planche : les cases dérivées de l'atlas, puis celles découpées dans les sources."""
-    made = cells(atlas if atlas is not None else load(SOURCE)[2])
+    if atlas is None: atlas = load(SOURCE)[2]
+    _loaded[ATLAS] = atlas          # les pièces prises dans l'atlas le relisent sans le redécoder
+    made = cells(atlas)
     cut = pieces(source_sheet)
     assert not set(made) & set(cut)
     made.update(cut)
