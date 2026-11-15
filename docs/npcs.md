@@ -124,7 +124,7 @@ temps à l'autre est fait de plusieurs nœuds.
 | **les deux ouvriers** | gardent la trouée (28,3) et (33,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis à côté de la trouée (27,5), l'autre range le quai (33,39) |
 | **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
 | **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un sur la route du nord (31,7), une vers la jetée (32,39), le karatéka sur la plage de la crique (29,9), bien en vue | repartis |
-| **la dame du banc** (12,14) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
+| **la dame du banc** (12,13) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
 | **la baigneuse** (39,37), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |
 | **le nageur** (24,9), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
 | **le petit aux coquillages** (28,9) | n'a trouvé que des cailloux | *(à sa place)* | a un coquillage qui fait le bruit de la cloche |

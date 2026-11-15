@@ -5,7 +5,7 @@ extends "res://tests/lib.gd"
 # Case ou l'on arrive sur l'ile, devant la porte MaisonNord : à renseigner
 # quand cette porte sera posee sur start_island. Tant qu'elle vaut (-1, -1),
 # le controle d'arrivee echoue : c'est voulu.
-const ISLAND_ARRIVAL := Vector2i(15, 10)
+const ISLAND_ARRIVAL := Vector2i(15, 9)
 
 func scene() -> String:
 	return "orange_house_north"

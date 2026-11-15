@@ -6,7 +6,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(15, 10)
+	return Vector2i(15, 9)
 
 func visit(label: String, front: Vector2i, inside: String) -> void:
 	await place(front)
@@ -16,10 +16,10 @@ func visit(label: String, front: Vector2i, inside: String) -> void:
 	await arrival("retour devant " + label, front, "idle_down")
 
 func test() -> void:
-	await visit("chez Anselme, la maison orange du nord-ouest", Vector2i(15, 10), "orange_house_north")
-	await visit("chez Ludo", Vector2i(8, 11), "ludo_house")
+	await visit("chez Anselme, la maison orange du nord-ouest", Vector2i(15, 9), "orange_house_north")
+	await visit("chez Ludo", Vector2i(8, 10), "ludo_house")
 	await visit("la bibliotheque", Vector2i(8, 28), "library")
-	await visit("le laboratoire", Vector2i(48, 11), "lab_house")
+	await visit("le laboratoire", Vector2i(48, 10), "lab_house")
 	await visit("chez Solange, la maison orange du sud-est", Vector2i(48, 38), "orange_house_south")
 
 	# Une porte est un decor franchissable : triee depuis le haut de sa case, sinon elle se dessine sur le joueur qui entre.

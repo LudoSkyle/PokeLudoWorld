@@ -2,7 +2,7 @@
 
 Document de conception des cartes d'extérieur. **À relire en entier avant de
 composer, générer ou retoucher une carte** : ces règles viennent des défauts
-que Ludovic a relevés sur les versions successives de l'île (sept relectures le
+que Ludovic a relevés sur les versions successives de l'île (huit relectures le
 15/11/2026), des conseils de conception de la communauté Essentials qu'il a
 transmis, et de la page
 [Good practices in level design](https://pokemonworkshop.com/en/learn/good-practices-in-level-design/)
@@ -77,7 +77,9 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   à gauche et à droite et de 5 en bas, dont les **4 cases du bord (3 en bas)
   ne se foulent jamais**. Deux raisons : Ludovic a demandé une carte plus
   petite, et la caméra s'arrête au bord de la carte (`PlayerCamera`), si bien
-  que le noir ne se voit de toute façon pas. **Choix à lui faire valider.**
+  que le noir ne se voit de toute façon pas. **Validé par Ludovic le
+  15/11/2026** : c'est « moins grave » chez nous puisque la caméra s'arrête au
+  bord, alors que dans les jeux d'origine elle montre plus sur les côtés.
 - **Aucune case de la marge interdite n'est atteignable à pied** depuis le
   départ, et aucune case du bord de la carte. Contrôle : parcours des cases
   libres relevées dans le moteur. La première île laissait 82 cases de bord
@@ -99,6 +101,9 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   pour une carte simple. L'île fait **62 × 49** (elle en a fait 72 × 52).
 - **Aucun bâtiment au centre exact de la carte, aucune rangée de bâtiments
   alignés.** Chaque maison à sa hauteur, décalée d'au moins une case.
+- **Une maison se serre contre ce qui la borde** : pas d'espace perdu derrière
+  elle (contre la falaise quand il y en a une), et son plateau ajusté autour
+  d'elle plutôt qu'une grande pelouse vide (Ludovic, 15/11/2026).
 - **Devant chaque porte, une rangée libre sur toute la façade, deux quand la
   place le permet.** La sortie ne bute sur rien : ni objet ni personnage sur
   la case devant la porte ni sur la suivante.

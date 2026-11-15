@@ -58,7 +58,7 @@ func test() -> void:
 	check("trois visiteurs sont ailleurs : sur la route du nord, vers la jetee, sur la plage de la crique — bien en vue",
 		cell_of("VisitorKalos") == Vector2i(31, 7) and cell_of("VisitorFestival") == Vector2i(32, 39) and cell_of("VisitorBlackBelt") == Vector2i(29, 9),
 		"%s %s %s" % [str(cell_of("VisitorKalos")), str(cell_of("VisitorFestival")), str(cell_of("VisitorBlackBelt"))])
-	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 14) and cell_of("Sailor") == Vector2i(53, 18))
+	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 13) and cell_of("Sailor") == Vector2i(53, 18))
 	# Personne ne gene : ni sur le tour de la place ou court le coureur, ni devant le socle, ni devant un escalier.
 	var ring_free := true
 	for x in range(25, 36):
@@ -74,12 +74,12 @@ func test() -> void:
 	check("les escaliers de la place restent degages", is_free(Vector2i(31, 28)) and is_free(Vector2i(24, 23)) and is_free(Vector2i(36, 24)))
 
 	# APRES. On entre chez Ludo : quitter l'ile met fin a la Veillee. Meme Odile est rentree.
-	place(Vector2i(8, 11))
+	place(Vector2i(8, 10))
 	await hold_until_change("porte de Ludo", "ui_up")
 	check("quitter l'ile met fin a la Veillee", flag("vigil_over"))
 	check("Meme Odile est rentree chez Ludo", there("OdileBack") and not there("Odile"))
 	await hold_until_change("paillasson de Ludo", "ui_down")
-	await arrival("retour sur l'ile", Vector2i(8, 11), "idle_down")
+	await arrival("retour sur l'ile", Vector2i(8, 10), "idle_down")
 	check("la place s'est videe : il ne reste que Roland et le peintre", crowd() == 2 and there("RolandAfter") and there("VisitorPainter"), "%d" % crowd())
 	check("les visiteurs sont repartis, Meme et Alix sont rentrees", not there("VisitorKalos") and not there("VisitorHiker") and not there("VisitorBlackBelt") and not there("OdileAfter") and not there("AlixAfter"))
 	check("le pecheur a repris sa place au bout de la jetee", cell_of("FisherLater") == Vector2i(31, 43) and not there("Fisher") and not there("FisherAfter"))
