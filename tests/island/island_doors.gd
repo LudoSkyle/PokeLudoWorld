@@ -1,6 +1,6 @@
 extends "res://tests/lib.gd"
 
-# Les portes de l'ile : trois batiments s'ouvrent, deux sont de simples facades.
+# Les portes de l'ile : les cinq batiments s'ouvrent, et l'on ressort devant chacun.
 
 func scene() -> String:
 	return "start_island"
@@ -8,24 +8,26 @@ func scene() -> String:
 func start() -> Vector2i:
 	return Vector2i(15, 10)
 
+func visit(label: String, front: Vector2i, inside: String) -> void:
+	await place(front)
+	await hold_until_change("porte de " + label, "ui_up")
+	check("on entre " + label, str(level().scene_file_path).ends_with(inside + ".tscn"), str(level().scene_file_path))
+	await hold_until_change("paillasson de " + label, "ui_down")
+	await arrival("retour devant " + label, front, "idle_down")
+
 func test() -> void:
-	# La maison orange : sa porte ne mene nulle part.
-	var id0 := level_id()
-	await hold_no_change("maison orange du nord-ouest : porte close", "ui_up")
-	check("on reste devant la maison orange", cell() == Vector2i(15, 10) and level_id() == id0, str(cell()))
-	# Chez Ludo.
-	place(Vector2i(8, 11))
-	await hold_until_change("porte de Ludo", "ui_up")
-	check("on entre chez Ludo", str(level().scene_file_path).ends_with("ludo_house.tscn"), str(level().scene_file_path))
-	await hold_until_change("paillasson de Ludo", "ui_down")
-	await arrival("retour devant chez Ludo", Vector2i(8, 11), "idle_down")
-	# La bibliotheque.
-	place(Vector2i(8, 28))
-	await hold_until_change("porte de la bibliotheque", "ui_up")
-	check("on entre dans la bibliotheque", str(level().scene_file_path).ends_with("library.tscn"), str(level().scene_file_path))
-	await hold_until_change("paillasson de la bibliotheque", "ui_down")
-	await arrival("retour devant la bibliotheque", Vector2i(8, 28), "idle_down")
-	# Le laboratoire.
-	place(Vector2i(48, 11))
-	await hold_until_change("porte du labo", "ui_up")
-	check("on entre au labo", str(level().scene_file_path).ends_with("lab_house.tscn"), str(level().scene_file_path))
+	await visit("chez Anselme, la maison orange du nord-ouest", Vector2i(15, 10), "orange_house_north")
+	await visit("chez Ludo", Vector2i(8, 11), "ludo_house")
+	await visit("la bibliotheque", Vector2i(8, 28), "library")
+	await visit("le laboratoire", Vector2i(48, 11), "lab_house")
+	await visit("chez Solange, la maison orange du sud-est", Vector2i(48, 38), "orange_house_south")
+
+	# Une porte est un decor franchissable : triee depuis le haut de sa case, sinon elle se dessine sur le joueur qui entre.
+	var houses: TileMapLayer = level().get_node("World/Houses")
+	var doors := level().get_node("Doors").get_children()
+	var behind := 0
+	for door in doors:
+		var data: TileData = houses.get_cell_tile_data(Vector2i(floori(door.position.x / 16.0), floori(door.position.y / 16.0)))
+		if data != null and data.y_sort_origin == -15:
+			behind += 1
+	check("les cinq portes passent sous le joueur qui entre", doors.size() == 5 and behind == 5, "%d sur %d" % [behind, doors.size()])

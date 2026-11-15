@@ -145,6 +145,21 @@ jamais sur le tour de la place, ni devant un escalier, ni dans un passage de
 deux cases, ni caché derrière un palmier. Le générateur le contrôle dans les
 trois temps, le test `island_quest` aussi.
 
+## Dans les maisons orange
+
+Une maison, un habitant, immobile près de ce qui l'occupe. Le plan des deux
+pièces est dans [levels.md](levels.md).
+
+| Nœud | Carte | Case | Rôle |
+|---|---|---|---|
+| `Anselme` | `orange_house_north` | (16,8), tourné vers la fenêtre | retraité (`hgss_gentleman`) posté à sa fenêtre, entre l'horloge et ses livres ; sa femme est la dame du banc, dehors (`BenchLady`) — lui « garde la maison » |
+| `Solange` | `orange_house_south` | (11,8), tournée vers la porte | (`rse_npc_hoenn_mom`) devant son évier ; sa sœur est la jardinière du pied du plateau (`Gardener`) — elle, elle tient la maison, et s'excuse du désordre |
+
+Tous deux portent un nom (`display_name`, `gender`) et un seul état
+d'histoire : après la Veillée (`bell_hung`) ils **restent chez eux** et
+changent de réplique — les vitres d'Anselme en ont tremblé, la sœur de
+Solange fredonne faux. Aucun drapeau ne les fait apparaître ni disparaître.
+
 ## Dans `start_town`
 
 | Nœud | Case | Rôle |
