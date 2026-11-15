@@ -86,7 +86,7 @@ Les cas particuliers en place :
 | Bouche de grotte `5:33,23` | **aucune** — c'est l'entrée |
 | Eau profonde (`5:5,34`, `5:6,34`, `5:6,35`) | pleine |
 | Eau claire `5:9,31` et plantes `5:13,32` | **aucune** — faible profondeur |
-| Bancs `5:74,25`, `5:75,25` | pleine |
+| Bancs blancs `5:74,25`, `5:75,25` (plus posés sur l'île : elle a ses bancs de bois, source 10) | pleine |
 | Dallage de la place `5:5-7,47-49` | aucune |
 | Trait de côte, sable, chemins, herbes hautes, décors | aucune |
 
@@ -294,6 +294,8 @@ refaire à l'identique.
 | colonne 15, rangées 3–4 et 5–6 | serviettes de plage |
 | rangées 5–6, colonnes 0–2 | caisses empilées, une caisse, pot de fleurs |
 | rangée 6, colonne 3 | Poké Ball posée au sol : l'image d'un objet à ramasser (une région de texture, pas une tuile) |
+| rangées 5–6, colonnes 4–5 | **banc de bois vu de face** : la rangée 6 est l'assise (pleine), la rangée 5 le haut du dossier |
+| rangées 3–5, colonnes 8 et 9 | **banc de bois de profil**, dossier à gauche puis à droite : deux cases pleines (rangées 4 et 5), deux pixels qui dépassent en rangée 3 |
 
 Pourquoi les fabriquer : dans l'atlas, le ponton n'a de rambarde que sur ses
 flancs gauche et droit (`5:47,22` et `5:49,22`). Un ponton est-ouest perdait
@@ -305,9 +307,10 @@ d'un trait sombre, celui du contour du ponton.
 Les rangées 3 à 6 ne viennent pas de l'atlas : elles sont **découpées dans
 les planches de `sources/`** et recalées sur la grille (voir « Prendre un
 élément dans une planche source »). Les escaliers, les parasols, les
-serviettes, les caisses, le pot et la Poké Ball viennent de
-`town_compilation.png`. La liste `PIECES` du script dit d'où vient chaque bloc.
-Le banc, lui, est celui de l'atlas (`5:74-75,25`).
+serviettes, les caisses et le pot viennent de `town_compilation.png`, la Poké
+Ball de `public_indoor.png`. Les bancs de bois viennent de l'atlas lui-même
+(`environments.png`, autour du pixel 1089,609), où ils sont posés **hors
+grille** : le script les recale. La liste `PIECES` dit d'où vient chaque bloc.
 
 **Un escalier** est un bloc de 2×2 posé sur le calque `Bridges`, par-dessus le
 bord du plateau : deux cases sur le bord, deux qui débordent de 6 px sur le
