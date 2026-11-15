@@ -271,6 +271,9 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 - **Chaque coin de la carte a quelqu'un**, près de ce qui l'occupe : un banc,
   un parasol, un ponton, des herbes. Et **pas de foule** : une dizaine de
   personnes au plus au même endroit, les autres répartis ailleurs.
+- **Des Pokémon dans le décor** : quelques oiseaux de mer au-dessus de l'eau,
+  chacun dans sa zone, sans collision — ils font vivre la carte sans gêner
+  personne ([npcs.md](npcs.md), « Les Pokémon du décor »).
 - **Personne derrière un palmier ou un arbre** : un personnage qu'on ne voit
   pas n'existe pas.
 - **Un rassemblement est un moment, pas un état** : la Veillée réunit le
