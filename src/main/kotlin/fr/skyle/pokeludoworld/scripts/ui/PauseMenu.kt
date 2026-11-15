@@ -3,7 +3,8 @@ package fr.skyle.pokeludoworld.scripts.ui
 import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
-import fr.skyle.pokeludoworld.scripts.gameplay.story.BellQuest
+import fr.skyle.pokeludoworld.scripts.gameplay.story.Quest
+import fr.skyle.pokeludoworld.scripts.gameplay.story.Quests
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -48,8 +49,10 @@ class PauseMenu : CanvasLayer() {
 	private var cursor: Control? = null
 	private var entries: List<Control> = emptyList()
 
-	/** Les outils de l'entrée Debug, dans une boîte de choix. */
+	/** Les outils de l'entrée Debug, dans une boîte de choix qui change de contenu d'une page à l'autre. */
 	private var debugChoices: ChoiceBox? = null
+	private var debugPage = DebugPage.TOOLS
+	private var debugQuest: Quest? = null
 
 	/** Entrée sous le curseur. Revient à la première à chaque ouverture. */
 	var selected: Int = 0
@@ -136,17 +139,26 @@ class PauseMenu : CanvasLayer() {
 
 		val tools = debugChoices
 		if (tools != null && tools.isOpen) {
-			when (tools.handle(interact)) {
-				null -> {}
-				DEBUG_BAG -> fillBag()
-				DEBUG_NEXT -> advanceQuest(all = false)
-				DEBUG_FINISH -> advanceQuest(all = true)
-				DEBUG_TIME -> {
-					// L'heure change sur place : la boîte reste ouverte, sur la même ligne.
-					DayNight.cycle()
-					tools.relabel(DEBUG_TIME, T(DayNight.label()))
+			// Retour, ou la touche du menu, remonte d'une page ; depuis la première, referme la boîte.
+			val choice = tools.handle(interact) ?: return
+			when (debugPage) {
+				DebugPage.TOOLS -> when (choice) {
+					TOOL_BAG -> fillBag()
+					TOOL_QUESTS -> showQuests()
+					TOOL_TIME -> {
+						// L'heure change sur place : la boîte reste ouverte, sur la même ligne.
+						DayNight.cycle()
+						tools.relabel(TOOL_TIME, T(DayNight.label()))
+					}
+					else -> tools.close()
 				}
-				else -> tools.close()
+				DebugPage.QUESTS -> Quests.ALL.getOrNull(choice)?.let { showActions(it) } ?: showTools()
+				DebugPage.ACTIONS -> when (choice) {
+					ACTION_RESET -> debugQuest?.let { resetQuest(it) }
+					ACTION_NEXT -> debugQuest?.let { advanceQuest(it, all = false) }
+					ACTION_FINISH -> debugQuest?.let { advanceQuest(it, all = true) }
+					else -> showQuests()
+				}
 			}
 			return
 		}
@@ -180,14 +192,29 @@ class PauseMenu : CanvasLayer() {
 	}
 
 	/**
-	 * Outils de mise au point : une boîte de choix. Retour, ou la touche du
-	 * menu, ramène au menu de pause. La ligne de l'heure fait défiler les
-	 * moments de la journée à chaque validation, puis revient à l'heure réelle.
+	 * Outils de mise au point : une boîte de choix à trois pages. La première
+	 * liste les outils ; « Quêtes » ouvre la liste des quêtes ; en choisir une
+	 * ouvre ce qu'on peut lui faire — repartir de zéro, franchir une étape, la
+	 * finir. Une quête de plus n'ajoute qu'une ligne à la deuxième page.
+	 * La ligne de l'heure fait défiler les moments de la journée à chaque
+	 * validation, puis revient à l'heure réelle.
 	 */
-	private fun debug() {
-		debugChoices?.open(
-			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_NEXT_LABEL), T(DEBUG_FINISH_LABEL), T(DayNight.label()), T(DEBUG_BACK_LABEL)),
-		)
+	private fun debug() = showTools()
+
+	private fun showTools() {
+		debugPage = DebugPage.TOOLS
+		debugChoices?.open(listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(DEBUG_BACK_LABEL)))
+	}
+
+	private fun showQuests() {
+		debugPage = DebugPage.QUESTS
+		debugChoices?.open(Quests.ALL.map { T(it.label) } + T(DEBUG_BACK_LABEL))
+	}
+
+	private fun showActions(quest: Quest) {
+		debugPage = DebugPage.ACTIONS
+		debugQuest = quest
+		debugChoices?.open(listOf(T(ACTION_RESET_LABEL), T(ACTION_NEXT_LABEL), T(ACTION_FINISH_LABEL), T(DEBUG_BACK_LABEL)))
 	}
 
 	/** Remplit le sac d'un peu de tout, et donne deux objets rares pour voir leur présentation. */
@@ -204,18 +231,31 @@ class PauseMenu : CanvasLayer() {
 	}
 
 	/**
-	 * Fait avancer la quête de la cloche d'une étape, ou jusqu'au bout : ses
-	 * drapeaux sont posés, le sac mis à jour, et la carte se recharge une fois
-	 * le message refermé pour montrer ce que l'étape change.
+	 * Fait avancer une quête d'une étape, ou jusqu'au bout : ses drapeaux sont
+	 * posés, le sac mis à jour, et la carte se recharge une fois le message
+	 * refermé pour montrer ce que l'étape change.
 	 */
-	private fun advanceQuest(all: Boolean) {
-		val moved = if (all) BellQuest.finish() else BellQuest.advance()
+	private fun advanceQuest(quest: Quest, all: Boolean) {
+		val moved = if (all) quest.finish() else quest.advance()
 		close()
 		val message = when {
-			!moved -> N("La quête de la cloche est déjà terminée.")
-			BellQuest.isFinished -> "@reload " + N("La quête de la cloche est terminée.")
-			else -> "@reload " + N("La quête de la cloche avance d'une étape.")
+			!moved -> T(QUEST_ALREADY_DONE).format(T(quest.label))
+			quest.isFinished -> "@reload " + T(QUEST_DONE).format(T(quest.label))
+			else -> "@reload " + T(QUEST_STEP).format(T(quest.label))
 		}
+		MessageBox.instance?.play(listOf(message))
+	}
+
+	/**
+	 * Fait repartir une quête de zéro : ses drapeaux sont retirés, le sac rendu
+	 * à ce qu'il était, et la carte se recharge une fois le message refermé —
+	 * chacun y reprend sa place d'avant. Si l'un d'eux revient là où se tient
+	 * le joueur, celui-ci s'écarte d'une case (voir SceneManager.settlePlayer).
+	 */
+	private fun resetQuest(quest: Quest) {
+		val undone = quest.reset()
+		close()
+		val message = if (undone) "@reload " + T(QUEST_RESET).format(T(quest.label)) else T(QUEST_NOT_STARTED).format(T(quest.label))
 		MessageBox.instance?.play(listOf(message))
 	}
 
@@ -228,13 +268,24 @@ class PauseMenu : CanvasLayer() {
 	}
 }
 
-private const val DEBUG_BAG = 0
-private const val DEBUG_NEXT = 1
-private const val DEBUG_FINISH = 2
-private const val DEBUG_TIME = 3
+private enum class DebugPage { TOOLS, QUESTS, ACTIONS }
+
+private const val TOOL_BAG = 0
+private const val TOOL_QUESTS = 1
+private const val TOOL_TIME = 2
+private const val ACTION_RESET = 0
+private const val ACTION_NEXT = 1
+private const val ACTION_FINISH = 2
 private val DEBUG_BAG_LABEL = N("Remplir le sac")
-private val DEBUG_NEXT_LABEL = N("Quête : suite")
-private val DEBUG_FINISH_LABEL = N("Quête : fin")
+private val DEBUG_QUESTS_LABEL = N("Quêtes")
 private val DEBUG_BACK_LABEL = N("Retour")
+private val ACTION_RESET_LABEL = N("Repartir de zéro")
+private val ACTION_NEXT_LABEL = N("Étape suivante")
+private val ACTION_FINISH_LABEL = N("Finir la quête")
+private val QUEST_STEP = N("« %s » : une étape de plus.")
+private val QUEST_DONE = N("« %s » : la quête est terminée.")
+private val QUEST_ALREADY_DONE = N("« %s » : la quête est déjà terminée.")
+private val QUEST_RESET = N("« %s » : la quête repart de zéro.")
+private val QUEST_NOT_STARTED = N("« %s » : la quête n'a pas encore commencé.")
 
 private const val FRAMES_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/frames/"

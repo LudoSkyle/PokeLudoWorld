@@ -593,19 +593,32 @@ func debug_choices() -> Control:
 # Ouvre Debug et valide son outil numero n (0 = remplir le sac, 1 = quete : suite,
 # 2 = quete : fin), puis passe le message et attend le rechargement eventuel.
 func debug_tool(n: int) -> void:
+	# Debug > Quetes > la premiere quete > l'action. n : 1 = etape suivante, 2 = finir, 3 = repartir de zero.
 	await menu_pick("Debug")
-	for i in n:
+	await tap("ui_down")
+	await tap("interact")
+	await tap("interact")
+	for i in {1: 1, 2: 2, 3: 0}[n]:
 		await tap("ui_down")
 	await tap("interact")
 	await secs(1.2)
 	var id := level_id()
-	var reloads := box_text().begins_with("La quête de la cloche a") or box_text() == "La quête de la cloche est terminée."
+	var said := box_text()
+	var reloads := said.ends_with("une étape de plus.") or said.ends_with("la quête est terminée.") or said.ends_with("la quête repart de zéro.")
 	await close_box()
 	if reloads:
 		var end := Time.get_ticks_msec() + 4000
 		while Time.get_ticks_msec() < end and level_id() == id:
 			await process_frame
 		await secs(0.6)
+
+# Les lignes visibles de la boite de Debug.
+func debug_lines() -> Array:
+	var lines := []
+	for label in debug_choices().get_node("Entries").get_children():
+		if label.visible:
+			lines.append(label.text)
+	return lines
 
 # --- son
 
