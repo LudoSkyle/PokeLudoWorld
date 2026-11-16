@@ -26,6 +26,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | Pokémon sauvages, rencontres dans l'herbe | [docs/encounters.md](docs/encounters.md) |
 | sons, musiques | [docs/audio.md](docs/audio.md) |
 | jour et nuit, teinte du dehors | [docs/daynight.md](docs/daynight.md) |
+| pluie, neige, brouillard, le temps qu'il fait | [docs/weather.md](docs/weather.md) |
 | textes, traductions | [docs/i18n.md](docs/i18n.md) |
 | sauvegarde, reprise au lancement | [docs/save.md](docs/save.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
@@ -48,7 +49,8 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 ```
 
 `tools/` (hors Godot) : les scripts qui fabriquent une planche à partir d'une
-autre — `island_tiles.py` produit `assets/levels/island.png`. Les trois
+autre — `island_tiles.py` produit `assets/levels/island.png`,
+`weather_sheets.py` les planches de `assets/weather/`. Les trois
 `title_*.py` dessinent les images de l'écran titre.
 
 ## Règles qui ne se redemandent pas

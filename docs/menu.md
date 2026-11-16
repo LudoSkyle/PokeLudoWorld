@@ -120,7 +120,7 @@ au menu de pause.
 
 | Page | Lignes |
 |---|---|
-| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Retour |
+| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · Retour |
 | **les quêtes** | une ligne par quête (`Quests.ALL`) · Retour |
 | **la quête choisie** | Repartir de zéro · Étape suivante · Finir la quête · Retour |
 
@@ -128,6 +128,7 @@ au menu de pause.
 |---|---|
 | **Remplir le sac** | huit objets, des Poké Balls, et deux objets rares donnés par `@give:` pour voir leur présentation ([bag.md](bag.md)) |
 | **Heure : …** | fait défiler les moments de la journée à chaque validation — réelle, aube, jour, crépuscule, nuit, puis de nouveau réelle. La boîte reste ouverte ([daynight.md](daynight.md)) |
+| **Météo : …** | fait défiler les huit temps — normale, pluie, averse, neige, blizzard, tempête de sable, zénith, brouillard — et revient au beau. La boîte reste ouverte ([weather.md](weather.md)) |
 | **Étape suivante** | franchit la prochaine étape de la quête : son drapeau est posé, le sac mis à jour, et la carte se recharge une fois le message refermé |
 | **Finir la quête** | franchit toutes les étapes restantes d'un coup |
 | **Repartir de zéro** | défait les étapes franchies, de la dernière à la première — le drapeau de chacune est retiré, ce qu'elle avait donné quitte le sac, ce qu'elle avait pris y revient — retire aussi les drapeaux de sa suite (`epilogue` : la fin de la Veillée), puis recharge la carte, où chacun reprend sa place d'avant |

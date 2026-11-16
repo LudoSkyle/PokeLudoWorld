@@ -854,3 +854,27 @@ msgstr "Delete"
 
 msgid "Effacer la partie %d ?"
 msgstr "Delete save %d?"
+
+msgid "Météo : normale"
+msgstr "Weather: clear"
+
+msgid "Météo : pluie"
+msgstr "Weather: rain"
+
+msgid "Météo : averse"
+msgstr "Weather: downpour"
+
+msgid "Météo : neige"
+msgstr "Weather: snow"
+
+msgid "Météo : blizzard"
+msgstr "Weather: blizzard"
+
+msgid "Météo : tempête de sable"
+msgstr "Weather: sandstorm"
+
+msgid "Météo : zénith"
+msgstr "Weather: harsh sunlight"
+
+msgid "Météo : brouillard"
+msgstr "Weather: fog"

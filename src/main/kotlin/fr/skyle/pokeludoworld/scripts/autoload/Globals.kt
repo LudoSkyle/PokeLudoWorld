@@ -1,6 +1,7 @@
 package fr.skyle.pokeludoworld.scripts.autoload
 
 import fr.skyle.pokeludoworld.scripts.core.DayNight
+import fr.skyle.pokeludoworld.scripts.core.Weather
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildEncounters
 import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildTable
@@ -55,6 +56,24 @@ class Globals : Node() {
 	fun setHour(hour: Double) {
 		DayNight.forcedHour = hour.takeIf { it >= 0.0 }
 	}
+
+	/**
+	 * Le temps qu'il fait, vu de Godot : son rang dans [Weather.Sky] — 0 normal,
+	 * 1 pluie, 2 averse, 3 neige, 4 blizzard, 5 tempête de sable, 6 zénith,
+	 * 7 brouillard. `set_weather(2)` fait tomber l'averse.
+	 */
+	@Register
+	fun weather(): Int = Weather.sky.ordinal
+
+	@Register
+	fun setWeather(sky: Int) {
+		val all = Weather.Sky.entries
+		Weather.sky = all[((sky % all.size) + all.size) % all.size]
+	}
+
+	/** Le nom du temps qu'il fait, tel que l'outil de mise au point l'affiche. */
+	@Register
+	fun weatherLabel(): String = Weather.label()
 
 	/**
 	 * Les rencontres sauvages, vues de Godot. [forceEncounters] impose le sort :
