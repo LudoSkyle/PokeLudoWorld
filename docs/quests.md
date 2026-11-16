@@ -253,7 +253,7 @@ des objets rares : la boîte dit seulement « Vous trouvez une Potion ! », puis
 d'origine, à la deuxième personne comme le reste du jeu. Leurs drapeaux
 (`found_island_potion`, `found_island_ball`) ne font partie d'aucune quête.
 
-Les cartes de la grotte existent toujours, mais plus rien n'y mène. Le reste
+Les cartes de la grotte et l'ancien village ont été supprimés. Le reste
 de ce document décrit le déroulé tel qu'il a été écrit pour l'ancien village.
 
 ## Pitch
@@ -497,9 +497,15 @@ Les répliques d'après :
 > La route de l'ouest est ouverte.
 > |On a fini juste à temps pour la Veillée.
 
+> **L'ancien village a été supprimé.** Les sections qui suivent ont été écrites
+> pour lui (`start_town`) et pour sa grotte : les cases qu'elles donnent ne
+> valent plus. L'île (`start_island`) joue la même quête, avec la cloche sous
+> le ponton ; ses cases sont dans [levels.md](levels.md), et ce qui a changé
+> est résumé au début de « La Cloche de Bourg-Ludo ».
+
 ### Les nœuds de la Veillée
 
-Tous dans `start_town`, sous `World/Entities`, avec `required_flag = "bell_hung"`.
+Tous dans `start_island`, sous `World/Entities`, avec `required_flag = "bell_hung"`.
 Ceux d'avant (`GuardNorth`, `GuardSouth`, `Triggers/WestRoadblock`, `Runner`,
 `Fisher`, `Roland`, et `Odile` / `Alix` dans leurs cartes) portent
 `forbidden_flag = "bell_hung"`.
@@ -520,11 +526,10 @@ L'accrochage : `BellStandEmpty` pose `bell_hung`, reprend la Cloche claire
 Le Ruban reste dans le sac.
 
 Les **sept répliques des visiteurs** et celle du second ouvrier ne figuraient
-pas au cahier des charges : elles sont à relire dans `start_town.tscn`. Le
+pas au cahier des charges : elles sont à relire dans `start_island.tscn`. Le
 Professeur, resté au labo, a lui aussi sa réplique d'après (`bell_hung`).
 
-Tests : `tests/run.sh quests/bell_stand_empty quests/bell_hung quests/vigil
-moves/runner_after`.
+Tests : `tests/run.sh island/island_quest island/island_bell_hint`.
 
 ## Les objets à trouver en asset
 
@@ -554,7 +559,7 @@ reçoit ([bag.md](bag.md)). Il leur faut donc à chacun :
 ### La bibliothèque — en place
 
 La maison du centre est la bibliothèque du village : `scenes/levels/library.tscn`
-(l'ancienne `neighbor_house.tscn`, réaménagée et renommée). Dans `start_town`,
+(l'ancienne `neighbor_house.tscn`, réaménagée et renommée). Sur la carte du dehors,
 la porte s'appelle `Bibliotheque`, le panneau `SignLibrary`, et le bandeau de
 lieu dit « Bibliothèque ». Les voisins auront une maison neuve plus tard.
 
@@ -594,7 +599,7 @@ collisions/library doors/library`.
 ### La place — en place
 
 Une place dallée sur **la pelouse à l'est du village, devant le laboratoire** :
-`x 27-35, y 11-15` de `start_town`, calque `Background/Plaza`.
+`x 27-35, y 11-15` de l'ancien village, calque `Background/Plaza`.
 
 > **Écart avec l'intention de départ.** Le triangle maison de Ludo /
 > bibliothèque / labo ne laisse que deux colonnes d'herbe entre le chemin et la
@@ -651,7 +656,7 @@ existe.
 | Nœud | Carte, case | Ce qu'il fait |
 |---|---|---|
 | `Odile` | `ludo_house` (17,11), sur le tabouret de droite, tournée vers la table | lance la quête (`bell_told` sur sa dernière boîte) ; avec `bell_clean`, la question puis le Ruban (`bell_ribbon`) |
-| `Roland` | `start_town` (39,3), à droite de l'entrée de la grotte | trois répliques : défaut, `bell_register`, `bell_tarnished` |
+| `Roland` | l'ancien village (39,3), à droite de l'entrée de la grotte | trois répliques : défaut, `bell_register`, `bell_tarnished` |
 | `Readables/Bell` | `cave_b2f` (23,14), **le caillou de la plaque de vase** au sud-est du lac | la trouvaille : `kind = "item"`, `flag = "bell_tarnished"`, donne `tarnished_bell` |
 | `Professor` | `lab_house` (12,10) | trois répliques : défaut, `bell_tarnished`, `bell_clean` |
 | `Readables/Healer0`, `Healer1` | `lab_house` (16,7) et (17,7), examinées depuis la rangée `y 8` | la machine de soin : la question avec `bell_tarnished`, puis `@take:` la ternie, `@give:` la claire, `bell_clean` |
@@ -673,8 +678,8 @@ Répliques écrites pour combler le cahier des charges, **à relire** :
   Et sonne fort, que je l'entende d'ici. » ;
 - la machine, une fois la cloche nettoyée : son texte d'avant.
 
-Tests : `tests/run.sh dialogue/odile dialogue/roland dialogue/professor
-quests/odile_gift quests/heal_machine quests/cave_bell quests/text_take`.
+Tests : `tests/run.sh dialogue/odile dialogue/professor quests/odile_gift
+quests/heal_machine quests/text_take island/island_bell_hint`.
 
 ## Ordre d'implémentation
 

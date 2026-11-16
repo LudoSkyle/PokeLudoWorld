@@ -189,26 +189,10 @@ nord-ouest). Un autre Pokémon volant demande son image dans
 `assets/pokemon/overworld/` (`tools/pokemon_overworld.py` la sort des planches
 de `sources/`) et un nœud sous `Sky`.
 
-## Dans `start_town`
+## Sur le terrain d'essai
 
-| Nœud | Case | Rôle |
-|---|---|---|
-| `GuardNorth`, `GuardSouth` | (5,7) et (5,9) | ouvriers qui ferment la sortie ouest |
-| `Triggers/WestRoadblock` | (5,8) | la case du milieu ; garde : `GuardNorth` |
-| `GrassWatcher` | départ (8,4) | chasseur d'insectes : erre dans les hautes herbes, à 2 cases/s, un geste toutes les 2 à 5 s |
-| `Runner` | départ (13,9) | coureur : boucle sur le chemin entre les maisons, à 3 cases/s |
-| `Roland` | (39,3) | ancien de la grotte, à droite de son entrée ; ses répliques suivent la quête ([quests.md](quests.md)) |
-| `Fisher` | (40,17) | pêcheur les pieds dans l'eau claire, au bord de l'eau profonde, tourné vers le large |
+Les tests du système ont leurs propres personnages, sur `tests/maps/field.tscn`
+([verification.md](verification.md)) : deux gardes et leur passage, un
+chasseur d'insectes qui erre dans les herbes, un coureur sur sa boucle, un
+pêcheur les pieds dans l'eau. Ils ne font pas partie du jeu.
 
-Après la Veillée (`bell_hung`), les gardes, le passage, le coureur, le pêcheur
-et Roland cèdent la place à leurs doubles « After » et aux visiteurs, sur la
-place : voir [quests.md](quests.md).
-
-Les gardes ne sont pas au bord de la carte : plus à l'ouest, la cime des arbres
-recouvre la rangée du bas et cachait l'un d'eux.
-
-La boucle du coureur fait le tour du tronçon de chemin large de trois cases qui
-relie les deux maisons : aller par le bord, retour par l'allée du milieu, 52
-cases. Elle évite les cases d'arrivée des portes. Une carte est réinstanciée à
-chaque entrée : les PNJ repartent de leur case de départ quand on sort d'une
-maison.

@@ -139,5 +139,4 @@ Aucun script du tutoriel ne référence de chemin de nœud du genre `Tiles/Groun
   `scene_trigger.tscn` instanciée sous un nœud `SceneTriggers`.
 - Les limites de map : le tutoriel pose des `StaticBody2D` à la main sous un
   nœud `Boundaries`. Ici la forêt et l'eau sont solides via le TileSet, ce qui
-  suffit tant que la bordure est fermée — **sauf la sortie ouest de start_town,
-  laissée ouverte exprès** pour y brancher une transition.
+  suffit tant que la bordure est fermée.

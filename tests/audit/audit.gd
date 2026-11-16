@@ -3,7 +3,7 @@
 extends SceneTree
 
 const BASE := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
-const ROOMS := ["ludo_house", "ludo_bedroom", "library", "lab_house", "orange_house_north", "orange_house_south", "cave_1f", "cave_b1f", "cave_b2f"]
+const ROOMS := ["ludo_house", "ludo_bedroom", "library", "lab_house", "orange_house_north", "orange_house_south"]
 
 func _initialize() -> void:
 	_run.call_deferred()

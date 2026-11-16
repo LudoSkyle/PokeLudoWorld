@@ -36,14 +36,13 @@ l'histoire : le village garde la sienne après la Veillée.
 `SceneManager` la demande à chaque chargement de carte. **Deux cartes qui
 déclarent la même musique la partagent** : en passant de l'une à l'autre elle
 continue, sans repartir du début. C'est ainsi que la maison de Ludo garde la
-musique du village, et que les trois niveaux de la grotte n'en font qu'un.
+musique de l'île.
 
 | Carte | Musique |
 |---|---|
-| `start_town`, `ludo_house`, `ludo_bedroom`, `orange_house_north`, `orange_house_south` | `new_bark_town` |
+| `start_island`, `ludo_house`, `ludo_bedroom`, `orange_house_north`, `orange_house_south` | `new_bark_town` |
 | `library` | `sprout_tower` |
 | `lab_house` | `elm_lab` |
-| `cave_1f`, `cave_b1f`, `cave_b2f` | `union_cave` |
 
 L'**écran titre** a la sienne, `title`, demandée par `TitleScreen` et non par
 une carte ([title.md](title.md)). Elle s'éteint dans le même fondu quand la

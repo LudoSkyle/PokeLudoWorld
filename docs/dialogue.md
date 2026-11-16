@@ -117,7 +117,7 @@ Vérifié par `tests/run.sh message_box_pages`.
 
 **Un panneau est un objet, pas une tuile.** Une tuile porterait son texte dans
 le TileSet, donc *tous* les panneaux du jeu diraient la même chose. Les deux
-panneaux de `start_town` étaient des tuiles `5:81,7` du calque `Props` ; ils ont
+panneaux de l'ancien village étaient des tuiles `5:81,7` du calque `Props` ; ils ont
 été retirés des données de tuiles et remplacés par des instances.
 
 Ils vivent dans `World` pour être triés en Y, à la position du **centre de leur

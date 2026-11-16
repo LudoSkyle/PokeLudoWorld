@@ -97,8 +97,8 @@ Level (Node2D)
 les sorties des intérieurs. **Une nouvelle partie commence dans la chambre de
 Ludo** (`ludo_bedroom.tscn`, `SceneManager.start_scene`), debout au milieu du
 tapis bleu, case (15,11), tourné vers le bas : on descend l'escalier, on sort
-de la maison, et l'on arrive sur l'île devant chez Ludo. L'ancien village, `start_town.tscn`, est gardé tel quel : plus rien
-n'y mène, mais la plupart des tests de mécanique s'en servent encore.
+de la maison, et l'on arrive sur l'île devant chez Ludo. L'ancien village (`start_town`) et sa grotte ont été supprimés : les tests du
+système se jouent sur un terrain d'essai ([verification.md](verification.md)).
 
 Elle est composée selon [mapping.md](mapping.md) : une baie intérieure
 entourée de terres, pas une île au milieu de l'eau. Du relief partout : chaque
@@ -216,20 +216,17 @@ ramasser, la quête en trois temps, et le vol des oiseaux.
 
 ## Les intérieurs
 
-Six cartes : quatre pour les trois bâtiments du village, deux pour les maisons
-orange de l'île.
+Six cartes : quatre pour la maison de Ludo (salon et chambre), la bibliothèque
+et le laboratoire, deux pour les maisons orange. Leurs sorties mènent toutes à
+**l'île** (`start_island`), sur des portes de même nom.
 
-Les sorties des trois bâtiments mènent maintenant à **l'île**
-(`start_island`), sur des portes de même nom ; le tableau donne leurs cases
-sur l'ancien village.
+| Bâtiment | Carte |
+|---|---|
+| **Chez Ludo** | `ludo_house` (salon) + `ludo_bedroom` (étage) |
+| **la bibliothèque** | `library`, de plain-pied — plan dans [quests.md](quests.md) |
+| **le laboratoire**, à la Poké Ball | `lab_house` |
 
-| Bâtiment sur `start_town` | Porte (case) | Carte |
-|---|---|---|
-| maison en bas à gauche — **Ludo** | `MaisonLudo` (8,15) | `ludo_house` (salon) + `ludo_bedroom` (étage) |
-| maison du centre — **la bibliothèque** | `Bibliotheque` (21,13) | `library`, de plain-pied — plan dans [quests.md](quests.md) |
-| grand bâtiment en haut à droite, à la Poké Ball — **le laboratoire** | `Laboratoire` (28,7) | `lab_house` |
-
-Les deux maisons orange n'existent que sur l'île. Le paillasson de chacune
+Le paillasson de chacune
 (`Doors/Entree`) ramène sur `start_island`, à la porte dont le nom suit :
 
 | Maison sur `start_island` | Porte visée | Carte | Pièce | Habitant |
@@ -432,47 +429,6 @@ tapis et on avance vers l'escalier. On arrive sur le tapis de l'autre étage,
 tourné vers la pièce. Comme pour le paillasson, traverser le tapis ou s'y
 arrêter ne déclenche rien. Depuis la case du dessous, avancer vers la gauche
 ne prend pas l'escalier : on passe simplement devant.
-
-## La grotte
-
-Trois cartes, sur le modèle du Mont Sélénite (Rouge Feu) :
-
-| Carte | Forme |
-|---|---|
-| `cave_1f` | une grande salle ouverte coupée de crêtes rocheuses ; la sortie en bas |
-| `cave_b1f` | deux boyaux **isolés dans le noir**, sans lien entre eux |
-| `cave_b2f` | une salle autour d'un lac souterrain |
-
-```
-village ── Sortie ── 1F ── TunnelA ── B1F ouest ── TunnelC ──┐
-                      └─── TunnelB ── B1F est ──── TunnelD ── B2F
-```
-
-On descend par un tunnel et on remonte par l'autre : les deux boyaux du
-sous-sol ne communiquent que par le niveau du dessus ou celui du dessous.
-
-**Les niveaux se relient par des bouches de tunnel**, percées dans une paroi
-nord, et non par des échelles : l'atlas n'a pas de tuile d'échelle. Une bouche
-est une porte à contact ; on en ressort une case en dessous, dos à elle.
-
-La sortie du 1F est un couloir qui file jusqu'au bas de la carte : ses deux
-dernières cases sont des *sorties* (`exit_direction` vers le bas).
-
-### Les tuiles
-
-`assets/levels/cave.png` (source `8`) : la roche grise de `environments.png`
-recopiée, plus une tuile.
-
-- **Pourquoi une copie.** Dans l'atlas d'origine ce bloc est décalé d'un pixel :
-  la première rangée et la première colonne de pixels appartiennent aux dessins
-  voisins, ce qui trace des liserés bleus et noirs en jeu.
-- **La tuile en plus est le sol.** C'est le dessus du massif, qui se répète sans
-  raccord — mais en tuile à part, car celle du massif est solide et tout le sol
-  le devenait.
-
-Une salle est une cuvette : sol au centre, parois autour, noir au-delà. Les
-parois se déduisent du voisinage de chaque case de roche ; une paroi doit faire
-au moins deux cases d'épaisseur entre deux salles.
 
 ## Tester une carte
 
