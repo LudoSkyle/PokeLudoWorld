@@ -356,7 +356,7 @@ gender = "male"
 appearance = "frlg_ruinmaniac"
 facing = Vector2(1, 0)
 text = "Ces eaux, j'y ai plongé vingt ans.|Elles ont encore des choses à dire, je le sens."
-states = PackedStringArray("bell_register > Sous le ponton de l'ouest, là où l'eau est profonde...|...il y a quelque chose qui accroche la lumière.|Moi, je n'y plonge plus. Trop froid, trop de courant.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe au-dessus.")
+states = PackedStringArray("bell_register > @flag:bell_spotted Sous le ponton de l'ouest, là où l'eau est profonde...|...il y a quelque chose qui accroche la lumière.|Moi, je n'y plonge plus. Trop froid, trop de courant.", "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe au-dessus.")
 forbidden_flag = "bell_hung"
 
 [node name="GrassWatcher" parent="World/Entities" instance=ExtResource("4_npc")]
@@ -649,6 +649,7 @@ position = Vector2(312, 408)
 kind = "item"
 text = "Quelque chose brille au fond de l'eau, juste sous le ponton.|@give:tarnished_bell Vous repêchez la Cloche ternie !|Un banc de poissons s'éparpille dans l'eau sombre."
 flag = "bell_tarnished"
+required_flag = "bell_spotted"
 
 [node name="Glint" type="Polygon2D" parent="Readables/Bell"]
 color = Color(1, 1, 0.85, 0.9)

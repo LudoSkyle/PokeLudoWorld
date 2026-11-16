@@ -133,7 +133,7 @@ l'ouest, l'est et le sud.
 | la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
 | la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; le bout de la route en y 0 |
 | la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
-| la cloche | (19,25), dans l'eau | se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
+| la cloche | (19,25), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
 | la jetée du sud | x 30–31, y 42–43 | le pêcheur est au bout ; des caisses sur le quai |
 | hautes herbes | x 6–12, y 39–42 ; (12–15,15–16) ; (26–28,6–7) | |
 | objets à ramasser | Potion en (55,32), Poké Ball en (5,40) | une Poké Ball posée au sol ([quests.md](quests.md)) |

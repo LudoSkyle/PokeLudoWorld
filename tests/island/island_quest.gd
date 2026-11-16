@@ -22,7 +22,10 @@ func crowd() -> int:
 	return n
 
 func test() -> void:
-	# Sous le ponton : on repeche la cloche en regardant l'eau, vers le nord.
+	# Sous le ponton : on repeche la cloche en regardant l'eau, vers le nord. Roland a dit ou
+	# chercher (island_bell_hint joue cet echange) : ici son indice est pose d'office.
+	set_flag("bell_spotted")
+	await wait(4)
 	check("la cloche n'est pas encore trouvee", not flag("bell_tarnished"))
 	await interact_facing("ui_up")
 	await wait_text("Quelque chose brille au fond de l'eau, juste sous le ponton.")

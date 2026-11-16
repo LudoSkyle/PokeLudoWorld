@@ -13,9 +13,10 @@ import fr.skyle.pokeludoworld.scripts.ui.N
  * repartir de zéro, depuis l'entrée Debug du menu de pause.
  *
  * [label] est son nom, en français, traduit à l'affichage. [epilogue] liste les
- * drapeaux que la suite de l'histoire pose d'elle-même une fois la quête finie
- * (la fin de la Veillée, quand on quitte l'île) : aucune étape ne les pose,
- * mais repartir de zéro les retire aussi.
+ * drapeaux que l'histoire pose en marge des étapes — un indice entre deux
+ * étapes (Roland dit où est la cloche), la suite une fois la quête finie (la
+ * fin de la Veillée, quand on quitte l'île) : aucune étape ne les pose, mais
+ * repartir de zéro les retire aussi.
  */
 class Quest(val id: String, val label: String, private val steps: List<Step>, private val epilogue: List<String> = emptyList()) {
 
@@ -78,7 +79,7 @@ object Quests {
 			Quest.Step("bell_ribbon", gives = listOf("vigil_ribbon")),
 			Quest.Step("bell_hung", takes = listOf("clear_bell")),
 		),
-		epilogue = listOf("vigil_over"),
+		epilogue = listOf("bell_spotted", "vigil_over"),
 	)
 
 	val ALL = listOf(BELL)
