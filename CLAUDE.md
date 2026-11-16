@@ -29,7 +29,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | textes, traductions | [docs/i18n.md](docs/i18n.md) |
 | sauvegarde, reprise au lancement | [docs/save.md](docs/save.md) |
 | commits, branches, PRs | [docs/commits.md](docs/commits.md) |
-| vérifier un rendu ou une collision | [docs/verification.md](docs/verification.md) |
+| vérifier un rendu ou une collision, écrire un test, le terrain d'essai | [docs/verification.md](docs/verification.md) |
 
 ## Où sont les choses
 

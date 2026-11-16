@@ -3,10 +3,10 @@ extends "res://tests/lib.gd"
 # Recevoir un objet : la musique se met en pause, le jingle joue, la musique reprend.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func test() -> void:
-	await spawn("sign", "Giver", Vector2i(35, 11), {"text": "@give:old_rod Vous recevez la Vieille canne !|@give:potion Vous recevez une Potion !|Voila."})
+	await spawn("sign", "Giver", Vector2i(14, 7), {"text": "@give:old_rod Vous recevez la Vieille canne !|@give:potion Vous recevez une Potion !|Voila."})
 	var starts: int = audio().music_starts()
 	await interact_facing("ui_up")
 	await secs(0.5)

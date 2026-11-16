@@ -3,10 +3,10 @@ extends "res://tests/lib.gd"
 # Dehors, la teinte suit l'heure : quatre moments, et des passages progressifs.
 
 func start() -> Vector2i:
-	return Vector2i(30, 16)
+	return Vector2i(11, 11)
 
 func test() -> void:
-	check("la carte du village porte la teinte du jour", level().get_node_or_null("Daylight") != null)
+	check("une carte d'exterieur porte la teinte du jour", level().get_node_or_null("Daylight") != null)
 	await set_hour(12.0)
 	check("en plein jour : le decor est tel qu'il est dessine", daylight().is_equal_approx(Color.WHITE), str(daylight()))
 	shot("heure_jour")

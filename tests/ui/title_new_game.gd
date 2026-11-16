@@ -40,7 +40,7 @@ func test() -> void:
 	check("Nouvelle partie : la selection se ferme", not slots().visible)
 	await title_gone()
 	check("la partie est lancee : l'ecran titre a disparu", not title_shown())
-	check("on est sur la carte de depart", level() != null and level().scene_file_path.ends_with("start_town.tscn"), "" if level() == null else level().scene_file_path)
+	check("on est sur la carte de depart", level() != null and level().scene_file_path.ends_with("field.tscn"), "" if level() == null else level().scene_file_path)
 	check("le joueur est la", player() != null)
 	await walk("la partie lancee : on marche", two_steps_from(cell()), false)
 	await menu_pick("Save")

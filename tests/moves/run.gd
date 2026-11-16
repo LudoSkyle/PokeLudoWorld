@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Courir : la touche de course tenue, on va deux fois plus vite ; relachee, on remarche.
 
 func start() -> Vector2i:
-	return Vector2i(6, 8)
+	return Vector2i(2, 2)
 
 # Tient une direction pendant t secondes et renvoie le nombre de cases parcourues.
 func travel(action: String, t: float) -> int:
@@ -40,7 +40,7 @@ func test() -> void:
 	var poses := await poses_while("ui_right", 0.6)
 	check("en marchant : la pose de marche, jamais celle de course", poses.has("walk_right") and not poses.has("run_right"), str(poses.keys()))
 	check("le pas est a l'allure de la marche", is_equal_approx(player().get_node("Movement").tiles_per_second, 4.0))
-	await walk("retour au depart", Vector2i(6, 8), false)
+	await walk("retour au depart", Vector2i(2, 2), false)
 	Input.action_press("run")
 	var ran: int = await travel("ui_right", 1.5)
 	check("touche de course tenue : deux fois plus vite", ran >= 10 and ran <= 13, "%d cases" % ran)

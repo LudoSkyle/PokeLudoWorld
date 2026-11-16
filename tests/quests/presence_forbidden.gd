@@ -3,15 +3,15 @@ extends "res://tests/lib.gd"
 # forbidden_flag : une fois son drapeau pose, le noeud n'est plus sur la carte.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func test() -> void:
-	var cells := {"npc": Vector2i(35, 11), "readable": Vector2i(36, 11), "sign": Vector2i(37, 11), "roadblock": Vector2i(38, 11)}
+	var cells := {"npc": Vector2i(14, 7), "readable": Vector2i(15, 7), "sign": Vector2i(16, 7), "roadblock": Vector2i(17, 7)}
 	var before := {}
 	for kind in cells:
 		before[kind] = await spawn(kind, "Before_" + kind, cells[kind], {"forbidden_flag": "test_gone", "text": "Encore là."} if kind != "roadblock" else {"forbidden_flag": "test_gone"})
 		check("sans le drapeau : le %s est la" % kind, is_instance_valid(before[kind]))
-	await talk("il parle", Vector2i(35, 12), "ui_up", "Before_npc", "encore là", "idle_down")
+	await talk("il parle", Vector2i(14, 8), "ui_up", "Before_npc", "encore là", "idle_down")
 	set_flag("test_gone")
 	# La presence se decide au chargement de la carte : ceux qui y sont deja
 	# restent jusqu'a ce qu'on la quitte.
@@ -23,4 +23,4 @@ func test() -> void:
 		var node := await spawn(kind, "After_" + kind, cells[kind], {"forbidden_flag": "test_gone"})
 		check("avec le drapeau : plus de %s" % kind, not is_instance_valid(node))
 		check("avec le drapeau : la case du %s est libre" % kind, is_free(cells[kind]))
-	await walk("on passe la ou il se tenait", Vector2i(35, 10), false)
+	await walk("on passe la ou il se tenait", Vector2i(14, 6), false)

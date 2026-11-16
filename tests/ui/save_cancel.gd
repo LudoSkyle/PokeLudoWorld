@@ -5,7 +5,7 @@ extends "res://tests/lib.gd"
 func test() -> void:
 	await menu_pick("Save")
 	check("le resume s'affiche, le menu lui laisse la place", save_summary().visible and not menu_open())
-	check("le resume donne le lieu", save_summary().get_node("Location").text == "Bourg-Ludo", save_summary().get_node("Location").text)
+	check("le resume donne le lieu", save_summary().get_node("Location").text == "Terrain d'essai", save_summary().get_node("Location").text)
 	check("le resume donne le temps de jeu", save_summary().get_node("Time").text == "00:00", save_summary().get_node("Time").text)
 	await wait_choices()
 	check("la question est posee", box().visible and box_text() == "Voulez-vous sauvegarder la partie ?", box_text())

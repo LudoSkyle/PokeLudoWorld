@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Choisir la langue : les menus et les dialogues changent aussitot, le reglage est enregistre.
 
 func start() -> Vector2i:
-	return Vector2i(6, 16)
+	return Vector2i(22, 4)
 
 func read_sign() -> String:
 	await tap("ui_up")
@@ -25,7 +25,7 @@ func test() -> void:
 	await tap("ui_right")
 	check("Droite : English", options_language() == "English" and TranslationServer.get_locale() == "en", TranslationServer.get_locale())
 	shot("options_english")
-	check("les libelles des menus sont traduits", game.tr("Vitesse du texte") == "Text speed" and game.tr("Sac") == "Bag" and game.tr("Bourg-Ludo") == "Ludo Town")
+	check("les libelles des menus sont traduits", game.tr("Vitesse du texte") == "Text speed" and game.tr("Sac") == "Bag" and game.tr("Maison de Ludo") == "Ludo's House")
 	var saved := ConfigFile.new()
 	saved.load("user://test_settings.cfg")
 	check("le reglage est enregistre", saved.get_value("options", "language", "") == "en", str(saved.get_value("options", "language", "")))

@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Regler la vitesse du texte : Gauche/Droite, bornes, effet sur la boite, enregistrement.
 
 func start() -> Vector2i:
-	return Vector2i(6, 16)
+	return Vector2i(22, 4)
 
 func speed_is(node: String, seconds: float) -> bool:
 	return options_speed() == node and is_equal_approx(letter_seconds(), seconds)

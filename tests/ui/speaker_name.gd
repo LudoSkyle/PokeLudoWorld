@@ -3,13 +3,13 @@ extends "res://tests/lib.gd"
 # Le nom de celui qui parle s'affiche dans un encart au-dessus de la boite, a gauche.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func test() -> void:
-	await spawn("npc", "Named", Vector2i(35, 11), {"display_name": "Camille", "gender": "female", "text": "Bonjour.|@give:potion Vous recevez une Potion !|Prends-en soin."})
-	await spawn("npc", "Nameless", Vector2i(36, 12), {"text": "Je n'ai pas de nom."})
-	await spawn("npc", "Man", Vector2i(35, 13), {"display_name": "Basile", "gender": "male", "text": "Salut."})
-	await spawn("npc", "Neutral", Vector2i(38, 13), {"display_name": "Le Guide", "text": "Par ici."})
+	await spawn("npc", "Named", Vector2i(14, 7), {"display_name": "Camille", "gender": "female", "text": "Bonjour.|@give:potion Vous recevez une Potion !|Prends-en soin."})
+	await spawn("npc", "Nameless", Vector2i(15, 8), {"text": "Je n'ai pas de nom."})
+	await spawn("npc", "Man", Vector2i(14, 9), {"display_name": "Basile", "gender": "male", "text": "Salut."})
+	await spawn("npc", "Neutral", Vector2i(17, 9), {"display_name": "Le Guide", "text": "Par ici."})
 	check("boite fermee : pas d'encart", speaker_name() == "")
 	await interact_facing("ui_up")
 	await wait_text("Bonjour.")
@@ -38,7 +38,7 @@ func test() -> void:
 	check("un homme : son nom en bleu", speaker_name() == "Basile" and speaker_color() == "blue", speaker_color())
 	shot("nom_bleu")
 	await close_box()
-	await place(Vector2i(37, 13))
+	await place(Vector2i(16, 9))
 	await interact_facing("ui_right")
 	await wait_text("Par ici.")
 	check("un nom sans genre : a l'encre du texte", speaker_name() == "Le Guide" and speaker_color() == "ink", speaker_color())

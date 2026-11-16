@@ -28,7 +28,7 @@ extends SceneTree
 func _initialize() -> void: _run.call_deferred()
 func _run() -> void:
     root.size = Vector2i(768, 448)
-    var level := load("res://.../start_town.tscn").instantiate()
+    var level := load("res://.../start_island.tscn").instantiate()
     root.add_child(level)
     await process_frame
     root.get_texture().get_image().save_png("user://shot.png")
@@ -93,13 +93,13 @@ sont listés dans [levels.md](levels.md).
 
 Un test vérifie **une seule chose** — un dialogue, une porte, une pièce, un
 déplacement — et dure de 5 à 20 secondes. Il démarre directement sur sa carte
-et sa case, sans rejouer le trajet depuis le village.
+et sa case, sans rejouer de trajet.
 
 ```bash
 tests/run.sh dialogue/fisher     # un test
 tests/run.sh fisher lab_clock    # pareil, par leur nom seul
 tests/run.sh doors               # tout un dossier
-tests/run.sh doors/cave          # ceux dont le chemin commence ainsi
+tests/run.sh doors/ludo          # ceux dont le chemin commence ainsi
 tests/run.sh audit               # accessibilité des cartes fermées
 tests/run.sh --list              # la liste
 tests/run.sh                     # tout : 6 minutes, à éviter
@@ -107,15 +107,52 @@ tests/run.sh                     # tout : 6 minutes, à éviter
 
 | Dossier | Un fichier par… | Exemples |
 |---|---|---|
-| `dialogue/` | personnage ou objet à qui l'on parle | `fisher`, `guard_north`, `runner_hailed`, `sign_ludo`, `tv`, `lab_clock` |
+| `dialogue/` | personnage ou objet à qui l'on parle | `fisher`, `guard_north`, `runner_hailed`, `sign`, `tv`, `lab_clock` |
 | `moves/` | déplacement qu'on veut voir | `runner_loop`, `runner_blocked`, `grass_wander`, `roadblock` |
-| `doors/` | porte, dans un sens | `ludo_enter`, `ludo_stairs_up`, `cave_tunnel_a`, `lab_exit` |
-| `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `cave_lake`, `npcs` |
-| `ui/` | comportement d'interface | `banner_town`, `banner_same_place`, `title_new_game` |
+| `doors/` | porte, dans un sens | `enter`, `enter_held`, `ludo_stairs_up`, `lab_exit` |
+| `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `npcs` |
+| `ui/` | comportement d'interface | `banner_arrival`, `banner_same_place`, `title_new_game` |
 | `quests/` | brique du moteur de quêtes, sur des nœuds posés par le test (`spawn`) | `flag_saved`, `npc_states`, `item_found`, `ask_yes`, `library_register` |
-| `audio/` | ce qu'on entend : musique d'un lieu, jingle, bruitage | `music_house`, `jingle_item`, `sfx_bump` |
+| `audio/` | ce qu'on entend : musique d'un lieu, jingle, bruitage | `music_shared`, `music_change`, `jingle_item`, `sfx_bump` |
 | `daynight/` | la teinte du dehors selon l'heure, les lampadaires, les fenêtres | `tint`, `lamps`, `windows` |
 | `audit/` | grille de collisions : arrivées libres, portes reliées | `tests/run.sh audit` |
+
+### Le terrain d'essai, et les cartes du jeu
+
+Deux sortes de tests, sur deux sortes de cartes :
+
+- **ce qui vérifie le système du jeu** — déplacements, dialogues, menus,
+  portes, sons, jour et nuit, moteur de quêtes — se joue sur **le terrain
+  d'essai**, `tests/maps/field.tscn` : c'est la carte par défaut d'un test.
+  24 × 16 cases, presque un écran : tout y est à quelques pas, un test n'y
+  marche jamais longtemps ;
+- **ce qui vérifie une carte ou une quête du jeu** se joue sur cette carte,
+  nommée par `scene()` : `tests/island/` pour l'île, les portes et les pièces
+  des intérieurs, la bibliothèque et son Registre.
+
+Le terrain d'essai ne fait pas partie du jeu : aucune porte n'y mène. Il est
+fabriqué par `tests/maps/build.py`, dont l'en-tête donne le plan case par
+case ; on y trouve, à des cases fixes :
+
+| Quoi | Où | Pour quels tests |
+|---|---|---|
+| deux gardes et leur passage | (1,1), (1,3), le passage en (1,2) | `moves/roadblock`, `dialogue/guard_*` |
+| un couloir dégagé de 14 cases | la rangée 2, de x = 2 à 15 | `moves/run` |
+| de hautes herbes, un chasseur qui y erre | x 5–11, y 6–8 ; lui part de (8,7) | `moves/grass_*`, `moves/wild_encounter` |
+| une zone libre où les tests posent leurs nœuds (`spawn`) | x 13–18, y 5–10 ; on s'y tient en (14,8) | `quests/`, `ui/speaker_name`, `audio/jingle_item` |
+| le coureur et sa boucle à deux voies | x 19–22, y 6–12 | `moves/runner_*`, `dialogue/runner_*` |
+| un étang : rive, eau claire, eau profonde, un pêcheur | x 2–7, y 11–14 ; lui en (4,13) | `dialogue/fisher`, `moves/water_moves` |
+| deux lampadaires, une maison à fenêtre | (9,11), (15,11) ; la maison en x 16–19, y 0–4 | `daynight/` |
+| un banc, un panneau | (2,5)–(3,5) ; (22,3) | `audio/sfx_bump`, `dialogue/sign`, `ui/options_*` |
+| deux portes | `Cabane` (21,1), `Salle` (17,4) | `doors/enter*`, `audio/music_*`, `ui/banner_enter` |
+
+Les deux portes mènent à deux pièces nues, `tests/maps/room.tscn` (la cabane,
+qui a la musique du terrain) et `tests/maps/hall.tscn` (la salle, qui a la
+sienne) : de quoi vérifier qu'une musique continue d'une carte à l'autre, ou
+change.
+
+**Déplacer un élément du terrain, c'est reprendre les tests qui visent sa
+case.** En ajouter un se fait dans `build.py`, sur une case libre.
 
 **Ne lancer que les tests de ce qu'on vient de toucher** : on déplace le
 pêcheur, on lance `fisher` et `collisions/npcs`, rien d'autre. Si un mécanisme
@@ -132,14 +169,14 @@ extends "res://tests/lib.gd"
 
 # Le pecheur : il repond, puis se retourne vers l'eau.
 
-func scene() -> String:            # carte de depart ; start_town par defaut
-	return "start_town"
+func scene() -> String:            # carte de depart ; le terrain d'essai par defaut
+	return "field"
 
 func start() -> Vector2i:          # case de depart ; l'apparition par defaut
-	return Vector2i(40, 16)
+	return Vector2i(4, 12)
 
 func test() -> void:
-	await talk("pecheur", Vector2i(40, 16), "ui_down", "Fisher", "mord", "idle_up")
+	await talk("pecheur", Vector2i(4, 12), "ui_down", "Fisher", "mord", "idle_up")
 ```
 
 `scene()` et `start()` posent le joueur : c'est une mise en place. Tout ce qui
@@ -182,7 +219,7 @@ chemin. Les deux tenaient sur quelques dizaines de pixels.
 La méthode qui marche :
 
 1. Calculer par programme **toutes** les cases où deux calques se recouvrent.
-   Sur `start_town` il n'y en a que 11.
+   Sur une petite carte il n'y en a qu'une dizaine.
 2. Zoomer sur chacune, une par une.
 3. Comparer au rendu d'avant la modification par un **diff case par case** sur
    toute la map, et annoncer le chiffre.

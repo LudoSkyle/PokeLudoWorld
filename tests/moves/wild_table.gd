@@ -6,7 +6,7 @@ extends "res://tests/lib.gd"
 const LEVELS_DIR := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
 
 func start() -> Vector2i:
-	return Vector2i(12, 5)
+	return Vector2i(12, 8)
 
 func counts(draws: Array) -> Dictionary:
 	var seen := {}
@@ -80,4 +80,4 @@ func test() -> void:
 		if rate > 0:
 			peopled += 1
 	check("toutes les cartes ont une table juste", bad.is_empty(), "\n".join(bad))
-	check("Bourg-Ludo est peuple", peopled >= 1, str(peopled))
+	check("au moins une carte du jeu est peuplee", peopled >= 1, str(peopled))

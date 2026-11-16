@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Les fenetres des maisons s'allument la nuit : la vitre vire au jaune, le mur garde la teinte.
 
 func start() -> Vector2i:
-	return Vector2i(22, 15)
+	return Vector2i(18, 6)
 
 # Couleur a l'ecran d'un pixel du monde (repere de la carte).
 func pixel(img: Image, world: Vector2) -> Color:
@@ -12,9 +12,9 @@ func pixel(img: Image, world: Vector2) -> Color:
 	return img.get_pixel(int(at.x) + 2, int(at.y) + 2)
 
 func test() -> void:
-	# La vitre de la bibliotheque : 10x7 pixels a partir de (358, 211).
-	var glass := Vector2(362, 214)
-	var wall := Vector2(350, 214)
+	# La vitre de la maison : 10x7 pixels a partir de (294, 67).
+	var glass := Vector2(298, 70)
+	var wall := Vector2(286, 70)
 	await set_hour(12.0)
 	await secs(0.3)
 	var day := root.get_texture().get_image()
@@ -27,7 +27,7 @@ func test() -> void:
 	check("de nuit : la vitre est eclairee, jaune et claire", lit.r > 0.8 and lit.g > 0.6 and lit.b < lit.r - 0.2, str(lit))
 	check("elle n'est pas assombrie par la nuit", lit.get_luminance() > pixel(day, glass).get_luminance() * 0.9, "%.2f contre %.2f de jour" % [lit.get_luminance(), pixel(day, glass).get_luminance()])
 	check("le mur a cote reste dans la nuit", pixel(night, wall).get_luminance() < pixel(day, wall).get_luminance(), "%s / %s" % [pixel(night, wall), pixel(day, wall)])
-	var glow: PointLight2D = level().get_node("World/GlowLibrary")
+	var glow: PointLight2D = level().get_node("World/GlowHouse")
 	check("la fenetre repand sa lueur", glow.visible and glow.energy > 0.5, str(glow.energy))
 	await set_hour(19.0)
 	await secs(0.3)
