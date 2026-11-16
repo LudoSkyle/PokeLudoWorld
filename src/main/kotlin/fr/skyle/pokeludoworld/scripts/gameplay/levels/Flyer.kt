@@ -30,6 +30,10 @@ import kotlin.random.Random
  * Son image vient de `assets/pokemon/overworld/<species>.png` : un bloc de
  * 64 × 128, deux colonnes de quatre images de 32 × 32 (dos, dos, face, face /
  * gauche, gauche, droite, droite).
+ *
+ * Il n'a pas de reflet : trop haut, et de lui on ne voit déjà, sur terre,
+ * qu'une tache d'ombre. Au-dessus de l'eau c'est donc son **ombre qui bleuit**
+ * — `WaterShadow.kt`, le nœud `Shade` de sa scène.
  */
 @Script
 class Flyer : Node2D() {

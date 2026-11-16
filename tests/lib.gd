@@ -609,6 +609,8 @@ const SPAWNABLE := {
 	"readable": [SCENES + "levels/readable.tscn", "World"],
 	"sign": [SCENES + "levels/sign.tscn", "World"],
 	"roadblock": [SCENES + "levels/roadblock.tscn", "Triggers"],
+	# Un Pokemon volant : sur l'ile il vit sous "Sky", que le terrain d'essai n'a pas.
+	"flyer": [SCENES + "levels/flyer.tscn", "World"],
 }
 
 # Pose un noeud sur une case. props : ses proprietes telles qu'un .tscn les
