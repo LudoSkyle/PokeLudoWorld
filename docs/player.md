@@ -123,6 +123,40 @@ d'où le zigzag. En courant, les paires se suivent deux fois plus vite.
 
 `tests/run.sh moves/footprints` : le sable garde, l'herbe non, tout s'efface.
 
+## Le reflet dans l'eau
+
+Au bord de l'eau, un personnage s'y reflète **en temps réel** : le reflet
+reprend à chaque frame l'image du moment — même pose, même direction, même
+instant —, retournée, pâlie et tirée vers le bleu. Marcher, courir ou pivoter
+se voit aussitôt dans l'eau.
+
+- C'est le nœud `Mirror` (`Reflection.kt`), posé comme `Grass` et `Steps` ;
+  le joueur et les PNJ en ont un. **Les Pokémon qui volent, non** : trop haut,
+  et de l'un d'eux on ne voit déjà qu'une ombre — sur l'eau elle bleuit, c'est
+  tout ([npcs.md](npcs.md)).
+- Le reflet est le **miroir de la ligne où le personnage touche le sol**
+  (`ground_offset` : ses pieds, soit 8 px sous son origine). `lift` le remonte
+  de 5 px pour le coller aux pieds — le bas d'une image de personnage est
+  transparent sur deux ou trois pixels, et le miroir double cet écart.
+- Il n'apparaît que si **la case qui commence sous cette ligne est de l'eau**,
+  ce que déclare la donnée perso `water` de la tuile
+  ([tilesets.md](tilesets.md)) : au-dessus du sable ou d'un ponton, rien.
+- Les reflets vivent dans un `Background/Reflections` créé au besoin, **juste
+  au-dessus du calque d'eau**. Le sable, les pontons et le reste du décor se
+  dessinant par-dessus, un reflet qui déborde sur le côté est recouvert sans
+  qu'on ait à s'en occuper.
+- **On ne montre du reflet que ce qui tombe dans l'eau** : on cherche la nappe
+  d'eau sous la ligne de sol, et l'image est coupée à ses deux bords. C'est ce
+  qui le fait **émerger au fil du pas** — en approchant du bord, le sommet de
+  la tête sort le premier, puis le reflet remonte jusqu'aux pieds à mesure
+  qu'on avance ; il n'apparaît jamais d'un bloc. À l'autre bout, au bord d'une
+  eau basse (le sud de l'étang du terrain d'essai, une seule case sous les
+  pieds), il s'arrête à la berge au lieu d'y baver.
+- Il **balance d'un pixel** au rythme des rides de l'eau (quatre crans par
+  seconde, comme `water.gdshader`), de quoi ne pas avoir l'air collé.
+
+`tests/run.sh visuals/reflection` : au bord de l'eau oui, sur le sable non.
+
 ## Collisions
 
 Le joueur interroge la case visée avec `intersect_point` sur le **masque 1**,

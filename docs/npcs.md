@@ -168,6 +168,23 @@ décor, sous le voile du dehors). **Ce sont des décors** : aucun corps, on ne
 les heurte pas, on ne leur parle pas, ils survolent la mer comme la terre. Une
 ombre au sol, sous chacun, dit qu'il est en l'air.
 
+Au-dessus de l'eau, **cette ombre bleuit** : elle passe du noir translucide à un
+turquoise sombre (`WaterShadow.kt`, le nœud `Shade` de sa scène ; `on_land` et
+`on_water` en règlent les deux couleurs). Elle garde sa forme et sa place sous
+lui, et reprend sa couleur dès qu'il repasse au-dessus de la terre.
+
+**Il n'a pas de reflet**, contrairement au joueur et aux PNJ
+([player.md](player.md)). Deux raisons, trouvées en essayant : de lui on ne
+voit déjà, sur terre, qu'une tache d'ombre — pas une silhouette dont l'eau
+pourrait rendre le détail —, et il vole trop haut pour qu'un reflet au pixel
+près veuille dire quelque chose. Ce qu'on voit sous lui reste donc une ombre,
+mais l'eau ne l'avale pas comme la terre : elle la teinte. Le turquoise a été
+choisi sur rendu parmi trois ; un bleu franc faisait une tache qui tirait l'œil
+plus que l'oiseau.
+
+`tests/run.sh visuals/flyer_shadow` pose deux volants qui planent sur place,
+l'un sur l'étang, l'autre sur l'herbe.
+
 | Réglage | Rôle |
 |---|---|
 | `species` | le fichier de `assets/pokemon/overworld/`, sans extension : `wingull` (Goélise), `pelipper` (Bekipan) |

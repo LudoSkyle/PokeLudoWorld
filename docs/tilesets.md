@@ -188,8 +188,8 @@ Le même calque sert de zone d'errance à un PNJ ([npcs.md](npcs.md)).
 
 ## Le sable qui garde les pas
 
-Une tuile de sable porte la donnée perso **`sand`** — la seule couche de données
-du TileSet (`custom_data_layer_0`, type booléen) :
+Une tuile de sable porte la donnée perso **`sand`** — la première des deux
+couches de données du TileSet (`custom_data_layer_0`, type booléen) :
 
 ```
 11:14/0/custom_data_0 = true
@@ -236,6 +236,21 @@ rivage, le sable ne bouge pas ; sur le lac de la grotte, la vase non plus.
 **Une nouvelle tuile d'eau ne bouge pas tant qu'on ne lui a pas donné ce
 matériau** — une ligne, comme pour une collision. `steps_per_second` et
 `strength` se règlent sur le matériau.
+
+### L'eau où l'on se mire
+
+Une seconde donnée perso, **`water`** (`custom_data_layer_1`, booléen), dit
+qu'une tuile est de l'eau **pleine** : on s'y reflète. Cinq tuiles la portent —
+la mer `5:6,32`, l'eau claire `5:9,31`, l'eau profonde `5:5,34` `5:6,34`
+`5:6,35`.
+
+**Ni le rivage ni les tuiles mixtes** : `5:15-17,31-33` sont à moitié du sable,
+et portent déjà `sand`. Une tuile est l'un ou l'autre — ce qui se foule, ou ce
+dans quoi on se mire.
+
+Un personnage posé au bord d'une de ces cases y voit son reflet, en temps réel
+([player.md](player.md)) ; là encore c'est **le calque le plus haut** qui
+décide, donc une planche de ponton posée sur l'eau ne reflète rien.
 
 ## Les terrains de l'île
 
@@ -396,5 +411,6 @@ Une couche de données perso **`LEDGE`** (type String, valeurs `"DOWN"`,
 `"LEFT"`, `"RIGHT"`). Le tutoriel l'interroge dans `CharacterMovement.cs` quand
 le joueur touche une tuile : si la direction correspond, il saute le talus au
 lieu d'être bloqué. Nos rebords passent par une seconde couche physique (voir
-« Les rebords ») ; la couche de données, elle, existe maintenant — `sand` est la
-première — donc ajouter `LEDGE` ne demande plus qu'une ligne dans `[resource]`.
+« Les rebords ») ; les couches de données, elles, existent maintenant — `sand`
+et `water` — donc ajouter `LEDGE` ne demande plus qu'une ligne dans
+`[resource]`.

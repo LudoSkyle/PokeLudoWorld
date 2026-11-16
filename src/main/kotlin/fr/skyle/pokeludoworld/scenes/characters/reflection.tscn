@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+; Le reflet d'un personnage dans l'eau : son image du moment, retournée, pâlie
+; et tirée vers le bleu. Reflection.kt la lui donne à chaque frame.
+
+[node name="Reflection" type="Sprite2D"]
+modulate = Color(0.6, 0.8, 1, 0.45)
