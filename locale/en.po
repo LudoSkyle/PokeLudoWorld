@@ -8,15 +8,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Grotte - Entrée"
-msgstr "Cave - Entrance"
-
-msgid "Grotte - Sous-sol 1"
-msgstr "Cave - Basement 1"
-
-msgid "Grotte - Sous-sol 2"
-msgstr "Cave - Basement 2"
-
 msgid "Un serveur qui ronronne doucement."
 msgstr "A server humming quietly."
 
@@ -56,26 +47,17 @@ msgstr "The door is never locked, do come in."
 msgid "Désolé, le passage est fermé."
 msgstr "Sorry, the way is closed."
 
-msgid "C'est dangereux par là : la route n'est pas encore sûre."
-msgstr "It's dangerous over there: the road isn't safe yet."
-
 msgid "Ces herbes sont si hautes qu'on s'y perd."
 msgstr "This grass is so tall you could get lost in it."
 
 msgid "Je cherche des insectes, mais je n'ai encore rien trouvé."
 msgstr "I'm looking for bugs, but I haven't found any yet."
 
-msgid "Pff... pff... Je fais le tour du village tous les matins."
-msgstr "Huff... huff... I run around the village every morning."
-
 msgid "Ne reste pas au milieu du chemin, je perds mon rythme."
 msgstr "Don't stand in the middle of the path, I'm losing my pace."
 
 msgid "Chut... Ça ne mord pas fort aujourd'hui."
 msgstr "Shh... They're not biting much today."
-
-msgid "Il paraît qu'il y a de gros poissons au fond du lac."
-msgstr "They say there are big fish at the bottom of the lake."
 
 msgid "Bourg-Ludo"
 msgstr "Ludo Town"
@@ -395,35 +377,11 @@ msgstr "You received the Vigil Ribbon!"
 msgid "Allez, va. Et sonne fort, que je l'entende d'ici."
 msgstr "Go on, now. And ring it loud, so I can hear it from here."
 
-msgid "Cette grotte, j'y ai passé vingt ans."
-msgstr "I spent twenty years in that cave."
-
-msgid "Elle a encore des choses à dire, je le sens."
-msgstr "It still has things to say, I can feel it."
-
-msgid "Tout en bas, près du lac souterrain..."
-msgstr "All the way down, near the underground lake..."
-
 msgid "...il y a quelque chose qui accroche la lumière."
 msgstr "...there is something that catches the light."
 
-msgid "Moi, j'y descends plus. Trop de noir, trop de cailloux qui bougent."
-msgstr "I don't go down there anymore. Too dark, too many loose stones."
-
 msgid "Alors c'était ça qui brillait."
 msgstr "So that's what was shining."
-
-msgid "Une cloche. Vingt ans que je passe devant."
-msgstr "A bell. Twenty years I've been walking past it."
-
-msgid "Quelque chose est à moitié enfoncé dans la vase."
-msgstr "Something is half buried in the mud."
-
-msgid "Vous trouvez la Cloche ternie !"
-msgstr "You found the Tarnished Bell!"
-
-msgid "Quelque chose file le long de la paroi et disparaît dans le noir."
-msgstr "Something darts along the wall and vanishes into the dark."
 
 msgid "Ah, bonjour ! Ne fais pas attention au désordre."
 msgstr "Ah, hello! Never mind the mess."
@@ -500,12 +458,6 @@ msgstr "I closed the library for tonight."
 msgid "Il y a des choses qu'on n'apprend pas dans les livres."
 msgstr "Some things you don't learn from books."
 
-msgid "Vingt ans que je passais devant sans la voir."
-msgstr "Twenty years I walked past it without seeing it."
-
-msgid "La route de l'ouest est ouverte."
-msgstr "The west road is open."
-
 msgid "On a fini juste à temps pour la Veillée."
 msgstr "We finished just in time for the Vigil."
 
@@ -527,9 +479,6 @@ msgstr "I heard it from here, through the open window."
 msgid "Un son clair. Ma machine n'avait jamais aussi bien servi."
 msgstr "A clear sound. My machine had never been put to better use."
 
-msgid "On l'entendait depuis la route de l'ouest !"
-msgstr "We could hear it from the west road!"
-
 msgid "J'ai traversé toute la forêt pour venir. Ça valait la marche."
 msgstr "I crossed the whole forest to come. It was worth the walk."
 
@@ -547,9 +496,6 @@ msgstr "Had I known, I'd have brought enough to feed all these people."
 
 msgid "Même au dojo, on s'est arrêtés pour écouter."
 msgstr "Even at the dojo, we stopped to listen."
-
-msgid "La route de l'ouest s'enfonce dans la forêt."
-msgstr "The west road runs deep into the forest."
 
 msgid "Le chemin n'est pas encore tracé au-delà."
 msgstr "The way beyond has not been cleared yet."

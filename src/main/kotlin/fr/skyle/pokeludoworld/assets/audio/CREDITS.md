@@ -10,10 +10,10 @@ FREAK), pistes fournies par Ludovic le 14/11/2026.
 
 | Fichier | Piste d'origine | Où on l'entend |
 |---|---|---|
-| `new_bark_town.mp3` | 04. New Bark Town | Bourg-Ludo et la maison de Ludo |
+| `new_bark_town.mp3` | 04. New Bark Town | l'île de Bourg-Ludo et ses maisons |
 | `elm_lab.mp3` | 07. Elm Pokémon Lab | le laboratoire |
 | `sprout_tower.mp3` | 23. Sprout Tower | la bibliothèque |
-| `union_cave.mp3` | 28. Union Cave | la grotte, ses trois niveaux |
+| `union_cave.mp3` | 28. Union Cave | nulle part pour l'instant : c'était la musique de la grotte, supprimée avec l'ancien village |
 
 La musique de l'écran titre vient d'ailleurs : **« Pixel Fantasia »** de
 **Lofiewme** (Pixabay, piste 355123), fournie par Ludovic le 16/11/2026.

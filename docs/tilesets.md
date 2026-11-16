@@ -214,7 +214,7 @@ matériau** — une ligne, comme pour une collision. `steps_per_second` et
 
 ## Les terrains de l'île
 
-`start_island` reprend la plage de `start_town` et y ajoute le relief et les
+`start_island` reprend la plage de l'ancien village et y ajoute le relief et les
 pontons. Chaque famille est un bloc 3×3 (coins, bords, centre) plus quatre
 coins rentrants ; aucune ne sait dessiner une matière **d'une seule case de
 large**. Les règles d'emploi sont dans [mapping.md](mapping.md).
@@ -235,7 +235,7 @@ large**. Les règles d'emploi sont dans [mapping.md](mapping.md).
 - **Une plage fait au moins deux cases de large** entre l'herbe et l'eau : une
   même case ne peut pas porter le rivage et le bord d'herbe.
 - `5:6,32` et `5:9,31` sont le même dessin : l'une est solide (la mer), l'autre
-  non (l'eau claire de `start_town`, et l'eau sous les pontons).
+  non (l'eau claire du rivage, et l'eau sous les pontons).
 - **Un escalier est un bloc de la planche de l'île**, posé par-dessus une
   case de bord de plateau qui prend sa variante sans collision (voir plus bas).
 - Un plateau se dessine entièrement dans le fond : son pourtour étant solide,
@@ -346,7 +346,7 @@ Deux sortes de plantes d'**une case de large sur deux de haut** :
 
 ## Ce qui reste à déclarer
 
-Les collisions couvrent les ~150 tuiles que `start_town` utilise réellement.
+Les collisions ont d'abord couvert les ~150 tuiles que l'ancien village utilisait.
 **Une tuile jamais posée jusqu'ici n'a pas de collision tant qu'on ne l'a pas
 déclarée** — une fois, et c'est acquis.
 

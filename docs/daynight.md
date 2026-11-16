@@ -37,11 +37,11 @@ chargement, et règle sa couleur à chaque image. Tout ce que la carte dessine e
 prend la teinte : décor, joueur, PNJ.
 
 - **Un intérieur n'a pas cette métadonnée** : il reste éclairé de nuit comme
-  de jour. La grotte non plus : elle a son ambiance à elle.
+  de jour.
 - **L'interface n'est jamais teintée** : dialogues, menus et bandeau de lieu
   sont sur leurs propres calques.
 
-Aujourd'hui seule `start_town` est dehors.
+Aujourd'hui seule `start_island` est dehors (et le terrain d'essai des tests).
 
 ## Les lampadaires
 
@@ -61,19 +61,8 @@ une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
 **En poser un** : instancier `street_lamp.tscn` sous `World`, sur un centre de
 case. Rien d'autre à régler. `brightness` change sa force.
 
-Dans `start_town`, sept lampadaires, tous sur l'herbe au bord d'un chemin :
-
-| Nœud | Case | Où |
-|---|---|---|
-| `LampWestRoad` | (12,6) | au nord de la route de l'ouest |
-| `LampLudo` | (5,17) | à gauche du chemin de la maison de Ludo |
-| `LampLibrary` | (16,17) | dans le tournant, entre le chemin de Ludo et celui de la bibliothèque |
-| `LampLab` | (25,7) | à gauche du laboratoire, contre sa façade |
-| `LampSquareWest`, `LampSquareEast` | (28,16), (34,16) | au sud de la place, de part et d'autre |
-| `LampCave` | (40,6) | à droite du chemin de la grotte |
-
-Aucun n'est sur une ronde de PNJ ni sur une case où quelqu'un se tient après
-la Veillée.
+Ceux de l'île sont listés dans [levels.md](levels.md) ; le terrain d'essai des
+tests en a deux, `LampWest` et `LampEast`.
 
 ## Les fenêtres éclairées
 
@@ -107,8 +96,7 @@ de cette ligne sur ses tuiles vitrées**, comme pour une collision.
 **La lueur** — `scenes/levels/window_glow.tscn`, script `NightLight.kt` : une
 petite lumière chaude qui suit l'heure, comme celle d'un lampadaire en plus
 faible. On en pose une par groupe de fenêtres, sous `World`, au centre des
-vitres. Dans `start_town` : `GlowLudoUp`, `GlowLudoDown`, `GlowLibrary`,
-`GlowLabLeft`, `GlowLabRight`, `GlowLabWing`.
+vitres.
 
 ## Le voile du dehors
 
