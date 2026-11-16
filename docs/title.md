@@ -145,10 +145,13 @@ c'est `Player` qui reprend ([menu.md](menu.md)).
 Les sons sont ceux des menus : `confirm` pour ouvrir et valider, `cancel` pour
 Retour, `cursor` quand le curseur bouge ([audio.md](audio.md)).
 
+**La musique** est `assets/audio/music/title.mp3`, en boucle. Un autre fichier
+se donne par `TitleScreen.music` (son nom sans extension) ; si le fichier
+n'existe pas, l'écran titre reste silencieux, sans erreur. Elle s'éteint dans
+le fondu habituel quand la première carte arrive, et celle du lieu démarre.
+
 ## Ce qui manque
 
-- **Une musique** : l'écran titre joue `assets/audio/music/title` dès que ce
-  fichier existe (`TitleScreen.music`) ; sans lui, il est silencieux.
 - **Revenir à l'écran titre** depuis le menu de pause.
 - Le résumé de la sauvegarde (lieu, temps de jeu) à côté de « Continuer ».
 
@@ -171,3 +174,4 @@ tests/run.sh ui/title
 | `title_new_over_save` | Nouvelle partie par-dessus une sauvegarde, qui reste en place |
 | `title_back` | Retour et la touche du menu ramènent à « Press Enter » |
 | `title_options` | les options depuis l'écran titre, la langue qui change le menu |
+| `audio/music_title` | la musique du titre, puis celle du lieu une fois la partie lancée |
