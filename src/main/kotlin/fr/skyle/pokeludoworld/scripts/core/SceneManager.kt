@@ -77,9 +77,10 @@ class SceneManager : Node() {
 		private const val SETTLE_FRAMES = 4
 	}
 
+	/** La carte où commence une nouvelle partie, à son `SpawnPoint` : la chambre de Ludo, au milieu du tapis. */
 	@Category("Scenes")
 	@Export
-	var startScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/start_island.tscn"
+	var startScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/ludo_bedroom.tscn"
 
 	@Export
 	var playerScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/player.tscn"

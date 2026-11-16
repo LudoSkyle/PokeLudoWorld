@@ -88,14 +88,16 @@ Level (Node2D)
 ├── World (y_sort) ├── Props      meubles, solides
 │                  └── Entities   le joueur arrive ici
 ├── Doors             une SceneTrigger par porte, nommée
-└── SpawnPoint        seulement sur la carte de départ
+└── SpawnPoint        où apparaît une nouvelle partie : la chambre de Ludo ; l'île garde le sien
 ```
 
 ## L'île de départ
 
-`scenes/levels/start_island.tscn` — 62 × 49 cases. C'est **la carte où le jeu
-commence** (`SceneManager.start_scene`) et où mènent les sorties des
-intérieurs. L'ancien village, `start_town.tscn`, est gardé tel quel : plus rien
+`scenes/levels/start_island.tscn` — 62 × 49 cases. C'est la carte où mènent
+les sorties des intérieurs. **Une nouvelle partie commence dans la chambre de
+Ludo** (`ludo_bedroom.tscn`, `SceneManager.start_scene`), debout au milieu du
+tapis bleu, case (15,11), tourné vers le bas : on descend l'escalier, on sort
+de la maison, et l'on arrive sur l'île devant chez Ludo. L'ancien village, `start_town.tscn`, est gardé tel quel : plus rien
 n'y mène, mais la plupart des tests de mécanique s'en servent encore.
 
 Elle est composée selon [mapping.md](mapping.md) : une baie intérieure

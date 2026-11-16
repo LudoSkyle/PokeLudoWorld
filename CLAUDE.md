@@ -38,7 +38,7 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 ├── assets/levels/      textures sources (atlas PNG + .import)
 ├── resources/tilesets/ level.tres — LE TileSet, collisions comprises
 ├── scenes/core/        game_manager.tscn (point d'entrée)
-├── scenes/levels/      une scène par map — le jeu démarre sur start_island
+├── scenes/levels/      une scène par map — une nouvelle partie démarre dans ludo_bedroom
 ├── scenes/ui/          interface (boîte de dialogue)
 └── scripts/
     ├── autoload/       singletons déclarés dans project.godot
