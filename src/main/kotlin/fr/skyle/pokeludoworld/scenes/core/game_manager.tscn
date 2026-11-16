@@ -45,6 +45,8 @@ ratio = 1.3333334
 [node name="SubViewportContainer" type="SubViewportContainer" parent="Control/Frame" unique_id=915310402]
 texture_filter = 1
 layout_mode = 2
+offset_right = 1280.0
+offset_bottom = 960.0
 stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="Control/Frame/SubViewportContainer" unique_id=2012847285]

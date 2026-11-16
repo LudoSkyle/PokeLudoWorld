@@ -54,7 +54,10 @@ Le `SubViewportContainer` est l'enfant de `Control/Frame`, un
 `AspectRatioContainer` : **l'image reste en 4:3 quelle que soit la forme de la
 fenêtre**, centrée, et `Control/Bars` (un rectangle noir derrière elle) remplit
 ce qui dépasse. Le `SubViewport` est rendu à la taille du cadre, pas à celle de
-la fenêtre (`tests/run.sh ui/window_ratio`).
+la fenêtre (`tests/run.sh ui/window_ratio`). Le `SubViewportContainer` porte sa
+taille de départ dans la scène (1280 × 960) : sans elle il mesure zéro jusqu'à
+la première mise en page, la vue du jeu n'a pas d'échelle, et le moteur signale
+`det == 0` si la souris bouge à ce moment-là.
 
 **Un `SubViewport` ne reprend PAS `rendering/textures/canvas_textures/default_texture_filter`
 du projet** : son défaut reste Linear. Tout ce qu'il contient hérite donc de

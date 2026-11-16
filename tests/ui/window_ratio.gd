@@ -11,6 +11,12 @@ func ratio_kept(label: String) -> void:
 	check(label + " : l'image reste en 4:3", absf(size.x / size.y - 4.0 / 3.0) < 0.001, str(size))
 
 func test() -> void:
+	# Avant sa premiere mise en page le cadre doit deja avoir une taille : a zero, la vue du jeu
+	# n'a pas d'echelle et le moteur signale une erreur au premier mouvement de souris.
+	var fresh: Node = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn").instantiate()
+	var first: Vector2 = fresh.get_node("Control/Frame/SubViewportContainer").size
+	fresh.free()
+	check("des le chargement, le cadre de jeu a sa taille", first.is_equal_approx(Vector2(1280, 960)), str(first))
 	await ratio_kept("fenetre d'origine")
 	check("fenetre d'origine : l'image la remplit", frame().size.distance_to(Vector2(1280, 960)) < 0.01, str(frame().size))
 
