@@ -20,6 +20,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
 | PNJ, leurs déplacements, passages gardés | [docs/npcs.md](docs/npcs.md) |
 | quêtes, drapeaux d'histoire, objets ramassables | [docs/quests.md](docs/quests.md) |
+| écran titre, logo, lancement d'une partie | [docs/title.md](docs/title.md) |
 | menu de pause, options | [docs/menu.md](docs/menu.md) |
 | sac, objets, inventaire | [docs/bag.md](docs/bag.md) |
 | Pokémon sauvages, rencontres dans l'herbe | [docs/encounters.md](docs/encounters.md) |
@@ -47,7 +48,8 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 ```
 
 `tools/` (hors Godot) : les scripts qui fabriquent une planche à partir d'une
-autre — `island_tiles.py` produit `assets/levels/island.png`.
+autre — `island_tiles.py` produit `assets/levels/island.png`. Les trois
+`title_*.py` dessinent les images de l'écran titre.
 
 ## Règles qui ne se redemandent pas
 

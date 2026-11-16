@@ -88,10 +88,26 @@ class SceneManager : Node() {
 	@Export
 	var fadeSeconds: Double = 0.25
 
-	/** Reprendre la sauvegarde au lancement, s'il y en a une. Les tests s'en passent. */
+	/**
+	 * Reprendre la sauvegarde au lancement, s'il y en a une. Ne compte que sans
+	 * écran titre ([showTitle]) : avec lui, c'est le joueur qui choisit.
+	 */
 	@Category("Sauvegarde")
 	@Export
 	var loadSave: Boolean = true
+
+	/**
+	 * Attendre l'écran titre avant de lancer la partie (voir TitleScreen). Sans
+	 * lui la partie démarre aussitôt : c'est ainsi que les tests arrivent
+	 * directement sur leur carte.
+	 */
+	@Category("Titre")
+	@Export
+	var showTitle: Boolean = true
+
+	/** Durée du fondu qui mène de l'écran titre à la partie, au noir puis du noir. */
+	@Export
+	var titleFadeSeconds: Double = 0.6
 
 	/** Temps de jeu total de la partie, en secondes. */
 	var playSeconds: Double = 0.0
@@ -120,6 +136,16 @@ class SceneManager : Node() {
 	private var pendingDoor = ""
 	private var bootstrapped = false
 
+	/** Faux tant que l'écran titre a la main : aucune carte n'est chargée, le temps de jeu ne tourne pas. */
+	private var started = false
+
+	/** Durée du fondu en cours : celle des portes, ou celle de l'écran titre. */
+	private var fadeDuration = 0.0
+
+	/** Vrai dès que la première carte est à l'écran. */
+	val hasLevel: Boolean
+		get() = level != null
+
 	/** Images à attendre après un rechargement avant de vérifier la case du joueur. */
 	private var settleFrames = 0
 
@@ -135,16 +161,34 @@ class SceneManager : Node() {
 		if (hasNode("../Fade/Rect")) fade = getNode("../Fade/Rect") as? ColorRect
 		setFadeAlpha(0.0)
 
-		player = (ResourceLoader.load(playerScene) as? PackedScene)?.instantiate() as? Node2D
+		fadeDuration = fadeSeconds
+
+		// Avec l'écran titre, rien ne se charge avant que le joueur ait choisi
+		// (voir start). Sans lui, la partie se prépare tout de suite ; son
+		// premier chargement attend la frame suivante : pendant `_ready` le
+		// parent construit encore ses enfants et refuse un `add_child`.
+		if (!showTitle) prepare(loadSave)
+
+		Logger.i("Loading scene manager ...")
+	}
+
+	/**
+	 * Prépare la partie : [resume] reprend la sauvegarde là où elle s'est
+	 * arrêtée, s'il y en a une ; sinon tout repart de zéro, sac vide et sans
+	 * aucun drapeau.
+	 */
+	private fun prepare(resume: Boolean) {
+		// Le joueur n'existe qu'une fois la partie lancée : sur l'écran titre il
+		// ne serait dans aucune carte, et resterait orphelin si l'on quittait là.
+		if (player == null) player = (ResourceLoader.load(playerScene) as? PackedScene)?.instantiate() as? Node2D
 
 		pendingScene = startScene
 		pendingDoor = ""
 
-		// Une partie sauvegardée reprend là où elle s'est arrêtée.
 		playSeconds = 0.0
 		Inventory.clear()
 		StoryFlags.clear()
-		restore = if (loadSave) SaveGame.read() else null
+		restore = if (resume) SaveGame.read() else null
 		restore?.let {
 			if (ResourceLoader.exists(it.scene)) {
 				pendingScene = it.scene
@@ -156,14 +200,32 @@ class SceneManager : Node() {
 				restore = null
 			}
 		}
-		// Le premier chargement attend la frame suivante : pendant `_ready` le
-		// parent construit encore ses enfants et refuse un `add_child`.
+		started = true
+	}
 
-		Logger.i("Loading scene manager ...")
+	/**
+	 * Lance la partie depuis l'écran titre : l'écran part au noir, la première
+	 * carte se charge, puis le noir se lève. [resume] : « Continuer », sinon
+	 * « Nouvelle partie ». Sans effet une fois la partie lancée.
+	 */
+	fun start(resume: Boolean) {
+		if (started) return
+		prepare(resume)
+
+		// La carte arrive au bout du fondu, pas tout de suite.
+		bootstrapped = true
+		fadeDuration = titleFadeSeconds
+		progress = 0.0
+		phase = Phase.FADE_OUT
+
+		Logger.i("Starting game (resume=$resume)")
 	}
 
 	@Register
 	override fun _process(delta: Double) {
+		// L'écran titre a la main : la partie n'a pas commencé.
+		if (!started) return
+
 		// Comme dans les jeux d'origine, le temps de jeu tourne aussi dans les menus.
 		playSeconds += delta
 
@@ -184,7 +246,7 @@ class SceneManager : Node() {
 
 		if (phase == Phase.IDLE) return
 
-		progress += if (fadeSeconds > 0.0) delta / fadeSeconds else 1.0
+		progress += if (fadeDuration > 0.0) delta / fadeDuration else 1.0
 		val t = min(progress, 1.0)
 
 		if (phase == Phase.FADE_OUT) {
@@ -196,7 +258,10 @@ class SceneManager : Node() {
 			}
 		} else {
 			setFadeAlpha(1.0 - t)
-			if (t >= 1.0) phase = Phase.IDLE
+			if (t >= 1.0) {
+				phase = Phase.IDLE
+				fadeDuration = fadeSeconds
+			}
 		}
 	}
 
@@ -289,7 +354,7 @@ class SceneManager : Node() {
 		LocationBanner.instance?.announce(
 			next.getMeta(LOCATION_META, "").toString(),
 			next.getMeta(BANNER_META, "").toString(),
-			fadeSeconds,
+			fadeDuration,
 		)
 
 		if (currentPlayer == null) return

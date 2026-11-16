@@ -79,6 +79,7 @@ qu'on la change, sans validation.
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
 passe la main à l'écran des options tant qu'il est ouvert (`PauseMenu.handle`).
+L'écran titre l'ouvre aussi, de la même façon ([title.md](title.md)).
 
 **Ajouter un réglage** : une ligne sous `Control/Screen/Rows` (avant `Back`),
 sa valeur dans `Settings`, un cas dans `OptionsMenu.handle`, et 16 px de jeu de
