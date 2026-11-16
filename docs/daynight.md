@@ -36,6 +36,11 @@ metadata/daylight = true
 chargement, et règle sa couleur à chaque image. Tout ce que la carte dessine en
 prend la teinte : décor, joueur, PNJ.
 
+La météo, elle, ne touche pas à cette couleur : elle a sa propre teinte
+d'écran, appliquée **sous** celle de l'heure pour que les deux ne s'empilent
+pas ([weather.md](weather.md)). Et le zénith, qui est le soleil, s'éteint avec
+la nuit.
+
 - **Un intérieur n'a pas cette métadonnée** : il reste éclairé de nuit comme
   de jour.
 - **L'interface n'est jamais teintée** : dialogues, menus et bandeau de lieu

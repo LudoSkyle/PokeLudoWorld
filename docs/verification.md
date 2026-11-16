@@ -115,7 +115,7 @@ tests/run.sh                     # tout : 6 minutes, à éviter
 | `quests/` | brique du moteur de quêtes, sur des nœuds posés par le test (`spawn`) | `flag_saved`, `npc_states`, `item_found`, `ask_yes`, `library_register` |
 | `audio/` | ce qu'on entend : musique d'un lieu, jingle, bruitage | `music_shared`, `music_change`, `jingle_item`, `sfx_bump` |
 | `daynight/` | la teinte du dehors selon l'heure, les lampadaires, les fenêtres | `tint`, `lamps`, `windows` |
-| `visuals/` | un effet qu'on voit sans y toucher : ce que le décor rend du personnage | `reflection`, `flyer_shadow` |
+| `visuals/` | un effet qu'on voit sans y toucher : ce que le décor rend du personnage, le temps qu'il fait | `reflection`, `flyer_shadow`, `weather` |
 | `audit/` | grille de collisions : arrivées libres, portes reliées | `tests/run.sh audit` |
 
 ### Le terrain d'essai, et les cartes du jeu

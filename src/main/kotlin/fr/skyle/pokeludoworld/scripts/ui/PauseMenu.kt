@@ -1,6 +1,7 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.core.DayNight
+import fr.skyle.pokeludoworld.scripts.core.Weather
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
 import fr.skyle.pokeludoworld.scripts.gameplay.story.Quest
@@ -150,6 +151,12 @@ class PauseMenu : CanvasLayer() {
 						DayNight.cycle()
 						tools.relabel(TOOL_TIME, T(DayNight.label()))
 					}
+
+					TOOL_WEATHER -> {
+						// Le temps qu'il fait défile de la même façon, sans fermer la boîte.
+						Weather.cycle()
+						tools.relabel(TOOL_WEATHER, T(Weather.label()))
+					}
 					else -> tools.close()
 				}
 				DebugPage.QUESTS -> Quests.ALL.getOrNull(choice)?.let { showActions(it) } ?: showTools()
@@ -196,14 +203,16 @@ class PauseMenu : CanvasLayer() {
 	 * liste les outils ; « Quêtes » ouvre la liste des quêtes ; en choisir une
 	 * ouvre ce qu'on peut lui faire — repartir de zéro, franchir une étape, la
 	 * finir. Une quête de plus n'ajoute qu'une ligne à la deuxième page.
-	 * La ligne de l'heure fait défiler les moments de la journée à chaque
-	 * validation, puis revient à l'heure réelle.
+	 * Les lignes de l'heure et de la météo font défiler, à chaque validation,
+	 * les moments de la journée et les temps qu'il peut faire.
 	 */
 	private fun debug() = showTools()
 
 	private fun showTools() {
 		debugPage = DebugPage.TOOLS
-		debugChoices?.open(listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(DEBUG_BACK_LABEL)))
+		debugChoices?.open(
+			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_BACK_LABEL)),
+		)
 	}
 
 	private fun showQuests() {
@@ -273,6 +282,7 @@ private enum class DebugPage { TOOLS, QUESTS, ACTIONS }
 private const val TOOL_BAG = 0
 private const val TOOL_QUESTS = 1
 private const val TOOL_TIME = 2
+private const val TOOL_WEATHER = 3
 private const val ACTION_RESET = 0
 private const val ACTION_NEXT = 1
 private const val ACTION_FINISH = 2

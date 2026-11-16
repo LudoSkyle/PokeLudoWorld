@@ -23,8 +23,10 @@ import godot.api.RenderingServer
 import godot.api.ResourceLoader
 import godot.api.Shader
 import godot.api.ShaderMaterial
+import godot.api.Texture2D
 import godot.api.TileMapLayer
 import godot.core.Color
+import godot.core.Rect2
 import godot.core.Vector2
 import kotlin.math.min
 
@@ -57,6 +59,11 @@ class SceneManager : Node() {
 		private const val HAZE_NODE = "Haze"
 		private const val HAZE_SHADER = "res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/sky.gdshader"
 		private const val HAZE_Z = 50
+
+		/** Le temps qu'il fait : une scène à elle seule, juste au-dessus du voile. */
+		private const val WEATHER_NODE = "Weather"
+		private const val WEATHER_SCENE = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/weather.tscn"
+		private const val WEATHER_Z = 51
 
 		/** Ce que lit le shader des fenêtres : la teinte du dehors, et la force des lumières. */
 		private const val TINT_UNIFORM = "day_tint"
@@ -291,22 +298,44 @@ class SceneManager : Node() {
 
 	/** Dehors, un voile clair et nuageux par-dessus toute la carte (voir sky.gdshader). */
 	private fun addHaze(map: Node2D) {
-		val ground = (if (map.hasNode("Background/Ground")) map.getNode("Background/Ground") else null) as? TileMapLayer ?: return
+		val rect = skyRect(map) ?: return
 		val shader = ResourceLoader.load(HAZE_SHADER) as? Shader ?: return
-		val rect = ground.getUsedRect()
-		val grid = Globals.instance.gridSize.toDouble()
 
 		val material = ShaderMaterial()
 		material.shader = shader
 
 		val haze = ColorRect()
 		haze.setName(HAZE_NODE)
-		haze.setPosition(Vector2(rect.position.x * grid, rect.position.y * grid))
-		haze.setSize(Vector2(rect.size.x * grid, rect.size.y * grid))
+		haze.setPosition(rect.position)
+		haze.setSize(rect.size)
 		haze.setMouseFilter(Control.MouseFilter.IGNORE)
 		haze.zIndex = HAZE_Z
 		haze.material = material
 		map.addChild(haze)
+	}
+
+	/**
+	 * Dehors, le temps qu'il fait par-dessus le voile : ce qui tombe, la nappe,
+	 * et la teinte d'écran. Tout est dans la scène, animé par WeatherLayer.kt.
+	 */
+	private fun addWeather(map: Node2D) {
+		val scene = ResourceLoader.load(WEATHER_SCENE) as? PackedScene ?: return
+		val sky = scene.instantiate() as? Node2D ?: return
+
+		sky.setName(WEATHER_NODE)
+		sky.zIndex = WEATHER_Z
+		map.addChild(sky)
+	}
+
+	/** L'étendue de la carte, en pixels : ce que couvre le voile. */
+	private fun skyRect(map: Node2D): Rect2? {
+		val ground = (if (map.hasNode("Background/Ground")) map.getNode("Background/Ground") else null) as? TileMapLayer ?: return null
+		val cells = ground.getUsedRect()
+		val grid = Globals.instance.gridSize.toDouble()
+		return Rect2(
+			Vector2(cells.position.x * grid, cells.position.y * grid),
+			Vector2(cells.size.x * grid, cells.size.y * grid),
+		)
 	}
 
 	/** Applique les règles `on_leave` de la carte qu'on quitte. Un rechargement n'est pas un départ. */
@@ -345,6 +374,7 @@ class SceneManager : Node() {
 			next.addChild(sky)
 			daylight = sky
 			addHaze(next)
+			addWeather(next)
 		}
 
 		host.addChild(next)
