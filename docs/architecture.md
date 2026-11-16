@@ -50,6 +50,12 @@ tout rendre flou :
 | `SubViewport` | `canvas_item_default_texture_filter = 0` |
 | `Control` et `SubViewportContainer` | `texture_filter = 1` |
 
+Le `SubViewportContainer` est l'enfant de `Control/Frame`, un
+`AspectRatioContainer` : **l'image reste en 4:3 quelle que soit la forme de la
+fenêtre**, centrée, et `Control/Bars` (un rectangle noir derrière elle) remplit
+ce qui dépasse. Le `SubViewport` est rendu à la taille du cadre, pas à celle de
+la fenêtre (`tests/run.sh ui/window_ratio`).
+
 **Un `SubViewport` ne reprend PAS `rendering/textures/canvas_textures/default_texture_filter`
 du projet** : son défaut reste Linear. Tout ce qu'il contient hérite donc de
 Linear, même quand le réglage projet dit Nearest. C'est le piège : on croit que
