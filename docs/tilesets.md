@@ -186,6 +186,31 @@ rencontre quand le joueur entre : chez nous c'est `WildEncounters`, voir
 
 Le même calque sert de zone d'errance à un PNJ ([npcs.md](npcs.md)).
 
+## Le sable qui garde les pas
+
+Une tuile de sable porte la donnée perso **`sand`** — la seule couche de données
+du TileSet (`custom_data_layer_0`, type booléen) :
+
+```
+11:14/0/custom_data_0 = true
+```
+
+Les 26 tuiles qui la portent sont celles de la plage (`5:10-12,13-15` et ses
+coins rentrants `5:13-14,13-14`) et du rivage (`5:15-17,31-33`, coins
+`5:18-19,31-32`) : les deux blocs de « Les terrains de l'île ». **Les chemins de
+`sand_path` ne l'ont pas**, même s'ils sont de la même couleur : ils traversent
+l'herbe et le village, et une piste d'empreintes y serait là en permanence.
+
+Un personnage qui quitte une de ces cases y laisse une paire d'empreintes, qui
+s'efface en une seconde — voir [player.md](player.md). Donner ce
+comportement à une autre matière (la neige, la cendre) ne demande qu'une ligne
+par tuile.
+
+**C'est le calque le plus haut qui décide.** On lit le premier calque de
+`Background` qui couvre la case, en partant du dessus : une serviette de plage
+ou une planche de ponton posée sur du sable n'est pas du sable, et ne garde
+donc aucune trace.
+
 ## L'eau qui bouge
 
 Aucun des atlas n'a d'images d'animation pour l'eau. Elle bouge par un
@@ -370,5 +395,6 @@ coin se placent seuls.
 Une couche de données perso **`LEDGE`** (type String, valeurs `"DOWN"`,
 `"LEFT"`, `"RIGHT"`). Le tutoriel l'interroge dans `CharacterMovement.cs` quand
 le joueur touche une tuile : si la direction correspond, il saute le talus au
-lieu d'être bloqué. On a zéro couche de données perso aujourd'hui — à ajouter
-avant d'implémenter les talus.
+lieu d'être bloqué. Nos rebords passent par une seconde couche physique (voir
+« Les rebords ») ; la couche de données, elle, existe maintenant — `sand` est la
+première — donc ajouter `LEDGE` ne demande plus qu'une ligne dans `[resource]`.

@@ -95,6 +95,34 @@ Vitesse : `walk_pace`, 4 cases par seconde.
 
 On court partout, intérieurs compris.
 
+## Les traces de pas
+
+Sur le sable, un personnage — le joueur comme un PNJ — laisse derrière lui une
+**paire d'empreintes par case quittée** : un pied de chaque côté de sa
+trajectoire, l'un devançant l'autre. Le pied qui mène change à chaque pas,
+d'où le zigzag. En courant, les paires se suivent deux fois plus vite.
+
+- C'est le nœud `Steps` (`Footprints.kt`), enfant du personnage comme `Grass`.
+- Une empreinte n'a pas de couleur à elle : elle **assombrit le sable de 26 %**,
+  ce qui va sur la plage sèche comme sur le rivage mouillé. Elle garde cette
+  force la moitié de sa vie, puis s'efface — **1 s en tout** (`darkness` et
+  `life_seconds` sur le nœud) : à l'allure de la marche on voit quatre paires
+  derrière soi, pas davantage. Un fondu dès le premier instant rendait pâles
+  les traces juste derrière le personnage, celles qu'on regarde.
+- Chaque empreinte vit sa vie seule (`Footprint.kt`) : on peut repartir, courir
+  ou changer de carte, elles s'effacent quand même.
+- Elles sont rangées dans un `Background/Footprints` créé au besoin par le
+  premier personnage qui marche sur la carte, **juste au-dessus du calque du
+  sol** : tout le reste du décor se dessine par-dessus.
+- **Ce qui est du sable se déclare dans le TileSet**, une fois par tuile — la
+  donnée perso `sand`, voir [tilesets.md](tilesets.md). Rien n'est codé en dur
+  ici, et une serviette posée sur le sable ne garde pas de traces.
+- La planche est `assets/levels/footprints.png`, fabriquée par
+  `tools/footprint_tiles.py` : huit cases de 8 px, une par direction et par
+  pied, dérivées d'une seule forme tournée et retournée.
+
+`tests/run.sh moves/footprints` : le sable garde, l'herbe non, tout s'efface.
+
 ## Collisions
 
 Le joueur interroge la case visée avec `intersect_point` sur le **masque 1**,

@@ -108,7 +108,7 @@ tests/run.sh                     # tout : 6 minutes, à éviter
 | Dossier | Un fichier par… | Exemples |
 |---|---|---|
 | `dialogue/` | personnage ou objet à qui l'on parle | `fisher`, `guard_north`, `runner_hailed`, `sign`, `tv`, `lab_clock` |
-| `moves/` | déplacement qu'on veut voir | `runner_loop`, `runner_blocked`, `grass_wander`, `roadblock` |
+| `moves/` | déplacement qu'on veut voir | `runner_loop`, `runner_blocked`, `grass_wander`, `roadblock`, `footprints` |
 | `doors/` | porte, dans un sens | `enter`, `enter_held`, `ludo_stairs_up`, `lab_exit` |
 | `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `npcs` |
 | `ui/` | comportement d'interface | `banner_arrival`, `banner_same_place`, `title_new_game` |
