@@ -25,6 +25,11 @@ func scene() -> String:
 func start() -> Vector2i:
 	return Vector2i(-1, -1)
 
+# Passer par l'ecran titre, comme au vrai lancement ? Les tests arrivent d'ordinaire
+# directement sur leur carte ; ceux de l'ecran titre repondent true.
+func title() -> bool:
+	return false
+
 func _initialize() -> void:
 	_run.call_deferred()
 
@@ -368,6 +373,7 @@ func boot(load_save: bool) -> void:
 	var scenes := game.get_node(VP + "/SceneManager")
 	scenes.start_scene = LEVELS + scene() + ".tscn"
 	scenes.load_save = load_save
+	scenes.show_title = title()
 	root.add_child(game)
 	# Aucune rencontre sauvage par hasard : un test qui traverse l'herbe ne doit
 	# pas s'arreter sur une boite. Ceux qui en veulent une la demandent.
@@ -380,6 +386,60 @@ func relaunch() -> void:
 	game.free()
 	await wait(5)
 	await boot(true)
+
+# --- ecran titre (les tests qui s'en servent repondent true a title())
+
+func title_screen() -> CanvasLayer:
+	return game.get_node(VP + "/TitleScreen")
+
+func title_shown() -> bool:
+	return title_screen().visible
+
+func title_prompt() -> Node2D:
+	return title_screen().get_node("Control/Prompt")
+
+func title_menu() -> Control:
+	return title_screen().get_node("Control/Menu")
+
+# Les entrees du menu de l'ecran titre, telles qu'elles sont ecrites.
+func title_entries() -> Array:
+	var rows: Array = []
+	for label in title_menu().get_node("Entries").get_children():
+		if label.visible:
+			rows.append(label.text)
+	return rows
+
+# L'entree en face de laquelle le curseur du menu est dessine.
+func title_selected() -> String:
+	var cursor: Control = title_menu().get_node("Cursor")
+	var line := floori((cursor.position.y + cursor.size.y / 2.0 - title_menu().get_node("Entries").position.y) / 64.0)
+	var rows := title_entries()
+	return "" if line < 0 or line >= rows.size() else rows[line]
+
+# Attend la fin de l'arrivee de l'ecran titre : « Press Enter » s'affiche.
+func title_ready() -> void:
+	var end := Time.get_ticks_msec() + 4000
+	while Time.get_ticks_msec() < end and not title_prompt().visible:
+		await process_frame
+	await wait(4)
+
+# Ouvre le menu de l'ecran titre s'il est ferme, descend jusqu'a l'entree et la valide.
+func title_pick(entry: String) -> void:
+	if not title_menu().visible:
+		await title_ready()
+		await tap("interact")
+	var n := 0
+	while title_selected() != entry and n < 6:
+		await tap("ui_down")
+		n += 1
+	await tap("interact")
+
+# Attend que la partie soit lancee : la carte est la, le noir du fondu s'est leve.
+func title_gone() -> void:
+	var end := Time.get_ticks_msec() + 5000
+	while Time.get_ticks_msec() < end and (level() == null or game.get_node(VP + "/Fade/Rect").color.a > 0.0):
+		await process_frame
+	await wait(10)
 
 # --- sac
 

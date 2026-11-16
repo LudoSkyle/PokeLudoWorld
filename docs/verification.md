@@ -111,7 +111,7 @@ tests/run.sh                     # tout : 6 minutes, à éviter
 | `moves/` | déplacement qu'on veut voir | `runner_loop`, `runner_blocked`, `grass_wander`, `roadblock` |
 | `doors/` | porte, dans un sens | `ludo_enter`, `ludo_stairs_up`, `cave_tunnel_a`, `lab_exit` |
 | `collisions/` | pièce ou obstacle | `ludo_stairs`, `lab_room`, `cave_lake`, `npcs` |
-| `ui/` | comportement d'interface | `banner_town`, `banner_same_place` |
+| `ui/` | comportement d'interface | `banner_town`, `banner_same_place`, `title_new_game` |
 | `quests/` | brique du moteur de quêtes, sur des nœuds posés par le test (`spawn`) | `flag_saved`, `npc_states`, `item_found`, `ask_yes`, `library_register` |
 | `audio/` | ce qu'on entend : musique d'un lieu, jingle, bruitage | `music_house`, `jingle_item`, `sfx_bump` |
 | `daynight/` | la teinte du dehors selon l'heure, les lampadaires, les fenêtres | `tint`, `lamps`, `windows` |

@@ -57,8 +57,8 @@ class ChoiceBox : Control() {
 		placeCursor()
 	}
 
-	/** S'ouvre sur ces réponses-ci, déjà traduites. */
-	fun open(answers: List<String>) {
+	/** S'ouvre sur ces réponses-ci, déjà traduites, le curseur sur la réponse [start]. */
+	fun open(answers: List<String>, start: Int = 0) {
 		// Une ligne de plus que la scène n'en a : on recopie la dernière, ombre comprise.
 		while (labels.size < answers.size) {
 			val model = labels.lastOrNull() ?: break
@@ -79,6 +79,10 @@ class ChoiceBox : Control() {
 		setPosition(Vector2(getPosition().x, if (height <= bottom - top) bottom - height else top))
 		frame?.setSize(Vector2(getSize().x / SCALE, height / SCALE))
 		open()
+		if (start in 1 until count) {
+			selected = start
+			placeCursor()
+		}
 	}
 
 	/** Change le texte d'une réponse sans refermer la boîte ni bouger le curseur. */

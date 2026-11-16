@@ -875,3 +875,9 @@ msgstr "Since the Vigil, my sister hums while she gardens."
 
 msgid "C'est nouveau. Et c'est faux."
 msgstr "That's new. And it's off-key."
+
+msgid "Continuer"
+msgstr "Continue"
+
+msgid "Nouvelle partie"
+msgstr "New game"

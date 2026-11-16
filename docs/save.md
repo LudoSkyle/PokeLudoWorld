@@ -1,8 +1,7 @@
 # Sauvegarde
 
 Une seule sauvegarde, écrite depuis le menu de pause (**Sauvegarder**) et
-**reprise automatiquement au lancement** du jeu : il n'y a pas encore d'écran
-titre.
+reprise depuis l'écran titre par **Continuer** ([title.md](title.md)).
 
 ## Ce qui est enregistré
 
@@ -22,8 +21,9 @@ Rien d'autre n'a d'état pour l'instant : les PNJ repartent de leur case de
 départ, comme à chaque changement de carte. Un nouvel état à garder s'ajoute
 dans `SaveGame.State`, `read` et `write`, comme le sac et les drapeaux.
 
-Une partie qui démarre **sans sauvegarde** part d'un sac vide et sans aucun
-drapeau (`SceneManager._ready`).
+Une **nouvelle partie** part d'un sac vide et sans aucun drapeau
+(`SceneManager.prepare`). Elle n'efface pas la sauvegarde : celle-ci reste en
+place tant qu'on ne sauvegarde pas par-dessus.
 
 Le **temps de jeu** tourne en permanence, menus compris, comme dans les jeux
 d'origine (`SceneManager.playSeconds`). Il s'affiche en heures:minutes.
@@ -56,17 +56,22 @@ touche ; c'est l'écran qui enchaîne ou referme (`MessageBox.close()`).
 
 ## La reprise
 
-`SceneManager._ready` lit la sauvegarde (`load_save`, vrai par défaut), charge
-sa carte à la place de la carte de départ, puis pose le joueur à sa place avec
-son regard. Si la carte n'existe plus, la sauvegarde est ignorée et le jeu
-démarre normalement.
+« Continuer » appelle `SceneManager.start(resume = true)` : il lit la
+sauvegarde, charge sa carte à la place de la carte de départ, puis pose le
+joueur à sa place avec son regard. Si la carte n'existe plus, la sauvegarde est
+ignorée et le jeu démarre normalement. « Continuer » n'est proposé que si le
+fichier existe.
 
-Pour **repartir de zéro**, supprimer `save.cfg` dans le dossier utilisateur du
-jeu (`~/Library/Application Support/Godot/app_userdata/PokeLudoWorld/`).
+Sans écran titre (`show_title = false`, le cas des tests), c'est `load_save`
+qui décide au lancement, comme avant.
+
+Pour **faire disparaître « Continuer »**, supprimer `save.cfg` dans le dossier
+utilisateur du jeu
+(`~/Library/Application Support/Godot/app_userdata/PokeLudoWorld/`).
 
 ## Tests
 
 Lancé par `tests/run.sh`, le jeu écrit dans `user://test_save.cfg`
-(`GameFiles.kt`) et ne reprend pas de sauvegarde au démarrage : la sauvegarde
-du joueur n'est ni lue ni touchée. `relaunch()` (`tests/lib.gd`) quitte et
+(`GameFiles.kt`), saute l'écran titre et ne reprend pas de sauvegarde au
+démarrage : la sauvegarde du joueur n'est ni lue ni touchée. `relaunch()` (`tests/lib.gd`) quitte et
 relance le jeu en la reprenant, pour vérifier la reprise.
