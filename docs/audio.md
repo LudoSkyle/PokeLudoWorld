@@ -45,9 +45,19 @@ musique du village, et que les trois niveaux de la grotte n'en font qu'un.
 | `lab_house` | `elm_lab` |
 | `cave_1f`, `cave_b1f`, `cave_b2f` | `union_cave` |
 
-**Changer de musique** : l'ancienne s'éteint dans un fondu très court
-(`fade_seconds`, 0,3 s), puis la nouvelle démarre aussitôt, à plein volume —
-comme dans les jeux d'origine, il n'y a pas de fondu d'entrée.
+L'**écran titre** a la sienne, `title`, demandée par `TitleScreen` et non par
+une carte ([title.md](title.md)). Elle s'éteint dans le même fondu quand la
+première carte arrive.
+
+**Une musique arrive toujours en fondu**, sur une seconde (`fade_seconds`) :
+celle de l'écran titre au lancement comme celle d'un lieu.
+
+**Changer de musique** est un **fondu enchaîné** d'une seconde : l'ancienne
+s'éteint pendant que la nouvelle monte, les deux en même temps (deux lecteurs,
+`Music` et `MusicOut`, qui échangent leurs rôles). Si l'on revient sur ses pas
+avant la fin du fondu, la musique qui s'éteignait remonte là où elle en était,
+sans repartir du début. Un troisième changement pendant un fondu coupe celle
+qui finissait de s'éteindre.
 
 Les pistes de la bande-son jouent leur boucle deux fois puis s'éteignent :
 rejouées en boucle telles quelles, on entend ce fondu avant la reprise. Des
@@ -71,7 +81,8 @@ Une boîte de dialogue joue un jingle par la consigne **`@sound:<nom>`**, comme
 elle donne un objet par `@give:` ([dialogue.md](dialogue.md)).
 
 Si l'on change de lieu pendant un jingle, c'est la musique du nouveau lieu qui
-démarre quand il se termine.
+démarre quand il se termine. Un jingle coupe court à un fondu en cours : la
+musique qui s'éteignait se tait, l'autre attend en pause.
 
 ## Les bruitages
 

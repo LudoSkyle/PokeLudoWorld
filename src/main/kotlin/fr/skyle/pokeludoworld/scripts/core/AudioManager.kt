@@ -13,12 +13,14 @@ import godot.api.Node
 import godot.api.ResourceLoader
 import kotlin.math.log10
 import kotlin.math.max
+import kotlin.math.min
 
 /**
  * Le son du jeu, en trois sortes :
  *
- * - la **musique** du lieu, en boucle. En changer se fait par un fondu très
- *   court de l'ancienne, puis la nouvelle démarre aussitôt ;
+ * - la **musique** du lieu, en boucle. Elle arrive toujours en fondu, et en
+ *   changer est un **fondu enchaîné** : l'ancienne s'éteint pendant que la
+ *   nouvelle monte, sur [fadeSeconds] ;
  * - les **jingles** (objet reçu, cloche) : la musique se met en pause, le
  *   jingle joue, la musique reprend là où elle en était ;
  * - les **bruitages** (curseur, mur, porte) : ils passent par-dessus la
@@ -40,23 +42,32 @@ class AudioManager : Node() {
 		private val FORMATS = listOf("wav", "ogg", "mp3")
 	}
 
-	/** Durée du fondu de sortie d'une musique, en secondes. */
+	/**
+	 * Durée d'un fondu de musique, en secondes : celui qui fait monter une
+	 * musique qui démarre, et celui qui éteint celle qu'elle remplace. Les deux
+	 * se font en même temps.
+	 */
 	@Category("Musique")
 	@Export
-	var fadeSeconds: Double = 0.3
+	var fadeSeconds: Double = 1.0
 
+	/** La musique qui monte ou qui joue, et celle qui s'éteint : deux lecteurs qui échangent leurs rôles. */
 	private var music: AudioStreamPlayer? = null
+	private var outgoing: AudioStreamPlayer? = null
 	private var jinglePlayer: AudioStreamPlayer? = null
 	private var voices: List<AudioStreamPlayer> = emptyList()
 	private val streams = HashMap<String, AudioStream?>()
 
-	/** La musique demandée : celle qu'on entend, ou qu'on entendra après le fondu ou le jingle. */
+	/** La musique demandée : celle qu'on entend, ou qu'on entendra après le jingle. */
 	private var wanted = ""
 
-	/** Celle qui sort réellement du haut-parleur. */
+	/** Celle que joue [music], et celle que [outgoing] finit d'éteindre. */
 	private var playing = ""
-	private var fading = false
-	private var fadeLeft = 0.0
+	private var leaving = ""
+
+	/** Le volume de chacune, de 0 (silence) à 1. */
+	private var level = 1.0
+	private var leavingLevel = 0.0
 
 	private var jingleActive = false
 	private var lastJingle = ""
@@ -72,6 +83,7 @@ class AudioManager : Node() {
 	override fun _ready() {
 		instance = this
 		music = player("Music")
+		outgoing = player("MusicOut")
 		jinglePlayer = player("Jingle")
 		voices = (0 until SFX_VOICES).map { player("Sfx$it") }
 
@@ -94,16 +106,21 @@ class AudioManager : Node() {
 			jingleActive = false
 			// La musique reprend où elle en était — ou c'est une autre qui démarre,
 			// si l'on a changé de lieu pendant le jingle.
-			if (wanted == playing) music?.streamPaused = false else start(wanted)
+			if (wanted == playing) music?.streamPaused = false else change(wanted)
 		}
+		if (jingleActive) return
 
-		if (!fading) return
-		fadeLeft -= delta
-		if (fadeLeft <= 0.0) {
-			fading = false
-			start(wanted)
-		} else {
-			music?.volumeDb = decibels(fadeLeft / fadeSeconds).toFloat()
+		val step = if (fadeSeconds > 0.0) delta / fadeSeconds else 1.0
+
+		// Celle qui arrive monte.
+		if (level < 1.0) {
+			level = min(level + step, 1.0)
+			music?.volumeDb = decibels(level).toFloat()
+		}
+		// Celle qui part s'éteint, puis se tait pour de bon.
+		if (leaving.isNotEmpty()) {
+			leavingLevel -= step
+			if (leavingLevel <= 0.0) silence() else outgoing?.volumeDb = decibels(leavingLevel).toFloat()
 		}
 	}
 
@@ -115,27 +132,36 @@ class AudioManager : Node() {
 	fun playMusic(id: String) {
 		if (id == wanted) return
 		wanted = id
-
-		when {
-			// Le jingle fini, c'est la nouvelle qui démarrera.
-			jingleActive -> {}
-			music?.playing == true && fadeSeconds > 0.0 -> {
-				if (!fading) {
-					fading = true
-					fadeLeft = fadeSeconds
-				}
-			}
-			else -> start(id)
-		}
+		// Pendant un jingle rien ne bouge : le jingle fini, c'est la nouvelle qui démarrera.
+		if (!jingleActive) change(id)
 	}
 
-	private fun start(id: String) {
+	/**
+	 * Passe à la musique [id] en fondu enchaîné : celle qui jouait devient
+	 * celle qui part, et s'éteint à partir du volume qu'elle avait ; l'autre
+	 * lecteur fait monter la nouvelle depuis le silence.
+	 */
+	private fun change(id: String) {
+		if (id == playing) return
+
+		// On revient à la musique qui était en train de s'éteindre : elle n'a
+		// pas à repartir du début, les deux échangent simplement leurs rôles.
+		if (id.isNotEmpty() && id == leaving) {
+			swap()
+			music?.streamPaused = false
+			return
+		}
+
+		// Celle qui finissait de s'éteindre est coupée : il n'y a que deux lecteurs.
+		silence()
+		swap()
+
 		val out = music ?: return
-		fading = false
 		out.stop()
 		out.streamPaused = false
-		out.volumeDb = 0.0f
 		playing = id
+		level = if (fadeSeconds > 0.0) 0.0 else 1.0
+		out.volumeDb = decibels(level).toFloat()
 		if (id.isEmpty()) return
 
 		val stream = load("music/$id") ?: return
@@ -145,13 +171,38 @@ class AudioManager : Node() {
 		starts++
 	}
 
+	/** Les deux lecteurs échangent leurs rôles, chacun gardant son volume du moment. */
+	private fun swap() {
+		val was = music
+		music = outgoing
+		outgoing = was
+
+		val id = playing
+		playing = leaving
+		leaving = id
+
+		val volume = level
+		level = leavingLevel
+		leavingLevel = volume
+		// Rien ne jouait : il n'y a rien à éteindre.
+		if (leaving.isEmpty()) leavingLevel = 0.0
+	}
+
+	/** Fait taire la musique qui partait. */
+	private fun silence() {
+		outgoing?.stop()
+		leaving = ""
+		leavingLevel = 0.0
+	}
+
 	/** Met la musique en pause, joue le jingle [id], puis la laisse reprendre. */
 	fun jingle(id: String) {
 		val out = jinglePlayer ?: return
 		val stream = load("jingles/$id") ?: return
 		(stream as? AudioStreamMP3)?.loop = false
 
-		fading = false
+		// Le jingle coupe court au fondu : la musique qui partait se tait, l'autre attend.
+		silence()
 		music?.streamPaused = true
 		out.stream = stream
 		out.play()
@@ -190,6 +241,17 @@ class AudioManager : Node() {
 	/** Vrai si la musique sort vraiment : ni en pause, ni arrêtée. */
 	@Register
 	fun musicAudible(): Boolean = music?.playing == true && music?.streamPaused != true
+
+	/** Le volume de la musique qui joue, de 0 à 1 : il monte pendant son fondu d'arrivée. */
+	@Register
+	fun musicLevel(): Double = level
+
+	/** La musique qui finit de s'éteindre, et son volume ; vide et 0 hors d'un fondu enchaîné. */
+	@Register
+	fun leavingId(): String = leaving
+
+	@Register
+	fun leavingLevel(): Double = leavingLevel
 
 	/** Nombre de fois où une musique a démarré depuis le lancement. */
 	@Register
