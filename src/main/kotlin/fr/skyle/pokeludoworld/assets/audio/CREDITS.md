@@ -15,7 +15,14 @@ FREAK), pistes fournies par Ludovic le 14/11/2026.
 | `sprout_tower.mp3` | 23. Sprout Tower | la bibliothèque |
 | `union_cave.mp3` | 28. Union Cave | la grotte, ses trois niveaux |
 
-Ces pistes jouent leur boucle deux fois puis s'éteignent en fondu : rejouées
+La musique de l'écran titre vient d'ailleurs : **« Pixel Fantasia »** de
+**Lofiewme** (Pixabay, piste 355123), fournie par Ludovic le 16/11/2026.
+
+| Fichier | Piste d'origine | Où on l'entend |
+|---|---|---|
+| `title.mp3` | Lofiewme — Pixel Fantasia | l'écran titre |
+
+Les pistes de la bande-son jouent leur boucle deux fois puis s'éteignent en fondu : rejouées
 en boucle telles quelles, on entend ce fondu avant la reprise.
 
 ## `jingles/` — ils mettent la musique en pause
