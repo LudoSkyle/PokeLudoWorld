@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Le chasseur d'insectes erre sans sortir des herbes ni nous marcher dessus.
 
 func start() -> Vector2i:
-	return Vector2i(8, 5)
+	return Vector2i(8, 8)
 
 func test() -> void:
 	var grass: TileMapLayer = level().get_node("Background/Grass")

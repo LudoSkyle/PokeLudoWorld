@@ -3,10 +3,10 @@ extends "res://tests/lib.gd"
 # Une question avant d'agir : Non, ou la touche du menu, referme sans rien faire.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func test() -> void:
-	await spawn("readable", "Machine", Vector2i(35, 11), {
+	await spawn("readable", "Machine", Vector2i(14, 7), {
 		"ask": "Appuyer sur le bouton ?",
 		"text": "@flag:test_pressed La machine s'allume.",
 	})
@@ -26,4 +26,4 @@ func test() -> void:
 	await tap("menu")
 	check("la touche du menu repond Non", not box().visible and not flag("test_pressed"))
 	check("et n'ouvre pas le menu", not menu_open())
-	await walk("on reprend la main", Vector2i(36, 12), false)
+	await walk("on reprend la main", Vector2i(15, 8), false)

@@ -2,8 +2,11 @@ extends "res://tests/lib.gd"
 
 # L'entree Debug du menu fait avancer la quete de la cloche, etape par etape ou d'un coup.
 
+func scene() -> String:
+	return "start_island"
+
 func start() -> Vector2i:
-	return Vector2i(31, 15)
+	return Vector2i(19, 26)
 
 func test() -> void:
 	await menu_pick("Debug")

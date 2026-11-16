@@ -8,7 +8,7 @@ extends "res://tests/lib.gd"
 const LONG := "Les anciens ont gravé sur ce panneau toute la longue chronique du village : chaque maison construite, chaque tempête traversée, chaque bateau rentré au port."
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func text_label() -> RichTextLabel:
 	return game.get_node(VP + "/MessageBox/Control/Box/Text")
@@ -33,7 +33,7 @@ func fits() -> bool:
 	return true
 
 func test() -> void:
-	await spawn("sign", "Chatty", Vector2i(35, 11), {"text": LONG + "|Fin."})
+	await spawn("sign", "Chatty", Vector2i(14, 7), {"text": LONG + "|Fin."})
 	check("le texte de test demande trois lignes", lines_needed(LONG) == 3, str(lines_needed(LONG)))
 
 	await interact_facing("ui_up")

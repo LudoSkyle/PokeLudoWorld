@@ -3,12 +3,12 @@ extends "res://tests/lib.gd"
 # Une boite qui commence par @take: retire un objet du sac au moment ou elle s'affiche.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func test() -> void:
-	await receive("potion*3", Vector2i(36, 12), "ui_right")
-	await receive("old_rod", Vector2i(36, 12), "ui_right")
-	await spawn("npc", "Taker", Vector2i(35, 11), {"text": "Montre-moi ça.|@take:potion*2 @take:old_rod Merci, je garde tout."})
+	await receive("potion*3", Vector2i(15, 8), "ui_right")
+	await receive("old_rod", Vector2i(15, 8), "ui_right")
+	await spawn("npc", "Taker", Vector2i(14, 7), {"text": "Montre-moi ça.|@take:potion*2 @take:old_rod Merci, je garde tout."})
 	await interact_facing("ui_up")
 	await wait_text("Montre-moi ça.")
 	await tap("interact")

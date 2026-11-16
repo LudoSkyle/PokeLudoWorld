@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Debug : la ligne de l'heure fait defiler les moments de la journee, puis revient a l'heure reelle.
 
 func start() -> Vector2i:
-	return Vector2i(30, 16)
+	return Vector2i(11, 11)
 
 func line(n: int) -> String:
 	return debug_choices().get_node("Entries").get_child(n).text

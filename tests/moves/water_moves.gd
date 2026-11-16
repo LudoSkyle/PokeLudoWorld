@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # L'eau bouge : ses pixels changent d'un instant a l'autre, pas ceux du sable ni de l'herbe.
 
 func start() -> Vector2i:
-	return Vector2i(38, 17)
+	return Vector2i(2, 13)
 
 # Nombre de pixels qui different entre deux captures, dans un rectangle de l'ecran.
 func changed(a: Image, b: Image, r: Rect2i) -> int:
@@ -34,9 +34,9 @@ func test() -> void:
 	var second := root.get_texture().get_image()
 	shot("eau_2")
 	# La camera est bornee par la carte : on situe les cases a l'ecran d'apres elle.
-	var water := on_screen(Vector2i(42, 16))
-	var shallow := on_screen(Vector2i(39, 17))
-	var lawn := on_screen(Vector2i(33, 17))
+	var water := on_screen(Vector2i(6, 12))
+	var shallow := on_screen(Vector2i(3, 13))
+	var lawn := on_screen(Vector2i(10, 13))
 	check("l'eau a bouge", changed(first, second, water) > 20, str(changed(first, second, water)))
 	check("l'eau claire aussi", changed(first, second, shallow) > 20, str(changed(first, second, shallow)))
 	check("la pelouse, elle, n'a pas bouge", changed(first, second, lawn) == 0, str(changed(first, second, lawn)))

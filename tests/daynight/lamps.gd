@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # Les lampadaires : eteints le jour, allumes la nuit, et ils percent la teinte autour d'eux.
 
 func start() -> Vector2i:
-	return Vector2i(31, 17)
+	return Vector2i(12, 12)
 
 # Le carre d'ecran (64 px de cote) ou se dessine une case de la carte.
 func on_screen(c: Vector2i) -> Rect2i:
@@ -23,9 +23,9 @@ func brightness(img: Image, r: Rect2i) -> float:
 	return sum / n
 
 func test() -> void:
-	var lamp := level().get_node("World/LampSquareWest")
+	var lamp := level().get_node("World/LampWest")
 	var light: PointLight2D = lamp.get_node("Light")
-	check("un lampadaire est un obstacle, sur sa case", not is_free(Vector2i(28, 16)) and not is_free(Vector2i(34, 16)))
+	check("un lampadaire est un obstacle, sur sa case", not is_free(Vector2i(9, 11)) and not is_free(Vector2i(15, 11)))
 	await set_hour(12.0)
 	check("en plein jour : eteint", not light.visible and is_zero_approx(light.energy), str(light.energy))
 	await set_hour(23.0)
@@ -33,8 +33,8 @@ func test() -> void:
 	check("la nuit : allume, a pleine force", light.visible and light.energy > 1.0, str(light.energy))
 	var img := root.get_texture().get_image()
 	shot("lampadaires_nuit")
-	var near := brightness(img, on_screen(Vector2i(29, 17)))
-	var far := brightness(img, on_screen(Vector2i(31, 19)))
+	var near := brightness(img, on_screen(Vector2i(10, 12)))
+	var far := brightness(img, on_screen(Vector2i(12, 14)))
 	check("la pelouse est plus claire pres du lampadaire que loin de lui", near > far * 1.25, "%.3f pres, %.3f loin" % [near, far])
 	await set_hour(19.0)
 	check("au crepuscule : encore eteint", not light.visible and is_zero_approx(light.energy), str(light.energy))
@@ -49,5 +49,5 @@ func test() -> void:
 	for n in level().get_node("World").get_children():
 		if str(n.name).begins_with("Lamp"):
 			count += 1
-	check("Bourg-Ludo a ses sept lampadaires", count == 7, str(count))
+	check("le terrain a ses deux lampadaires", count == 2, str(count))
 	await set_hour(12.0)

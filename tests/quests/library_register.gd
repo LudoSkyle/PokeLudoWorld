@@ -2,12 +2,15 @@ extends "res://tests/lib.gd"
 
 # La quete commencee, les archives se reconnaissent et la troisieme case donne le Registre.
 
+func scene() -> String:
+	return "library"
+
 func start() -> Vector2i:
-	return Vector2i(21, 14)
+	return Vector2i(15, 13)
 
 func test() -> void:
 	set_flag("bell_told")
-	await walk("on entre dans la bibliotheque", Vector2i(21, 13), true)
+	await reload_level()
 	await examine("archives, premiere case", Vector2i(9, 9), "registres reliés")
 	await examine("archives, quatrieme case", Vector2i(12, 9), "registres reliés")
 	await examine("un rayonnage voisin reste ordinaire", Vector2i(13, 9), "pleine de livres")

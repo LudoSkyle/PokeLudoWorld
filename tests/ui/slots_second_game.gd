@@ -7,7 +7,7 @@ func title() -> bool:
 	return true
 
 func test() -> void:
-	plant_save(1, "Bourg-Ludo", 3725.0)
+	plant_save(1, "Terrain d'essai", 3725.0)
 	await relaunch()
 	await slot_go("New")
 	check("une partie existe : sa carte, puis Nouvelle partie", slot_cards() == ["Save1", "New", "Options"], str(slot_cards()))
@@ -15,7 +15,7 @@ func test() -> void:
 	await tap("interact")
 	await title_gone()
 	var spawn: Vector2 = level().get_node("SpawnPoint").position
-	check("la nouvelle partie part du point d'apparition, pas de la case sauvegardee", cell() == Vector2i(floori(spawn.x / 16.0), floori(spawn.y / 16.0)) and cell() != Vector2i(20, 7), str(cell()))
+	check("la nouvelle partie part du point d'apparition, pas de la case sauvegardee", cell() == Vector2i(floori(spawn.x / 16.0), floori(spawn.y / 16.0)) and cell() != SAVE_CELL, str(cell()))
 	await walk("on s'eloigne", two_steps_from(cell()), false)
 	var here := cell()
 	await menu_pick("Save")
@@ -24,7 +24,7 @@ func test() -> void:
 	await secs(2.2)
 	check("elle s'ecrit dans le deuxieme emplacement", FileAccess.file_exists(save_path(2)))
 	check("a la case ou l'on est", int(saved_file(2).get_value("save", "x", 0.0)) == here.x * 16 + 8, str(saved_file(2).get_value("save", "x", 0.0)))
-	check("la premiere partie n'a pas bouge", is_equal_approx(saved_file(1).get_value("save", "seconds", 0.0), 3725.0) and int(saved_file(1).get_value("save", "x", 0.0)) == 20 * 16 + 8)
+	check("la premiere partie n'a pas bouge", is_equal_approx(saved_file(1).get_value("save", "seconds", 0.0), 3725.0) and int(saved_file(1).get_value("save", "x", 0.0)) == SAVE_CELL.x * 16 + 8)
 
 	await relaunch()
 	await slot_go("Save2")

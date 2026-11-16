@@ -4,9 +4,9 @@ extends "res://tests/lib.gd"
 # surgir un Pokemon. Le sort est impose, un test ne compte pas sur la chance.
 
 func start() -> Vector2i:
-	return Vector2i(12, 5)
+	return Vector2i(12, 8)
 
-# Les especes de la table de Bourg-Ludo, et leur nom.
+# Les especes de la table du terrain d'essai, et leur nom.
 const NAMES := {"mulotin": "Mulotin", "piafeuille": "Piafeuille", "chenibulle": "Chenibulle"}
 
 func in_grass(c: Vector2i) -> bool:
@@ -15,10 +15,10 @@ func in_grass(c: Vector2i) -> bool:
 func test() -> void:
 	npc("GrassWatcher").movement = "static"
 	check("la carte donne sa chance de rencontre", int(level().get_meta("encounter_rate", 0)) == 10, str(level().get_meta("encounter_rate", 0)))
-	check("le depart est hors de l'herbe, la case de gauche dedans", not in_grass(Vector2i(12, 5)) and in_grass(Vector2i(11, 5)) and in_grass(Vector2i(10, 5)))
+	check("le depart est hors de l'herbe, la case de gauche dedans", not in_grass(Vector2i(12, 8)) and in_grass(Vector2i(11, 8)) and in_grass(Vector2i(10, 8)))
 
 	# Sort contraire : on traverse l'herbe sans rien croiser.
-	await walk("sans chance", Vector2i(11, 5), false)
+	await walk("sans chance", Vector2i(11, 8), false)
 	check("sort contraire : pas de rencontre", encounters() == 0 and not box().visible, str(encounters()))
 
 	# Sort favorable : le pas suivant dans l'herbe donne une rencontre.
@@ -30,7 +30,7 @@ func test() -> void:
 	check("sort favorable : la rencontre s'annonce", box().visible and encounters() == 1, str(encounters()))
 	var at: Vector2 = player().position
 	await wait(6)
-	check("elle arrive une fois pose sur la case, et l'y arrete", cell() == Vector2i(10, 5) and player().position == at, str(player().position))
+	check("elle arrive une fois pose sur la case, et l'y arrete", cell() == Vector2i(10, 8) and player().position == at, str(player().position))
 	var met := last_encounter().split(":")
 	check("le Pokemon rencontre vient de la table de la carte", met.size() == 2 and NAMES.has(met[0]) and int(met[1]) >= 2 and int(met[1]) <= 5, last_encounter())
 	var announce: String = "Un %s sauvage apparaît !" % NAMES.get(met[0], "?")
@@ -38,27 +38,27 @@ func test() -> void:
 	check("l'annonce le nomme", box_text() == announce, box_text())
 	# La touche est restee enfoncee : le joueur ne repart pas tant que la boite est la.
 	await secs(0.5)
-	check("le joueur ne bouge plus pendant l'annonce", cell() == Vector2i(10, 5), str(cell()))
+	check("le joueur ne bouge plus pendant l'annonce", cell() == Vector2i(10, 8), str(cell()))
 	Input.action_release("ui_left")
 	await close_box()
 	check("la boite fermee, une seule rencontre comptee", not box().visible and encounters() == 1, str(encounters()))
 
 	# Hors de l'herbe, meme avec le sort favorable, rien.
-	await walk("retour", Vector2i(11, 5), false)
+	await walk("retour", Vector2i(11, 8), false)
 	await close_box()
 	var before := encounters()
-	await walk("sortie de l'herbe", Vector2i(12, 5), false)
+	await walk("sortie de l'herbe", Vector2i(12, 8), false)
 	check("hors de l'herbe : pas de rencontre", encounters() == before and not box().visible, "%d -> %d" % [before, encounters()])
 
 	# Une carte sans chance de rencontre a des herbes vides.
 	level().set_meta("encounter_rate", 0)
-	await walk("herbes vides", Vector2i(11, 5), false)
+	await walk("herbes vides", Vector2i(11, 8), false)
 	check("carte a 0 : pas de rencontre", encounters() == before and not box().visible, str(encounters()))
 
 	# Une carte qui a une chance mais pas de table n'a personne a montrer.
 	level().set_meta("encounter_rate", 100)
 	level().set_meta("wild", "")
-	await walk("retour hors de l'herbe", Vector2i(12, 5), false)
-	await walk("herbes sans table", Vector2i(11, 5), false)
+	await walk("retour hors de l'herbe", Vector2i(12, 8), false)
+	await walk("herbes sans table", Vector2i(11, 8), false)
 	check("carte sans table : pas de rencontre", encounters() == before and not box().visible, str(encounters()))
 	force_encounters(0)

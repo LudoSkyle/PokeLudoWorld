@@ -5,13 +5,13 @@ extends "res://tests/lib.gd"
 # Oui / Non son bord droit — celui d'une question comme celui de la sauvegarde.
 
 func start() -> Vector2i:
-	return Vector2i(35, 12)
+	return Vector2i(14, 8)
 
 func right_edge(c: Control) -> float:
 	return c.position.x + c.size.x
 
 func test() -> void:
-	await spawn("npc", "Named", Vector2i(35, 11), {"display_name": "Camille", "gender": "female", "ask": "On y va ?", "text": "Allons-y."})
+	await spawn("npc", "Named", Vector2i(14, 7), {"display_name": "Camille", "gender": "female", "ask": "On y va ?", "text": "Allons-y."})
 	await interact_facing("ui_up")
 	await wait_ask()
 	check("la question est posee : la boite, le nom, Oui / Non", box().visible and speaker_name() == "Camille" and ask_choices().visible, speaker_name())

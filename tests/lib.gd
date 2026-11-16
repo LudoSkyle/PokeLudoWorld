@@ -9,6 +9,9 @@ extends SceneTree
 
 const VP := "Control/Frame/SubViewportContainer/SubViewport"
 const LEVELS := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
+const MAPS := "res://tests/maps/"
+# Une case libre du terrain d'essai, loin de son point d'apparition : la ou plant_save pose le joueur.
+const SAVE_CELL := Vector2i(10, 2)
 const DIRS := {Vector2i(0, -1): "ui_up", Vector2i(0, 1): "ui_down",
 	Vector2i(-1, 0): "ui_left", Vector2i(1, 0): "ui_right"}
 const STAIR_MAT := Vector2i(11, 8)
@@ -17,9 +20,17 @@ const EXIT_MAT := Vector2i(15, 14)
 var game: Node
 var failures := 0
 
-# Carte de depart : nom d'un fichier de scenes/levels, sans extension.
+# Carte de depart : le terrain d'essai (tests/maps/field.tscn) pour tout ce qui verifie le
+# systeme du jeu ; sinon le nom d'un fichier de scenes/levels, sans extension, pour ce qui
+# verifie une carte du jeu.
 func scene() -> String:
-	return "start_town"
+	return "field"
+
+# Le chemin de la scene d'une carte : une carte de test si elle existe sous ce nom, sinon une
+# carte du jeu.
+func scene_path(name: String) -> String:
+	var mine := MAPS + name + ".tscn"
+	return mine if ResourceLoader.exists(mine) else LEVELS + name + ".tscn"
 
 # Case de depart. (-1, -1) = la ou la carte fait apparaitre le joueur.
 func start() -> Vector2i:
@@ -371,7 +382,7 @@ func boot(load_save: bool) -> void:
 	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
 	game = packed.instantiate()
 	var scenes := game.get_node(VP + "/SceneManager")
-	scenes.start_scene = LEVELS + scene() + ".tscn"
+	scenes.start_scene = scene_path(scene())
 	scenes.load_save = load_save
 	scenes.show_title = title()
 	root.add_child(game)
@@ -539,11 +550,11 @@ func saved_file(slot: int = 1) -> ConfigFile:
 
 # Pose une sauvegarde toute faite dans un emplacement : une mise en place, pour les tests qui
 # ont besoin de parties existantes sans les jouer. A appeler avant relaunch().
-func plant_save(slot: int, where: String = "Bourg-Ludo", seconds: float = 0.0) -> void:
+func plant_save(slot: int, where: String = "Terrain d'essai", seconds: float = 0.0) -> void:
 	var file := ConfigFile.new()
-	file.set_value("save", "scene", LEVELS + "start_town.tscn")
-	file.set_value("save", "x", 20 * 16 + 8)
-	file.set_value("save", "y", 7 * 16 + 8)
+	file.set_value("save", "scene", MAPS + "field.tscn")
+	file.set_value("save", "x", SAVE_CELL.x * 16 + 8)
+	file.set_value("save", "y", SAVE_CELL.y * 16 + 8)
 	file.set_value("save", "facing_x", 0.0)
 	file.set_value("save", "facing_y", 1.0)
 	file.set_value("save", "location", where)
