@@ -75,6 +75,13 @@ qu'on s'y trouve ne fait disparaître ni apparaître personne sous nos yeux : le
 changement se voit à la prochaine entrée sur la carte, ou après le fondu de
 `@reload`, plus bas.
 
+**Une exception : la trouvaille qui attend un drapeau** (`kind = "item"` avec
+un `required_flag`). Elle reste sur la carte, cachée et introuvable, et **se
+montre dès que son drapeau est posé**, sans rechargement. C'est ce qui permet à
+quelqu'un de dire où chercher sur la carte même où se trouve l'objet : Roland
+pose `bell_spotted` (`@flag:` en tête de sa première boîte), et la cloche
+brille aussitôt sous le ponton.
+
 Deux nœuds `Npc` pour un même personnage — l'un `forbidden_flag`, l'autre
 `required_flag` sur le même drapeau — le font changer de place, d'itinéraire
 et de texte d'un coup.
@@ -279,13 +286,17 @@ autres n'en ont pas.
 
 ## Les six drapeaux
 
-Un par étape. `bell_hung` est le seul qui change la carte.
+Un par étape, plus `bell_spotted`, l'indice de Roland, qui n'est pas une
+étape : il ne donne ni ne prend rien, et les outils de Debug sautent
+par-dessus (« Repartir de zéro » le retire avec le reste, `Quest.epilogue`).
+`bell_hung` est le seul qui change la carte.
 
 | Drapeau | Posé par | Ce qu'il débloque |
 |---|---|---|
 | `bell_told` | Mémé, chez nous | le dialogue d'Alix, et les archives de la bibliothèque |
 | `bell_register` | le rayon des archives | le dialogue de Roland |
-| `bell_tarnished` | la cloche au bord du lac du B2F | le dialogue du Professeur |
+| `bell_spotted` | **Roland**, quand il dit où chercher | la cloche sous le ponton : sans lui, il n'y a rien à repêcher |
+| `bell_tarnished` | la cloche sous le ponton de l'ouest | le dialogue du Professeur |
 | `bell_clean` | la machine de soin du labo | le don à Mémé |
 | `bell_ribbon` | Mémé, qui rend la cloche | le socle |
 | `bell_hung` | le socle, sur la place | **la Veillée** |

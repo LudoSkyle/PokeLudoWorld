@@ -26,6 +26,11 @@ import java.time.LocalTime
  * [text] — dont une boîte donne l'objet par `@give:` — et pose [flag]. Ensuite
  * il ne dit plus que ses [states] ; s'il n'en a pas, il quitte la carte dès
  * qu'on l'a prise.
+ *
+ * Une trouvaille qui attend un drapeau ([requiredFlag]) **apparaît dès qu'il
+ * est posé**, sans recharger la carte : jusque-là elle est sur la carte mais
+ * cachée, et l'on ne trouve rien à sa place. C'est ainsi qu'un personnage peut
+ * dire où chercher, sur la carte même où se trouve l'objet.
  */
 @Script
 class Readable : StaticBody2D() {
@@ -62,7 +67,7 @@ class Readable : StaticBody2D() {
 	@Export
 	var flag: String = ""
 
-	/** Drapeau sans lequel le meuble n'est pas sur la carte. */
+	/** Drapeau sans lequel le meuble n'est pas sur la carte. Une trouvaille, elle, l'attend cachée. */
 	@Category("Histoire")
 	@Export
 	var requiredFlag: String = ""
@@ -72,10 +77,26 @@ class Readable : StaticBody2D() {
 	@Export
 	var forbiddenFlag: String = ""
 
+	/** Vrai tant qu'une trouvaille attend son drapeau, cachée : on ne la trouve pas. */
+	private var waiting = false
+
+	/** Sa couche de collision, mise de côté pendant qu'elle attend. */
+	private var layer = 0L
+
 	@Register
 	override fun _ready() {
-		// Absent de cette étape de l'histoire : il quitte la carte avant d'y avoir servi.
 		if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) {
+			// Une trouvaille dont le drapeau n'est pas encore posé reste là, cachée,
+			// et se montrera dès qu'il le sera (voir _process).
+			if (kind == ITEM && requiredFlag.isNotBlank() && StoryFlags.allows("", forbiddenFlag)) {
+				waiting = true
+				layer = getCollisionLayer()
+				setCollisionLayer(0)
+				visible = false
+				setProcess(true)
+				return
+			}
+			// Absent de cette étape de l'histoire : il quitte la carte avant d'y avoir servi.
 			queueFree()
 			return
 		}
@@ -90,6 +111,15 @@ class Readable : StaticBody2D() {
 	/** Ramassée, et plus rien à en dire : elle quitte la carte, sa case se libère. */
 	@Register
 	override fun _process(delta: Double) {
+		if (waiting) {
+			if (!StoryFlags.allows(requiredFlag, forbiddenFlag)) return
+			// Son drapeau vient d'être posé : elle se montre, et on peut la trouver.
+			waiting = false
+			setCollisionLayer(layer)
+			visible = true
+			setProcess(states.size == 0)
+			return
+		}
 		if (isTaken) queueFree()
 	}
 

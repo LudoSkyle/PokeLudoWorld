@@ -45,7 +45,7 @@ func test() -> void:
 	for f in ["bell_told", "bell_register", "bell_tarnished", "bell_clean", "bell_ribbon", "bell_hung"]:
 		if flag(f):
 			none = false
-	check("debut : plus aucun drapeau de la quete, ni celui de la fin de la Veillee", none and not flag("vigil_over"))
+	check("debut : plus aucun drapeau de la quete, ni l'indice de Roland, ni celui de la fin de la Veillee", none and not flag("bell_spotted") and not flag("vigil_over"))
 	rows = await key_items()
 	check("le sac est rendu : plus rien de la quete", rows == ["Retour"], str(rows))
 	check("la carte s'est rechargee : gardes et Roland sont revenus, la place est vide",
@@ -56,8 +56,13 @@ func test() -> void:
 		and absi(cell().x - 11) + absi(cell().y - 32) == 1 and is_free(cell()), str(cell()))
 	check("les habitants de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 13) and cell_of("Sailor") == Vector2i(53, 18))
 
-	# La quete se rejoue : la cloche est de nouveau sous le ponton.
+	# La quete se rejoue : la cloche est de nouveau sous le ponton, une fois que Roland l'a dit.
 	await place(Vector2i(19, 26))
+	await interact_facing("ui_up")
+	await secs(0.6)
+	check("sans l'indice de Roland, rien sous le ponton", not box().visible)
+	set_flag("bell_spotted")
+	await wait(4)
 	await interact_facing("ui_up")
 	await wait_text("Quelque chose brille au fond de l'eau, juste sous le ponton.")
 	check("la cloche est de nouveau a repecher", box_text() == "Quelque chose brille au fond de l'eau, juste sous le ponton.", box_text())
