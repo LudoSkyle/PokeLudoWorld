@@ -2,16 +2,32 @@ package fr.skyle.pokeludoworld.scripts.core
 
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.api.ConfigFile
+import godot.api.DirAccess
 import godot.api.FileAccess
 import godot.core.Error
 import godot.core.Vector2
 
 /**
- * La sauvegarde : une seule, dans un fichier chez le joueur (voir
- * [GameFiles]). Elle retient où l'on est, depuis combien de temps on joue, le
- * contenu du sac et les drapeaux d'histoire.
+ * Les sauvegardes : [SLOTS] emplacements, un fichier chacun chez le joueur
+ * (voir [GameFiles]). Une partie retient où l'on est, depuis combien de temps
+ * on joue, le contenu du sac et les drapeaux d'histoire.
+ *
+ * La partie en cours occupe l'emplacement [slot] : c'est lui qu'écrit le menu
+ * de pause. On le choisit à l'écran titre (voir SaveSlots).
  */
 object SaveGame {
+
+	/** Nombre d'emplacements, numérotés de 1 à [SLOTS]. */
+	const val SLOTS = 3
+
+	/** L'emplacement de la partie en cours. */
+	var slot: Int = 1
+		private set
+
+	/** Fait de [chosen] l'emplacement de la partie en cours. */
+	fun use(chosen: Int) {
+		slot = chosen.coerceIn(1, SLOTS)
+	}
 
 	data class State(
 		/** Chemin de la scène de la carte. */
@@ -29,13 +45,44 @@ object SaveGame {
 		val items: Map<String, Int> = emptyMap(),
 		/** Drapeaux d'histoire posés, dans l'ordre où ils l'ont été. */
 		val flags: Set<String> = emptySet(),
+		/** Badges gagnés. Rien ne les compte encore : la carte de la partie les affiche déjà. */
+		val badges: Int = 0,
+		/** Espèces inscrites au Pokédex. Même remarque. */
+		val pokedex: Int = 0,
+		/** L'équipe, jusqu'à six espèces, dans l'ordre. Même remarque. */
+		val team: List<String> = emptyList(),
 	)
 
-	fun exists(): Boolean = FileAccess.fileExists(GameFiles.save)
+	fun exists(at: Int = slot): Boolean = FileAccess.fileExists(GameFiles.save(at))
 
-	fun read(): State? {
+	/** Les emplacements occupés, dans l'ordre. */
+	fun used(): List<Int> = (1..SLOTS).filter { exists(it) }
+
+	/** Le premier emplacement libre, ou null s'ils sont tous pris. */
+	fun firstFree(): Int? = (1..SLOTS).firstOrNull { !exists(it) }
+
+	/** Efface la partie de l'emplacement [at]. */
+	fun delete(at: Int): Boolean {
+		if (!exists(at)) return true
+		val gone = DirAccess.removeAbsolute(GameFiles.save(at)) == Error.OK
+		if (!gone) Logger.e("Sauvegarde non effacee : ${GameFiles.save(at)}")
+		return gone
+	}
+
+	/**
+	 * Avant les emplacements il n'y avait qu'une sauvegarde : si elle est
+	 * encore là et que le premier emplacement est libre, elle le prend.
+	 */
+	fun adoptOldSave() {
+		if (!FileAccess.fileExists(GameFiles.oldSave) || exists(1)) return
+		if (DirAccess.renameAbsolute(GameFiles.oldSave, GameFiles.save(1)) != Error.OK) {
+			Logger.e("Ancienne sauvegarde non reprise : ${GameFiles.oldSave}")
+		}
+	}
+
+	fun read(at: Int = slot): State? {
 		val file = ConfigFile()
-		if (file.load(GameFiles.save) != Error.OK) return null
+		if (file.load(GameFiles.save(at)) != Error.OK) return null
 
 		val scene = file.getValue(SECTION, "scene", "").toString()
 		if (scene.isEmpty()) return null
@@ -49,6 +96,9 @@ object SaveGame {
 			seconds = number(file, "seconds"),
 			items = items(file),
 			flags = flags(file),
+			badges = number(file, "badges").toInt(),
+			pokedex = number(file, "pokedex").toInt(),
+			team = file.getValue(SECTION, "team", "").toString().split(',').filter { it.isNotBlank() }.take(TEAM),
 		)
 	}
 
@@ -83,11 +133,14 @@ object SaveGame {
 		file.setValue(SECTION, "location", state.location)
 		file.setValue(SECTION, "banner", state.banner)
 		file.setValue(SECTION, "seconds", state.seconds)
+		file.setValue(SECTION, "badges", state.badges)
+		file.setValue(SECTION, "pokedex", state.pokedex)
+		file.setValue(SECTION, "team", state.team.take(TEAM).joinToString(","))
 		state.items.forEach { (id, amount) -> file.setValue(ITEMS, id, amount) }
 		state.flags.forEach { file.setValue(FLAGS, it, true) }
 
-		val saved = file.save(GameFiles.save) == Error.OK
-		if (!saved) Logger.e("Sauvegarde impossible : ${GameFiles.save}")
+		val saved = file.save(GameFiles.save(slot)) == Error.OK
+		if (!saved) Logger.e("Sauvegarde impossible : ${GameFiles.save(slot)}")
 		return saved
 	}
 
@@ -99,6 +152,9 @@ object SaveGame {
 
 	private fun number(file: ConfigFile, key: String): Double =
 		(file.getValue(SECTION, key, 0.0) as? Number)?.toDouble() ?: 0.0
+
+	/** Taille d'une équipe. */
+	const val TEAM = 6
 
 	private const val SECTION = "save"
 	private const val ITEMS = "items"

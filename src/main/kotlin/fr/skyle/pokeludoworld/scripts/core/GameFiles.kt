@@ -4,7 +4,7 @@ import godot.api.OS
 
 /**
  * Fichiers que le jeu écrit chez le joueur. Lancé avec `-- --test`, il écrit
- * ailleurs : les tests ne touchent ni aux réglages ni à la sauvegarde du
+ * ailleurs : les tests ne touchent ni aux réglages ni aux sauvegardes du
  * joueur.
  */
 object GameFiles {
@@ -17,6 +17,10 @@ object GameFiles {
 	val settings: String
 		get() = if (testing) "user://test_settings.cfg" else "user://settings.cfg"
 
-	val save: String
+	/** La sauvegarde de l'emplacement [slot], compté à partir de 1. */
+	fun save(slot: Int): String = if (testing) "user://test_save_$slot.cfg" else "user://save_$slot.cfg"
+
+	/** L'unique sauvegarde d'avant les emplacements : elle devient celle du premier. */
+	val oldSave: String
 		get() = if (testing) "user://test_save.cfg" else "user://save.cfg"
 }

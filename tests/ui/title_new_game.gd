@@ -1,7 +1,7 @@
 extends "res://tests/lib.gd"
 
-# L'ecran titre au lancement, sans sauvegarde : « Press Enter », le menu, puis Nouvelle partie
-# lance la partie sur la carte de depart.
+# L'ecran titre au lancement, sans sauvegarde : « Press Enter », la selection des parties, puis
+# Nouvelle partie lance la partie sur la carte de depart.
 
 func title() -> bool:
 	return true
@@ -9,7 +9,7 @@ func title() -> bool:
 func test() -> void:
 	check("au lancement : l'ecran titre est affiche", title_shown())
 	check("au lancement : aucune carte n'est chargee", level() == null)
-	check("au lancement : le menu est ferme", not title_menu().visible)
+	check("au lancement : la selection des parties est fermee", not slots().visible)
 	await title_ready()
 	check("« Press Enter » s'affiche une fois le logo arrive", title_prompt().visible)
 	var logo: Sprite2D = title_screen().get_node("Control/Logo")
@@ -27,24 +27,24 @@ func test() -> void:
 	check("sans appuyer : toujours pas de carte", level() == null)
 
 	await tap("interact")
-	check("la touche d'interaction ouvre le menu", title_menu().visible)
-	check("sans sauvegarde : Nouvelle partie, Options, Retour", title_entries() == ["Nouvelle partie", "Options", "Retour"], str(title_entries()))
-	check("le curseur est sur la premiere entree", title_selected() == "Nouvelle partie", title_selected())
+	check("la touche d'interaction ouvre la selection des parties", slots().visible)
+	check("sans sauvegarde : Nouvelle partie, Options", slot_cards() == ["New", "Options"], str(slot_cards()))
+	check("la premiere carte est choisie", slot_selected() == "New", slot_selected())
+	check("elle dit « Nouvelle partie »", slot_card("New").get_node("Action/Text").text == "Nouvelle partie", slot_card("New").get_node("Action/Text").text)
 	await secs(1.2)
-	check("menu ouvert : « Press Enter » ne clignote plus", not title_prompt().visible)
-	shot("titre_menu")
+	check("selection ouverte : « Press Enter » ne clignote plus", not title_prompt().visible)
+	check("selection ouverte : le logo laisse la place aux cartes", not logo.visible)
+	shot("titre_parties_vide")
 
 	await tap("interact")
-	check("Nouvelle partie : le menu se ferme", not title_menu().visible)
+	check("Nouvelle partie : la selection se ferme", not slots().visible)
 	await title_gone()
 	check("la partie est lancee : l'ecran titre a disparu", not title_shown())
 	check("on est sur la carte de depart", level() != null and level().scene_file_path.ends_with("start_town.tscn"), "" if level() == null else level().scene_file_path)
 	check("le joueur est la", player() != null)
-	shot("titre_partie_lancee")
-	var from := cell()
-	var to := from
-	for d in DIRS.keys():
-		if can_step(from, from + d):
-			to = from + d
-			break
-	await walk("la partie lancee : on marche", to, false)
+	await walk("la partie lancee : on marche", two_steps_from(cell()), false)
+	await menu_pick("Save")
+	await wait_choices()
+	await tap("interact")
+	await secs(2.2)
+	check("sauvegarder ecrit dans le premier emplacement", FileAccess.file_exists(save_path(1)) and not FileAccess.file_exists(save_path(2)))

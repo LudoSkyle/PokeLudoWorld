@@ -10,7 +10,7 @@ func test() -> void:
 	await wait_choices()
 	await tap("interact")
 	await secs(2.2)
-	check("premiere sauvegarde faite", FileAccess.file_exists("user://test_save.cfg") and not menu_open())
+	check("premiere sauvegarde faite", FileAccess.file_exists("user://test_save_1.cfg") and not menu_open())
 	await walk("on se deplace", Vector2i(9, 16), false)
 
 	await menu_pick("Save")

@@ -114,27 +114,64 @@ images de profil (deux par sens de vol).
 ## Le déroulé
 
 1. Le noir se lève (`fade_in_seconds`), le logo arrive (`logo_in_seconds`).
-   Une pression d'interaction abrège l'arrivée, sans ouvrir le menu.
+   Une pression d'interaction abrège l'arrivée, sans rien ouvrir.
 2. « Press Enter » clignote. La touche d'**interaction** (Entrée ou Espace)
-   ouvre le menu.
-3. Le menu, une `ChoiceBox` comme les autres :
-
-| Entrée | Effet |
-|---|---|
-| **Continuer** | reprend la sauvegarde ; **n'apparaît que s'il y en a une**, et vient alors en premier |
-| **Nouvelle partie** | repart de zéro, sur la carte de départ. La sauvegarde reste en place tant qu'on ne sauvegarde pas par-dessus |
-| **Options** | ouvre l'écran des options ([menu.md](menu.md)) ; au retour le menu est réécrit dans la langue choisie, le curseur sur Options |
-| **Retour**, ou la touche du menu | referme le menu : on revient à « Press Enter » |
-
+   ouvre la sélection des parties.
+3. On choisit une partie, ou d'en commencer une (voir plus bas).
 4. L'écran part au noir, la carte se charge, le noir se lève
    (`SceneManager.title_fade_seconds`, 0,6 s à l'aller comme au retour).
    L'écran titre s'efface pendant que tout est noir.
 
+## La sélection des parties
+
+`Control/Slots` dans `title_screen.tscn`, script `SaveSlots.kt`. Le logo
+s'efface, le fond reste et continue de vivre sous un voile clair. Une rangée de
+**cartes** (`save_card.tscn`, `SaveCard.kt`) défile de gauche à droite ; celle
+du milieu est choisie, les voisines dépassent des bords, estompées.
+
+| Carte | Quand | Valider |
+|---|---|---|
+| **Partie 1 à 3** | une par emplacement occupé, dans l'ordre | ouvre trois réponses : **Continuer**, **Effacer**, **Retour** |
+| **Nouvelle partie** | tant qu'il reste un emplacement libre | lance une partie dans le premier emplacement libre |
+| **Options** | toujours | ouvre l'écran des options ([menu.md](menu.md)) ; au retour les cartes sont réécrites dans la langue choisie |
+
+| Touche | Effet |
+|---|---|
+| Gauche / Droite | change de carte ; la rangée **boucle**, et la touche maintenue se répète |
+| interaction | valide la carte du milieu |
+| **X** ou **Échap** | referme la sélection : on revient à « Press Enter » |
+
+**Une carte de partie** montre son numéro, le portrait du joueur et son nom,
+le lieu, puis trois lignes — Badges, Pokédex, Temps — et six cases pour
+l'équipe. Aujourd'hui seuls le lieu et le temps de jeu vivent vraiment ; le
+reste est en place pour plus tard :
+
+| Sur la carte | D'où ça vient | État |
+|---|---|---|
+| lieu, temps | la sauvegarde | réel |
+| badges, Pokédex | `badges`, `pokedex` de la sauvegarde | toujours 0 : rien ne les compte encore |
+| équipe | `team` de la sauvegarde | cases vides : il n'y a pas encore d'équipe |
+| portrait, nom | la planche du joueur et le texte « Ludo », posés dans la scène | fixes, en attendant le choix du personnage |
+
+Brancher l'un d'eux plus tard, c'est écrire sa valeur dans `SaveGame.State`
+(`SceneManager.save`) ; la carte la lit déjà, sauf les icônes de l'équipe, qui
+restent à poser dans `Save/Team/Cell0`…`Cell5` (`SaveCard.showSave`).
+
+**Effacer** demande confirmation — « Effacer la partie 1 ? » en bas de l'écran,
+Oui / Non, **le curseur sur Non** ; la touche du menu répond Non. Oui supprime
+le fichier et retire la carte. **Avec trois parties, « Nouvelle partie »
+disparaît** : il faut en effacer une pour qu'elle revienne.
+
+L'en-tête, le pied et les flèches sont des rectangles de couleur et les
+flèches du sac ; les cartes reprennent le cadre, la police et l'ombre des
+autres menus ([menu.md](menu.md)).
+
 ## Qui fait quoi
 
 `SceneManager` ne charge rien tant que `show_title` est vrai : il attend
-`start(resume)`, appelé par l'écran titre. `resume` reprend la sauvegarde
-([save.md](save.md)), sinon le sac et les drapeaux sont vidés. Le temps de jeu
+`start(slot, resume)`, appelé par l'écran titre. La partie occupe l'emplacement
+`slot` ; `resume` reprend ce qui y est sauvegardé ([save.md](save.md)), sinon
+le sac et les drapeaux sont vidés. Le temps de jeu
 ne tourne pas sur l'écran titre.
 
 **La touche d'interaction n'a toujours qu'un lecteur.** Tant que la partie n'a
@@ -143,7 +180,8 @@ pas commencé, le joueur n'est dans aucune carte et ne lit rien : c'est
 c'est `Player` qui reprend ([menu.md](menu.md)).
 
 Les sons sont ceux des menus : `confirm` pour ouvrir et valider, `cancel` pour
-Retour, `cursor` quand le curseur bouge ([audio.md](audio.md)).
+refermer ou répondre Non, `cursor` quand on change de carte
+([audio.md](audio.md)).
 
 **La musique** est `assets/audio/music/title.mp3`, en boucle. Un autre fichier
 se donne par `TitleScreen.music` (son nom sans extension) ; si le fichier
@@ -153,25 +191,30 @@ le fondu habituel quand la première carte arrive, et celle du lieu démarre.
 ## Ce qui manque
 
 - **Revenir à l'écran titre** depuis le menu de pause.
-- Le résumé de la sauvegarde (lieu, temps de jeu) à côté de « Continuer ».
+- Le choix du personnage et de son nom ; les badges, le Pokédex, l'équipe sur
+  les cartes.
 
 ## Tests
 
 Lancés par `tests/run.sh`, les tests **sautent l'écran titre** et arrivent
 directement sur leur carte (`show_title = false`, posé par `boot()`). Un test
 qui veut l'écran titre répond `true` à `title()` ; les outils sont dans
-`tests/lib.gd` : `title_ready`, `title_pick`, `title_gone`, `title_entries`,
-`title_selected`.
+`tests/lib.gd` : `title_ready`, `title_pick`, `title_gone`, `slot_go`,
+`slot_cards`, `slot_selected`, `slot_card`, `slot_answers`, et `plant_save`
+pour poser une partie toute faite dans un emplacement.
 
 ```bash
-tests/run.sh ui/title
+tests/run.sh ui/title ui/slots
 ```
 
 | Test | Ce qu'il joue |
 |---|---|
-| `title_new_game` | l'écran au lancement, le clignotement, le menu sans sauvegarde, Nouvelle partie |
-| `title_continue` | avec une sauvegarde : Continuer en premier, et la reprise sur la même case |
-| `title_new_over_save` | Nouvelle partie par-dessus une sauvegarde, qui reste en place |
-| `title_back` | Retour et la touche du menu ramènent à « Press Enter » |
-| `title_options` | les options depuis l'écran titre, la langue qui change le menu |
+| `title_new_game` | l'écran au lancement, le clignotement, la sélection sans sauvegarde, Nouvelle partie, la première sauvegarde |
+| `title_continue` | la carte d'une partie (lieu, temps, six cases), ses trois réponses, la reprise sur la même case |
+| `title_back` | la rangée qui boucle, la touche du menu qui ramène à « Press Enter » |
+| `title_options` | les options depuis la sélection, la langue qui change les cartes |
+| `slots_second_game` | une deuxième partie prend l'emplacement suivant, sans toucher à la première |
+| `slots_delete` | Effacer : la question, Non par défaut, la touche du menu, puis Oui |
+| `slots_full` | trois parties : plus de Nouvelle partie ; elle revient quand on en efface une |
+| `slots_old_save` | l'ancienne sauvegarde unique devient celle du premier emplacement |
 | `audio/music_title` | la musique du titre, puis celle du lieu une fois la partie lancée |
