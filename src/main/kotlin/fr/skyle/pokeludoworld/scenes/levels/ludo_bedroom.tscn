@@ -80,3 +80,6 @@ kind = "tv"
 [node name="Tv07" parent="Readables" instance=ExtResource("3_readable")]
 position = Vector2(280, 136)
 kind = "tv"
+
+[node name="SpawnPoint" type="Node2D" parent="."]
+position = Vector2(248, 184)
