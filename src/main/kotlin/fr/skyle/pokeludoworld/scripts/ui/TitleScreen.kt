@@ -1,7 +1,6 @@
 package fr.skyle.pokeludoworld.scripts.ui
 
 import fr.skyle.pokeludoworld.scripts.core.AudioManager
-import fr.skyle.pokeludoworld.scripts.core.SaveGame
 import fr.skyle.pokeludoworld.scripts.core.SceneManager
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
@@ -27,13 +26,6 @@ import kotlin.random.Random
 
 private enum class Step { BOOT, INTRO, WAITING, MENU, LEAVING, GONE }
 
-private enum class Entry(val label: String) {
-	CONTINUE(N("Continuer")),
-	NEW_GAME(N("Nouvelle partie")),
-	OPTIONS(N("Options")),
-	BACK(N("Retour")),
-}
-
 /**
  * L'écran titre : ce qu'on voit au lancement, avant toute carte. Trois images
  * superposées, **indépendantes** l'une de l'autre — on en change une sans
@@ -45,9 +37,10 @@ private enum class Entry(val label: String) {
  * - `Logo` : le logo, ramené dans un cadre de [logoWidth] × [logoHeight] ;
  * - `Prompt` : le texte du bas, « Press Enter », qui clignote.
  *
- * La touche d'interaction ouvre le menu : Continuer (s'il y a une sauvegarde),
- * Nouvelle partie, Options, Retour. C'est [SceneManager] qui lance ensuite la
- * partie, dans un fondu.
+ * La touche d'interaction ouvre la sélection des parties ([SaveSlots]) : une
+ * carte par partie sauvegardée, « Nouvelle partie », « Options ». Le logo
+ * s'efface pour lui laisser la place. C'est [SceneManager] qui lance ensuite
+ * la partie, dans un fondu.
  *
  * Tant que la partie n'a pas commencé, le joueur n'existe dans aucune carte et
  * ne lit rien : c'est cet écran qui lit la touche d'interaction. Il s'efface
@@ -137,20 +130,19 @@ class TitleScreen : CanvasLayer() {
 	private var logo: Sprite2D? = null
 	private var prompt: Sprite2D? = null
 	private var veil: ColorRect? = null
-	private var menu: ChoiceBox? = null
+	private var slots: SaveSlots? = null
 
 	private var step = Step.BOOT
 	private var clock = 0.0
 	private var blink = 0.0
 	private var logoScale = 1.0
 	private var logoHome = Vector2.ZERO
-	private var entries: List<Entry> = emptyList()
 
 	/** Vrai tant que l'écran titre est affiché. */
 	val isShown: Boolean
 		get() = step != Step.GONE && step != Step.BOOT
 
-	/** Vrai quand le menu de l'écran titre est ouvert. */
+	/** Vrai quand la sélection des parties est ouverte. */
 	val isMenuOpen: Boolean
 		get() = step == Step.MENU
 
@@ -161,7 +153,7 @@ class TitleScreen : CanvasLayer() {
 		logo = getNode("Control/Logo") as? Sprite2D
 		prompt = getNode("Control/Prompt") as? Sprite2D
 		veil = getNode("Control/Veil") as? ColorRect
-		menu = getNode("Control/Menu") as? ChoiceBox
+		slots = getNode("Control/Slots") as? SaveSlots
 
 		prompt?.scale = Vector2(PIXEL, PIXEL)
 		prompt?.visible = false
@@ -213,7 +205,8 @@ class TitleScreen : CanvasLayer() {
 			}
 			Step.WAITING -> if (interact) {
 				AudioManager.instance?.sfx("confirm")
-				openMenu(0)
+				slots?.open()
+				step = Step.MENU
 			}
 			Step.MENU -> handleMenu(interact)
 			// La première carte est là, sous le noir du fondu : l'écran titre s'efface.
@@ -229,7 +222,8 @@ class TitleScreen : CanvasLayer() {
 		// Le logo arrive en grossissant, dépasse un peu sa taille, puis flotte.
 		logo?.let {
 			val arrival = if (logoInSeconds > 0.0) ((clock - fadeInSeconds) / logoInSeconds).coerceIn(0.0, 1.0) else 1.0
-			it.visible = clock >= fadeInSeconds
+			// Il laisse la place aux cartes tant que la sélection des parties est ouverte.
+			it.visible = clock >= fadeInSeconds && step != Step.MENU
 			it.modulate = Color(1.0, 1.0, 1.0, (arrival * 2.5).coerceAtMost(1.0))
 			val grown = logoScale * (0.7 + 0.3 * overshoot(arrival))
 			it.scale = Vector2(grown, grown)
@@ -250,48 +244,39 @@ class TitleScreen : CanvasLayer() {
 		return 1.0 + (back + 1.0) * rest.pow(3) + back * rest.pow(2)
 	}
 
-	private fun openMenu(selected: Int) {
-		// « Continuer » n'existe que s'il y a une partie à reprendre.
-		entries = Entry.entries.filter { it != Entry.CONTINUE || SaveGame.exists() }
-		menu?.open(entries.map { T(it.label) }, selected)
-		step = Step.MENU
-	}
-
 	private fun handleMenu(interact: Boolean) {
 		val audio = AudioManager.instance
-		val back = Input.isActionJustPressed(PauseMenu.ACTION)
+		val cards = slots ?: return
 
-		// L'écran des options a la main tant qu'il est ouvert ; la langue a pu y changer.
+		// L'écran des options a la main tant qu'il est ouvert ; la langue a pu y
+		// changer, les cartes sont donc refaites à son retour.
 		val options = OptionsMenu.instance
 		if (options != null && options.isOpen) {
 			if (interact) audio?.sfx("confirm")
-			if (back) audio?.sfx("cancel")
+			if (Input.isActionJustPressed(PauseMenu.ACTION)) audio?.sfx("cancel")
 			options.handle(interact)
-			if (!options.isOpen) openMenu(entries.indexOf(Entry.OPTIONS))
+			if (!options.isOpen) cards.open("Options")
 			return
 		}
 
-		// La touche du menu répond la dernière entrée : Retour.
-		val choice = menu?.handle(interact) ?: return
-		val entry = entries.getOrNull(choice) ?: return
-		audio?.sfx(if (entry == Entry.BACK) "cancel" else "confirm")
-		when (entry) {
-			Entry.CONTINUE -> launch(resume = true)
-			Entry.NEW_GAME -> launch(resume = false)
-			Entry.OPTIONS -> options?.open()
-			Entry.BACK -> {
-				menu?.close()
+		val choice = cards.handle(interact) ?: return
+		when (choice.kind) {
+			SaveSlots.Kind.CONTINUE -> launch(choice.slot, resume = true)
+			SaveSlots.Kind.NEW_GAME -> launch(choice.slot, resume = false)
+			SaveSlots.Kind.OPTIONS -> options?.open()
+			SaveSlots.Kind.BACK -> {
+				cards.close()
 				blink = 0.0
 				step = Step.WAITING
 			}
 		}
 	}
 
-	private fun launch(resume: Boolean) {
+	private fun launch(slot: Int, resume: Boolean) {
 		val scenes = SceneManager.instance ?: return
-		menu?.close()
+		slots?.close()
 		step = Step.LEAVING
-		scenes.start(resume)
+		scenes.start(slot, resume)
 	}
 
 	/** La musique demandée est-elle là ? Elle peut être en WAV, OGG ou MP3, comme les autres. */
@@ -378,7 +363,7 @@ class TitleScreen : CanvasLayer() {
 
 	private fun leave() {
 		step = Step.GONE
-		menu?.close()
+		slots?.close()
 		visible = false
 	}
 }

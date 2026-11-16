@@ -398,23 +398,32 @@ func title_shown() -> bool:
 func title_prompt() -> Node2D:
 	return title_screen().get_node("Control/Prompt")
 
-func title_menu() -> Control:
-	return title_screen().get_node("Control/Menu")
+# L'ecran de selection des parties, ouvert par « Press Enter ».
+func slots() -> Control:
+	return title_screen().get_node("Control/Slots")
 
-# Les entrees du menu de l'ecran titre, telles qu'elles sont ecrites.
-func title_entries() -> Array:
+# Les cartes, dans l'ordre : ["Save1", "New", "Options"].
+func slot_cards() -> Array:
+	return Array(slots().card_names().split(",", false))
+
+# La carte choisie, au milieu de l'ecran.
+func slot_selected() -> String:
+	return slots().selected_name()
+
+func slot_card(name: String) -> Control:
+	return slots().get_node("Strip/" + name)
+
+# Continuer / Effacer / Retour, puis Oui / Non.
+func slot_choices() -> Control:
+	return slots().get_node("Choices")
+
+# Les reponses affichees dans la boite de choix d'une partie.
+func slot_answers() -> Array:
 	var rows: Array = []
-	for label in title_menu().get_node("Entries").get_children():
+	for label in slot_choices().get_node("Entries").get_children():
 		if label.visible:
 			rows.append(label.text)
 	return rows
-
-# L'entree en face de laquelle le curseur du menu est dessine.
-func title_selected() -> String:
-	var cursor: Control = title_menu().get_node("Cursor")
-	var line := floori((cursor.position.y + cursor.size.y / 2.0 - title_menu().get_node("Entries").position.y) / 64.0)
-	var rows := title_entries()
-	return "" if line < 0 or line >= rows.size() else rows[line]
 
 # Attend la fin de l'arrivee de l'ecran titre : « Press Enter » s'affiche.
 func title_ready() -> void:
@@ -423,16 +432,26 @@ func title_ready() -> void:
 		await process_frame
 	await wait(4)
 
-# Ouvre le menu de l'ecran titre s'il est ferme, descend jusqu'a l'entree et la valide.
-func title_pick(entry: String) -> void:
-	if not title_menu().visible:
+# Ouvre la selection des parties si elle est fermee, et amene la carte nommee au milieu.
+func slot_go(card: String) -> void:
+	if not slots().visible:
 		await title_ready()
 		await tap("interact")
 	var n := 0
-	while title_selected() != entry and n < 6:
-		await tap("ui_down")
+	while slot_selected() != card and n < 6:
+		await tap("ui_right")
 		n += 1
+	var end := Time.get_ticks_msec() + 2000
+	while Time.get_ticks_msec() < end and not slots().is_settled():
+		await process_frame
+
+# Choisit une carte et la valide : "New" lance une nouvelle partie, "Options" ouvre les options,
+# "Save1" ouvre ses reponses et prend la premiere, Continuer.
+func title_pick(card: String) -> void:
+	await slot_go(card)
 	await tap("interact")
+	if card.begins_with("Save"):
+		await tap("interact")
 
 # Attend que la partie soit lancee : la carte est la, le noir du fondu s'est leve.
 func title_gone() -> void:
@@ -509,10 +528,28 @@ func save_summary() -> Control:
 func save_choices() -> Control:
 	return game.get_node(VP + "/SaveMenu/Control/Choices")
 
-func saved_file() -> ConfigFile:
+# La sauvegarde de test d'un emplacement (1 a 3) ; sans ecran titre, on joue sur le premier.
+func save_path(slot: int = 1) -> String:
+	return "user://test_save_%d.cfg" % slot
+
+func saved_file(slot: int = 1) -> ConfigFile:
 	var file := ConfigFile.new()
-	file.load("user://test_save.cfg")
+	file.load(save_path(slot))
 	return file
+
+# Pose une sauvegarde toute faite dans un emplacement : une mise en place, pour les tests qui
+# ont besoin de parties existantes sans les jouer. A appeler avant relaunch().
+func plant_save(slot: int, where: String = "Bourg-Ludo", seconds: float = 0.0) -> void:
+	var file := ConfigFile.new()
+	file.set_value("save", "scene", LEVELS + "start_town.tscn")
+	file.set_value("save", "x", 20 * 16 + 8)
+	file.set_value("save", "y", 7 * 16 + 8)
+	file.set_value("save", "facing_x", 0.0)
+	file.set_value("save", "facing_y", 1.0)
+	file.set_value("save", "location", where)
+	file.set_value("save", "banner", "")
+	file.set_value("save", "seconds", seconds)
+	file.save(save_path(slot))
 
 # Attend que la question soit ecrite et que Oui/Non apparaisse.
 func wait_choices() -> void:
@@ -715,7 +752,7 @@ func _run() -> void:
 	root.size = Vector2i(1280, 960)
 	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
 	# Ce sont des fichiers de test, ceux du joueur ne sont jamais touches.
-	for file in ["user://test_settings.cfg", "user://test_save.cfg"]:
+	for file in ["user://test_settings.cfg", "user://test_save.cfg", save_path(1), save_path(2), save_path(3)]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)
 	# Les tests se jouent en plein jour, sauf ceux qui imposent une autre heure.

@@ -15,7 +15,7 @@ func test() -> void:
 	check("apres une seconde elle est a plein volume", is_equal_approx(audio().music_level(), 1.0), "%.2f" % audio().music_level())
 	check("rien ne s'eteint : il n'y avait pas de musique avant", audio().leaving_id() == "")
 
-	await title_pick("Nouvelle partie")
+	await title_pick("New")
 	var end := Time.get_ticks_msec() + 5000
 	while Time.get_ticks_msec() < end and audio().music_id() != "new_bark_town":
 		await process_frame

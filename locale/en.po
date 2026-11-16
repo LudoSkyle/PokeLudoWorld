@@ -881,3 +881,30 @@ msgstr "Continue"
 
 msgid "Nouvelle partie"
 msgstr "New game"
+
+msgid "PARTIES"
+msgstr "SAVES"
+
+msgid "X : Retour"
+msgstr "X: Back"
+
+msgid "Partie %d"
+msgstr "Save %d"
+
+msgid "Ludo"
+msgstr "Ludo"
+
+msgid "Badges"
+msgstr "Badges"
+
+msgid "Pokédex"
+msgstr "Pokédex"
+
+msgid "Temps"
+msgstr "Time"
+
+msgid "Effacer"
+msgstr "Delete"
+
+msgid "Effacer la partie %d ?"
+msgstr "Delete save %d?"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/TitleScreen.kt" id="1_script"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/title/background.png" id="2_background"]
@@ -10,6 +10,15 @@
 [ext_resource type="Shader" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/title_clouds.gdshader" id="8_drift"]
 [ext_resource type="Shader" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/title_shine.gdshader" id="9_shine"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/ui/choice_box.tscn" id="10_choices"]
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/SaveSlots.kt" id="11_slots"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-dp-pro.ttf" id="12_font"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/bag/arrow_left.png" id="13_left"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/bag/arrow_right.png" id="14_right"]
+
+[sub_resource type="FontVariation" id="menu_font"]
+base_font = ExtResource("12_font")
+spacing_top = -4
+spacing_bottom = -4
 
 [sub_resource type="ShaderMaterial" id="drift_far"]
 shader = ExtResource("8_drift")
@@ -124,12 +133,144 @@ position = Vector2(640, 836)
 scale = Vector2(4, 4)
 texture = ExtResource("7_prompt")
 
-[node name="Menu" parent="Control" instance=ExtResource("10_choices")]
+[node name="Slots" type="Control" parent="Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("11_slots")
+
+[node name="Wash" type="ColorRect" parent="Control/Slots"]
 layout_mode = 0
-offset_left = 384.0
-offset_top = 584.0
-offset_right = 896.0
-offset_bottom = 904.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 1280.0
+offset_bottom = 960.0
+mouse_filter = 2
+color = Color(0.898039, 0.945098, 1, 0.5)
+
+[node name="Strip" type="Control" parent="Control/Slots"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 216.0
+offset_right = 1280.0
+offset_bottom = 776.0
+mouse_filter = 2
+
+[node name="Header" type="ColorRect" parent="Control/Slots"]
+layout_mode = 0
+offset_left = 704.0
+offset_top = 40.0
+offset_right = 1280.0
+offset_bottom = 120.0
+mouse_filter = 2
+color = Color(0.14902, 0.203922, 0.431373, 1)
+
+[node name="Line" type="ColorRect" parent="Control/Slots/Header"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 80.0
+offset_right = 576.0
+offset_bottom = 84.0
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="Title" type="Label" parent="Control/Slots/Header"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 8.0
+offset_right = 576.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.117647, 0.184314, 0.431373, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
+text = "PARTIES"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Footer" type="ColorRect" parent="Control/Slots"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 872.0
+offset_right = 1280.0
+offset_bottom = 960.0
+mouse_filter = 2
+color = Color(0.14902, 0.203922, 0.431373, 1)
+
+[node name="Line" type="ColorRect" parent="Control/Slots/Footer"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = -4.0
+offset_right = 1280.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(1, 1, 1, 1)
+
+[node name="Hint" type="Label" parent="Control/Slots/Footer"]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 12.0
+offset_right = 832.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.117647, 0.184314, 0.431373, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
+text = ""
+horizontal_alignment = 0
+vertical_alignment = 1
+
+[node name="Back" type="Label" parent="Control/Slots/Footer"]
+layout_mode = 0
+offset_left = 848.0
+offset_top = 12.0
+offset_right = 1248.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.117647, 0.184314, 0.431373, 1)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = SubResource("menu_font")
+theme_override_font_sizes/font_size = 64
+text = "X : Retour"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Left" type="TextureRect" parent="Control/Slots"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 464.0
+offset_right = 88.0
+offset_bottom = 528.0
+mouse_filter = 2
+texture = ExtResource("13_left")
+expand_mode = 1
+
+[node name="Right" type="TextureRect" parent="Control/Slots"]
+layout_mode = 0
+offset_left = 1192.0
+offset_top = 464.0
+offset_right = 1256.0
+offset_bottom = 528.0
+mouse_filter = 2
+texture = ExtResource("14_right")
+expand_mode = 1
+
+[node name="Choices" parent="Control/Slots" instance=ExtResource("10_choices")]
+layout_mode = 0
+offset_left = 768.0
+offset_top = 520.0
+offset_right = 1216.0
+offset_bottom = 840.0
 
 [node name="Veil" type="ColorRect" parent="Control"]
 layout_mode = 1

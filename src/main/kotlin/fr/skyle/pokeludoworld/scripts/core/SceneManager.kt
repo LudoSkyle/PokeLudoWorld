@@ -167,6 +167,7 @@ class SceneManager : Node() {
 		// (voir start). Sans lui, la partie se prépare tout de suite ; son
 		// premier chargement attend la frame suivante : pendant `_ready` le
 		// parent construit encore ses enfants et refuse un `add_child`.
+		SaveGame.adoptOldSave()
 		if (!showTitle) prepare(loadSave)
 
 		Logger.i("Loading scene manager ...")
@@ -205,11 +206,14 @@ class SceneManager : Node() {
 
 	/**
 	 * Lance la partie depuis l'écran titre : l'écran part au noir, la première
-	 * carte se charge, puis le noir se lève. [resume] : « Continuer », sinon
-	 * « Nouvelle partie ». Sans effet une fois la partie lancée.
+	 * carte se charge, puis le noir se lève. La partie occupe l'emplacement
+	 * [slot] ; [resume] reprend ce qui y est sauvegardé (« Continuer »), sinon
+	 * tout repart de zéro (« Nouvelle partie »). Sans effet une fois la partie
+	 * lancée.
 	 */
-	fun start(resume: Boolean) {
+	fun start(slot: Int, resume: Boolean) {
 		if (started) return
+		SaveGame.use(slot)
 		prepare(resume)
 
 		// La carte arrive au bout du fondu, pas tout de suite.
@@ -218,7 +222,7 @@ class SceneManager : Node() {
 		progress = 0.0
 		phase = Phase.FADE_OUT
 
-		Logger.i("Starting game (resume=$resume)")
+		Logger.i("Starting game (slot=$slot, resume=$resume)")
 	}
 
 	@Register
