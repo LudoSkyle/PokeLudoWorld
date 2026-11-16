@@ -59,6 +59,12 @@ une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
   20 h 30) et baisse quand elle s'en va (de 5 h 30 à 6 h 30), sans saut.
 - **Elle perce la teinte** : autour du lampadaire le décor et les personnages
   retrouvent leurs couleurs, dans un halo chaud de 4 cases de rayon.
+- **Le halo est centré sur le pied**, pas sur l'ampoule. Le lampadaire fait deux
+  cases de haut : son ampoule est dessinée une case et demie au-dessus de son
+  socle, mais la lumière qu'on voit est celle qui tombe **au sol**, autour du
+  pied. Posée sur l'ampoule (elle l'a été), elle éclairait bien plus loin
+  derrière le lampadaire que devant. Le nœud `Light` est donc sur le socle, à
+  `(0, 4)` du centre de la case.
 - Le halo est un dégradé fabriqué dans la scène, sans asset. Le dessin du
   lampadaire est découpé dans `environments.png`, qui en a une vingtaine de
   modèles côte à côte (rangées 17-19, à partir de la colonne 71).

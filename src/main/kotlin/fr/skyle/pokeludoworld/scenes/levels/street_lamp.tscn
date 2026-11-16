@@ -32,7 +32,7 @@ region_rect = Rect2(1314, 279, 14, 36)
 shape = SubResource("RectangleShape2D_lamp")
 
 [node name="Light" type="PointLight2D" parent="."]
-position = Vector2(0, -20)
+position = Vector2(0, 4)
 color = Color(1, 0.86, 0.6, 1)
 energy = 0.0
 texture = SubResource("GradientTexture2D_glow")

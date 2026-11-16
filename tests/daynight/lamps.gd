@@ -36,6 +36,12 @@ func test() -> void:
 	var near := brightness(img, on_screen(Vector2i(10, 12)))
 	var far := brightness(img, on_screen(Vector2i(12, 14)))
 	check("la pelouse est plus claire pres du lampadaire que loin de lui", near > far * 1.25, "%.3f pres, %.3f loin" % [near, far])
+	# Le halo part du PIED du lampadaire, pas de son ampoule, qui est une case et demie plus
+	# haut a l'ecran : trois cases derriere lui, la pelouse est eclairee comme trois cases devant.
+	var behind := brightness(img, on_screen(Vector2i(15, 8)))
+	var front := brightness(img, on_screen(Vector2i(15, 14)))
+	check("le halo est centre sur le pied : autant devant que derriere",
+		abs(front - behind) < 0.25 * max(front, behind), "%.3f derriere, %.3f devant" % [behind, front])
 	await set_hour(19.0)
 	check("au crepuscule : encore eteint", not light.visible and is_zero_approx(light.energy), str(light.energy))
 	await set_hour(19.75)
