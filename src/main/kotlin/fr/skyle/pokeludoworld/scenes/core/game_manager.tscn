@@ -21,17 +21,32 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SubViewportContainer" type="SubViewportContainer" parent="Control" unique_id=915310402]
-texture_filter = 1
+[node name="Bars" type="ColorRect" parent="Control"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Frame" type="AspectRatioContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+ratio = 1.3333334
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Control/Frame" unique_id=915310402]
+texture_filter = 1
+layout_mode = 2
 stretch = true
 
-[node name="SubViewport" type="SubViewport" parent="Control/SubViewportContainer" unique_id=2012847285]
+[node name="SubViewport" type="SubViewport" parent="Control/Frame/SubViewportContainer" unique_id=2012847285]
 canvas_item_default_texture_filter = 0
 handle_input_locally = false
 size = Vector2i(1280, 960)
@@ -39,24 +54,24 @@ size_2d_override = Vector2i(1280, 960)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
-[node name="MessageBox" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("2_msgbox")]
+[node name="MessageBox" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("2_msgbox")]
 
-[node name="LocationBanner" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("4_banner")]
+[node name="LocationBanner" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("4_banner")]
 
-[node name="PauseMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("5_menu")]
+[node name="PauseMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("5_menu")]
 
-[node name="OptionsMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("6_options")]
+[node name="OptionsMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("6_options")]
 
-[node name="SaveMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("7_save")]
+[node name="SaveMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("7_save")]
 
-[node name="BagMenu" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("8_bag")]
+[node name="BagMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("8_bag")]
 
-[node name="ItemReveal" parent="Control/SubViewportContainer/SubViewport" instance=ExtResource("9_reveal")]
+[node name="ItemReveal" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("9_reveal")]
 
-[node name="Fade" type="CanvasLayer" parent="Control/SubViewportContainer/SubViewport"]
+[node name="Fade" type="CanvasLayer" parent="Control/Frame/SubViewportContainer/SubViewport"]
 layer = 10
 
-[node name="Rect" type="ColorRect" parent="Control/SubViewportContainer/SubViewport/Fade"]
+[node name="Rect" type="ColorRect" parent="Control/Frame/SubViewportContainer/SubViewport/Fade"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -65,8 +80,8 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
 
-[node name="SceneManager" type="Node" parent="Control/SubViewportContainer/SubViewport"]
+[node name="SceneManager" type="Node" parent="Control/Frame/SubViewportContainer/SubViewport"]
 script = ExtResource("3_scenemgr")
 
-[node name="AudioManager" type="Node" parent="Control/SubViewportContainer/SubViewport"]
+[node name="AudioManager" type="Node" parent="Control/Frame/SubViewportContainer/SubViewport"]
 script = ExtResource("10_audio")

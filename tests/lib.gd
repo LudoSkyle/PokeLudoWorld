@@ -7,7 +7,7 @@ extends SceneTree
 # rejouer le trajet depuis le village. Ce placement est une mise en place ;
 # tout ce qui est VERIFIE se joue avec de vraies entrees clavier.
 
-const VP := "Control/SubViewportContainer/SubViewport"
+const VP := "Control/Frame/SubViewportContainer/SubViewport"
 const LEVELS := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
 const DIRS := {Vector2i(0, -1): "ui_up", Vector2i(0, 1): "ui_down",
 	Vector2i(-1, 0): "ui_left", Vector2i(1, 0): "ui_right"}
@@ -79,6 +79,13 @@ func ledge_between(a: Vector2i, b: Vector2i) -> bool:
 # Peut-on faire un pas de a vers sa voisine b ?
 func can_step(a: Vector2i, b: Vector2i) -> bool:
 	return is_free(b) and not ledge_between(a, b)
+
+# Une case libre a deux pas de celle-ci, en ligne droite : de quoi s'eloigner d'un point de depart.
+func two_steps_from(from: Vector2i) -> Vector2i:
+	for d in DIRS.keys():
+		if can_step(from, from + d) and can_step(from + d, from + d * 2):
+			return from + d * 2
+	return from
 
 func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
 	# Les bornes sont celles de la carte, a une case pres autour.
