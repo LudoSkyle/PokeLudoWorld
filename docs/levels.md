@@ -268,6 +268,11 @@ ses fleurs basses (`layout.BARE_OF_TREES` n'en écarte que les arbres). **Des ca
 la façade du laboratoire, la bibliothèque et l'entre-deux des maisons du
 nord-ouest (`generate.put` : la case est choisie, jamais sur une piste).
 
+**La carte complète** — toutes les cartes du dehors à leur place, collées à leur
+couture — est dans `tools/maps/carte_complete.png`. `tools/maps/world.py` la
+refait à partir d'une capture entière de chaque carte, prise dans le jeu ; une
+nouvelle carte s'ajoute à son `PLACES`.
+
 ### Elle est produite par un générateur
 
 `tools/maps/start_island/`, sur le modèle de celui de la Route 1 :
