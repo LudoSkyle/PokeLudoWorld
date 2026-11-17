@@ -357,6 +357,14 @@ if __name__ == '__main__':
     last = max((n - 1) // ATLAS_COLUMNS for n in small) + 1
     save(ATLAS, atlas[:last * 128])
     for number, block in large.items(): save(os.path.join(POKEMON, 'overworld', ids[number] + '.png'), block)
+    # Un fichier qu'on n'écrit plus (une espèce prise un temps pour un gros Pokémon) ne doit pas rester : la vue de
+    # debug le montrerait à la place de la case de la planche.
+    kept = {ids[n] + '.png' for n in large} | {name + '.png' for name in WANTED}
+    for name in sorted(os.listdir(os.path.join(POKEMON, 'overworld'))):
+        if name.endswith('.png') and name not in kept:
+            for stale in (name, name + '.import'):
+                path = os.path.join(POKEMON, 'overworld', stale)
+                if os.path.exists(path): os.remove(path); print('retiré', os.path.relpath(path, ROOT))
     print('%d espèces dans %s, %d gros Pokémon à part : %s' % (len(small), os.path.relpath(ATLAS, ROOT), len(large), ', '.join(ids[n] for n in sorted(large))))
     for name, (source, column, row) in WANTED.items():
         if source not in sheets: sheets[source] = load(os.path.join(POKEMON, 'sources', source))[2]

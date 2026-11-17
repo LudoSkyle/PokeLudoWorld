@@ -48,7 +48,10 @@ python3 -I tools/pokedex.py <dossier des CSV de PokéAPI> <dossier du kit Pokém
   tient pas : il a son fichier dans `assets/pokemon/overworld/`, même
   disposition en 128 × 256 (Steelix, Lugia, Ho-Oh, Wailord, Kyogre, Groudon,
   Rayquaza, Dialga, Palkia, Regigigas, Giratina, Arceus). Les Pokémon du décor
-  y ont aussi le leur, que lisent les volants.
+  y ont aussi le leur, que lisent les volants : un bloc brut de 64 × 128, que
+  la vue de debug ne montre pas — elle ne prend un fichier que s'il est plus
+  large qu'une case, donc celui d'un gros Pokémon. L'outil retire de ce
+  dossier tout fichier qu'il n'écrit plus.
 
 ### Lire une planche HGSS
 

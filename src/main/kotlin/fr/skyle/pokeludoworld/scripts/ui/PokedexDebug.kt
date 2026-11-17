@@ -201,13 +201,15 @@ class PokedexDebug : CanvasLayer() {
 	 */
 	private fun walkerOf(entry: DexEntry): Texture2D? {
 		if (!entry.hasOverworld) return null
-		// Son propre fichier d'abord (les gros Pokémon, ceux du décor) : deux colonnes de quatre images carrées.
+		// Un gros Pokémon a son propre fichier, plus large qu'une case de la planche : deux colonnes de quatre images
+		// carrées. Les fichiers de la largeur d'une case sont ceux du décor (volants, PNJ), découpés bruts : la vue
+		// montre la case de la planche, celle qui est centrée et posée.
 		val own = NationalDex.OVERWORLD_DIR + entry.id + ".png"
-		if (ResourceLoader.exists(own)) {
-			val sheet = ResourceLoader.load(own) as? Texture2D ?: return null
-			val side = sheet.getWidth() / 2.0
+		val big = if (ResourceLoader.exists(own)) ResourceLoader.load(own) as? Texture2D else null
+		if (big != null && big.getWidth() > BLOCK_WIDTH) {
+			val side = big.getWidth() / 2.0
 			return AtlasTexture().apply {
-				atlas = sheet
+				atlas = big
 				region = Rect2(FRAME_AT[facing].first * side, FRAME_AT[facing].second * side, side, side)
 			}
 		}
@@ -227,6 +229,9 @@ private const val PAGE = 10
 
 /** Pixels d'écran par pixel du sprite : le carreau du damier de `pixel_grid.png` fait cette taille. */
 private const val SCALE = 4.0
+
+/** Largeur, en pixels, de la case d'une espèce dans la planche commune ; le fichier d'un gros Pokémon est plus large. */
+private const val BLOCK_WIDTH = 64
 
 /** Durée d'un côté, en millisecondes. */
 private const val TURN_MS = 1000L
