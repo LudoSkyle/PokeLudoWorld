@@ -163,7 +163,7 @@ func test() -> void:
 		if props.get_cell_source_id(c) == 10 and (paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1)):
 			on_path.append("mobilier en %s" % c)
 	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
-	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 15)
+	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(11, 14) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 15)
 		and cell_of("ShellKid") == Vector2i(29, 13) and cell_of("Sailor") == Vector2i(45, 17) and cell_of("Gardener") == Vector2i(49, 32))
 	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 15)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
@@ -222,7 +222,7 @@ func test() -> void:
 		if surfed.has(c) or c.x < 0 or c.y < 0 or c.x >= W or c.y >= H or not is_sea(c) or sea_rocks.get_cell_source_id(c) == ROUTE or bridges.get_cell_source_id(c) != -1:
 			continue
 		surfed[c] = true
-		if (c.x == 0 or c.y == H - 1 or c.x == W - 1) and not (c.x >= 49 and c.y >= 36):
+		if (c.x == 0 or c.y == H - 1 or c.x == W - 1) and not (c.x >= 49 and c.y >= 36) and not (c.x >= 50 and c.y >= 15 and c.y <= 25):          # (a l'est, Ludovic a choisi ses cinq rochers : la passe y reste ouverte)
 			surf_out.append(c)
 		for d in [Vector2i.UP, Vector2i.DOWN, Vector2i.LEFT, Vector2i.RIGHT]:
 			surf_todo.append(c + d)

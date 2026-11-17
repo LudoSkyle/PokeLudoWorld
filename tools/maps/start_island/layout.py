@@ -178,7 +178,8 @@ def feet(name, x, r):
     return []
 sprites = []
 NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 21)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
-KEEP = NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
+GARDEN = rect(36, 13, 39, 16)          # le potager clôturé, au sud-ouest du laboratoire : le lampadaire du labo en est le poteau d'angle (Ludovic, 17/11/2026)
+KEEP = GARDEN | NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(gx + i, y0 + j) for side, gx, y0 in SIDE_STAIRS.values() for i in range(-3, 4) for j in range(-1, 4)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
 # la forêt de l'exemple, et une lisière tout le long des bords de la carte : elle la ferme, mieux qu'une rangée de sapins
@@ -221,7 +222,6 @@ for c in sorted(MOUNTAIN):
 # aucun ailleurs — chaque case d'eau du dedans est fermée par des rochers qui se touchent par un côté ou par un coin.
 BARRIERS = {
     "l'ouest": [(4, 19), (3, 22)],
-    "l'est": [(54, 17), (53, 18), (54, 21), (53, 22), (54, 23)],
     "l'ouest de la jetée": [(25, 46), (27, 49), (28, 48), (29, 49), (30, 48), (31, 49)],
     "l'est de la jetée": [(35, 48), (36, 49), (37, 48), (38, 49)],
 }
@@ -229,6 +229,10 @@ FORMER_DOCKS = set().union(*[rect(*d) for d in [(8, 17, 10, 21), (8, 22, 21, 24)
 PLANKS = DECK | FORMER_DOCKS
 ROCKS = sorted(c for c in CELLS if geo.at(c) == '#' and c in SEA and c not in SAND and all((c[0] + i, c[1] + j) not in PLANKS and (c[0] + i, c[1] + j) not in deck for i in (-1, 0, 1) for j in (-1, 0, 1)))
 ROCKS = [c for n, c in enumerate(ROCKS) if not ((c[0] - 1, c[1]) in ROCKS and n % 2)]
+# À l'est, cinq rochers, à la place et de la taille que Ludovic a montrées sur capture (17/11/2026) — ceux-là et aucun autre,
+# même si la passe n'est plus fermée : un grand, deux moyens côte à côte, deux petits qui filent vers le sud-est.
+EAST_ROCKS = {(52, 18): 'spire', (52, 19): 'pebbleA', (53, 19): 'pebbleA', (53, 20): 'pebbleB', (54, 21): 'pebbleB'}
+ROCKS = [c for c in ROCKS if not (c[0] >= 50 and 15 <= c[1] <= 25)] + sorted(EAST_ROCKS)
 for where, more in BARRIERS.items():
     for c in more:
         if c not in SEA or c in DECK: WARN.append(('rocher', where, 'pas dans l eau : %s' % (c,)))
@@ -236,7 +240,7 @@ for where, more in BARRIERS.items():
 for n, c in enumerate(ROCKS):
     big = n % 3 == 0 and not (c[0] >= 50 and c[1] < 30) and all(          # (pas à l'est : Ludovic y préfère ses petits rochers)
         q in SEA and q not in SAND and q not in ROCKS and q not in DECK for q in [(c[0] + 1, c[1])]) and c not in SAND          # un gros de temps en temps, comme ceux de l'exemple : des amas, pas un semis de cailloux
-    sprites.append(('riverrock' if big else ('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
+    sprites.append((EAST_ROCKS[c] if c in EAST_ROCKS else 'riverrock' if big else ('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
 # --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
 palms = [(36, 24)]          # celui-là, Ludovic l'a placé : au pied de la falaise, à l'entrée du couloir de l'est (17/11/2026)
 COVE = rect(15, 9, 34, 18)          # la crique du nord : agrandie pour être une plage, pas une palmeraie — deux palmiers, pas plus (Ludovic, 17/11/2026)
@@ -291,6 +295,19 @@ for d in sorted(DOORS.values()):                                   # près de ch
         if abs(c[0] - d[0]) + abs(c[1] - d[1]) > 9 or bed(c, len(beds)): break
 for c in spots:                                                    # et d'autres çà et là
     if len(beds) < 14: bed(c, len(beds)) or bed(c, len(beds) + 3) or bed(c, len(beds) + 5)
+# --- le potager : une clôture de bois sur son pourtour, ouverte à l'est sur la piste, deux grandes fleurs dedans
+FENCE_CELLS = {}
+gx0, gy0, gx1, gy1 = 36, 13, 39, 16
+for c in sorted(GARDEN):
+    x, y = c
+    if gx0 < x < gx1 and gy0 < y < gy1: continue                       # l'intérieur
+    if c in ((gx1, gy0), (gx1, gy1 - 1)): continue                     # le coin du lampadaire, et le portillon
+    k = {(gx0, gy0): '7', (gx0, gy1): '1', (gx1, gy1): '3'}.get(c) or ('8' if y == gy0 else '2' if y == gy1 else '4' if x == gx0 else '6')
+    FENCE_CELLS[c] = 'fence' + k
+for c, name in FENCE_CELLS.items(): L['Decorations'][c] = tile(name)
+for n, x in enumerate((gx0 + 1, gx0 + 2)):
+    L['Props'][(x, gy1 - 1)] = (5, KINDS[n * 2], 4, 0); L['Props'][(x, gy1 - 2)] = (5, KINDS[n * 2], 3, 0)
+    FLOWER_CELLS.update({(x, gy1 - 1), (x, gy1 - 2)})
 # --- des coquillages sur le sable sec, sans collision : rien sous un escalier, ni sous un parasol
 SHELL, shells = random.Random(5), []
 sands = [c for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK) if ground.get(c) == 'sand5']
@@ -308,6 +325,7 @@ for c in CELLS:
     if c in DECK: continue
     if c in SEA or (any(route_tiles.blocks(n) and n != OPEN_EDGE for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
 for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
+SOLID |= set(FENCE_CELLS)
 def free(c): return inb(c) and c not in SOLID
 # Le bord du haut d'un plateau se foule — toujours. L'erreur est revenue deux fois (la rangée du haut fermée par une
 # collision) : le générateur la refuse maintenant lui-même.

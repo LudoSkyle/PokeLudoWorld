@@ -54,7 +54,7 @@ func test() -> void:
 	check("le socle est de nouveau vide", node("World/BellStand") == null and node("World/BellStandEmpty") != null)
 	check("Roland a repris sa case, et le joueur s'en est ecarte d'un pas", cell_of("Roland") == Vector2i(7, 36) and cell() != Vector2i(7, 36)
 		and absi(cell().x - 7) + absi(cell().y - 36) == 1 and is_free(cell()), str(cell()))
-	check("les habitants de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(45, 17))
+	check("les habitants de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(11, 14) and cell_of("Sailor") == Vector2i(45, 17))
 
 	# La quete se rejoue : la cloche est de nouveau sous le ponton, une fois que Roland l'a dit.
 	await place(Vector2i(34, 47))

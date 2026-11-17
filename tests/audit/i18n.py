@@ -21,7 +21,7 @@ def sources():
         for box in boxes(text):
             # "@give:objet ", "@take:objet ", "@flag:drapeau ", "@sound:jingle "
             # ou "@reload " en tete d'une boite sont des consignes, pas du texte.
-            box = re.sub(r"^(@(give|take|flag|sound):\w+(\*\d+)? |@reload )+", "", box)
+            box = re.sub(r"^(@(give|take|flag|sound|cry):\w+(\*\d+)? |@reload )+", "", box)
             if not SAME.match(box):
                 found.setdefault(box, where)
 
