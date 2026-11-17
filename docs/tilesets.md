@@ -177,6 +177,11 @@ C'est le composant `TallGrass.kt`, un nœud `Grass` du joueur comme de chaque
 PNJ : rien à régler par carte, il suffit que le calque s'appelle
 `Background/Grass`.
 
+**Une planche qui a ses propres hautes herbes** apporte sa paire de sources,
+rangées de la même façon — les trois états aux colonnes 6, 7, 8 de la rangée
+0 — et s'ajoute à `FRONTS` dans `TallGrass.kt`. La route du nord a les
+siennes (`12` et `13`, voir « Les terrains de la route du nord »).
+
 Deux essais écartés, pour mémoire : un cache d'herbe attaché au personnage (il
 glisse sur l'herbe pendant le pas), et la touffe qui reste couchée tant qu'on
 est dessus, comme dans le projet de référence (le personnage n'a plus l'air
@@ -294,6 +299,101 @@ Les rochers :
 **Jamais les rochers moussus** (`5:26-31,30-31`) ni l'arbre à fruits
 (`6:24,0`) : ce sont des éléments spéciaux, pas du décor
 ([mapping.md](mapping.md)).
+
+## Les terrains de la route du nord
+
+`north_route` ne lit **que** `route.png` (source 11) et ses hautes herbes
+(sources 12 et 13) : la carte d'exemple qu'elle reproduit est faite des tuiles
+de `sources/town_compilation.png`, et ce sont elles qu'on a découpées. Rien de
+l'atlas `environments.png` n'y est posé — deux styles ne se mélangent pas sur
+une même carte.
+
+`assets/levels/route.png` — cases de 16 px sans marge, fabriquée par
+`tools/route_tiles.py`, qui en est aussi **le catalogue** : le relevé y lit
+quelles tuiles chercher dans l'exemple, le TileSet où elles sont. Une matière à
+bords est un bloc 3 × 3 nommé comme un pavé numérique (`rock7` en haut à
+gauche, `rock5` au centre, `rock3` en bas à droite), suivi de ses quatre coins
+rentrants `i j / k l`.
+
+| Matière | Bloc 3×3 | Coins rentrants | Calque | Collision |
+|---|---|---|---|---|
+| `sand` : sable bordé d'eau claire | `11:0-2,0-2` | `11:3-4,0-1` | `Ground` | pleine |
+| `water` : eau claire | `11:3,2` | — | `Ground` | pleine |
+| `deep` : eau profonde, bords fondus dans la claire | `11:5-7,0-2` | — | `Ground` | pleine |
+| `lawn` : pelouse | `11:4,2` (`11:8,0` : pelouse fleurie) | — | `Ground` | aucune |
+| `trailC` : le centre d'une piste | `11:8,1` | — | `Ground` | aucune |
+| `trail` : le contour d'herbe d'une piste, centre vide | `11:9-11,0-2` | `11:12-13,0-1` | `Paths`, sur `trailC` | aucune |
+| `paved` : dallage en chevrons | `11:11-13,6-8` | — | `Paths` | aucune |
+| `rock` : falaise à dessus de roche | `11:0-2,3-5` | `11:3-4,3-4` | `Cliffs1`…`Cliffs3` | pleine, sauf le centre `rock5` |
+| `grass` : falaise à dessus d'herbe | `11:5-7,3-5` | `11:8-9,3-4` | `Cliffs1`…`Cliffs3` | pleine ; son centre est la pelouse |
+| `hollow` : la même, dessus vide | `11:10-12,3-5` | `11:13-14,3-4` | `Cliffs1`…`Cliffs3`, sur n'importe quel sol | pleine |
+| rebords de roche | `11:12-14,2` (vers le sud), `11:15,0-2` (vers l'est), `11:15,3-4` (vers l'ouest) | — | `Ledges` | pleine — voir plus bas |
+| fleurs | `11:0-4,6` | — | `Decorations` | aucune |
+| escalier de pierre | `11:6-8,13-15` : la rangée du milieu est celle des marches ; celle du bas ne porte que le pied des poteaux et le bord de la dernière marche, deux rangées de pixels qui débordent sur la case du dessous — **à poser**, sinon l'escalier est coupé net | — | `Bridges` | aucune |
+| ponts de planches | `11:0-4,12` (vertical), `11:5-8,12` (horizontal), `11:9-11,12` (son dessous, qui déborde d'une rangée) | — | `Bridges` | aucune |
+
+- **Toute tuile qui bloque a une variante 1 : le même dessin, sans
+  collision.** Elle se pose sous le tablier d'un pont et sous les marches d'un
+  escalier. C'est le générateur qui choisit la variante ; les collisions,
+  elles, sont déclarées par `route_tiles.blocks`.
+- **Les sources 11 à 13 sont réécrites en entier par
+  `tools/maps/north_route/generate.py --write`.** Une collision de la route ne
+  se retouche pas dans l'éditeur.
+- **La falaise est un anneau d'une case**, sur le pourtour d'un niveau. Deux
+  anneaux l'un dans l'autre, roche puis herbe, font la falaise à deux étages
+  qui borde chaque terre ; sous l'anneau de roche, le sol est du sable.
+- **L'eau porte le shader**, sable bordé d'eau compris : il ne touche que le
+  bleu. Elle ne porte **pas** la donnée `water` : la rivière est au fond d'un
+  ravin, on ne s'y mire pas depuis un pont.
+- **Les ombres sont translucides** dans la planche (arbres, falaises,
+  rochers) et le restent dans `route.png` : le moteur les fond sur ce qu'il y
+  a dessous, comme l'exemple.
+- **Un rebord de roche bloque dans les deux sens**, faute de saut. Le jour où
+  le saut existe, c'est sa collision qui change, pas la carte.
+
+Ce qui est debout est **une seule tuile de plusieurs cases**, posée sur la
+case en bas à gauche de son pied (`size_in_atlas`, `texture_origin`), dans un
+calque trié en Y de `World` :
+
+| | Tuile | Taille | Bloque |
+|---|---|---|---|
+| arbres : deux essences. Les arbres que l'exemple fait des deux à la fois ne sont pas dans `route.png` : `route_tiles.py` ne les recompose que pour le relevé | `11:0,9` `11:3,9` | 3×3 | ses **deux rangées du bas, sur ses trois cases** ; pas le haut : on passe derrière |
+| sapin, arbuste | `11:6,7` `11:7,7` | 1×3 : deux cases, et une rangée d'ombre **sous** le pied | sa case |
+| caillou, bloc brun | `11:8,11`, `11:9,10` | 1×1, 2×2 | ses cases |
+| rochers de la rivière : gros, pointu, deux petits | `11:11,9` `11:13,10` `11:14,11` `11:15,11` | 2×3, 1×2, 1×1 | rien : l'eau qui les porte bloque |
+
+- **Pourquoi deux rangées entières.** La cime retombe de chaque côté du
+  tronc : une case qu'elle recouvre n'est pas une case où l'on se tient, et
+  ce qu'on y poserait serait dessiné par-dessus l'arbre. Et les arbres sont
+  plantés toutes les quatre colonnes, une rangée sur deux décalée : ne bloquer
+  que le tronc laisserait une colonne libre sur deux, cachée sous les cimes.
+- **Un arbre se trie 2 px au-dessus du centre de la case de son tronc**
+  (`y_sort_origin = -2`) : qui passe derrière la cime passe derrière. Les
+  autres se trient à −1 : devant l'arbre planté sur la même rangée.
+- **L'ombre du sapin et de l'arbuste déborde d'une rangée de pixels sous leur
+  pied** (`route_tiles.SHADOW_ROW`). Leur tuile fait donc trois cases de haut,
+  centrée sur la case du pied (`texture_origin = (0, 0)`) : deux cases
+  au-dessus du sol, une rangée d'ombre en dessous.
+- **Deux coins rentrants ne bloquent pas** : `grassk` et `grassl`
+  (`route_tiles.blocks`), de la pelouse avec un bout de lisière en haut — voir
+  [levels.md](levels.md).
+- **Ce que la planche n'a pas est découpé dans l'exemple lui-même**
+  (`REFERENCE_PIECES`) : le centre de la piste, les ponts, les rebords, les
+  rochers de la rivière. Le fond connu en est retiré — toutes les teintes de
+  la pelouse, ou l'eau pixel à pixel. Le bout du bas du rebord tourné vers
+  l'est, que l'exemple ne montre jamais en entier, est son bout du haut
+  retourné (`ledge_bottom`).
+
+Les hautes herbes de la route ont leurs sources à elles, rangées comme celles
+de l'atlas pour que `TallGrass.kt` les traite pareil : `12:6-8,0` (la touffe
+et ses deux états foulés, la rangée 6 de `route.png`) et `13:6-8,0` (ses
+4 pixels du bas). Les deux états foulés sont dérivés de la touffe
+(`route_tiles.pressed`) : elle **se tasse** de deux, puis de trois pixels, le
+pied restant en place, et au plus tassé elle **s'éclaircit** d'un cran dans
+ses cinq verts. Elle ne se fend pas en deux : c'était le premier essai,
+refusé par Ludovic (17/11/2026). `TallGrass.kt` lit la source de la
+touffe sur la case et prend la moitié basse dans la source appariée
+(`5 → 9`, `12 → 13`).
 
 ## Les rebords
 

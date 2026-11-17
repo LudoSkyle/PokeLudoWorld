@@ -24,7 +24,7 @@ func test() -> void:
 
 	# Une porte est un decor franchissable : triee depuis le haut de sa case, sinon elle se dessine sur le joueur qui entre.
 	var houses: TileMapLayer = level().get_node("World/Houses")
-	var doors := level().get_node("Doors").get_children()
+	var doors := level().get_node("Doors").get_children().filter(func(d): return not str(d.name).begins_with("Nord"))   # les six cases de la trouee du nord menent a la route, pas a une maison
 	var behind := 0
 	for door in doors:
 		var data: TileData = houses.get_cell_tile_data(Vector2i(floori(door.position.x / 16.0), floori(door.position.y / 16.0)))

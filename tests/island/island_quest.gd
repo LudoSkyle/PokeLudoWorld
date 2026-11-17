@@ -91,4 +91,5 @@ func test() -> void:
 	check("le coureur court toujours", there("RunnerAfter"))
 	await talk("Roland, apres", Vector2i(33, 24), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
 	await walk("route du nord", Vector2i(30, 1), false)
-	await examine("bout de la route", Vector2i(30, 1), "route du nord", "ui_up")
+	await hold_until_change("la trouee du nord, la Veillee finie", "ui_up")
+	check("la route du nord est ouverte : on quitte l'ile par la trouee", str(level().scene_file_path).ends_with("north_route.tscn"), str(level().scene_file_path))

@@ -14,7 +14,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 |---|---|
 | scènes, calques, ordre de dessin, tri Y | [docs/architecture.md](docs/architecture.md) |
 | tuiles, collisions, terrains, atlas | [docs/tilesets.md](docs/tilesets.md) |
-| composer ou retoucher une carte : bords, arbres, rochers, objets | [docs/mapping.md](docs/mapping.md) |
+| composer ou retoucher une carte : bords, relief, arbres, herbes, chemins, eau, fleurs, objets | [docs/mapping.md](docs/mapping.md) |
 | le joueur, ses déplacements, sa caméra | [docs/player.md](docs/player.md) |
 | dialogues, panneaux, interaction | [docs/dialogue.md](docs/dialogue.md) |
 | cartes, portes, changement de scène, bandeau de lieu | [docs/levels.md](docs/levels.md) |
@@ -50,8 +50,14 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 
 `tools/` (hors Godot) : les scripts qui fabriquent une planche à partir d'une
 autre — `island_tiles.py` produit `assets/levels/island.png`,
-`weather_sheets.py` les planches de `assets/weather/`. Les trois
-`title_*.py` dessinent les images de l'écran titre.
+`route_tiles.py` découpe `assets/levels/route.png` dans la planche de la
+carte d'exemple de la route,
+`weather_sheets.py` les planches de `assets/weather/`, `item_icons.py` les
+icônes de `assets/items/icons/` (`named/`, `unnamed/`, `invented/`, et
+`custom/` pour celles faites pour le jeu). Les trois
+`title_*.py` dessinent les images de l'écran titre. `tools/maps/` garde les
+générateurs de cartes : `north_route/` relève une carte d'exemple tuile par
+tuile (`survey.py`) et en fabrique la route du nord (`generate.py`).
 
 ## Règles qui ne se redemandent pas
 

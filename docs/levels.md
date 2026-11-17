@@ -131,7 +131,7 @@ l'ouest, l'est et le sud.
 | `MaisonNord` | (15,7) | → `orange_house_north`, chez Anselme |
 | `MaisonSud` | (48,37) | → `orange_house_south`, chez Solange |
 | la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
-| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; le bout de la route en y 0 |
+| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; en y 0, six portes `Nord0`…`Nord5` mènent à la **route du nord** (`north_route`) |
 | la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
 | la cloche | (19,25), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
 | la jetée du sud | x 30–31, y 42–43 | le pêcheur est au bout ; des caisses sur le quai |
@@ -201,9 +201,9 @@ plante le décor en laissant des couloirs dégagés vers chaque lieu, puis
 **contrôle** avant d'écrire le `.tscn` : chaque lieu est accessible à pied,
 aucune case de la marge ne l'est, aucune barrière de rochers ne fuit, aucun
 ponton ne touche la terre par le flanc, aucun objet ni personnage n'étrangle
-un passage. Il n'est pas dans le dépôt : il est rangé avec les notes de
-session (`island_generator/` : `plan.py`, `gen.py`, `build.py`, et la sonde
-qui relève la grille du moteur). Retoucher la carte dans l'éditeur reste
+un passage. Une copie en est gardée dans `tools/maps/start_island/` (`plan.py`,
+`gen.py`, `build.py`) : **une archive, pas un outil prêt à tourner** — elle
+garde les chemins de la session où elle a été écrite, voir son `LISEZMOI.md`. Retoucher la carte dans l'éditeur reste
 possible ; relancer le générateur écraserait ces retouches.
 
 Les tuiles que l'atlas n'avait pas (rambardes, planches de bout, petits
@@ -213,6 +213,173 @@ dépôt.
 `tests/run.sh island` : circulation (ce qui bloque, ce qui porte, les rebords,
 tout se rejoint, la marge à pied et à la nage, les pontons), portes, objets à
 ramasser, la quête en trois temps, et le vol des oiseaux.
+
+## La route du nord
+
+`scenes/levels/north_route.tscn` — 69 × 50 cases, au nord de l'île. On y entre
+par la trouée de la falaise de l'île (ses six cases `Nord0`…`Nord5`), et l'on
+arrive au bas de la carte, en (44–46, 48), par les portes `Sud0`…`Sud2`.
+
+**Elle reproduit, tuile pour tuile, une carte d'exemple fournie par Ludovic**
+(17/11/2026). L'exemple est fait des tuiles de `sources/town_compilation.png` :
+elles ont été retrouvées une à une, au pixel près, et la carte est posée avec
+**ces tuiles-là** (`route.png`, source 11 — [tilesets.md](tilesets.md)).
+`generate.py --compare` le mesure : **3372 cases sur 3450 sont identiques à
+l'exemple**, pixel pour pixel. Les 78 autres :
+
+- **la trouée du sud**, que l'exemple n'a pas — il faut bien arriver de l'île :
+  un couloir de piste de trois cases (44–46, 46–49) ouvert dans la forêt, et
+  les arbres qui le bordent ;
+- **les objets du jeu** à la place de ceux de l'exemple : nos panneaux, nos
+  Poké Balls à ramasser ;
+- **l'ombre des sapins et de l'arbuste, dessinée en entier** : sur la planche
+  elle déborde d'une rangée de pixels sous leur pied, que l'exemple coupe
+  21 fois sur 24. Le jeu la dessine partout ;
+- **quatre arbres ramenés à ce qu'est un arbre** (12 cases) : l'exemple en
+  fait trois de deux essences — la cime de l'une sur le pied de l'autre — et
+  pose deux fois le pied d'un quatrième, dont l'ombre est double. Dans le jeu
+  un arbre a une seule teinte, celle de sa cime, et une seule ombre : à deux
+  teintes, il a l'air d'une erreur (Ludovic, 17/11/2026) ;
+- une dizaine de cases de détail que la planche n'explique pas : un rocher
+  coupé par le bord du bas, le panneau de l'exemple, quelques pixels sous un
+  arbre.
+
+Trois choses que l'exemple cache sous un arbre ou un rocher sont **complétées**,
+et non devinées : le bout du bas des rebords tournés vers l'est (c'est leur
+bout du haut retourné — ce qu'on en voit le confirme au pixel), le bord de
+falaise sous le bloc brun de (55, 18), la piste sous l'ombre du sapin de
+(52, 30).
+
+```
+ forêt ─ sortie du NORD (fermée) ─ forêt │ rivière │   bras du nord-est   │ falaises
+ terre du NORD-OUEST : clairières,       │    ~    │ forêt                │ LA MONTAGNE :
+ hautes herbes, piste, REBORD            │    ~    │                      │ gradins de roche
+ ════════ le bras de l'ouest ═══ PONT ═══╡    ~    │ HAUTES TERRES : herbes, deux escaliers
+ terre du SUD-OUEST : forêt,             │    ~    │ pelouse, piste ───── sortie de l'EST (fermée)
+ hautes herbes, piste ─────── PONT ──────┼─────────┤ forêt, hautes herbes, le bosquet fermé
+ forêt                                   │    ~    │ forêt ─ trouée du SUD (vers l'île) ─ forêt
+```
+
+**Les terres sont en hauteur, et l'on n'atteint jamais l'eau.** Chaque terre
+est cernée d'une **falaise à deux étages**, deux anneaux l'un dans l'autre :
+la roche d'abord (`Cliffs1`), qui tombe dans la rivière, puis l'herbe
+(`Cliffs2`), une case en retrait. Les plateaux du dessus et les gradins de la
+montagne sont d'autres anneaux, posés par-dessus (`Cliffs3`). Une case
+d'anneau bloque, **sauf les deux coins rentrants du haut de l'anneau d'herbe**
+(`grassk`, `grassl`) : ce sont de la pelouse du plateau, avec un bout de
+lisière dans leurs quatre rangées du haut, et ils ne touchent le vide que par
+leur pointe — on s'y tient, on n'en tombe pas (ainsi (36, 33), au bout du pont
+de l'est). Un test le contrôle : aucune case foulée ne touche l'eau ni le
+sable, hors des ponts.
+
+**L'eau a deux teintes** : claire au pied des falaises, profonde au milieu du
+lit, la seconde fondue dans la première par les bords de son bloc. **Un
+liseré de sable court au pied de chaque falaise** : le sable est sous l'anneau
+de roche, et son bord ondule dans la case d'eau voisine.
+
+**Dans l'eau, 40 rochers gris cernés d'écume**, aux places exactes de ceux de
+l'exemple : 11 gros, 8 pointus, 21 petits. Rien d'autre ne dépasse de la
+rivière.
+
+**Les deux ponts font trois cases de large** et passent par-dessus les
+falaises : x 14–16, y 18–29, et x 24–35, y 35–37. Ce sont les planches de
+l'exemple, sans rambarde : le tablier bloque de lui-même, l'eau et les
+falaises de part et d'autre étant pleines. Dessous, l'eau prend sa **variante
+sans collision**.
+
+**La forêt** : 312 arbres en quinconce — un arbre toutes les **quatre**
+colonnes, la rangée suivante décalée de deux, une rangée par case
+([mapping.md](mapping.md)). Un arbre bloque **ses deux rangées du bas sur ses
+trois cases** : le tronc, et la cime qui retombe de chaque côté. On passe
+derrière le haut de la cime.
+
+**Deux choses de l'exemple que le jeu ne sait pas encore faire**, et qui
+ferment donc un passage :
+
+- les **rebords de roche** (`Ledges` : (15–17, 8), (18, 31–33), (46, 35–38),
+  (54, 35–38), (52, 44–45)) se sautent dans un sens dans les jeux d'origine.
+  Ici ils bloquent dans les deux. Celui de la piste du nord se contourne par
+  les hautes herbes de l'ouest : c'est le raccourci du retour, comme dans
+  l'exemple ;
+- l'**arbuste** de (61, 41) est un arbre à couper. Le bosquet qu'il garde
+  (x 53–62, y 42–46) ne s'atteint donc pas — et **la seconde Poké Ball de
+  l'exemple y reste**, en (58, 45) : c'est l'Antidote, la récompense de qui
+  reviendra couper l'arbuste (Ludovic, 17/11/2026). Le générateur le vérifie
+  dans les deux sens : hors d'atteinte aujourd'hui, à portée l'arbuste ôté.
+  Examiné, il dit ce que disent les jeux d'origine — « Cet arbre semble
+  pouvoir être coupé ! » (`Readables/CutTree0`, que le générateur pose sur
+  chaque arbuste).
+
+| Lieu | Case | |
+|---|---|---|
+| arrivée de l'île | (45,48) | `SpawnPoint` ; portes `Sud0`…`Sud2` en (44–46,49) |
+| sortie du nord | (14–16,0) | fermée : trois `Readables/RoadEndNorth…` ; un dallage en chevrons la marque |
+| sortie de l'est | (68,35–37) | fermée : trois `Readables/RoadEndEast…` |
+| les hautes terres | x 48–62, y 21–33 | deux escaliers de pierre : marches en (50–52,34) et (56–58,33), un poteau de chaque côté |
+| la montagne | x 49–68, y 3–25 | des gradins de roche emboîtés, quatre blocs bruns ; pleine |
+| objets à ramasser | Potion (20,11), Antidote (58,45, derrière l'arbuste), Poké Ball (6,8), Super Potion (61,25) | la Potion est à la place exacte d'une Poké Ball de l'exemple ; aucun n'est posé sur une case qu'un arbre recouvre, ni derrière une cime qui le cacherait |
+| personnages | campeur (18,38), fillette (9,36), pique-niqueuse (49,29), gamin (18,11), chasseur d'insectes dans les herbes du sud-est — ni pêcheur ni montagnard dans une forêt | leurs cases sont choisies par le générateur : hors piste, hors herbes, sans gêner un passage |
+
+Calques de fond, dans l'ordre : `Ground`, `Cliffs1`, `Cliffs2`, `Cliffs3`,
+`Paths` (contour des pistes, dallage), `Decorations` (fleurs), `Grass`,
+`Ledges`, `Bridges` (ponts et escaliers). Dans `World`, triés en Y : `Trees`,
+`Props` (sapins, arbuste, rochers).
+
+**Dans le ciel**, dix Pokémon que le vent porte d'ouest en est, par groupes de
+deux ou trois : trois Granivol, deux Floravol, trois Cotovol, deux Granivol
+(nœud `Sky`, [npcs.md](npcs.md)). Pas d'oiseaux de mer au-dessus d'une forêt.
+
+**Dans les herbes**, une rencontre a 3 chances sur 100 par pas marché, 5 par
+pas couru ([encounters.md](encounters.md)).
+
+Elle n'a pas de musique à elle : elle garde celle de l'île, en attendant une
+musique de route.
+
+### Elle est produite par un générateur, à partir d'un relevé
+
+Le générateur est dans le dépôt, `tools/maps/north_route/` :
+
+| Fichier | Rôle |
+|---|---|
+| `reference.png` | la carte d'exemple |
+| `survey.py` | le **relevé par tuiles** : retrouve dans l'exemple chaque tuile de `route.png`, couche par couche, et écrit `survey.json`. Dit combien de cases il reconstitue au pixel près (3418 sur 3450) |
+| `survey.json` | le relevé : sol, anneaux de falaise, décors, rebords, escaliers, ponts de chaque case ; ce qui est debout (arbres, rochers), par son pied |
+| `layout.py` | pose chaque tuile relevée dans son calque, ouvre la trouée du sud, devine le sol que l'exemple cache, calcule ce qui bloque |
+| `generate.py` | pose objets, personnages et portes, **contrôle**, écrit la scène et les sources 11 à 13 du TileSet |
+
+```bash
+python3 tools/route_tiles.py                                # la planche route.png (puis réimporter)
+python3 tools/maps/north_route/survey.py                    # le relevé -> survey.json
+python3 tools/maps/north_route/survey.py --why=46,38        # ce qui est trouvé sur une case, et les pixels inexpliqués
+python3 tools/maps/north_route/generate.py                  # contrôle seulement
+python3 tools/maps/north_route/generate.py --write          # écrit la scène et le TileSet
+python3 tools/maps/north_route/generate.py --compare        # les cases qui diffèrent de l'exemple
+python3 tools/maps/north_route/generate.py --preview a.png  # la carte sans passer par Godot
+```
+
+Il contrôle avant d'écrire : toute tuile posée est déclarée ; chaque lieu,
+chaque marche d'escalier est atteignable depuis la trouée du sud ; aucune case
+du bord ne l'est hors des trouées ; aucun personnage immobile ne gêne un
+passage. **Relancer le générateur écrase la scène** : une retouche faite dans
+l'éditeur se refait dans le générateur. La grille de collisions du moteur a
+été comparée à celle du plan, case par case : elles sont identiques. Le rendu
+du moteur a été comparé à l'exemple de la même façon.
+
+**Comment le relevé procède** — c'est la méthode à reprendre pour toute carte
+d'exemple dont on a la planche ([mapping.md](mapping.md)) : il épluche la carte
+du dessus vers le dessous. D'abord ce qui est debout, rangée par rangée, de
+l'avant vers l'arrière (un arbre cache le pied de celui de derrière) ; puis
+ponts, escaliers, rebords, décors au sol ; puis jusqu'à trois anneaux de
+falaise ; enfin le sol. Une tuile n'est retenue que si **tous** ses pixels
+encore visibles sont ceux de l'exemple — sous une ombre translucide, assombris
+d'autant. La carte est ensuite recomposée et comparée à l'exemple : ce qui
+diffère est ce que la planche n'a pas, et se découpe dans l'exemple lui-même.
+
+`tests/run.sh route` : circulation, portes dans les deux sens, objets, un
+dialogue.
+
+L'ancienne version de la route, faite des tuiles de l'atlas, n'est plus dans
+le dépôt.
 
 ## Les intérieurs
 
