@@ -1,0 +1,4 @@
+# Le nom des cases de custom.png : « numéro  nom », le numéro étant le rang de la case
+# à partir de 0 (16 cases par rangée). tools/item_icons.py les découpe dans icons/custom/.
+0 clear_bell
+1 tarnished_bell
