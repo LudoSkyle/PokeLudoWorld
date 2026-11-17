@@ -36,7 +36,7 @@ INSIDE = PLATEAU - RING
 
 # ============================================================ ce qu'on pose sur la géographie
 # --- les maisons : nom -> (modèle de village.png, colonne de gauche, rangée du pied). La porte est sur la rangée du pied.
-HOUSES = {'ludo': ('hut_left', 9, 8), 'north': ('hut_right', 14, 9), 'library': ('hut_left', 2, 29), 'lab': ('hall', 41, 8), 'south': ('hut_right', 40, 33)}
+HOUSES = {'ludo': ('hut_left', 9, 8), 'north': ('hut_right', 14, 9), 'library': ('hut_left', 2, 29), 'lab': ('hall', 41, 8), 'south': ('hut_right', 41, 33)}
 def box(name):
     kind, x, r = HOUSES[name]; w, h = village_tiles.sizes()[kind]
     return rect(x, r - h + 1, x + w - 1, r)
@@ -90,7 +90,7 @@ PATHS = [(ROAD[0], 0, ROAD[-1], 12),                                            
          (44, 9, 46, 12), (36, 10, 46, 12), (40, 13, 42, 17),                                          # nord-est : le laboratoire, ses deux escaliers
          (2, 30, 5, 32), (6, 30, 11, 32),                                                              # ouest : la bibliothèque, son escalier
          (9, 33, 11, 37), (9, 37, 20, 39),                                                             # de là au jardin, jusqu'à son escalier de côté
-         (42, 34, 44, 36), (37, 34, 48, 36), (46, 28, 48, 36), (44, 37, 46, 46)]                        # sud-est : chez Solange, l'escalier, l'allée du banc, la presqu'île
+         (43, 34, 45, 36), (37, 34, 48, 36), (46, 28, 48, 36), (44, 37, 46, 46)]                        # sud-est : chez Solange, l'escalier, l'allée du banc, la presqu'île
 TRAIL = tidy(set().union(*[rect(*r) for r in PATHS]) & INSIDE - MOUNTAIN - HOUSE_AREA)
 
 # --- les hautes herbes
@@ -109,7 +109,7 @@ deep_shape = {c: (k if k in '123456789' else '5') for c, k in shape(DEEP).items(
 SAND_CORNER = {'i': 'j', 'j': 'i', 'k': 'l', 'l': 'k'}
 # Le bord du haut d'un plateau est de l'herbe, avec un liseré tout en haut : rien n'y dit « falaise ». Derrière lui, sur
 # l'île, c'est la plage : on s'y tient, et l'on passe de l'un à l'autre (Ludovic, 17/11/2026). Il prend sa variante sans collision.
-OPEN_EDGE = None          # (plus aucun : depuis que la falaise a deux étages, derrière le bord du haut il y a le gradin de roche, pas la plage)
+OPEN_EDGE = 'grass8'          # TOUJOURS : la rangée du haut d'un plateau est de l'herbe, on y marche. C'est le gradin de roche, derrière, qui arrête (Ludovic, 17/11/2026 : « tu n'arrêtes pas de la faire, cette erreur »)
 ground, cliffs, shore = {}, {}, {}
 for c in CELLS:
     if c in DEEP: ground[c] = 'deep' + deep_shape[c]
@@ -130,18 +130,17 @@ MADE_TILES = set(route_tiles.cells())
 for x, r in STAIRS.values():
     for i, name in enumerate(('stair7', None, None, None, 'stair9')):
         if name: stairs[(x + i, r - 1)] = name
-    for j in (0, 1):          # une rangée de marches par étage de la falaise : l'herbe, puis la roche
-        for i, name in enumerate(('stair4', 'stair5', 'stair5', 'stair5', 'stair6')): stairs[(x + i, r + j)] = name
+    for j, flight in enumerate('UL'):          # une volée double, une rangée par étage de la falaise : l'herbe, puis la roche — deux rangées faites pour se suivre
+        for i, k in enumerate('45556'): stairs[(x + i, r + j)] = 'stair%s%s' % (flight, k)
     for i, name in enumerate(('stair1', 'stair2', 'stair2', 'stair2', 'stair3')): stairs[(x + i, r + 2)] = name
     if any(ring_shape.get((x + i, r)) != '2' for i in range(5)): WARN.append(('escalier', (x, r), 'le bord du plateau n est pas droit sous l escalier : %s' % [ring_shape.get((x + i, r)) for i in range(5)]))
     if any(rock_shape.get((x + i, r + 1)) != '2' for i in (1, 2, 3)): WARN.append(('escalier', (x, r), 'l anneau de roche n est pas droit sous l escalier : %s' % [rock_shape.get((x + i, r + 1)) for i in range(5)]))
     if any((x + i, r + 2) not in BEACH for i in (1, 2, 3)): WARN.append(('escalier', (x, r), 'pas de plage au pied de l escalier'))
 for where, (side, gx, y0) in SIDE_STAIRS.items():
     cols = [gx - 2, gx - 1, gx, gx + 1] if side == 'W' else [gx + 2, gx + 1, gx, gx - 1]          # le bas, la roche, l'herbe, le haut
-    keys = {'W': ('741', '852', '852', '963'), 'E': ('963', '852', '852', '741')}[side]
-    for x, key in zip(cols, keys):
-        for y, k in [(y0 - 1, key[0])] + [(y0 + j, key[1]) for j in range(3)] + [(y0 + 3, key[2])]:
-            if AT['stair%s%s' % (side, k)] in MADE_TILES: stairs[(x, y)] = 'stair%s%s' % (side, k)
+    for x, i in zip(cols, (0, 1, 2, 3) if side == 'W' else (3, 2, 1, 0)):          # dans la planche : le bas est à gauche pour `W`, à droite pour `E`
+        for y, j in [(y0 - 1, 0)] + [(y0 + k, 1) for k in range(3)] + [(y0 + 3, 2)]:
+            if AT['stair%s%d%d' % (side, i, j)] in MADE_TILES: stairs[(x, y)] = 'stair%s%d%d' % (side, i, j)
     flank = '4' if side == 'W' else '6'
     if any(ring_shape.get((gx, y0 + j)) != flank or rock_shape.get((cols[1], y0 + j)) != flank for j in range(3)):
         WARN.append(('escalier de côté', where, 'le flanc du plateau n est pas droit : %s %s' % ([ring_shape.get((gx, y0 + j)) for j in range(3)], [rock_shape.get((cols[1], y0 + j)) for j in range(3)])))
@@ -150,7 +149,7 @@ for way, x0, y0, x1, y1 in DOCKS:
     for (x, y) in sorted(rect(x0, y0, x1, y1)):
         if way == 'V':
             low = y == y1 and (x, y + 1) not in DECK          # le dernier rang de planches, au bout
-            deck[(x, y)] = {0: 'bridgeV1' if low else 'bridgeV4', 1: 'bridgeV5', 2: 'bridgeV3' if low else 'bridgeV6'}[x - x0]
+            deck[(x, y)] = {0: 'pier1' if low else 'pier4', 1: 'pier2' if low else 'pier5', 2: 'pier3' if low else 'pier6'}[x - x0]          # des planches de jetée, pas le tablier d'un pont (Ludovic, 17/11/2026)
         else:
             deck[(x, y)] = {0: 'bridgeH8', 1: 'bridgeH5', 2: 'bridgeH1' if x == x0 else 'bridgeH2'}[y - y0]
     if way == 'H':          # le dessous d'un ponton en travers déborde sur la rangée d'en dessous, là où c'est de l'eau
@@ -222,7 +221,7 @@ for c in sorted(MOUNTAIN):
 # aucun ailleurs — chaque case d'eau du dedans est fermée par des rochers qui se touchent par un côté ou par un coin.
 BARRIERS = {
     "l'ouest": [(4, 19), (3, 22)],
-    "l'est": [(54, 17), (53, 18), (54, 21)],
+    "l'est": [(54, 17), (53, 18), (54, 21), (53, 22), (54, 23)],
     'la plage du sud-ouest': [(1, 46), (1, 47), (2, 48), (3, 49), (6, 49), (7, 48), (9, 48)],
     "l'ouest de la jetée": [(25, 46), (27, 49), (28, 48), (29, 49), (30, 48), (31, 49)],
     "l'est de la jetée": [(35, 48), (36, 49), (37, 48), (38, 49)],
@@ -240,8 +239,9 @@ for n, c in enumerate(ROCKS):
 # --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
 palms = []
 COVE = rect(15, 9, 34, 18)          # la crique du nord : agrandie pour être une plage, pas une palmeraie — deux palmiers, pas plus (Ludovic, 17/11/2026)
-def palm_ok(c): return c not in COVE or sum(1 for p in palms if p in COVE) < 2
-FURNISHED = rect(27, 14, 36, 17) | rect(22, 33, 31, 38) | rect(5, 34, 9, 38) | rect(29, 39, 37, 43)          # parasols et serviettes, Roland, le pied de la jetée : generate.py les pose là
+NO_PALMS = rect(36, 22, 38, 33) | rect(33, 30, 35, 33) | rect(19, 29, 21, 34)          # les passages entre deux plages : on vient de les élargir, on n'y plante rien
+def palm_ok(c): return c not in NO_PALMS and (c not in COVE or sum(1 for p in palms if p in COVE) < 2)
+FURNISHED = rect(20, 12, 34, 17) | rect(22, 33, 31, 38) | rect(5, 34, 9, 38) | rect(29, 39, 37, 43)          # parasols et serviettes, Roland, le pied de la jetée : generate.py les pose là
 for c in sorted(BEACH, key=lambda c: (c[1], c[0])):
     if geo.OBJECTS[c[1]][c[0]] != '#' or c in KEEP or c in FURNISHED or c in DECK or c in stairs or any((c[0] + i, c[1] + j) not in BEACH for i, j in NEIGH4): continue
     if any((c[0] + i, c[1] + j) in set(stairs) | DECK for i in range(-2, 3) for j in range(-2, 3)) or c[0] in ROAD and c[1] < 10: continue
@@ -256,7 +256,7 @@ for n, c in enumerate(palms):
     name = 'palm_big' if n % 3 == 1 else 'palm'
     sprites.append((name, c[0] - village_tiles.door(name), c[1])); taken.add(c)
 # --- des massifs de buissons : aux coins de la place, et çà et là sur l'herbe
-for wish in [(22, 30), (31, 30), (50, 16), (44, 40), (3, 26), (12, 34)]:
+for wish in [ (50, 16), (44, 40), (3, 26), (12, 34)]:
     cells = [(wish[0] + i, wish[1]) for i in range(3)]
     if all(c in INSIDE and c not in KEEP and c not in taken and c not in MOUNTAIN for c in cells): sprites.append(('bush', wish[0], wish[1])); taken.update(cells)
 for name, x, r in sprites:
@@ -266,8 +266,32 @@ for name, (kind, x, r) in HOUSES.items(): L['Houses'][(x, r)] = (VILLAGE,) + vil
 # des fleurs, clairsemées, sur la pelouse
 WOODS = {c for name, x, r in sprites if name.startswith('tree') for c in rect(x, r - 2, x + 2, r)}
 WOODS |= {c for name, x, r in sprites if name in village_tiles.PLANTS for c in rect(x, r - village_tiles.sizes()[name][1] + 1, x + village_tiles.sizes()[name][0] - 1, r)}          # et sous une palme, un buisson
+# --- les grandes fleurs, que le vent couche (`5:0-7,3-4` : un pied, une cime, on marche dedans) : en massifs de trois, près
+#     de chaque maison et autour de la place. Elles ont leur propre tirage : en ajouter ne déplace rien d'autre.
+BLOOM = random.Random(11)
+FLOWER_CELLS, beds = set(), []
+lawn = INSIDE - KEEP - taken - MOUNTAIN - WOODS - HOUSE_AREA - rect(9, 13, 14, 16)          # (pas sous le banc de Ludo, que generate.py pose là)
+def bed(c, kind):
+    cells = [(c[0] + i, c[1]) for i in range(3)]
+    tops = [(x, y - 1) for x, y in cells]
+    if any(q not in lawn or q in FLOWER_CELLS or q in L['Props'] for q in cells + tops) or any(abs(c[0] - b[0]) + abs(c[1] - b[1]) < 6 for b in beds): return False
+    for (x, y) in cells: L['Props'][(x, y)] = (5, kind, 4, 0); L['Props'][(x, y - 1)] = (5, kind, 3, 0)
+    FLOWER_CELLS.update(cells + tops); beds.append(c); return True
+KINDS = (0, 1, 2, 3, 5, 7)
+spots = sorted(lawn); BLOOM.shuffle(spots)
+for c in [c for c in spots if c in rect(20, 18, 34, 31)]:          # trois autour de la place
+    if len(beds) < 3: bed(c, KINDS[len(beds) % len(KINDS)])
+for d in sorted(DOORS.values()):                                   # un près de chaque maison, au plus près de sa porte
+    for c in sorted(spots, key=lambda c: (abs(c[0] - d[0]) + abs(c[1] - d[1]), c)):
+        if abs(c[0] - d[0]) + abs(c[1] - d[1]) > 9 or bed(c, KINDS[len(beds) % len(KINDS)]): break
+for c in spots:                                                    # et d'autres çà et là
+    if len(beds) < 14: bed(c, KINDS[len(beds) % len(KINDS)])
+# --- des coquillages sur le sable sec, sans collision : rien sous un escalier, ni sous un parasol
+SHELL = random.Random(5)
+for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK):
+    if ground.get(c) == 'sand5' and SHELL.random() < 0.05: L['Decorations'][c] = tile('shell%d' % SHELL.randint(1, 4))
 PLAZA_LAWN = rect(21, 19, 36, 31) & INSIDE
-for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS):          # plus serrées autour de la place et sur la presqu'île du sud-est
+for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS - FLOWER_CELLS):          # plus serrées autour de la place et sur la presqu'île du sud-est
     if RNG.random() < (0.3 if c in PLAZA_LAWN else (0.22 if c[1] >= 37 and c[0] >= 40 else 0.08)): L['Decorations'][c] = tile('fl%d' % RNG.randint(1, 5))
 
 # ============================================================ ce qui bloque
@@ -277,6 +301,11 @@ for c in CELLS:
     if c in SEA or (any(route_tiles.blocks(n) and n != OPEN_EDGE for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
 for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
 def free(c): return inb(c) and c not in SOLID
+# Le bord du haut d'un plateau se foule — toujours. L'erreur est revenue deux fois (la rangée du haut fermée par une
+# collision) : le générateur la refuse maintenant lui-même.
+for c in sorted(PLATEAU):
+    if ring_shape.get(c) == '8' and c in SOLID and not any(c in feet(n, x, r) for n, x, r in sprites) and c not in HOUSE_SOLID:
+        WARN.append(('bord du haut', c, 'la rangée du haut du plateau est fermée : elle doit se fouler')); break
 def reach_from(start, closed=()):
     seen, queue = {start}, collections.deque([start])
     while queue:

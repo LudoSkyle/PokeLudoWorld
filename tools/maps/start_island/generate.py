@@ -83,7 +83,7 @@ SOLID |= STAND | set(STATUES.values())
 FRONTS = {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} | {(x + i, r + j) for x, r in STAIRS.values() for i in range(5) for j in (-2, -1, 0, 1, 2)}
 for side, gx, y0 in lay.SIDE_STAIRS.values():          # et de part et d'autre d'un escalier de côté
     FRONTS |= {(gx + i, y0 + j) for i in range(-3, 4) for j in range(-1, 4)}
-CLEAR = FRONTS | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
+CLEAR = FRONTS | lay.FLOWER_CELLS | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
 placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
@@ -139,7 +139,8 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
 BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, TOP - 2))
-parasol('ParasolCove', (29, 16), 1); towel('TowelCove', (32, 16), 1)
+parasol('ParasolCove', (22, 15), 1); towel('TowelCove', (25, 15), 1)          # la crique est grande : on l'occupe d'un bout à l'autre, pas dans un coin (Ludovic, 17/11/2026)
+parasol('ParasolCoveEast', (29, 14), 0); towel('TowelCoveEast', (31, 15), 0)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
 # ------------------------------------------------------------------ panneaux, lampadaires, lueurs, objets
@@ -327,9 +328,9 @@ npc('BenchLady', (BENCH_LUDO[0] + 2, BENCH_LUDO[1] + 1), 'rse_expert_f', "Je vie
     states=["bell_hung > Je viens toujours m'asseoir ici le matin.|Maintenant, j'attends que la cloche sonne pour rentrer."])
 npc('Sunbather', TOWELS['TowelSouth'], 'hgss_swimmer_f', "Le sable est chaud, l'eau est fraîche.|Je ne bouge plus d'ici avant la nuit.", facing=(0, 1),
     states=["bell_hung > J'ai entendu la cloche depuis ma serviette.|Je n'ai pas bougé pour autant."])
-npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "L'eau de la crique est la plus calme de l'île.|Les vagues se cassent sur les rochers avant d'arriver.", facing=(0, 1),
+npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "Le sable de la crique est le plus fin de l'île.|Et les falaises coupent le vent : on y est bien.", facing=(0, 1),
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
-npc('ShellKid', (TOWELS['TowelCove'][0] + 1, TOWELS['TowelCove'][1] - 1), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
+npc('ShellKid', (27, 12), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
 npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1), fixed=True,
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])

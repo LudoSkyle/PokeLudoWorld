@@ -144,8 +144,11 @@ piste et les arbres à cheval. Au-delà des 28 colonnes communes, l'île dépass
 de la route vers l'est : il n'y a rien à suivre.
 
 **On change de niveau par cinq escaliers de pierre**, tous face au sud (la
-planche n'en a pas d'autres) : deux rangées de trois marches entre deux
-poteaux, une par étage de la falaise. Sous chacun, une anse de plage ;
+planche n'en a pas d'autres) : **une volée double**, deux rangées de trois
+marches entre deux poteaux, une par étage de la falaise. Ce ne sont pas deux
+escaliers simples empilés — la rangée du haut (`stairU…`) n'a pas de pied de
+poteau, celle du bas (`stairL…`) a l'ombre d'une contremarche là où la rangée
+simple laisse voir la falaise. Sous chacun, une anse de plage ;
 au-dessus, un bord de plateau droit sur cinq cases.
 
 **Deux escaliers de côté** (`layout.SIDE_STAIRS`, tuiles `stairW…`/`stairE…` :
@@ -155,14 +158,22 @@ rangées 19 à 21) ; du jardin du sud-ouest à la plage du sud (colonnes 21-22,
 rangées 37 à 39).
 
 **Il ne reste qu'un ponton : la jetée du sud**, large de trois cases, qui part
-de la plage (Ludovic, 17/11/2026). On passe d'une terre à l'autre par les
+de la plage (Ludovic, 17/11/2026). Elle est faite de planches en travers entre
+deux longerons à pieux (`pier…`), pas du tablier de pont de la Route 1. On passe d'une terre à l'autre par les
 plages : la crique du nord, agrandie jusqu'au pied de la forêt et du plateau du
 nord-est ; la plage de l'est, du pied de l'escalier du nord-est à la plage du
 sud, le long de la place. Les pontons de l'exemple ne sont plus que de l'eau
 (`layout.FORMER_DOCKS` : ce que l'exemple pose là n'est pas un rocher).
 
-**La place** ne se rejoint que par ses deux escaliers : celui de côté, depuis
-la crique, et celui du sud. Le jardin du sud-ouest et la bibliothèque, reliés
+**La place et le plateau du laboratoire ne font qu'un** : un passage d'herbe
+les relie, au coin nord-est de la place (colonnes 35 à 38, rangées 18 à 21).
+De la plage, la place se rejoint par ses deux escaliers : celui de côté, depuis
+la crique, et celui du sud. **Les accès aux plages sont larges** : la place a
+perdu ses deux coins du bas, le plateau du sud-est a reculé d'une colonne (le
+couloir de la plage de l'est fait trois cases), et rien n'y est planté
+(`layout.NO_PALMS`). **La mare de l'est rejoint la mer** et n'est plus un
+carré. **Le bord du haut d'un plateau se foule**, sur toute sa longueur
+(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. Le jardin du sud-ouest et la bibliothèque, reliés
 par une piste, ne se rejoignent que par l'escalier de côté du jardin.
 
 **Les rochers de la mer sont ceux de l'exemple.** Dans les cinq groupes que
@@ -210,7 +221,11 @@ le mobilier — **deux au plus dans la crique** (`layout.COVE`) : on l'a
 agrandie pour en faire une plage, pas une palmeraie ; des massifs de buissons
 garnissent les coins de la place, et les fleurs sont plus serrées autour
 d'elle et sur la presqu'île du sud-est. La cloche, au fond de l'eau,
-**scintille** (`Twinkle.kt`).
+**scintille** (`Twinkle.kt`). **Des massifs de grandes fleurs** que le vent
+couche (`5:0-7,3-4`, trois de front) poussent près des maisons et de la place
+(`layout.beds`) ; **des coquillages** sans collision parsèment le sable sec ;
+**la crique est occupée d'un bout à l'autre** — deux parasols, deux
+serviettes, le nageur, le gamin aux coquillages — et non dans un coin.
 
 **Dans le ciel**, quatre Goélise et deux Bekipan, chacun dans sa zone de dix
 cases sur dix (nœud `Sky`, [npcs.md](npcs.md)).

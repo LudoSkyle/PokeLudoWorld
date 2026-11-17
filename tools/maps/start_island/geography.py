@@ -138,10 +138,14 @@ RETOUCH = [
     # --- de quoi poser les maisons et faire arriver les pontons
     (PLATEAU_, (39, 27, 45, 34)), (PLATEAU_, (44, 26, 54, 27)), (PLATEAU_, (9, 36, 21, 41)), (PLATEAU_, (0, 24, 7, 29)),
     (PLATEAU_, (7, 25, 12, 30)),                                                       # pas de creux dans le plateau de la bibliothèque : tout y est au niveau 2
-    (PLATEAU_, (36, 16, 46, 18)),                                                      # le plateau du nord-est finit droit, là où descend son escalier du sud
+    (PLATEAU_, (35, 16, 46, 18)),                                                      # le plateau du nord-est finit droit, là où descend son escalier du sud
     # --- à l'est de la place, une plage la sépare du plateau du sud-est : elle va du pied du plateau du nord-est à la plage du sud
-    (PLATEAU_, (32, 18, 34, 18)), (BEACH_, (35, 15, 35, 18)),                                   # la place et le plateau du nord-est ne se touchent pas par un coin : une colonne de roche les sépare
     (BEACH_, (35, 19, 38, 33)), (BEACH_, (36, 19, 44, 25)), (BEACH_, (33, 32, 38, 34)), (SEA_, (45, 19, 50, 25)), (PLATEAU_, (35, 36, 41, 37)),
+    # --- les accès aux plages, élargis (Ludovic, 17/11/2026) : la place perd ses deux coins du bas, le plateau du sud-est recule d'une colonne
+    (BEACH_, (33, 30, 34, 31)), (BEACH_, (20, 30, 21, 31)), (BEACH_, (39, 25, 39, 33)), (BEACH_, (16, 32, 18, 34)),
+    (PLATEAU_, (35, 18, 38, 21)),                                                      # la place et le plateau du nord-est ne font qu'un : un passage d'herbe, là où Ludovic l'a entouré (17/11/2026)
+    # --- la mare de l'est rejoint la mer, et n'est plus un carré
+    (SEA_, (50, 20, 54, 24)), (SEA_, (44, 21, 44, 22)), (BEACH_, (45, 20, 46, 20)), (BEACH_, (45, 24, 45, 24)), (BEACH_, (48, 24, 49, 24)), (BEACH_, (49, 23, 49, 23)),
 ]
 for level, r in RETOUCH:
     cells = rect(*r)

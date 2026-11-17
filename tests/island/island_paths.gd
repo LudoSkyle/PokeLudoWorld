@@ -26,7 +26,8 @@ func at(path: String) -> Vector2i:
 # Le tablier d'un ponton : la rangee 12 de route.png, colonnes 0 a 8.
 func on_deck(c: Vector2i) -> bool:
 	var bridges := layer("Background/Bridges")
-	return bridges.get_cell_source_id(c) == ROUTE and bridges.get_cell_atlas_coords(c).y == 12 and bridges.get_cell_atlas_coords(c).x <= 8
+	var a := bridges.get_cell_atlas_coords(c)
+	return bridges.get_cell_source_id(c) == ROUTE and (a.y == 12 and a.x >= 12 or a.x == 15 and a.y >= 13 and a.y <= 14)          # les planches de la jetee
 
 # La mer, liseré de sable compris : les trois premieres rangees de route.png, sauf le sable plein et la pelouse.
 func is_sea(c: Vector2i) -> bool:
@@ -58,7 +59,7 @@ func test() -> void:
 	check("tout le sol vient de la planche de la Route 1", ground.get_cell_source_id(Vector2i(28, 25)) == ROUTE and ground.get_cell_source_id(Vector2i(2, 20)) == ROUTE and ground.get_cell_source_id(Vector2i(28, 35)) == ROUTE)
 
 	# Trois niveaux : la mer, la plage, les plateaux.
-	check("la mer est pleine, liseré compris", not is_free(Vector2i(2, 20)) and not is_free(Vector2i(47, 22)) and not is_free(Vector2i(45, 20)) and is_sea(Vector2i(2, 20)))
+	check("la mer est pleine, liseré compris", not is_free(Vector2i(2, 20)) and not is_free(Vector2i(47, 22)) and not is_free(Vector2i(51, 21)) and is_sea(Vector2i(2, 20)))
 	check("on marche sur le sable de la plage", is_free(Vector2i(28, 35)) and is_free(Vector2i(17, 16)) and is_free(Vector2i(5, 43)) and ground.get_cell_atlas_coords(Vector2i(28, 35)) == Vector2i(1, 1))
 	check("on marche sur l'herbe des plateaux", is_free(Vector2i(28, 29)) and is_free(Vector2i(8, 15)) and is_free(Vector2i(45, 14)))
 	var cliffs := layer("Background/Cliffs1")
@@ -162,9 +163,9 @@ func test() -> void:
 		if props.get_cell_source_id(c) == 10 and (paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1)):
 			on_path.append("mobilier en %s" % c)
 	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
-	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(32, 16)
-		and cell_of("ShellKid") == Vector2i(33, 15) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
-	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(29, 16)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
+	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 15)
+		and cell_of("ShellKid") == Vector2i(27, 12) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
+	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 15)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
 	# Tout se rejoint a pied, depuis le depart.
 	var seen := reach(cell())
@@ -191,6 +192,13 @@ func test() -> void:
 		for y in [19, 20, 21]:
 			decks.append(Vector2i(x, y))
 	var stair_of_plaza := [Vector2i(27, 31), Vector2i(28, 31), Vector2i(29, 31), Vector2i(27, 32), Vector2i(28, 32), Vector2i(29, 32)]
+	# Le bord du haut d'un plateau est de l'herbe : on y marche, sur toute sa longueur. C'est le gradin de roche, derriere, qui arrete.
+	var top_ok := true
+	for x in range(22, 34):
+		top_ok = top_ok and is_free(Vector2i(x, 18)) and can_step(Vector2i(x, 19), Vector2i(x, 18)) and not is_free(Vector2i(x, 17))
+	check("on monte sur la rangee du haut de la place, d'un bout a l'autre, sans en sortir", top_ok)
+	check("on marche aussi sur le bord du haut des autres plateaux", is_free(Vector2i(45, 26)) and is_free(Vector2i(15, 36)) and not is_free(Vector2i(45, 25)))
+	check("la place et le plateau du laboratoire ne font qu'un : on passe de l'une a l'autre sans escalier", reach(Vector2i(28, 29), decks + stair_of_plaza).has(at("Doors/Laboratoire") + Vector2i.DOWN))
 	check("la place ne se rejoint que par ses deux escaliers", not reach(cell(), decks + stair_of_plaza).has(Vector2i(28, 29)) and reach(Vector2i(28, 35), decks).has(Vector2i(28, 29)) and reach(cell(), stair_of_plaza).has(Vector2i(28, 29)))
 	var garden_stair := [Vector2i(21, 37), Vector2i(21, 38), Vector2i(21, 39), Vector2i(22, 37), Vector2i(22, 38), Vector2i(22, 39)]
 	check("le jardin du sud-ouest et la bibliotheque ne se rejoignent que par l'escalier de cote du jardin", not reach(cell(), garden_stair).has(Vector2i(12, 42)) and not reach(cell(), garden_stair).has(at("Doors/Bibliotheque") + Vector2i.DOWN)

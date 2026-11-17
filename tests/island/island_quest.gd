@@ -59,7 +59,7 @@ func test() -> void:
 	check("le village est sur la place", there("OdileAfter") and there("AlixAfter") and there("VisitorPainter") and there("RolandAfter"))
 	check("dix personnes autour de la cloche, pas plus", crowd() == 10, "%d" % crowd())
 	check("trois visiteurs sont ailleurs : sur la route du nord, vers la jetee, sur la plage de la crique — bien en vue",
-		cell_of("VisitorKalos") == Vector2i(6, 15) and cell_of("VisitorFestival") == Vector2i(31, 41) and cell_of("VisitorBlackBelt") == Vector2i(2, 10),
+		cell_of("VisitorKalos") == Vector2i(6, 15) and cell_of("VisitorFestival") == Vector2i(31, 41) and cell_of("VisitorBlackBelt") == Vector2i(1, 9),
 		"%s %s %s" % [str(cell_of("VisitorKalos")), str(cell_of("VisitorFestival")), str(cell_of("VisitorBlackBelt"))])
 	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(43, 17))
 	# Personne ne gene : ni sur le tour de la place ou court le coureur, ni devant le socle, ni devant un escalier.
