@@ -66,6 +66,23 @@ Les comptes tombent juste (153, 144, 142 et 141 blocs). Pour contrôler une
 découpe : poser l'icône de chaque espèce au-dessus du sprite qu'on lui a
 donné, et regarder — une erreur d'un bloc décale toute la suite.
 
+**La grille n'est pas régulière** (Ludovic, 17/11/2026 : Draco coupé de
+travers, « après le numéro 200 il y en a énormément de mal découpés »). Une
+colonne de 63 pixels dans la planche de la 1ʳᵉ génération, et même de 61 sur
+ses deux dernières rangées seulement ; des rangées de 129 à 131 dans celle de
+la 2ᵉ. Compter 65 par colonne et 129 par rangée décale tout ce qui suit de
+quelques pixels — ce qu'une planche de vignettes réduites ne montre pas.
+L'outil lit donc les **filets de séparation** (`grid`) : les rangées, puis les
+colonnes rangée par rangée, puis le haut et la largeur de chaque bloc.
+
+**Les crabes marchent de côté** : Krabby et Krabboss ont leurs deux colonnes
+échangées (`sideways`).
+
+Le contrôle qui compte se fait **à pleine résolution** : aucun sprite à cheval
+sur deux images, aucun collé au bord de son bloc, la face plus symétrique que
+le profil. Trois espèces touchent naturellement leurs voisines (Cizayox,
+Caratroc) ou sont de travers par nature (Magicarpe).
+
 Côté jeu : `NationalDex.kt` lit le `.tsv` (`NationalDex.all`, `DexEntry`). Ce
 n'est pas le catalogue des espèces qu'on rencontre (`Dex`, dans `Species.kt`,
 encore provisoire).
@@ -93,4 +110,6 @@ la taille, le poids, les deux descriptions, et en rouge ce qui manque. Une
 étoile dans la liste marque une espèce incomplète ; le titre les compte.
 
 Haut/Bas : une espèce (en boucle) ; Gauche/Droite : dix d'un coup ; la touche
-du menu referme. `tests/run.sh ui/debug_pokedex`.
+du menu referme. Le sprite de marche se montre de face, puis **tourne sur
+lui-même** d'un quart de tour par seconde — face, gauche, dos, droite — pour
+qu'on vérifie ses quatre côtés. `tests/run.sh ui/debug_pokedex`.

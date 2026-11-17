@@ -29,6 +29,17 @@ func test() -> void:
 	check("la liste montre quatorze especes, le curseur sur la premiere, sans etoile", text_of("List").split("\n").size() == 14 and text_of("List").split("\n")[0] == "> 0001 Bulbizarre", text_of("List").split("\n")[0])
 	shot("pokedex_debug")
 
+	# Le sprite de marche se montre de face, puis tourne sur lui-meme : un quart de tour par seconde.
+	var walker: TextureRect = dex().get_node("Control/Screen/Walker")
+	var front: Rect2 = walker.texture.region
+	check("il se montre d'abord de face", dex().shown_facing() == 0 and front.position == Vector2(0, 64) and front.size == Vector2(32, 32), str(front))
+	var sides := {}
+	var end := Time.get_ticks_msec() + 4300
+	while Time.get_ticks_msec() < end:
+		await process_frame
+		sides[dex().shown_facing()] = walker.texture.region.position
+	check("en quatre secondes il a montre ses quatre cotes : face, gauche, dos, droite", sides.size() == 4 and sides[1] == Vector2(32, 0) and sides[2] == Vector2(0, 0) and sides[3] == Vector2(32, 64), str(sides))
+
 	await tap("ui_down")
 	check("Bas : l'espece suivante", dex().shown_number() == 2 and text_of("Names").begins_with("Herbizarre"))
 	await tap("ui_right")

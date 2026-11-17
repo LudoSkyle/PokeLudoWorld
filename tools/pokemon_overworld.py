@@ -71,10 +71,12 @@ def cut(sheet, column, row):
 #     autres formes (les 27 autres Zarbi, les capes de Cheniti, Motisma...) ; on les saute ;
 #   - `tall` : un gros Pokémon, sur quatre blocs — dos, face, gauche, droite —, deux images de 64 x 64 par bloc ;
 #   - `wide` : un gros Pokémon de la planche de la 3e génération, sur deux blocs côte à côte (128 x 128) : quatre
-#     rangées — face, dos, gauche, droite — de deux images de 64 x 32.
+#     rangées — face, dos, gauche, droite — de deux images de 64 x 32 ;
+#   - `sideways` : un crabe, qui marche de côté — ses deux colonnes sont échangées (les profils à gauche, le dos et
+#     la face à droite) ; on les remet dans l'ordre des autres.
 # Les comptes tombent juste : 153, 144, 142 et 141 blocs.
 SHEETS = [
-    dict(file='hgss_overworld_gen1.png', columns=15, first=1, last=151, extra={3: 1, 25: 1}, tall=(), wide=()),
+    dict(file='hgss_overworld_gen1.png', columns=15, first=1, last=151, extra={3: 1, 25: 1}, tall=(), wide=(), sideways=(98, 99)),
     dict(file='hgss_overworld_gen2.png', columns=11, first=152, last=251, extra={154: 1, 172: 1, 201: 27, 202: 1, 208: 4, 214: 1}, tall=(208, 249, 250), wide=()),
     dict(file='hgss_overworld_gen3.png', columns=13, first=252, last=386, extra={386: 3}, tall=(), wide=(321, 382, 383, 384)),
     dict(file='hgss_overworld_gen4.png', columns=11, first=387, last=493, extra={412: 2, 413: 2, 415: 1, 422: 1, 423: 1, 449: 1, 450: 1, 479: 5, 487: 4, 492: 1}, tall=(483, 484, 486, 487, 493), wide=()),
@@ -84,10 +86,44 @@ ATLAS_COLUMNS = 25
 NATIONAL = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'resources', 'pokedex', 'national.tsv')
 
 
-def raw(sheet, column, row, w=64, h=128):
-    """Le bloc tel quel, fond compris, complété là où la planche est rognée."""
-    x0, y0 = column * (BLOCK_W + 1), row * (BLOCK_H + 1)
-    return [[tuple(sheet[y0 + y][x0 + x][:3]) if y0 + y < len(sheet) and x0 + x < len(sheet[y0 + y]) else None for x in range(w)] for y in range(h)]
+def grid(sheet):
+    """Où commence vraiment chaque bloc : [[(x, y) de chaque bloc d'une rangée] pour chaque rangée], entre les filets.
+
+    Les planches ne sont **pas** sur une grille régulière : une colonne de 63 pixels dans celle de la 1re génération
+    — et même de 61 sur ses deux dernières rangées seulement —, des rangées de 129 à 131 dans celle de la 2e, plus
+    hautes encore à côté d'un gros Pokémon. Compter 65 par colonne et 129 par rangée coupe de travers des centaines
+    d'espèces (Ludovic, 17/11/2026 : « après le numéro 200, il y en a énormément de mal découpés »). On lit donc
+    les filets : les rangées sur toute la largeur, puis les colonnes **rangée par rangée**, puis le haut de chaque
+    bloc sur sa propre largeur. Dans un bloc plus grand, les images restent calées en haut à gauche, au pas de 32.
+    """
+    height, width = len(sheet), len(sheet[0])
+    line = tuple(sheet[10][64][:3])
+    def is_line(x, y): return tuple(sheet[y][x][:3]) == line
+    def spans(cuts, end, least):
+        out, prev = [], -1
+        for c in cuts + [end]:
+            if c - prev - 1 >= least: out.append(prev + 1)
+            prev = c
+        return out
+    rows = spans([y for y in range(height) if sum(1 for x in range(width) if is_line(x, y)) > width * 0.6], height, 60)
+    while rows[-1] + 2 * BLOCK_H + 1 <= height + 8: rows.append(rows[-1] + BLOCK_H + 1)          # la dernière rangée, sous le dernier filet
+    out = []
+    for y0 in rows:
+        band = range(y0 + 8, min(y0 + 120, height))
+        columns = spans([x for x in range(width) if sum(1 for y in band if is_line(x, y)) > len(band) * 0.6], width, 30)
+        blocks = []
+        for k, x0 in enumerate(columns):
+            span = range(x0, min(x0 + 60, width))
+            tops = [y for y in range(max(0, y0 - 8), min(height, y0 + 8)) if sum(1 for x in span if is_line(x, y)) > len(span) * 0.9]
+            room = (columns[k + 1] - 1 if k + 1 < len(columns) else width) - x0          # sa largeur, jusqu'au filet suivant : parfois 61 ou 63
+            blocks.append((x0, tops[-1] + 1 if tops else y0, room))
+        out.append(blocks)
+    return out
+
+
+def raw(sheet, x0, y0, room=64, w=64, h=128):
+    """Le bloc qui commence en (x0, y0), tel quel, fond compris ; vide au-delà de sa largeur `room` (le filet suivant, le bord de la planche)."""
+    return [[tuple(sheet[y0 + y][x0 + x][:3]) if y0 + y < len(sheet) and x0 + x < len(sheet[y0 + y]) and x < room else None for x in range(w)] for y in range(h)]
 
 
 def clear(block):
@@ -129,21 +165,29 @@ def everyone():
     small, large = {}, {}
     for spec in SHEETS:
         sheet = load(os.path.join(POKEMON, 'sources', spec['file']))[2]
+        blocks = grid(sheet)
         slot = 0
         for number in range(spec['first'], spec['last'] + 1):
-            def at(k): return ((slot + k) % spec['columns'], (slot + k) // spec['columns'])
+            def at(k):
+                """Le bloc de la case `slot + k` : celui de sa rangée qui commence le plus près de sa place théorique. Deux
+                blocs d'un gros Pokémon n'ont pas de filet entre eux : le second est alors à sa place théorique."""
+                line, column = blocks[(slot + k) // spec['columns']], (slot + k) % spec['columns']
+                near = min(line, key=lambda b: abs(b[0] - column * (BLOCK_W + 1)))
+                return near if abs(near[0] - column * (BLOCK_W + 1)) <= 12 else (column * (BLOCK_W + 1), line[0][1], BLOCK_W)
             if number in spec['tall']:
                 parts = [clear(raw(sheet, *at(k))) for k in range(4)]
                 large[number] = big([(part[:64], part[64:]) for part in parts])
                 slot += 4
             elif number in spec['wide']:
-                c, r = at(0)
-                area = clear(raw(sheet, c, r, w=129, h=128))
-                rows = [([line[:64] for line in area[k * 32:k * 32 + 32]], [line[65:129] for line in area[k * 32:k * 32 + 32]]) for k in range(4)]
-                large[number] = big([rows[1], rows[0], rows[2], rows[3]])
+                (x0, y0, _), (x1, _, _) = at(0), at(1)
+                area = clear(raw(sheet, x0, y0, room=x1 - x0 + 64, w=x1 - x0 + 64, h=128))
+                bands = [([line[:64] for line in area[k * 32:k * 32 + 32]], [line[x1 - x0:x1 - x0 + 64] for line in area[k * 32:k * 32 + 32]]) for k in range(4)]
+                large[number] = big([bands[1], bands[0], bands[2], bands[3]])
                 slot += 2
             else:
-                small[number] = clear(raw(sheet, *at(0)))
+                block = clear(raw(sheet, *at(0)))
+                if number in spec.get('sideways', ()): block = [line[32:] + line[:32] for line in block]
+                small[number] = block
                 slot += 1
             slot += spec['extra'].get(number, 0)
     return small, large
