@@ -138,7 +138,7 @@ class Player : CharacterBody2D() {
 			// Un pas dans l'herbe peut faire surgir un Pokémon sauvage — sauf si
 			// le pas a déclenché autre chose : un garde, une porte.
 			if (!isLocked && MessageBox.instance?.isOpen != true && SceneManager.instance?.isChanging != true) {
-				WildEncounters.step(this)
+				WildEncounters.step(this, isRunning)
 			}
 		}
 

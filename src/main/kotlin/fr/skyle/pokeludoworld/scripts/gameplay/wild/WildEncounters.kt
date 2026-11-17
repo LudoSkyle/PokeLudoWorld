@@ -18,6 +18,11 @@ import kotlin.random.Random
  * (`metadata/wild`, voir [WildTable]). Sans l'un ou l'autre, ses herbes sont
  * vides.
  *
+ * **Courir dans l'herbe dérange davantage** : un pas couru tire sur
+ * `metadata/encounter_rate_run` si la carte le donne — 5 % contre 3 % au pas,
+ * sur les cartes du jeu. Sans ce second réglage, courir ou marcher revient au
+ * même.
+ *
  * Pour l'instant une rencontre ne fait que s'annoncer, par le nom de l'espèce :
  * il n'y a pas encore de combat. C'est ici qu'il se branchera.
  */
@@ -25,6 +30,9 @@ object WildEncounters {
 
 	/** Le réglage de la carte : la chance d'une rencontre à chaque pas dans l'herbe, de 0 à 100. */
 	const val RATE_META = "encounter_rate"
+
+	/** Le réglage de la carte : la même chance pour un pas couru. Absent : celle du pas marché. */
+	const val RUN_RATE_META = "encounter_rate_run"
 
 	/** Le réglage de la carte : sa table de rencontres. */
 	const val TABLE_META = "wild"
@@ -51,12 +59,13 @@ object WildEncounters {
 		private set
 
 	/**
-	 * Le joueur [player] vient de se poser sur une case. Tire une rencontre
-	 * s'il est dans l'herbe ; renvoie true si elle a lieu.
+	 * Le joueur [player] vient de se poser sur une case, en courant ou non
+	 * ([running]). Tire une rencontre s'il est dans l'herbe ; renvoie true si
+	 * elle a lieu.
 	 */
-	fun step(player: Node2D): Boolean {
+	fun step(player: Node2D, running: Boolean = false): Boolean {
 		val level = levelOf(player) ?: return false
-		val rate = rateOf(level)
+		val rate = rateOf(level, running)
 		if (rate <= 0 || !inGrass(level, player)) return false
 		if (!roll(rate)) return false
 		val wild = tableOf(level).pick(random) ?: return false
@@ -79,9 +88,11 @@ object WildEncounters {
 		return table
 	}
 
-	/** La chance d'une rencontre sur la carte [level], bornée de 0 à 100. */
-	fun rateOf(level: Node): Int =
-		(level.getMeta(RATE_META, 0).toString().toDoubleOrNull() ?: 0.0).toInt().coerceIn(0, 100)
+	/** La chance d'une rencontre par pas sur la carte [level], marché ou couru ([running]), bornée de 0 à 100. */
+	fun rateOf(level: Node, running: Boolean = false): Int {
+		val meta = if (running && level.hasMeta(RUN_RATE_META)) RUN_RATE_META else RATE_META
+		return (level.getMeta(meta, 0).toString().toDoubleOrNull() ?: 0.0).toInt().coerceIn(0, 100)
+	}
 
 	private fun inGrass(level: Node, player: Node2D): Boolean {
 		val grass = (if (level.hasNode(GRASS)) level.getNode(GRASS) else null) as? TileMapLayer ?: return false

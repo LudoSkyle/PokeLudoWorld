@@ -62,3 +62,44 @@ func test() -> void:
 	await walk("herbes sans table", Vector2i(11, 8), false)
 	check("carte sans table : pas de rencontre", encounters() == before and not box().visible, str(encounters()))
 	force_encounters(0)
+
+	# Courir dans l'herbe derange davantage : un pas couru tire sur encounter_rate_run, un pas marche sur encounter_rate.
+	# Le hasard decide (ni sort favorable ni contraire) : a 0 il ne donne jamais rien, a 100 toujours.
+	force_encounters(-1)
+	level().set_meta("wild", "mulotin:2-4*50 | piafeuille:2-5*35 | chenibulle:3*15")
+	level().set_meta("encounter_rate", 0)
+	level().set_meta("encounter_rate_run", 100)
+	await walk("sortie", Vector2i(12, 8), false)
+	before = encounters()
+	await walk("au pas, chance du pas", Vector2i(11, 8), false)
+	check("au pas : c'est la chance du pas marche qui compte", encounters() == before and not box().visible, str(encounters()))
+	await walk("sortie", Vector2i(12, 8), false)
+	Input.action_press("run")
+	Input.action_press("ui_left")
+	var until := Time.get_ticks_msec() + 2500
+	while Time.get_ticks_msec() < until and not box().visible:
+		await process_frame
+	Input.action_release("ui_left")
+	Input.action_release("run")
+	check("en courant : c'est la chance du pas couru", box().visible and encounters() == before + 1 and cell() == Vector2i(11, 8), "%d %s" % [encounters(), cell()])
+	await close_box()
+	level().set_meta("encounter_rate", 100)
+	level().set_meta("encounter_rate_run", 0)
+	await place(Vector2i(12, 8))
+	before = encounters()
+	Input.action_press("run")
+	await walk("en courant, chance nulle", Vector2i(11, 8), false)
+	Input.action_release("run")
+	check("et a l'inverse : en courant, la chance du pas marche ne compte pas", encounters() == before and not box().visible, str(encounters()))
+	level().remove_meta("encounter_rate_run")
+	await place(Vector2i(12, 8))
+	Input.action_press("run")
+	Input.action_press("ui_left")
+	until = Time.get_ticks_msec() + 2500
+	while Time.get_ticks_msec() < until and not box().visible:
+		await process_frame
+	Input.action_release("ui_left")
+	Input.action_release("run")
+	check("sans reglage pour la course : courir ou marcher revient au meme", box().visible and encounters() == before + 1, str(encounters()))
+	await close_box()
+	force_encounters(0)
