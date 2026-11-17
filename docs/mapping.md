@@ -9,6 +9,14 @@ transmis, et de la page
 de Pokémon Workshop. Les mêmes erreurs y ont été refaites plusieurs fois faute
 de les avoir écrites.
 
+Le 17/11/2026, Ludovic a fourni vingt cartes de référence bien composées. Six
+règles d'ici les contredisaient : **il a tranché pour les références**, et ces
+six règles sont réécrites ci-dessous (marquées « références, 17/11/2026 »).
+Les autres règles tirées de ces cartes — marquées « références » — complètent
+les sections existantes et font les sections M à R. Leurs chiffres ont été lus
+sur les images ; seuls la taille des cartes et le plus grand carré d'herbe nue
+ont été mesurés case par case, sur sept d'entre elles.
+
 Deux sortes de règles : les **principes**, qui disent dans quel esprit
 composer, et les **règles précises**, chiffrées, qui se vérifient.
 
@@ -63,10 +71,26 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
     d'escalier).
 16. **Vérifier, pas supposer.** Chaque règle précise ci-dessous a son contrôle.
     Une carte se juge dans le moteur, en zoomant, et en mouvement.
+17. **Un thème, un repère, deux ou trois motifs** (références). Chaque carte a
+    un thème, un repère qu'elle seule possède — un phare, une pagode, une
+    estrade, des éoliennes, un arbre pas comme les autres — et deux ou trois
+    motifs qui reviennent : tournesols, blé, palmiers.
+18. **Le construit est symétrique, la nature ne l'est pas** (références).
+    Statues, lampadaires, massifs et pots vont par paires de part et d'autre
+    d'un axe ; arbres, étangs et herbes jamais. La symétrie est stricte pour
+    ce qui est cérémoniel ou monumental (une estrade, une arène) ; dans un
+    village rustique une paire peut être légèrement cassée — un élément
+    décalé d'une case, un pot d'un côté et un banc de l'autre.
 
 ---
 
 ## Règles précises
+
+**Les fourchettes sont des repères, pas des quotas.** Une carte peut s'écarter
+d'une règle chiffrée quand son thème le demande — un grand champ de blé, une
+place de cérémonie dégagée. C'est permis **une ou deux fois par carte, et
+l'écart se nomme à Ludovic** en lui rendant la carte. Un écart qu'on ne sait
+pas justifier est une erreur.
 
 ### A. Bords et marge
 
@@ -90,6 +114,11 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   d'empiler les rochers.
 - **Dans la marge, une plage ne fait que ses deux cases** : la lisière descend
   jusqu'à elle, et un seul rocher suffit à la fermer.
+- **La ceinture de forêt fait au moins trois arbres d'épaisseur** sur tout
+  bord qui n'est pas la mer ; deux suffisent là où une falaise ou de l'eau la
+  double (références).
+- **Une sortie est une trouée de 2 à 4 cases** dans cette ceinture, et le
+  chemin la traverse (références).
 - **Aucun endroit d'où l'on ne ressort pas.** Tout ce qu'on atteint à pied, on
   doit pouvoir le quitter à pied, sans compter sur un objet ou une capacité que
   le joueur pourrait ne pas avoir. À revérifier dès qu'il y aura rochers à
@@ -97,16 +126,36 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 
 ### B. Taille et agencement
 
-- **65 cases au plus dans chaque sens**, marge comprise ; **40 × 40 suffit**
-  pour une carte simple. L'île fait **62 × 49** (elle en a fait 72 × 52).
-- **Aucun bâtiment au centre exact de la carte, aucune rangée de bâtiments
-  alignés.** Chaque maison à sa hauteur, décalée d'au moins une case.
+- **Un village fait 35 à 55 cases de côté ; une route s'allonge dans le sens
+  du trajet**, jusqu'à une centaine de cases, sur une bande praticable de 20 à
+  30 cases de large (références, 17/11/2026 — l'ancienne limite de 65 cases
+  dans chaque sens ne vaut plus). Le principe 7 demeure : la taille suit le
+  contenu, et une carte qui paraît petite peut encore rétrécir. L'île fait
+  **62 × 49** (elle en a fait 72 × 52).
+- **Aucun bâtiment au centre exact de la carte.**
+- **Dans un village, les maisons ne s'alignent pas** : chacune à sa hauteur,
+  décalée d'au moins une case. **Dans une ville, la grille est admise** : des
+  rangées de bâtiments alignés le long des rues (références, 17/11/2026).
 - **Une maison se serre contre ce qui la borde** : pas d'espace perdu derrière
   elle (contre la falaise quand il y en a une), et son plateau ajusté autour
   d'elle plutôt qu'une grande pelouse vide (Ludovic, 15/11/2026).
 - **Devant chaque porte, une rangée libre sur toute la façade, deux quand la
   place le permet.** La sortie ne bute sur rien : ni objet ni personnage sur
   la case devant la porte ni sur la suivante.
+- **Une porte est au sud et donne sur un chemin ou une placette**
+  (références).
+- **Centre Pokémon et Boutique côte à côte, près de l'entrée de la ville**
+  (références).
+- **Le bâtiment repère est au bout d'un axe** : on le voit en arrivant
+  (références).
+- **Aucune pelouse nue de plus de 4 × 4** (références ; mesuré : de 2 × 2 à
+  5 × 5 selon la carte). Tout carré plus grand reçoit des hautes herbes, un
+  bosquet, un étang, un chemin ou des fleurs. Une carte peut avoir **une
+  respiration voulue**, jusqu'à 6 × 6 environ, si elle a une fonction — une
+  placette, une clairière, le parvis d'un repère — et qu'elle est bordée de
+  tous côtés.
+- **Une route offre un trajet évident, une ou deux boucles, et des culs-de-sac
+  récompensés** (références ; principe 13).
 
 ### C. Lignes droites
 
@@ -121,10 +170,62 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 
 - **Des plateaux partout** : sous chaque maison, sous la place, et quelques
   buttes boisées dans les lisières. L'île en a huit.
+- **Une falaise basse est une ligne fine d'une case qui serpente et relie deux
+  bosquets** (références). La ligne et les arbres forment ensemble la
+  barrière ; l'escalier est le seul passage.
+- **Une ville côtière est en terrasses concentriques** (références) : des
+  paliers de 2 à 4 cases, aux contours parallèles et en escalier, avec
+  plusieurs escaliers d'un niveau à l'autre.
+- **Une butte rocheuse isolée, entourée d'arbres** (de 6 × 5 à 10 × 8), fait
+  un obstacle au milieu d'une route (références).
 - **Un plateau n'est pas un rectangle** : ses angles sont cassés, et son bord
   suit la côte quand elle s'approche.
-- **Un plateau reste à deux cases de l'eau au moins** : jamais sur une case de
-  rive.
+- **Une falaise peut tomber dans la mer ou dans une rivière, avec un liseré de
+  sable à son pied** (références, 17/11/2026 — l'ancienne règle des deux
+  cases entre un plateau et l'eau ne vaut plus). Le sable est **sous la
+  paroi** — on le voit dans ses coins arrondis — et son bord ondule **dans la
+  case d'eau** qui touche la terre. La terre garde sa case entière pour sa
+  paroi.
+- **Une rivière encaissée ne s'atteint jamais** : ses deux rives sont des
+  falaises, d'un bout à l'autre. Avant de dessiner une eau, dire comment on
+  la borde — plage (on y marche), falaise (on ne l'atteint pas), berge
+  d'étang — et s'y tenir sur toute sa longueur.
+- **La falaise d'une rivière a deux étages : deux anneaux d'une case, l'un
+  dans l'autre** (mesuré tuile par tuile sur la route du nord). L'anneau de
+  roche fait le tour de la terre et tombe dans l'eau ; l'anneau d'herbe est
+  collé derrière lui, une case en retrait, coins compris. On marche à partir
+  de la troisième case de terre. Un plateau de plus, une montagne : d'autres
+  anneaux, posés par-dessus, chacun fermé sur lui-même.
+- **Une case de falaise se juge à ce qu'on y voit et à ce qu'elle touche.**
+  Un bord — du haut compris — touche le vide par tout un côté : il arrête, et
+  l'on change de niveau par un escalier, posé sur un bord du bas tout droit.
+  Un coin rentrant du haut de l'anneau d'herbe, lui, est de la pelouse avec un
+  bout de lisière dans un angle, et ne touche le vide que par sa pointe : **il
+  se foule**. Une case qui a l'air d'être de l'herbe et où l'on ne peut pas
+  aller est une collision injustifiée (Ludovic, 17/11/2026).
+- **Un pont va du dessus d'un plateau à l'autre**, par-dessus les falaises et
+  l'eau, sur des bords droits, large de trois cases. Ses planches sont celles
+  de la planche de la carte : avec leurs rambardes si elle en a, nues sinon.
+  Son tablier recouvre les anneaux qu'il enjambe.
+- **Ce que l'exemple suppose que le jeu sait faire ferme un passage tant que
+  le jeu ne le sait pas** : un rebord de roche qu'on saute dans un sens, un
+  arbuste à couper, une eau où l'on surfe. On les pose quand même — c'est la
+  carte — mais on dit quel passage chacun ferme et par où l'on fait le tour.
+  **Ce que l'exemple range derrière y reste** : un objet derrière un arbuste à
+  couper est la récompense de qui reviendra le couper, on ne le sort pas
+  devant (Ludovic, 17/11/2026). Le générateur vérifie qu'il est hors
+  d'atteinte aujourd'hui et à portée une fois l'obstacle ôté.
+- **Ce qui vit sur une carte est du milieu de la carte.** Dans une forêt, ni
+  pêcheur ni montagnard : des campeurs, des gamins, des chasseurs d'insectes.
+  Au-dessus d'elle, pas d'oiseaux de mer : des Pokémon de prairie, portés par
+  le vent. Les Goélise et les Bekipan sont pour la plage (Ludovic,
+  17/11/2026).
+- **Un arbre a une seule teinte.** Si l'exemple en fait un de deux essences
+  — la cime de l'une, le pied de l'autre —, c'est un accident de calques : on
+  plante l'essence de sa cime.
+- **Une montagne a la taille que lui donne l'exemple**, et plusieurs gradins
+  posés les uns sur les autres : on érode sa silhouette d'une case par
+  gradin.
 - **Le toit d'une maison peut dépasser de son plateau** : ce n'est pas une
   contrainte (Ludovic, 15/11/2026). Ce qui compte, c'est que sa façade et sa
   porte soient sur le dessus, avec la place de sortir.
@@ -138,14 +239,19 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   inégales, sur des calques empilés — le contour est irrégulier, les parois
   se chevauchent. **Sans agrandir la carte** : la hauteur vient des étages, pas
   de rangées en plus.
+  Elle porte un bloc rocheux pour une vingtaine de cases ; une entrée de
+  grotte est en haut, dans l'axe d'un escalier, son panneau à côté
+  (références).
 - **Le bord du haut d'un plateau est de l'herbe : on s'y tient.** Ce qu'on ne
   franchit pas, c'est le rebord, entre cette case et celle du dessus — une
   bande fine sur la couche des rebords ([tilesets.md](tilesets.md)). Une rangée
   d'herbe qui bloque sans raison visible est un mur invisible.
-- **On y monte par des escaliers à poteaux de deux cases** (planche de l'île),
-  en bas ou sur les côtés (`STAIRS` du plan). **Jamais sur le bord du haut** :
-  un escalier vu à l'envers ne ressemble à rien. Devant et derrière un
-  escalier, rien.
+- **On y monte par des escaliers à poteaux, dans l'axe d'un chemin**, en bas
+  ou sur les côtés (`STAIRS` du plan). **Larges de trois à quatre cases sur
+  l'axe principal** (références) — à fabriquer si la planche ne les a pas,
+  principe 15 — ; **deux cases suffisent pour un accès secondaire** (ceux de
+  la planche de l'île). **Jamais sur le bord du haut** : un escalier vu à
+  l'envers ne ressemble à rien. Devant et derrière un escalier, rien.
 - **Rien à cheval sur un bord de plateau** : un arbre, un dallage, une fleur
   haute sont tout entiers dessus ou tout entiers en bas.
 
@@ -156,10 +262,60 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   la carte, jamais sur toute une rangée visible.
 - **Une lisière est serrée** : un arbre toutes les deux cases, cimes qui se
   recouvrent. Des arbres espacés laissent passer.
+- **Une forêt est pleine** (Ludovic, 17/11/2026 : « tout le centre ouest de ta
+  map est vide alors que sur l'exemple c'est rempli d'arbres »). Ce qui n'est
+  ni chemin, ni clairière, ni herbes est de la forêt. Sa trame **se mesure
+  sur l'exemple, avec l'arbre de l'exemple** : pour l'arbre de la route du
+  nord (trois cases de large, une cime de deux cases et quart), 315 arbres
+  disent tous la même chose — **un arbre toutes les quatre colonnes, la
+  rangée suivante décalée de deux, une rangée par case**. Deux arbres d'une
+  même colonne sont à deux cases l'un de l'autre. Les arbres de bordure de
+  l'atlas, plus larges, se plantent toutes les deux cases : la trame dépend
+  de l'arbre.
+- **Une forêt se ferme par ses collisions, pas par sa densité** : ce que
+  bloque un arbre se choisit pour qu'aucune colonne ne reste libre sous les
+  cimes.
+- **Un arbre large bloque sur toute sa largeur** : ses deux rangées du bas,
+  sur ses trois cases — le tronc et la cime qui retombe de chaque côté. On ne
+  se tient pas sur une case que la cime recouvre devant soi ; on passe
+  derrière le haut de la cime, qui est au-dessus du sol (Ludovic, 17/11/2026).
+- **Ce qu'on pose au sol passe derrière le décor, et reste visible.** Un
+  objet à ramasser, un panneau ne se dessinent jamais par-dessus une cime :
+  avec la règle d'avant, aucune case libre n'est recouverte par l'arbre de sa
+  rangée. Et on ne les pose pas derrière une cime qui cache le centre de leur
+  case : le générateur le mesure sur les pixels de l'arbre.
+- **Une ombre ne se coupe pas au bord d'une case.** Avant de découper un arbre
+  dans une planche, regarder les pixels juste hors de son cadre : l'ombre du
+  sapin et de l'arbuste déborde d'une rangée sous leur pied. La tuile prend
+  cette rangée de plus — même si l'exemple, lui, la coupe.
+- **Un décor qui en cache un autre ne l'interrompt pas.** Un rebord qui file
+  sous un arbre a son bout de l'autre côté ou dessous, une piste continue sous
+  une ombre. Ce que l'exemple cache se complète par la tuile qui convient à ce
+  qu'on en voit, jamais par du sol nu.
+- **Une forêt reproduite d'un exemple a les essences de l'exemple** : une
+  seule s'il n'en a qu'une. Le mélange d'une teinte sur cinq ou six vaut pour
+  une carte qu'on compose soi-même.
 - **Les arbres bordent** : ceinture de la marge, pied de falaise, flanc d'une
   maison, dessus d'une butte. Jamais semés au hasard sur une pelouse.
-- **À trois cases de l'eau au moins**, pied compris : la touffe d'herbe au pied
-  d'un arbre ou d'un palmier ne déborde ni sur le rivage ni sur l'eau.
+- **Sur une route, les arbres de l'intérieur forment des bosquets de 4 à 15
+  arbres** (références), de forme irrégulière et allongée, qui séparent des
+  couloirs de 3 à 6 cases. Une route peut avoir en plus **un ou deux arbres
+  isolés ou en paire**, s'ils servent de repère : un arbre différent, à un
+  carrefour, au bout d'un cul-de-sac.
+- **Les petits sapins comblent les creux** (références) : au bout d'une
+  rangée, dans un renfoncement de lisière, ou par paire de chaque côté d'une
+  entrée. Environ un pour six à huit gros arbres.
+- **Une ou deux souches ou troncs couchés au pied des lisières**, jamais en
+  pleine pelouse (références).
+- **Dans un village, un arbre isolé est permis en accent** à côté d'une
+  maison (références) — jamais devant sa façade, règle ci-dessous.
+- **Quand le jeu de tuiles a plusieurs teintes d'arbres, on en mêle une sur
+  cinq ou six**, jamais par blocs (références).
+- **Un arbre peut border un étang, jusqu'au contact de la berge**
+  (références, 17/11/2026 — l'ancienne règle des trois cases ne vaut plus).
+  Ce qui reste interdit, c'est le dessin qui déborde : le pied d'un arbre ou
+  d'un palmier et sa touffe d'herbe tiennent tout entiers sur la terre, ni sur
+  le rivage ni sur l'eau (H).
 - **Jamais devant un bâtiment** : la cime d'un arbre ne recouvre ni un toit ni
   une façade.
 - **Le joueur ne passe jamais derrière le pied d'un arbre.** Debout à côté du
@@ -174,10 +330,14 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 
 ### F. Rochers
 
-- **Seulement là où ils sont nécessaires** : en travers d'une passe, et un
-  seul au bout de chaque plage qui sort de la carte. Une lisière se ferme
-  d'abord avec des arbres ; le rocher ne vient que là où un arbre ne peut pas
-  pousser (le sable).
+- **Les rochers ferment, et ils décorent** (références, 17/11/2026 —
+  l'ancienne règle « seulement là où ils sont nécessaires » ne vaut plus).
+  En décor : par grappes d'un gros et de deux ou trois petits en mer près des
+  côtes, un rocher dans un étang, des blocs épars sur une plage ou une
+  montagne (un pour une vingtaine de cases), jamais en grille.
+- **Pour fermer**, une lisière se ferme d'abord avec des arbres ; le rocher
+  vient là où un arbre ne peut pas pousser (le sable, l'eau) : en travers
+  d'une passe, au bout d'une plage qui sort de la carte.
 - **Une barrière de rochers est une chaîne qui serpente** d'une rive à l'autre :
   chaque rocher touche le précédent (par un côté ou par un coin), aucun n'est
   aligné sur lui. Jamais une grille, jamais un semis au hasard.
@@ -198,6 +358,13 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   rive.
 - **Rochers, arbres et relief se combinent** : la chaîne se prolonge sur la
   plage par un rocher de plage, puis par la lisière.
+- **Un rocher a la matière de ce qui le porte** (Ludovic, 17/11/2026 : des
+  rochers gris au sommet d'une montagne brune, « deux styles différents et qui
+  n'ont rien à voir »). Gris dans l'eau, bruns sur une roche brune. Avant de
+  poser un rocher, regarder sa couleur à côté de celle du sol.
+- **Ce qui dépasse d'une rivière est un rocher, pas un îlot de terre.** Sur un
+  relevé, une tache sans classe au milieu de l'eau est un rocher : on la
+  relève à part, au pixel, et la case reste de l'eau.
 
 ### G. Raccords de terrain
 
@@ -205,14 +372,23 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   sable à vagues `5:10-14,13-15`, son rivage `5:15-19,31-33`, l'eau claire.
   Mélanger deux sables ou deux eaux donne une couture droite.
 - **Un seul sable par carte** : sentiers et plages dans la même matière.
-- **Pas de bande de sable posée sur l'herbe pour faire un chemin** : « le
-  sable ça fait bizarre pour le chemin » (Ludovic, 15/11/2026). Au pied d'un
-  escalier ou devant une porte, on laisse l'herbe.
+- **Un chemin est du sable ou de la terre posés sur l'herbe** (références,
+  17/11/2026 — l'ancienne règle « pas de sable pour un chemin » ne vaut
+  plus). Ce qui faisait « bizarre », c'était la bande étroite et droite : la
+  largeur et le tracé d'un chemin sont en N.
 - **Le rivage est dessiné sur la case de sable, jamais dans la case d'eau.**
   Sinon la mer, solide, a l'air de sable et le joueur bute dessus.
 - **Une plage fait au moins deux cases de large** entre l'herbe et l'eau.
 - **Aucune matière d'une seule case de large** : les raccords ne savent pas la
   dessiner.
+- **Deux teintes d'eau se raccordent par leurs tuiles de transition**, jamais
+  par une marche nette (Ludovic, 17/11/2026 : « nettes et moches »). L'eau
+  profonde a ses coins arrondis ; on ne pose pas une case d'eau profonde seule
+  contre de l'eau claire ([tilesets.md](tilesets.md)). Avant d'utiliser deux
+  variantes d'une matière, **chercher dans l'atlas les tuiles qui mêlent les
+  deux** — un balayage par couleurs les trouve.
+- **Ce qu'un coin arrondi laisse voir doit avoir du sens** : sous une roche
+  qui tombe dans l'eau, du sable, pas de l'herbe.
 - **Un dallage repose sur l'herbe** : lui et la case qui l'entoure sont en
   herbe (sa bordure est une frange d'herbe), jamais sur du sable ni sur un
   bord de plateau.
@@ -262,7 +438,20 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   débarcadère, un coin de place, un carrefour, un virage. Jamais deux côte à
   côte, jamais au milieu d'une pelouse. Chaque lampadaire porte sa raison dans
   le générateur.
-- **Un panneau se lit depuis un chemin et ne le coupe pas.**
+- **Un lampadaire se pose sur l'herbe au bord du chemin, jamais dessus**
+  (références) : aux entrées, aux carrefours, et par paire **de part et
+  d'autre** d'un escalier ou d'une sortie — ce n'est pas « côte à côte ». Six
+  pour un village de 37 × 48. **Aucun en pleine nature** ; un seul est permis
+  sur une route près d'un lieu habité : une maison isolée, une aire de repos,
+  l'entrée d'un pont.
+- **Un panneau se lit depuis un chemin et ne le coupe pas.** Il y en a un à
+  chaque entrée de ville, à chaque bifurcation d'une route, devant une grotte
+  ou un bâtiment notable : à une case du chemin, adossé à des arbres
+  (références).
+- **Une boîte aux lettres par maison d'habitation**, sur l'herbe, à une case à
+  côté de la porte (références).
+- **Les étals se regroupent dans un coin de place** ; sur la plage, parasols
+  et transats vont **par grappes de deux ou trois** (références).
 - **Aucun objet solide ne ferme ni n'étrangle un passage.** Contrôle : ses
   cases voisines libres se rejoignent encore entre elles sans passer par lui.
 - **Rien sur un débarcadère, un escalier, ni la case devant.**
@@ -271,6 +460,7 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   escalier, ni dans un passage de deux cases.
 - **Un passage gardé l'est à son endroit le plus étroit** : les gardes tiennent
   la trouée de la falaise, un contre chaque paroi, pas le milieu d'une plage.
+- **Les dresseurs se tiennent aux étranglements** d'une route (références).
 - **Le mobilier a sa place, et c'est ce qu'il a l'air d'être** : un banc est un
   banc (le banc de bois, `10:4-5,5-6` de face, `10:8,3-5` et `10:9,3-5` de
   profil — ni une dalle de pierre, ni le banc blanc bas `5:74-75,25` : « tu as
@@ -282,6 +472,8 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 - **Un objet à ramasser est une Poké Ball posée au sol**, au bout d'un recoin
   ou d'un détour : c'est la récompense du curieux. Son image est celle de la
   planche des intérieurs (`sources/public_indoor.png`), choisie par Ludovic.
+  **Trois à huit par route** selon sa taille, chacune dans un cul-de-sac,
+  derrière un rebord ou sur un îlot (références).
 - **Chaque coin de la carte a quelqu'un**, près de ce qui l'occupe : un banc,
   un parasol, un ponton, des herbes. Et **pas de foule** : une dizaine de
   personnes au plus au même endroit, les autres répartis ailleurs.
@@ -306,7 +498,170 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
   grandes tuiles qui ont de la marge.
 - Une animation se juge **en mouvement**, sur plusieurs images.
 
+### M. Hautes herbes
+
+*D'après les cartes de référence (17/11/2026).*
+
+- **Par plaques de 10 à 40 cases, au contour déchiqueté, avec des trous** :
+  une case manquante sur cinq ou six. Jamais un rectangle plein. De **petites
+  touffes de 3 à 6 cases** sont permises en accent, et **une grande étendue**
+  si c'est le thème de la carte.
+- **Adossées à un bosquet, un étang ou une ligne de falaise** : elles
+  remplissent le couloir entre deux obstacles. Elles peuvent s'en écarter
+  d'une case ; ce qui est interdit, c'est la plaque posée seule au milieu d'un
+  espace ouvert.
+- **Elles coupent le trajet d'une route, mais un détour existe souvent** : le
+  joueur choisit entre les traverser et faire le tour.
+- **Aucune au centre d'un village** ; une plaque est permise en lisière, là
+  où le village devient la route.
+- **Sur le sable, des herbes de plage d'une autre teinte**, selon la même
+  logique.
+
+### N. Chemins
+
+*D'après les cartes de référence (17/11/2026). La matière est en G.*
+
+- **Trois cases de large pour l'axe principal, deux pour un sentier
+  secondaire** (vers une maison à l'écart, un point de vue). Jamais une : nos
+  raccords ne savent pas la dessiner (G).
+- **Des bords ondulés** : un décrochement d'une case toutes les deux à quatre
+  cases, des virages en escalier diagonal.
+- **Dans un village, le réseau relie chaque porte** — en T, en croix ou d'un
+  tracé plus libre — et l'on y lit un axe principal ; il s'élargit en placette
+  devant les bâtiments importants.
+- **Sur une route, le chemin est en pointillés** : des tronçons de 4 à 10
+  cases orientés dans le sens du trajet, séparés par de l'herbe. Variante :
+  une piste continue d'herbe plus claire. Un seul des deux par carte.
+- **Un chemin mène quelque part** : une porte, un escalier, un pont, une
+  sortie.
+
+### O. Eau
+
+*D'après les cartes de référence (17/11/2026). Les barrières de rochers sont
+en F, les pontons en I.*
+
+- **Un étang fait 12 à 60 cases, au contour en escalier**, jamais un
+  rectangle, avec sa berge brune en haut et à gauche.
+- **Un à trois décors par étang moyen ou grand** : un rocher, un ou deux
+  nénuphars. Un petit étang peut rester nu.
+- **Un étang est adossé** à un bosquet, une maison ou une falaise, et longé
+  par un chemin.
+- **Sur une route de plaine ou de forêt, un étang toutes les 12 à 20 cases.**
+  Une route sèche — montagne, plage — peut n'en avoir aucun : un autre motif,
+  d'eau ou de roche, prend le relais.
+- **Une mer ou une rivière a au moins deux tons** : une bande d'eau claire le
+  long de chaque rive, large d'une à trois cases, puis l'eau profonde. Le
+  contour de l'eau profonde suit la rive en la simplifiant, par marches, et
+  ses coins sont arrondis (G).
+- **Un étang n'a qu'une teinte**, plus vive que celle d'une rivière, et sa
+  berge à lui.
+- **Un îlot de sable avec un objet derrière une chaîne de rochers** récompense
+  celui qui saura nager.
+- **Un pont est perpendiculaire à l'eau, large de trois cases, au point le
+  plus étroit**, avec un chemin de chaque côté.
+
+### P. Rebords à sens unique
+
+*D'après les cartes de référence (17/11/2026). Pas encore dans le jeu : à
+relire quand la mécanique existera, avec la règle « aucun endroit d'où l'on
+ne ressort pas » (A).*
+
+- **Des segments droits de 3 à 5 cases, horizontaux, qu'on saute vers le
+  bas.** Un rebord latéral est permis si la tuile existe et que le saut se lit
+  sans ambiguïté.
+- **En travers d'un couloir secondaire**, comme raccourci de retour — jamais
+  sur le seul passage de l'aller.
+- **Ses deux bouts butent sur un arbre ou une falaise** : on ne le contourne
+  pas.
+- **Souvent par deux, encadrant une plaque d'herbes.** Trois à six sur une
+  route qui a du relief ; aucun n'est obligatoire sur une carte plate ou dans
+  un village.
+
+### Q. Fleurs
+
+*D'après les cartes de référence (17/11/2026).*
+
+- **Par touffes de deux ou trois cases, en diagonale ou en L**, d'une couleur
+  ou de deux assorties. Une fleur seule de temps en temps, au pied d'un
+  panneau ou d'une boîte aux lettres.
+- **Au bord d'un chemin, au pied d'un arbre, à l'angle d'une maison, sur une
+  berge, dans une trouée d'herbes.** Jamais sur un chemin.
+- **Une touffe pour 40 à 60 cases praticables** dans le style sobre, jusqu'à
+  une pour 15 dans un style chargé. Un seul style par carte.
+- **Les grandes fleurs — tournesols — vont en massifs clôturés**, symétriques
+  de chaque côté d'une maison ou le long d'un axe.
+
+### R. Clôtures
+
+*D'après les cartes de référence (17/11/2026).*
+
+- **Une clôture entoure quelque chose** — un jardin, un champ, un massif —
+  **ou sert de garde-corps** le long d'un étang ou d'un bord de terrasse :
+  deux ou trois tronçons courts avec des vides, pas une ligne continue. Jamais
+  un tronçon isolé qui ne garde rien.
+- **Droite, appuyée sur une maison ou un mur, avec une ouverture d'une ou
+  deux cases.**
+- **Un champ est un bloc clôturé traversé d'allées de terre.**
+
 ---
+
+## Quand Ludovic donne une carte d'exemple
+
+**On la reproduit, on ne l'interprète pas** (Ludovic, 17/11/2026, sur la route
+du nord : « tu n'as rien gardé de l'image initiale »). La première version
+avait gardé l'idée — une rivière, deux ponts — et perdu tout le reste : terres
+au niveau de l'eau, forêts clairsemées, montagne minuscule, eau d'une teinte.
+
+0. **Chercher d'abord de quelle planche l'exemple est fait.** Comparer sa
+   palette à celles des planches de `assets/levels/sources/` : la route du
+   nord avait exactement les couleurs de `town_compilation.png`, et l'on a
+   passé deux versions à l'imiter avec d'autres tuiles avant de le voir. Si
+   la planche est là, **on relève l'exemple par tuiles** : chaque tuile est
+   retrouvée au pixel près, couche par couche, du dessus vers le dessous
+   (`tools/maps/north_route/survey.py`, décrit dans [levels.md](levels.md)),
+   et la carte est posée avec ces tuiles-là. Deux styles ne se mélangent pas
+   sur une carte : on prend toute la planche de l'exemple, ou rien.
+1. Sans la planche, **relever l'image case par case** avant de dessiner quoi
+   que ce soit : une classe par case (eau profonde, eau claire, falaise,
+   herbe, piste, hautes herbes, arbre, pont, escalier, roche), par ses
+   couleurs. Dans les deux cas le relevé est le plan ; on ne redessine pas la
+   carte de tête. Ce qui ne tient pas dans une case — un rocher, une Poké
+   Ball — se relève à part, au pixel.
+2. **Lire tous les niveaux de détail, du plus gros au plus fin** : les masses
+   (terre, eau), le relief (à quelle hauteur est la terre ? atteint-on
+   l'eau ?), ce qui remplit (forêt pleine ou clairière ?), puis les matières
+   (combien de teintes d'eau ? quel liseré ?), puis les objets (de quelle
+   matière ? de quelle largeur ?).
+3. **Chercher la tuile avant de dire qu'elle manque.** Le liseré de sable et
+   les coins d'eau profonde étaient dans l'atlas ; ils n'étaient simplement
+   pas encore posés sur une carte. Balayer l'atlas par couleurs, puis les
+   planches de `sources/`, puis fabriquer.
+4. **Dire ce que nos tuiles ne savent pas rendre**, et le nommer en rendant la
+   carte — pas le remplacer en silence par autre chose.
+5. **Comparer zone par zone** le rendu du moteur à l'exemple, agrandi, pas
+   seulement l'ensemble. Quand la carte est faite des tuiles de l'exemple,
+   **on compte** : `generate.py --compare` donne les cases qui diffèrent au
+   pixel près, et chacune doit avoir sa raison.
+
+### Ce que le générateur doit savoir avant de poser une tuile
+
+Chaque question a une réponse lue sur l'exemple ou dans ce document. **Une
+question sans réponse se pose à Ludovic** ; on n'y répond pas par défaut.
+
+| Question | Où est la réponse |
+|---|---|
+| De quelle planche l'exemple est-il fait ? L'a-t-on ? | comparer les palettes à `sources/` ; sinon la demander à **Ludovic** |
+| Qu'est-ce que l'exemple suppose que le jeu sait faire (sauter un rebord, couper un arbuste, surfer) ? | l'exemple ; ce que ça ferme se dit en rendant la carte (D) |
+| À quelle hauteur est la terre par rapport à l'eau ? Y accède-t-on ? | l'exemple : une plage se foule, une falaise non (D) |
+| Combien de teintes a l'eau, et avec quelles tuiles se raccordent-elles ? | l'exemple pour les teintes, l'atlas pour les raccords (G, [tilesets.md](tilesets.md)) |
+| Qu'y a-t-il au pied d'une falaise qui touche l'eau ? | un liseré de sable : sous la paroi, et son bord dans la case d'eau (D) |
+| Ce qui dépasse de l'eau : rocher ou terre ? De quelle couleur ? | l'exemple ; un rocher a la matière de ce qui le porte (F) |
+| La forêt est-elle pleine ? De quelle essence ? À quel pas ? | l'exemple, mesuré arbre par arbre ; pleine par défaut (E) |
+| Quelle largeur ont les ponts, les escaliers, les chemins ? | l'exemple, mesuré en cases ; sinon N et D |
+| Où sont les sorties, et lesquelles mènent quelque part ? | l'exemple pour leur place ; Ludovic pour ce qu'il y a derrière |
+| Quelle musique, quels Pokémon sauvages, quels personnages ? | **Ludovic** : l'exemple ne le dit pas |
+| Quels objets à ramasser, et où ? | l'exemple pour ceux qu'il montre ; K pour le nombre |
+| Que voit-on sous un coin arrondi, sous un pont, derrière un toit ? | regarder le rendu agrandi : c'est le contrôle des jonctions |
 
 ## Avant de rendre une carte
 
@@ -323,3 +678,6 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 5. `tests/run.sh island` (ou le dossier de la carte), et les tests de toute
    carte qui partage des tuiles modifiées.
 6. Dire à Ludovic ce qui n'a été jugé que sur image fixe.
+7. Aucune pelouse nue de plus de 4 × 4, hors la respiration voulue (B).
+8. Nommer à Ludovic les écarts voulus aux règles chiffrées — un ou deux par
+   carte, chacun avec sa raison.
