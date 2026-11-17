@@ -109,13 +109,18 @@ class Reflection : Node() {
 		// On ne montre du reflet que ce qui tombe dans l'eau. En approchant du
 		// bord, la tête sort donc la première et le reflet monte au fil du pas ;
 		// au bord d'une eau basse, il s'arrête là où elle s'arrête.
-		val span = waterSpan(axis, top, middle + height / 2.0)
-		if (span == null) {
+		// ...et en largeur aussi : pendant un pas de côté le personnage est à cheval
+		// sur deux colonnes, dont l'une peut être du sable. On ne garde que les
+		// colonnes où il y a de l'eau, et la hauteur qu'elles ont en commun.
+		val width = frame.size.x * kotlin.math.abs(image.scale.x)
+		val pool = waterPool(axis - width / 2.0, axis + width / 2.0, top, middle + height / 2.0)
+		if (pool == null) {
 			mirror.visible = false
 			return
 		}
-		val (shown, hidden) = span
-		if (hidden - shown <= 1.0) {
+		val shown = pool.top
+		val hidden = pool.bottom
+		if (hidden - shown <= 1.0 || pool.right - pool.left <= 1.0) {
 			mirror.visible = false
 			return
 		}
@@ -130,13 +135,14 @@ class Reflection : Node() {
 		// au bas de l'image.
 		val near = (shown - top) / image.scale.y
 		val far = (hidden - top) / image.scale.y
+		val scaleX = kotlin.math.abs(image.scale.x)
 		mirror.regionRect = Rect2(
-			frame.position.x,
+			frame.position.x + (pool.left - (axis - width / 2.0)) / scaleX,
 			frame.position.y + frame.size.y - far,
-			frame.size.x,
+			(pool.right - pool.left) / scaleX,
 			far - near,
 		)
-		mirror.globalPosition = Vector2(axis, (shown + hidden) / 2.0)
+		mirror.globalPosition = Vector2((pool.left + pool.right) / 2.0, (shown + hidden) / 2.0)
 	}
 
 	/** La texture où prendre l'image du moment : la planche, ou l'image seule d'une animation. */
@@ -180,6 +186,37 @@ class Reflection : Node() {
 		}
 		val first = start ?: return null
 		return first to minOf(end, to)
+	}
+
+	/** Le rectangle d'eau où le reflet peut se montrer. */
+	private class Pool(val left: Double, val right: Double, val top: Double, val bottom: Double)
+
+	/**
+	 * L'eau sous le personnage, entre [left] et [right] : la plus large suite
+	 * de colonnes de cases où [waterSpan] trouve une nappe, et la hauteur que
+	 * ces colonnes ont en commun. Null s'il n'y en a pas.
+	 */
+	private fun waterPool(left: Double, right: Double, from: Double, to: Double): Pool? {
+		val layer = layers.firstOrNull() ?: return null
+		val grid = HALF_CELL * 2.0
+
+		var best: Pool? = null
+		var run: Pool? = null
+		var x = left
+		while (x < right) {
+			val cell = layer.localToMap(layer.toLocal(Vector2(x + 0.01, from)))
+			val centre = layer.toGlobal(layer.mapToLocal(cell)).x
+			val edge = minOf(right, centre + grid / 2.0)
+			val span = waterSpan(centre, from, to)
+			run = when {
+				span == null -> null
+				run == null -> Pool(x, edge, span.first, span.second)
+				else -> Pool(run.left, edge, maxOf(run.top, span.first), minOf(run.bottom, span.second))
+			}
+			if (run != null && (best == null || run.right - run.left > best.right - best.left)) best = run
+			x = edge
+		}
+		return best
 	}
 
 	/** Accroche un reflet dans la carte. */

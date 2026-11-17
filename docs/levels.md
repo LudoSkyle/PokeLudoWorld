@@ -152,7 +152,7 @@ d'un Pokémon volant bleuit.
 |---|---|---|
 | départ, devant chez Ludo | (6,9) | `SpawnPoint` |
 | `MaisonLudo` | (6,8) | → `ludo_house` ; hutte de chaume, porte à gauche |
-| `MaisonNord` | (13,10) | → `orange_house_north`, chez Anselme |
+| `MaisonNord` | (13,9) | → `orange_house_north`, chez Anselme |
 | `Bibliotheque` | (3,29) | → `library` |
 | `Laboratoire` | (45,8) | → `lab_house` ; la grande maison de chaume, au pied de la montagne |
 | `MaisonSud` | (43,33) | → `orange_house_south`, chez Solange |
@@ -163,13 +163,22 @@ d'un Pokémon volant bleuit.
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
 | escaliers (colonne de gauche, rangée) | (14,13), (31,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
-| objets à ramasser | Potion en (46,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| objets à ramasser | Potion en (46,45), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
 
 Calques de fond, dans l'ordre : `Ground`, `Shore` (le bord du sable, sur
 l'eau), `Cliffs1` (la falaise des plateaux),
 `Cliffs2` (la montagne), `Paths`, `Plaza`, `Decorations` (fleurs, serviettes),
 `Grass`, `Bridges` (pontons et escaliers). Dans `World`, triés en Y : `Trees`,
 `Props` (rochers, sapins, bancs, parasols), `Houses`.
+
+**Les pistes** font trois cases de large et sont d'un seul tenant sur chaque
+plateau (`layout.PATHS`, tracées à la main là où l'exemple a ses chemins) :
+plus étroite, une piste n'est que deux bords collés. **Les plages ont leurs
+palmiers**, là où l'exemple pose quelque chose sur le sable, espacés de cinq
+cases, jamais dans un passage ni contre le mobilier ; des massifs de buissons
+garnissent les coins de la place, et les fleurs sont plus serrées autour
+d'elle et sur la presqu'île du sud-est. La cloche, au fond de l'eau,
+**scintille** (`Twinkle.kt`).
 
 **Dans le ciel**, quatre Goélise et deux Bekipan, chacun dans sa zone de dix
 cases sur dix (nœud `Sky`, [npcs.md](npcs.md)).

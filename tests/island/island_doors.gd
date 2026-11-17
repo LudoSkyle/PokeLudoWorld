@@ -6,7 +6,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(13, 11)
+	return Vector2i(13, 10)
 
 func visit(label: String, front: Vector2i, inside: String) -> void:
 	await place(front)
@@ -16,7 +16,7 @@ func visit(label: String, front: Vector2i, inside: String) -> void:
 	await arrival("retour devant " + label, front, "idle_down")
 
 func test() -> void:
-	await visit("chez Anselme, la maison du nord-ouest", Vector2i(13, 11), "orange_house_north")
+	await visit("chez Anselme, la maison du nord-ouest", Vector2i(13, 10), "orange_house_north")
 	await visit("chez Ludo", Vector2i(6, 9), "ludo_house")
 	await visit("la bibliotheque", Vector2i(3, 30), "library")
 	await visit("le laboratoire", Vector2i(45, 9), "lab_house")

@@ -47,8 +47,8 @@ def village_source():
         key = '%d:%d' % at
         out += ['%s/size_in_atlas = Vector2i(%d, %d)' % (key, w, h + below), '%s/0 = 0' % key, '%s/0/texture_origin = Vector2i(%d, %d)' % (key, -8 * (w - 1), 8 * (h - below - 1)),
                 '%s/0/y_sort_origin = -1' % key]          # qui se tient sur la case de la porte passe devant ; qui passe derrière le toit passe derrière
-        # les murs et le bas du toit : quatre rangées, sauf la case de la porte
-        parts = [p for p in ((0, -3, d - 1, 0), (d, -3, d, -1), (d + 1, -3, w - 1, 0)) if p[0] <= p[2]]
+        # une maison : les murs et le bas du toit, quatre rangées, sauf la case de la porte ; une plante : son tronc
+        parts = [p for p in ((0, -3, d - 1, 0), (d, -3, d, -1), (d + 1, -3, w - 1, 0)) if p[0] <= p[2]] if name in village_tiles.HOUSES else [(d, 0, d, 0)]
         for k, p in enumerate(parts): out.append('%s/0/physics_layer_0/polygon_%d/points = %s' % (key, k, polygon(*p)))
     return '\n'.join(out) + '\n'
 
@@ -362,6 +362,7 @@ flag = "bell_tarnished"
 required_flag = "bell_spotted"
 
 [node name="Glint" type="Polygon2D" parent="Readables/Bell"]
+script = ExtResource("14_twinkle")
 color = Color(1, 1, 0.85, 0.9)
 polygon = PackedVector2Array(0, -3, 1, -1, 3, 0, 1, 1, 0, 3, -1, 1, -3, 0, -1, -1)
 ''' % px(BELL))
@@ -370,7 +371,7 @@ if BELL not in lay.SEA or (BELL[0], BELL[1] + 1) not in DECK: print('  !! la clo
 # ------------------------------------------------------------------ contrôles : tout se rejoint, dans les trois temps de l'histoire
 targets = {'porte ' + k: (v[0], v[1] + 1) for k, v in DOORS.items()}
 targets.update({'socle (devant)': (CXP, TOP + 4), 'devant les gardes': (ROAD[2], GUARD_Y + 1), 'derrière les gardes': (ROAD[2], GUARD_Y - 1), 'la sortie du nord': (ROAD[2], 0), 'bout de la jetée': (PIER_END[0], PIER_END[1] - 1),
-                'ponton de la cloche': (BELL[0], BELL[1] + 1), 'plage du sud': (28, 35), 'plage de l ouest': (5, 40), 'crique du nord': (25, 11), 'hautes herbes du sud-ouest': TALL_SW[0]})
+                'ponton de la cloche': (BELL[0], BELL[1] + 1), 'plage du sud': (28, 35), 'plage de l ouest': (4, 41), 'crique du nord': (25, 11), 'hautes herbes du sud-ouest': TALL_SW[0]})
 def beside(c, R): return any((c[0] + i, c[1] + j) in R for i, j in lay.NEIGH4)
 for phase, flags in PHASES.items():
     there = {c for n, c, req, forb in NPCS if present(req, forb, flags)}
@@ -392,7 +393,7 @@ def encode(cells_):
     return base64.b64encode(raw).decode()
 def layer(name, parent, cells_, ysort=False):
     return '[node name="%s" type="TileMapLayer" parent="%s"]\n%stile_map_data = PackedByteArray("%s")\ntile_set = ExtResource("1_ian7c")\n' % (name, parent, 'y_sort_enabled = true\n' if ysort else '', encode(cells_))
-head = '''[gd_scene load_steps=14 format=4]
+head = '''[gd_scene load_steps=15 format=4]
 
 [ext_resource type="TileSet" uid="uid://c38ht37ho6e3a" path="{R}resources/tilesets/level.tres" id="1_ian7c"]
 [ext_resource type="PackedScene" path="{R}scenes/levels/scene_trigger.tscn" id="2_door"]
@@ -407,6 +408,7 @@ head = '''[gd_scene load_steps=14 format=4]
 [ext_resource type="PackedScene" path="{R}scenes/levels/window_glow.tscn" id="11_glow"]
 [ext_resource type="Texture2D" path="{R}assets/levels/island.png" id="12_island"]
 [ext_resource type="PackedScene" path="{R}scenes/levels/flyer.tscn" id="13_flyer"]
+[ext_resource type="Script" path="{R}scripts/gameplay/levels/Twinkle.kt" id="14_twinkle"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_stand"]
 size = Vector2(48, 16)
