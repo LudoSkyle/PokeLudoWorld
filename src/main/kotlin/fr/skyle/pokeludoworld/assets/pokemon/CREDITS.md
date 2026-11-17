@@ -11,6 +11,9 @@ droite.
 |---|---|---|
 | `wingull.png` | Goélise | sorti de `sources/hgss_overworld_gen3.png` par `tools/pokemon_overworld.py` |
 | `pelipper.png` | Bekipan | idem |
+| `hoppip.png` | Granivol | sorti de `sources/hgss_overworld_gen2.png` par le même script |
+| `skiploom.png` | Floravol | idem |
+| `jumpluff.png` | Cotovol | idem |
 
 Pour en sortir un autre : ajouter sa ligne à `WANTED` dans le script (planche,
 colonne et rangée de son bloc) et le relancer.
