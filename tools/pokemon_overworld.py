@@ -261,7 +261,7 @@ def settle(sprites):
     """Pose les huit sprites dans leurs cases : (côté d'une image, la planche du Pokémon — deux colonnes de quatre images).
 
     Les deux images d'une même direction gardent leur écart l'une par rapport à l'autre (c'est l'animation), et la paire
-    est **centrée** dans sa case, pieds à deux pixels du bas. Si une paire ne tient pas dans 32 x 32, toutes les images
+    est **centrée** dans sa case, pieds à deux pixels du bas. Des deux, la plus basse est rangée en premier. Si une paire ne tient pas dans 32 x 32, toutes les images
     passent à 64 x 64 : c'est un gros Pokémon.
     """
     pairs = []
@@ -269,6 +269,9 @@ def settle(sprites):
         for k in (0, 2):
             two = [sprites[column * 4 + k], sprites[column * 4 + k + 1]]
             local = [{(x - column * 32, y - (k + f) * 32): c for (x, y), c in sprite.items()} for f, sprite in enumerate(two)]          # chacun par rapport au coin de sa case d'origine
+            # L'image posée au sol passe en premier : c'est elle qu'un Pokémon immobile montre, et il ne doit pas flotter
+            # un pixel au-dessus de ses voisins. L'animation est la même, elle part seulement de l'autre temps.
+            if all(local) and max(y for _, y in local[0]) < max(y for _, y in local[1]): local.reverse()
             pairs.append((column, k, local))
     spans = []
     for _, _, local in pairs:

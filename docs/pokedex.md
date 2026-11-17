@@ -84,7 +84,9 @@ d'un gros Pokémon sont où elles veulent. On ne coupe donc **jamais au pas** :
   près, chaque petit morceau détaché au gros le plus proche ;
 - puis chaque **paire d'images d'une direction est centrée** dans sa case, pieds
   à deux pixels du bas, les deux images gardant leur écart (c'est l'animation)
-  (`settle`) ;
+  (`settle`). Des deux, **la plus basse est rangée en premier** : c'est la
+  première qu'un Pokémon immobile montre, et il flotterait sinon un pixel
+  au-dessus de ses voisins (121 paires inversées, sur 51 espèces) ;
 - un gros Pokémon est découpé de même, bloc par bloc ; ceux de la 3ᵉ
   génération, serrés jusqu'à se toucher, par les lignes les moins remplies
   (`lanes`). Chacune de ses images est centrée pour elle-même (`settle_big`).
