@@ -60,7 +60,8 @@ icônes de `assets/items/icons/` (`named/`, `unnamed/`, `invented/`, et
 générateurs de cartes : `route_1/` relève une carte d'exemple tuile par
 tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`) ;
 `start_island/` lit la géographie d'une carte d'exemple (`geography.py`) et en
-fabrique l'île de départ, avec les tuiles de la Route 1.
+fabrique l'île de départ, avec les tuiles de la Route 1. `seam.py` colle
+le bas de la route et le haut de l'île, pour vérifier qu'elles se suivent.
 
 ## Règles qui ne se redemandent pas
 

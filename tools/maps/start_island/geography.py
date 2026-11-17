@@ -121,17 +121,16 @@ RETOUCH = [
     (SEA_, (0, 18, 12, 22)), (SEA_, (8, 23, 20, 24)), (SEA_, (14, 25, 20, 33)), (SEA_, (13, 34, 21, 36)), (SEA_, (0, 15, 0, 16)),
     (SEA_, (37, 19, 41, 22)), (SEA_, (37, 23, 50, 24)), (SEA_, (45, 25, 49, 25)), (SEA_, (51, 18, 54, 22)),
     (SEA_, (18, 46, 38, 49)), (SEA_, (0, 47, 17, 49)), (SEA_, (35, 41, 39, 47)), (SEA_, (50, 38, 54, 49)),
-    # --- la sortie du nord, vers la Route 1 : on y arrive **sur l'herbe, en hauteur**, comme la route commence. Le plateau du
-    #     nord est donc d'un seul tenant jusqu'au bord de la carte, et l'on y monte de la crique par un escalier.
-    (PLATEAU_, (20, 0, 30, 8)), (BEACH_, (23, 9, 27, 9)),
+    # --- au nord de la crique, la forêt : le sable n'y remonte pas (la sortie de l'île est ailleurs, derrière chez Ludo)
+    (PLATEAU_, (21, 7, 29, 12)),
     # --- la plage du sud, d'un seul tenant, sans la mare que l'exemple y laisse
     (BEACH_, (22, 32, 35, 40)), (BEACH_, (36, 30, 38, 33)),
     (BEACH_, (30, 40, 36, 43)),                                                        # et une langue de sable plus large que la jetée : ses premières planches y reposent
     # --- les escaliers ne montent que face au sud : sous chacun, une anse de plage ; au-dessus, un bord de plateau tout droit
     (BEACH_, (14, 14, 18, 16)), (PLATEAU_, (19, 12, 19, 13)),                          # du plateau du nord-ouest à la crique
-    (PLATEAU_, (30, 12, 36, 13)), (BEACH_, (31, 14, 35, 17)),                          # du plateau du nord-est à la crique
+    (PLATEAU_, (29, 12, 36, 13)), (BEACH_, (29, 14, 35, 17)),                          # du plateau du nord-est à la crique
     (PLATEAU_, (21, 19, 35, 31)),                                                      # la place : un plateau d'un seul bloc, et son bord du sud
-    (BEACH_, (2, 34, 7, 37)),                                                          # de la bibliothèque à la plage de l'ouest
+    (BEACH_, (2, 34, 7, 37)), (BEACH_, (2, 38, 8, 45)),                                # de la bibliothèque à la plage de l'ouest, assez large pour rester une plage une fois la roche posée
     (PLATEAU_, (35, 36, 35, 37)), (BEACH_, (36, 38, 40, 40)),                          # du plateau du sud-est à la plage du sud
     # --- de quoi poser les maisons et faire arriver les pontons
     (PLATEAU_, (39, 27, 45, 34)), (PLATEAU_, (44, 26, 54, 27)), (PLATEAU_, (13, 37, 19, 38)), (PLATEAU_, (0, 24, 7, 29)),
@@ -188,14 +187,22 @@ for pocket in parts(BEACH):          # et une tache claire au milieu de l'herbe,
 PLATEAU = tidy(PLATEAU)
 for crumb in parts(PLATEAU):         # un rocher, un bout de ponton oublié : pas un plateau
     if len(crumb) < 12: PLATEAU -= crumb; SEA |= crumb
+# La falaise a **deux étages, comme sur la Route 1** : l'anneau d'herbe est le pourtour du plateau, et l'anneau de roche
+# l'entoure, une case plus bas, sur ce qui était de la plage ou de la mer. Collées par leur chemin, les deux cartes sont à
+# la même hauteur : deux niveaux de roche au-dessus de l'eau.
+ROCKY = tidy(PLATEAU | {(c[0] + i, c[1] + j) for c in PLATEAU for i, j in NEIGH8 if inb((c[0] + i, c[1] + j))}, grow=True)
+ROCK = ROCKY - PLATEAU
+SEA -= ROCK
 LAND = set(CELLS) - SEA          # ce que tidy a retiré d'un plateau retombe sur la plage
-BEACH = LAND - PLATEAU
+BEACH = LAND - PLATEAU - ROCK
+for pocket in parts(BEACH):          # une poche de sable de quelques cases, cernée de roche, n'est pas une plage : c'est du gradin
+    if len(pocket) < 8 and not any((c[0] + i, c[1] + j) in SEA for c in pocket for i, j in NEIGH8): BEACH -= pocket; ROCK |= pocket; ROCKY |= pocket
 # Le sable déborde d'une case sur la mer — c'est le liseré : la case d'eau qui touche la terre porte le bord du sable.
 SAND = tidy(LAND | {(c[0] + i, c[1] + j) for c in LAND for i, j in NEIGH8 if inb((c[0] + i, c[1] + j))}, grow=True)
 for _ in range(4):          # une case de liseré cernée de sable de tous côtés n'est plus un bord : c'est de la plage
     full = {c for c, k in shape(SAND).items() if k == '5'} - LAND
     if not full: break
-    LAND |= full; BEACH |= full
+    LAND |= full; BEACH |= full - ROCK
     SAND = tidy(LAND | {(c[0] + i, c[1] + j) for c in LAND for i, j in NEIGH8 if inb((c[0] + i, c[1] + j))}, grow=True)
 SEA = set(CELLS) - LAND
 RING = {c for c in PLATEAU if shape(PLATEAU)[c] != '5'}          # la falaise : le pourtour de chaque plateau

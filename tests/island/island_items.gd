@@ -32,7 +32,7 @@ func test() -> void:
 	check("la Potion est dans le sac", bag_rows().has("Potion x1"), str(bag_rows()))
 	await tap("menu")
 	await tap("menu")
-	await place(Vector2i(3, 42))
+	await place(Vector2i(4, 40))
 	await pick("la Poke Ball", "Vous trouvez une Poké Ball !", "Vous rangez la Poké Ball dans la poche Poké Balls.", "ItemBall", "found_island_ball")
 	await place(Vector2i(49, 4))
 	await pick("l'Eau Fraiche", "Vous trouvez une Eau Fraîche !", "Vous rangez l'Eau Fraîche dans la poche Objets.", "ItemWater", "found_island_water")

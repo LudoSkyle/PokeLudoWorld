@@ -137,7 +137,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
 BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP + 3, TOP - 2))
-parasol('ParasolCove', (22, 11), 1); towel('TowelCove', (25, 11), 1)
+parasol('ParasolCove', (29, 16), 1); towel('TowelCove', (32, 16), 1)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
 # ------------------------------------------------------------------ panneaux, lampadaires, lueurs, objets
@@ -327,7 +327,7 @@ npc('Sunbather', TOWELS['TowelSouth'], 'hgss_swimmer_f', "Le sable est chaud, l'
     states=["bell_hung > J'ai entendu la cloche depuis ma serviette.|Je n'ai pas bougé pour autant."])
 npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "L'eau de la crique est la plus calme de l'île.|Les vagues se cassent sur les rochers avant d'arriver.", facing=(0, 1),
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
-npc('ShellKid', (TOWELS['TowelCove'][0] + 4, TOWELS['TowelCove'][1]), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
+npc('ShellKid', (TOWELS['TowelCove'][0] + 1, TOWELS['TowelCove'][1] - 1), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
 npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1),
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])
@@ -348,7 +348,7 @@ for name, spot, app, text, kw in [
         ('VisitorHiker', (CXP + 2, TOP + 4), 'hgss_picnicker', "On l'entendait depuis l'autre rive !", dict(facing=(-1, 0))),
         ('VisitorChild', (CXP - 1, TOP + 7), 'frlg_twins', "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !", dict(facing=(0, -1))),
         ('VisitorWaitress', (CXP - 4, TOP + 2), 'rse_npc_pike_maid', "Si j'avais su, j'aurais apporté de quoi nourrir tout ce monde.", dict(facing=(1, 0))),
-        ('VisitorKalos', (ROAD[-1] + 1, GUARD_Y + 2), 'hgss_hiker', "J'ai traversé toute la forêt pour venir. Ça valait la marche.", dict(facing=(0, 1))),
+        ('VisitorKalos', (ROAD[-1] + 1, GUARD_Y + 10), 'hgss_hiker', "J'ai traversé toute la forêt pour venir. Ça valait la marche.", dict(facing=(0, 1))),
         ('VisitorFestival', (PIER_END[0] - 2, 41), 'hgss_lass', "Une Veillée ! Ma grand-mère m'en parlait tout le temps.", dict(facing=(0, -1))),
         ('VisitorBlackBelt', (ROAD[1], GUARD_Y + 8), 'rse_blackbelt', "Même au dojo, on s'est arrêtés pour écouter.", dict(facing=(0, 1)))]:
     npc(name, spot, app, text, **kw, **DURING)
@@ -391,7 +391,12 @@ if BELL not in lay.SEA or (BELL[0], BELL[1] + 1) not in DECK: print('  !! la clo
 # ------------------------------------------------------------------ contrôles : tout se rejoint, dans les trois temps de l'histoire
 targets = {'porte ' + k: (v[0], v[1] + 1) for k, v in DOORS.items()}
 targets.update({'socle (devant)': (CXP, TOP + 4), 'devant les gardes': (ROAD[1], GUARD_Y + 1), 'derrière les gardes': (ROAD[1], GUARD_Y - 1), 'la sortie du nord': (ROAD[1], 0), 'bout de la jetée': (PIER_END[0], PIER_END[1] - 1),
-                'ponton de la cloche': (BELL[0], BELL[1] + 1), 'plage du sud': (28, 35), 'plage de l ouest': (4, 41), 'crique du nord': (25, 11), 'hautes herbes du sud-ouest': TALL_SW[0]})
+                'ponton de la cloche': (BELL[0], BELL[1] + 1), 'hautes herbes du sud-ouest': TALL_SW[0]})
+def somewhere(x0, y0, x1, y1):
+    """Une case de plage libre de ce rectangle : de quoi vérifier qu'on y descend."""
+    cells = sorted(c for c in rect(x0, y0, x1, y1) if c in BEACH and c not in SOLID)
+    return cells[len(cells) // 2] if cells else (x0, y0)
+targets.update({'plage du sud': somewhere(22, 32, 35, 40), 'plage de l ouest': somewhere(2, 34, 8, 45), 'crique du nord': somewhere(19, 10, 31, 17)})
 def beside(c, R): return any((c[0] + i, c[1] + j) in R for i, j in lay.NEIGH4)
 for phase, flags in PHASES.items():
     there = {c for n, c, req, forb in NPCS if present(req, forb, flags)}

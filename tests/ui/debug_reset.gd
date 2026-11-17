@@ -39,7 +39,7 @@ func test() -> void:
 
 	# La Veillee prend fin (comme si l'on avait quitte l'ile), on se tient la ou Roland reviendra, puis on repart de zero.
 	set_flag("vigil_over")
-	await place(Vector2i(7, 36))
+	await place(Vector2i(7, 37))
 	await debug_tool(3)
 	var none := true
 	for f in ["bell_told", "bell_register", "bell_tarnished", "bell_clean", "bell_ribbon", "bell_hung"]:
@@ -52,8 +52,8 @@ func test() -> void:
 		game.get_node_or_null(ENT + "GuardWest") != null and game.get_node_or_null(ENT + "GuardEast") != null and game.get_node_or_null(ENT + "Roland") != null
 		and game.get_node_or_null(ENT + "OdileAfter") == null and game.get_node_or_null(ENT + "VisitorKalos") == null)
 	check("le socle est de nouveau vide", node("World/BellStand") == null and node("World/BellStandEmpty") != null)
-	check("Roland a repris sa case, et le joueur s'en est ecarte d'un pas", cell_of("Roland") == Vector2i(7, 36) and cell() != Vector2i(7, 36)
-		and absi(cell().x - 7) + absi(cell().y - 36) == 1 and is_free(cell()), str(cell()))
+	check("Roland a repris sa case, et le joueur s'en est ecarte d'un pas", cell_of("Roland") == Vector2i(7, 37) and cell() != Vector2i(7, 37)
+		and absi(cell().x - 7) + absi(cell().y - 37) == 1 and is_free(cell()), str(cell()))
 	check("les habitants de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(43, 17))
 
 	# La quete se rejoue : la cloche est de nouveau sous le ponton, une fois que Roland l'a dit.

@@ -320,9 +320,9 @@ Les rochers :
   toit. Ses trois rectangles de collision sont **rentrés d'un pixel** : bord à
   bord, le moteur les soude et y laisse un trou. Elle se trie à −1 : qui se
   tient sur la case de la porte passe devant ;
-- **le bord du haut des plateaux** : `grass8` dans sa variante sans collision.
-  Sur la Route 1 il donne sur le vide et bloque ; sur l'île ce qui est derrière
-  se foule, et rien dans son dessin ne dit « falaise » ;
+- **la falaise à deux étages, comme sur la route** : l'anneau d'herbe sur du
+  `rock5`, cerné de l'anneau de roche sur du `sand5`. Le bord du haut
+  (`grass8`) bloque de nouveau : derrière lui il y a le gradin de roche ;
 - **le rivage en deux calques** : l'eau (`water`) dans `Ground`, et par-dessus,
   dans `Shore`, le bord du sable **sans son eau** (`shore7`…`shorel`,
   `11:0-5,7-8`, dérivés des bords `sand…` par `route_tiles.py` : tout ce qui

@@ -123,29 +123,38 @@ chemins, où pousse la forêt**, et on le pose avec les tuiles de la Route 1
 
 **Trois niveaux.** La **mer**, pleine ; profonde au large. Les **plages**, de
 sable, au ras de l'eau : on y marche, et leur bord ondule dans la case d'eau
-voisine (le liseré, plein). Les **plateaux** : toute l'herbe, cernée d'une
-falaise d'une case. Ses flancs et son bas, où la roche se voit, sont pleins.
-**Son bord du haut ne l'est pas** : c'est de l'herbe avec un liseré, rien n'y
-dit « falaise », et derrière lui il y a la plage — on s'y tient et l'on passe
-de l'un à l'autre (Ludovic, 17/11/2026). Il n'y a pas d'herbe au niveau de la
-plage : une tuile de sable bordé d'herbe manque encore.
+voisine (le liseré, plein). Les **plateaux** : toute l'herbe, **deux niveaux de
+roche au-dessus de l'eau, comme sur la Route 1** — l'anneau d'herbe est le
+pourtour du plateau, l'anneau de roche l'entoure une case plus bas, sur ce qui
+était de la plage ou de la mer (`geography.ROCK`). Toute la falaise est pleine,
+sauf les deux coins rentrants du haut de l'anneau d'herbe. Il n'y a pas
+d'herbe au niveau de la plage.
 
-**La sortie du nord ressemble à ce qui la suit** : la Route 1 commence sur
-l'herbe, en hauteur, par une piste de trois cases — l'île finit donc de même,
-et non par un couloir de sable de cinq cases au ras de la plage (Ludovic,
-17/11/2026).
+**Collée à la Route 1 par leur chemin, l'île n'en fait qu'une avec elle.** La
+colonne x de l'île est la colonne x + 41 de la route (`layout.SEAM`), sa
+rangée 0 suit la rangée 49 de la route. Le décalage est choisi pour que le
+haut de l'île tombe sous la forêt du bas de la route, à l'est de sa rivière.
+La sortie est donc **derrière chez Ludo**, tout à l'ouest : une piste de trois
+cases dans la forêt, sur le plateau, à la hauteur où la route commence — aucun
+escalier entre les deux. Les arbres que le bord de la route coupe en deux ont
+leur pied sur l'île, à la même colonne ; la trame de la forêt est la sienne,
+prolongée ; aucune falaise, aucune eau ne touche la couture.
+`python3 tools/maps/seam.py couture.png` colle les deux cartes et contrôle la
+piste et les arbres à cheval. Au-delà des 28 colonnes communes, l'île dépasse
+de la route vers l'est : il n'y a rien à suivre.
 
-**On change de niveau par six escaliers de pierre**, tous face au sud (la
-planche n'en a pas d'autres) : trois marches entre deux poteaux. Sous chacun,
-une anse de plage ; au-dessus, un bord de plateau droit sur cinq cases.
+**On change de niveau par cinq escaliers de pierre**, tous face au sud (la
+planche n'en a pas d'autres) : deux rangées de trois marches entre deux
+poteaux, une par étage de la falaise. Sous chacun, une anse de plage ;
+au-dessus, un bord de plateau droit sur cinq cases.
 
 **Les pontons vont du dessus d'un plateau à l'autre**, larges de trois cases :
 du nord-ouest à la place et de là au jardin ; du nord-est à la place et de là
 au sud-est. La jetée du sud part de la plage.
 
-**La place** se rejoint par ses deux pontons, par son escalier depuis la plage
-du sud, et par son bord du nord depuis la crique. Le jardin du sud-ouest se
-rejoint par son ponton, ou par son bord du haut depuis la plage du sud.
+**La place** ne se rejoint que par ses deux pontons et par son escalier depuis
+la plage du sud. Le jardin du sud-ouest et la bibliothèque, reliés par une
+piste, ne se rejoignent que par le ponton du jardin.
 
 **L'eau reflète, le sable garde les traces** : la mer porte la donnée `water`
 et le sable des plages la donnée `sand` ([tilesets.md](tilesets.md)). Le bord
@@ -155,20 +164,20 @@ d'un Pokémon volant bleuit.
 
 | Lieu | Case | |
 |---|---|---|
-| départ, devant chez Ludo | (6,9) | `SpawnPoint` |
-| `MaisonLudo` | (6,8) | → `ludo_house` ; hutte de chaume, porte à gauche |
-| `MaisonNord` | (13,9) | → `orange_house_north`, chez Anselme |
+| départ, devant chez Ludo | (10,9) | `SpawnPoint` |
+| `MaisonLudo` | (10,8) | → `ludo_house` ; hutte de chaume, porte à gauche |
+| `MaisonNord` | (17,9) | → `orange_house_north`, chez Anselme |
 | `Bibliotheque` | (3,29) | → `library` |
 | `Laboratoire` | (45,8) | → `lab_house` ; la grande maison de chaume, au pied de la montagne |
 | `MaisonSud` | (43,33) | → `orange_house_south`, chez Solange |
 | la place | dallage x 24–32, y 22–27, sur le plateau du centre | socle de la cloche en (28,23), deux statues en (25,23) et (31,23) ; le coureur en fait le tour (x 23–33, y 21–28) |
-| la sortie du nord | x 24–26, y 0–7 | une piste de trois cases dans la forêt, sur le plateau du nord ; on y monte de la crique par un escalier ; deux gardes en y 3, de part et d'autre de la piste ; en y 0, trois portes `Nord0`…`Nord2` mènent à la **Route 1** (`route_1`) |
-| la crique du nord | x 19–31, y 8–17 | plage, parasol, serviette ; on passe sous un parasol, derrière son mât |
+| la sortie du nord | x 3–5, y 0–9 | une piste de trois cases dans la forêt, derrière chez Ludo, sur le plateau ; deux gardes en y 3, de part et d'autre de la piste ; en y 0, trois portes `Nord0`…`Nord2` mènent à la **Route 1** (`route_1`) |
+| la crique du nord | x 15–33, y 14–16 | deux bandes de plage de part et d'autre d'un bassin, chacune au pied d'un escalier ; parasol et serviette à l'est |
 | la cloche | (14,21), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (14,22), tourné vers le nord |
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
-| escaliers (colonne de gauche, rangée) | (23,8), (14,13), (31,13), (26,31), (2,33), (36,37) | sortie du nord, nord-ouest, nord-est, place, bibliothèque, sud-est |
-| hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
-| objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| escaliers (colonne de gauche, rangée du haut) | (14,13), (30,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
+| hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; près du labo (49–52, 12–15) | |
+| objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (4,41), sur la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
 
 Calques de fond, dans l'ordre : `Ground`, `Shore` (le bord du sable, sur
 l'eau), `Cliffs1` (la falaise des plateaux),

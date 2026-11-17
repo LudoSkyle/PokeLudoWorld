@@ -6,7 +6,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(13, 10)
+	return Vector2i(17, 10)
 
 func visit(label: String, front: Vector2i, inside: String) -> void:
 	await place(front)
@@ -16,15 +16,15 @@ func visit(label: String, front: Vector2i, inside: String) -> void:
 	await arrival("retour devant " + label, front, "idle_down")
 
 func test() -> void:
-	await visit("chez Anselme, la maison du nord-ouest", Vector2i(13, 10), "orange_house_north")
-	await visit("chez Ludo", Vector2i(6, 9), "ludo_house")
+	await visit("chez Anselme, la maison du nord-ouest", Vector2i(17, 10), "orange_house_north")
+	await visit("chez Ludo", Vector2i(10, 9), "ludo_house")
 	await visit("la bibliotheque", Vector2i(3, 30), "library")
 	await visit("le laboratoire", Vector2i(45, 9), "lab_house")
 	await visit("chez Solange, la maison du sud-est", Vector2i(43, 34), "orange_house_south")
 
 	# Chaque maison est une seule tuile, triee juste derriere la rangee de son pied : le joueur qui entre passe devant elle, celui qui la contourne passe derriere son toit.
 	var houses: TileMapLayer = level().get_node("World/Houses")
-	var doors := level().get_node("Doors").get_children().filter(func(d): return not str(d.name).begins_with("Nord"))   # les cinq cases de la trouee du nord menent a la route, pas a une maison
+	var doors := level().get_node("Doors").get_children().filter(func(d): return not str(d.name).begins_with("Nord"))   # les trois cases de la sortie du nord menent a la route, pas a une maison
 	var behind := 0
 	for door in doors:
 		var data: TileData = houses.get_cell_tile_data(Vector2i(floori(door.position.x / 16.0), floori(door.position.y / 16.0)))
