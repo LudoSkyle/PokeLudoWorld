@@ -162,11 +162,17 @@ class Npc : CharacterBody2D() {
 		// Les jambes suivent l'allure : un coureur ne glisse pas.
 		sprite?.speedScale = (pace / WALK_PACE).toFloat()
 
-		val frames = framesOf(appearance)
-		if (frames == null) {
-			Logger.e("Apparence de PNJ inconnue : $appearance")
+		if (appearance.startsWith(PokemonFrames.PREFIX)) {
+			// Un Pokémon : le fichier de son espèce, le même que pour un suiveur ou un volant.
+			val species = appearance.removePrefix(PokemonFrames.PREFIX)
+			if (sprite?.let { PokemonFrames.dress(it, species, grid()) } != true) Logger.e("Pokemon sans image : $species")
 		} else {
-			sprite?.spriteFrames = frames
+			val frames = framesOf(appearance)
+			if (frames == null) {
+				Logger.e("Apparence de PNJ inconnue : $appearance")
+			} else {
+				sprite?.spriteFrames = frames
+			}
 		}
 
 		direction = facing

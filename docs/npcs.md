@@ -236,14 +236,26 @@ d'une forêt. `tests/run.sh route_flyers`.
 Sur l'île : quatre groupes portés par le vent (`drift = 1`, une graine par
 groupe), une ou deux Goélise, et un Bekipan avec deux Goélise.
 
-**Un Pokémon posé au sol est un PNJ** : apparence `pkmn_<espèce>`
-(`assets/characters/`, fabriquée par `tools/pokemon_overworld.py` — le Pokémon
-y est doublé, dans des cases de 64 × 80, pour tomber à la taille des volants),
-`display_name` = son nom, et un texte qui commence par `@cry:<espèce>` : la
-boîte affiche son cri et le fait entendre. Il ne crie pas autrement. Sur
-l'île : `Corphish`, `Shellder`, `Bellossom`. `tests/run.sh island_pokemon`. Un autre Pokémon volant demande son image dans
-`assets/pokemon/overworld/` (`tools/pokemon_overworld.py` la sort des planches
-de `sources/`) et un nœud sous `Sky`.
+**Un Pokémon posé au sol est un PNJ** comme un autre : apparence
+`pkmn_<espèce>`, `display_name` = son nom, et un texte qui commence par
+`@cry:<espèce>` : la boîte affiche son cri et le fait entendre. Il ne crie pas
+autrement. Il peut errer ou faire une ronde, comme tout PNJ. Sur l'île :
+`Corphish`, `Shellder`, `Bellossom`. `tests/run.sh island_pokemon`.
+
+### Un seul sprite par espèce
+
+Qu'il soit posé, qu'il suive le joueur ou qu'il vole, un Pokémon lit **le
+fichier de son espèce**, `assets/pokemon/overworld/<espèce>.png`, et rien
+d'autre : `PokemonFrames.kt` en tire les animations d'un personnage
+(`idle_`, `walk_`, `turn_` × quatre directions), à l'échelle 1, le bas de
+l'image au bas de la case. **Il n'y a pas de planche par usage** — ne jamais
+en fabriquer une : un nouvel usage se branche sur `PokemonFrames`.
+
+**Voler n'est qu'une hauteur** : `PokemonFrames.liftOf(espèce)` dit de combien
+de pixels l'espèce se tient au-dessus de la ligne du sol (0 si elle marche).
+Le PNJ, le suiveur et le volant du ciel s'en servent tous.
+
+Le Pokémon qui suit le joueur est décrit dans [player.md](player.md).
 
 ## Sur le terrain d'essai
 

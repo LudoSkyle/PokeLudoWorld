@@ -22,25 +22,6 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 POKEMON = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'pokemon')
 BLOCK_W, BLOCK_H = 64, 128
 
-# Ceux qu'on pose au sol comme des personnages (leur nom dans national.tsv) : en plus, une planche de PNJ (assets/characters/pkmn_<nom>.png, quatre
-# rangées — bas, gauche, droite, haut — de quatre images, voir `character`).
-STANDING = ('shellder', 'corphish', 'bellossom')
-CHARACTERS = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'characters')
-
-
-def character(rows_of_frames):
-    """La planche de PNJ faite de quatre rangées de deux images de 32 x 32 : chaque rangée les alterne sur quatre colonnes."""
-    # Le jeu dessine un PNJ à demi-échelle, centré quatre pixels au-dessus du milieu de sa case (npc.tscn) : une
-    # planche de personnage est au double. Le Pokémon y est donc doublé lui aussi (64 x 64), dans une case de 64 x 80
-    # dont les seize rangées du bas restent vides : ses pieds tombent au bas de la case du jeu, à la taille des volants.
-    sheet = [[(0, 0, 0, 0)] * 256 for _ in range(320)]
-    for r, (a, b) in enumerate(rows_of_frames):
-        for c, frame in enumerate((a, b, a, b)):
-            for y in range(64):
-                for x in range(64): sheet[r * 80 + y][c * 64 + x] = frame[y // 2][x // 2]
-    return sheet
-
-
 # ============================================================ toutes les espèces des planches HGSS
 # Une planche HGSS range ses espèces dans l'ordre du Pokédex, un bloc de 64 x 128 chacune, avec des blocs en plus :
 #   - `extra` : les blocs qui suivent celui de l'espèce et ne sont pas elle par défaut — sa femelle (point rose), ses
@@ -333,10 +314,3 @@ if __name__ == '__main__':
                 path = os.path.join(folder, stale)
                 if os.path.exists(path): os.remove(path); print('retiré', os.path.relpath(path, ROOT))
     print('%d espèces dans %s, dont %d gros Pokémon : %s' % (len(kept), os.path.relpath(folder, ROOT), len(large), ', '.join(ids[n] for n in sorted(large))))
-    numbers = {name: number for number, name in ids.items()}
-    for name in STANDING:
-        block = small[numbers[name]]
-        def frame(x0, y0): return [line[x0:x0 + 32] for line in block[y0:y0 + 32]]
-        out = os.path.join(CHARACTERS, 'pkmn_%s.png' % name)          # le bloc : dos puis face à gauche, gauche puis droite à droite
-        save(out, character([(frame(0, 64), frame(0, 96)), (frame(32, 0), frame(32, 32)), (frame(32, 64), frame(32, 96)), (frame(0, 0), frame(0, 32))]))
-        print('écrit', os.path.relpath(out, ROOT))
