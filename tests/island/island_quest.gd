@@ -87,7 +87,7 @@ func test() -> void:
 	check("les visiteurs sont repartis, Meme et Alix sont rentrees", not there("VisitorKalos") and not there("VisitorHiker") and not there("VisitorBlackBelt") and not there("OdileAfter") and not there("AlixAfter"))
 	check("le pecheur a repris sa place au bout de la jetee", cell_of("FisherLater") == Vector2i(33, 48) and not there("Fisher") and not there("FisherAfter"))
 	check("les ouvriers ont quitte la place : l'un surveille la trouee, l'autre range le quai",
-		cell_of("WorkerLater") == Vector2i(6, 15) and cell_of("WorkerLater2") == Vector2i(36, 41) and not there("WorkerAfter"))
+		cell_of("WorkerLater") == Vector2i(1, 9) and cell_of("WorkerLater2") == Vector2i(29, 41) and not is_free(Vector2i(29, 42)) and not there("WorkerAfter"))          # a gauche de la piste du nord ; derriere la petite caisse du quai
 	check("le coureur court toujours", there("RunnerAfter"))
 	await talk("Roland, apres", Vector2i(31, 22), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
 	await walk("route du nord", Vector2i(4, 1), false)

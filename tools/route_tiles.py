@@ -71,7 +71,8 @@ DOUBLE_STAIRS = {'stairU4': (4, 16), 'stairU5': (7, 14), 'stairU6': (5, 16), 'st
 # La jetée : des planches en travers, étroites, entre deux longerons à pieux — un ponton, pas le tablier d'un pont.
 # `pier4/5/6` : bord gauche, milieu, bord droit ; `pier1/2/3` : le dernier rang, avec son chant.
 PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 12), 'pier2': (15, 13), 'pier3': (15, 14),
-        'pierT4': (13, 13), 'pierT5': (14, 13), 'pierT6': (13, 14)}          # `pierT…` : le premier rang, que le sable recouvre par endroits — la jetée sort de la plage, elle n'est pas posée dessus
+        'pierT4': (13, 13), 'pierT5': (14, 13), 'pierT6': (13, 14), 'pierU4': (14, 14), 'pierU5': (13, 15), 'pierU6': (14, 15)}          # `pierT…` : le premier rang, que le sable recouvre par endroits — la jetée sort de la plage, elle n'est pas posée dessus
+BRIDGE_END = (720, 267)          # dans environments.png : le coin du bout gauche du grand pont de bois, là où son tablier commence ; 48 pixels en travers, 32 le long
 # Le dallage n'a que ses bords et ses coins sortants ; pour une place qui n'est pas un rectangle, ses quatre coins
 # rentrants sont faits ici : le pavé plein, et dans le coin le bout de liseré d'herbe qui raccorde les deux bords voisins.
 PAVED_INNER = {'pavedl': (14, 7), 'pavedk': (15, 7), 'pavedj': (14, 8), 'pavedi': (15, 8)}
@@ -300,25 +301,26 @@ def cells(survey=False):
         return [row[::-1] for row in tile] if right else tile
     for last, names in ((False, ('pier4', 'pier5', 'pier6')), (True, ('pier1', 'pier2', 'pier3'))):
         made[where[names[0]]], made[where[names[1]]], made[where[names[2]]] = edged(planks(last), False), planks(last), edged(planks(last), True)
-    # Le premier rang de la jetée sort du sable. Pas un bord découpé pareil d'une case à l'autre : comme au bout des ponts
-    # de la planche, où l'herbe mord le tablier par touffes, le sable le recouvre par endroits — une grosse langue près du
-    # bord gauche, une petite au milieu, une moyenne à droite — et laisse voir ses planches jusqu'au bout entre elles.
+    # La jetée sort du sable comme le pont de l'atlas sort de l'herbe : **le même découpage, au pixel près** (Ludovic,
+    # 17/11/2026 : « reproduis à l'identique »). On lit, au bout gauche du pont de `environments.png`, où l'herbe recouvre
+    # le tablier — son bord en dents inégales et ses touffes posées sur les planches — et l'on reporte ce masque sur le
+    # haut de la jetée, tourné d'un quart de tour (le long du pont devient le long de la jetée), l'herbe changée en sable.
+    game_atlas = load(os.path.join(LEVELS, 'environments.png'))[2]
+    ex, ey = BRIDGE_END
+    def grassy(along, across):
+        p = game_atlas[ey + across][ex + along]
+        return p[3] > 0 and p[1] > p[0] + 25 and p[1] > p[2] + 25
     sand, lip = made[where['sand5']], (214, 198, 156, 255)
-    drift = [0] * 48
-    for centre, half, deep in ((10, 8, 9), (29, 4, 5), (42, 6, 7)):          # (milieu, demi-largeur, épaisseur) de chaque langue, en pixels
-        for a in range(48):
-            if abs(a - centre) < half: drift[a] = max(drift[a], round(deep * (1 - ((a - centre) / half) ** 2) ** 0.5))
-    for n, k in enumerate('456'):
-        tile = [row[:] for row in made[where['pier' + k]]]
-        for a in range(16):
-            depth = drift[n * 16 + a]
-            if not depth:
-                tile[0][a] = SIDE                                              # le bout du tablier, à nu
-                continue
-            for b in range(depth): tile[b][a] = sand[b][a]
-            tile[depth][a] = lip                                               # le bord du sable, plus sombre
-            if tile[depth + 1][a] != DARK: tile[depth + 1][a] = SIDE          # et son ombre sur le bois
-        made[where['pierT' + k]] = tile
+    for row, flight in enumerate('TU'):                          # deux rangs de planches : les touffes vont jusqu'au second
+        for n, k in enumerate('456'):
+            tile = [line[:] for line in made[where['pier' + k]]]
+            for b in range(16):
+                for a in range(16):
+                    along, across = row * 16 + b, n * 16 + a
+                    if not grassy(along, across): continue
+                    bare = any(0 <= along + i < 32 and 0 <= across + j < 48 and not grassy(along + i, across + j) for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+                    tile[b][a] = lip if bare else sand[b][a]          # le bord du sable, plus sombre, contre le bois
+            made[where['pier' + flight + k]] = tile
     # les coins rentrants du dallage
     border = next(b for b in range(16) if made[where['paved5']][b][8] == made[where['paved8']][b][8] and b > 0)          # l'épaisseur du liseré d'herbe
     for name, (side, top) in {'pavedl': ('4', True), 'pavedk': ('6', True), 'pavedj': ('4', False), 'pavedi': ('6', False)}.items():

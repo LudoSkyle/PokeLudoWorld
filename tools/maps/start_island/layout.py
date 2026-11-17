@@ -150,7 +150,7 @@ for way, x0, y0, x1, y1 in DOCKS:
     for (x, y) in sorted(rect(x0, y0, x1, y1)):
         if way == 'V':
             low = y == y1 and (x, y + 1) not in DECK          # le dernier rang de planches, au bout
-            head = 'pierT' if y == y0 else 'pier'          # le premier rang sort du sable
+            head = 'pierT' if y == y0 else 'pierU' if y == y0 + 1 else 'pier'          # les deux premiers rangs sortent du sable
             deck[(x, y)] = {0: 'pier1' if low else head + '4', 1: 'pier2' if low else head + '5', 2: 'pier3' if low else head + '6'}[x - x0]          # des planches de jetée, pas le tablier d'un pont (Ludovic, 17/11/2026)
         else:
             deck[(x, y)] = {0: 'bridgeH8', 1: 'bridgeH5', 2: 'bridgeH1' if x == x0 else 'bridgeH2'}[y - y0]

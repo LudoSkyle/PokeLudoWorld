@@ -367,8 +367,8 @@ npc('RunnerAfter', LOOP[0], 'rse_triathlete_m', "Cette cloche m'a ouvert les yeu
 
 # ============ APRÈS : chacun retourne à ce qu'il faisait. (Mémé Odile et Alix rentrent : voir ludo_house et library.)
 npc('FisherLater', PIER_END, 'hgss_fisherman', "Chut... Ça ne mord pas plus qu'avant.|Mais d'ici, maintenant, j'entends la cloche. Les poissons aussi, peut-être.", facing=(0, 1), fixed=True, **AFTER_ALL)
-npc('WorkerLater', (ROAD[-1] + 1, GUARD_Y + 8), 'dppt_worker', "La Route 1 est ouverte.|On surveille encore les éboulis, mais tu peux passer.", facing=(-1, 0), **AFTER_ALL)
-npc('WorkerLater2', (PIER_END[0] + 3, 41), 'dppt_worker', "On range le matériel du chantier.|Si tu pars vers le nord, bonne route !", facing=(0, 1), **AFTER_ALL)
+npc('WorkerLater', (1, 9), 'dppt_worker', "La Route 1 est ouverte.|On surveille encore les éboulis, mais tu peux passer.", facing=(1, 0), fixed=True, **AFTER_ALL)          # à gauche de la piste du nord, sous l'arbre (Ludovic, 17/11/2026)
+npc('WorkerLater2', (29, 41), 'dppt_worker', "On range le matériel du chantier.|Si tu pars vers le nord, bonne route !", facing=(0, 1), fixed=True, **AFTER_ALL)          # derrière la petite caisse du pied de la jetée
 
 # ---------- des Pokémon posés, à qui l'on parle : ils « disent » leur cri, en texte et en son (`@cry:`), et ne crient pas autrement.
 for name, species, label, c, cry in [('Corphish', 'corphish', 'Écrapince', (30, 12), "Krr... Krapince !"),                                # en haut à droite du gamin aux coquillages

@@ -414,7 +414,7 @@ calque trié en Y de `World` :
 | volée double : la rangée de marches en deux variantes faites pour se suivre, `stairU4/5/6` (haut, sans pied de poteau) et `stairL4/5/6` (bas, l'ombre d'une contremarche à la place du vide) | `11:4-5,16` `11:7,14` `11:4-6,17` | 1×1 | rien : les marches se foulent |
 | escalier de côté : le bloc de la volée double tourné d'un quart, `stairW<colonne><rangée>` (son pied est à l'ouest) et `stairE…` (son pied est à l'est) | `11:9-12,13-15` `11:0-3,16-18` | 4 colonnes × 3 rangées, entre deux poutres | ses poutres du haut et du bas ; les marches se foulent |
 | jetée : planches en travers entre deux longerons à pieux, `pier4/5/6`, et son dernier rang `pier1/2/3` | `11:12-14,12` `11:15,12-14` | 1×1 | rien |
-| premier rang de la jetée, que le sable recouvre : `pierT4/5/6` | `11:13-14,13` `11:13,14` | 1×1 | rien |
+| les deux premiers rangs de la jetée, que le sable recouvre : `pierT4/5/6`, `pierU4/5/6` — le masque d'herbe du bout du pont de `environments.png`, reporté au pixel près | `11:13-14,13` `11:13,14` `11:14,14` `11:13-14,15` | 1×1 | rien |
 | coins rentrants du dallage : `pavedl/k/j/i`, le pavé plein et un bout de liseré dans le coin | `11:14-15,7-8` | 1×1 | rien |
 | clôture de bois : un poteau par case, deux lisses ; coins et côtés d'un enclos, `fence7/8/9/4/6/1/2/3` — dessinée par `route_tiles.py` | `11:8-10,7-9` | 1×1 | toute la case |
 | coquillages : Saint-Jacques, bigorneau, étoile de mer, deux petits (`shell1…4`) — dessinés par `route_tiles.py`, rien n'en avait dans ce style | `11:13-15,5` `11:14,6` | 1×1 | rien : du décor, sur `Decorations` |
