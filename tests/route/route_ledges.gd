@@ -4,7 +4,7 @@ extends "res://tests/lib.gd"
 # de leur marche. On retombe une case plus loin. Dans l'autre sens, et par les cotes, ils arretent.
 
 func scene() -> String:
-	return "north_route"
+	return "route_1"
 
 func start() -> Vector2i:
 	return Vector2i(45, 48)

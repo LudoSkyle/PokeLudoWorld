@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Fabrique la route du nord : scenes/levels/north_route.tscn.
+"""Fabrique la route du nord : scenes/levels/route_1.tscn.
 
-    python3 tools/maps/north_route/generate.py                 # contrôle seulement, n'écrit rien
-    python3 tools/maps/north_route/generate.py --write         # écrit la scène, et les sources de la route dans le TileSet
-    python3 tools/maps/north_route/generate.py --preview a.png # la carte telle que le jeu la dessinera, sans passer par Godot
-    python3 tools/maps/north_route/generate.py --compare       # les cases qui diffèrent de la carte d'exemple, au pixel près
-    python3 tools/maps/north_route/generate.py --map           # ~ eau, # plein, = pont, S marche, o objet, . atteignable, ? libre mais coupé du reste
-    python3 tools/maps/north_route/generate.py --grid g.txt    # la grille pleine / libre attendue, à comparer à celle du moteur
+    python3 tools/maps/route_1/generate.py                 # contrôle seulement, n'écrit rien
+    python3 tools/maps/route_1/generate.py --write         # écrit la scène, et les sources de la route dans le TileSet
+    python3 tools/maps/route_1/generate.py --preview a.png # la carte telle que le jeu la dessinera, sans passer par Godot
+    python3 tools/maps/route_1/generate.py --compare       # les cases qui diffèrent de la carte d'exemple, au pixel près
+    python3 tools/maps/route_1/generate.py --map           # ~ eau, # plein, = pont, S marche, o objet, . atteignable, ? libre mais coupé du reste
+    python3 tools/maps/route_1/generate.py --grid g.txt    # la grille pleine / libre attendue, à comparer à celle du moteur
 
 La chaîne, dans l'ordre où on la relance quand quelque chose change :
 
@@ -114,7 +114,7 @@ print('tuiles posées mais non déclarées :', missing or 'aucune')
 SOLID = set(gen.SOLID)
 nodes = []
 def node(text): nodes.append(text)
-TEXTS = {'SignSouth': "Route du nord.|Au sud : Bourg-Ludo.", 'SignEast': "Route de l'est.|Le chemin n'est pas encore tracé.", 'SignNorth': "Route du nord.|La montagne est droit devant."}
+TEXTS = {'SignSouth': "Route 1.|Au sud : Bourg-Ludo.", 'SignEast': "Route de l'est.|Le chemin n'est pas encore tracé.", 'SignNorth': "Route 1.|La montagne est droit devant."}
 for name, c in gen.SIGNS.items():
     node('[node name="%s" parent="World" instance=ExtResource("3_sign")]\nposition = Vector2(%d, %d)\ntext = "%s"\n' % (name, *px(c), TEXTS[name]))
 FOUND = {'ItemRoutePotion': ('potion', "Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets.", 'found_route_potion'),
@@ -223,7 +223,7 @@ head = '''[gd_scene load_steps=8 format=4]
 [ext_resource type="PackedScene" path="{R}scenes/levels/flyer.tscn" id="13_flyer"]
 
 [node name="Level" type="Node2D"]
-metadata/location = "Route du nord"
+metadata/location = "Route 1"
 metadata/banner = "forest"
 metadata/music = "new_bark_town"
 metadata/daylight = true
@@ -245,5 +245,5 @@ if '--compare' in sys.argv:
     print('%d cases sur %d identiques à l exemple, au pixel près' % (W * H - len(differ), W * H))
     print('  diffèrent, hors trouée du sud, objets du jeu, ombres complétées sous les sapins et arbres ramenés à une essence :', sorted(c for c in differ if c not in ours))
 if '--write' in sys.argv:
-    open(B + 'scenes/levels/north_route.tscn', 'w').write('\n'.join(parts))
+    open(B + 'scenes/levels/route_1.tscn', 'w').write('\n'.join(parts))
     print('écrit')

@@ -175,7 +175,7 @@ def glow(name, x, y): node('[node name="%s" parent="World" instance=ExtResource(
 
 for c in gen.OBJECTS.values(): SOLID.discard(c)
 TEXTS = {'SignLudo': "Maison de Ludo.|La porte n'est jamais fermée, entrez donc.", 'SignLibrary': "Bibliothèque de Bourg-Ludo.|Entrée libre. On parle à voix basse.",
-         'SignLab': "Laboratoire du Professeur.|Les Pokémon blessés y sont soignés.", 'SignNorth': "Route du nord.|Elle quitte l'île par la falaise.", 'SignPier': "Jetée du sud.|Attention : planches glissantes."}
+         'SignLab': "Laboratoire du Professeur.|Les Pokémon blessés y sont soignés.", 'SignNorth': "Route 1.|Elle quitte l'île par la falaise.", 'SignPier': "Jetée du sud.|Attention : planches glissantes."}
 for name, c in gen.SIGNS.items(): sign(name, c, TEXTS[name])
 
 # --- la place : socle de la cloche, statues ---
@@ -336,7 +336,7 @@ BEFORE, DURING, AFTER_ALL = dict(forbidden_flag='bell_hung'), dict(required_flag
 STAYS = dict(required_flag='bell_hung')      # arrive pour la Veillée, et reste ensuite
 
 # ============ AVANT que la cloche soit accrochée
-CLOSED = "Désolé, le passage est fermé.|C'est dangereux par là : la route du nord n'est pas encore sûre."
+CLOSED = "Désolé, le passage est fermé.|C'est dangereux par là : la Route 1 n'est pas encore sûre."
 npc('GuardWest', (road[0], GUARD_Y), 'dppt_worker', CLOSED, facing=(0, 1), fixed=True, **BEFORE)
 npc('GuardEast', (road[-1], GUARD_Y), 'dppt_worker', CLOSED, facing=(0, 1), fixed=True, **BEFORE)
 npc('Runner', LOOP[0], 'rse_triathlete_m', "Pff... pff... Je fais le tour de la place tous les matins.|Ne reste pas au milieu du chemin, je perds mon rythme.",
@@ -369,7 +369,7 @@ for name, spot, app, text, kw in [
         ('OdileAfter', (CXP - 1, TOP + 4), 'dppt_socialite', "J'ai finalement fait le déplacement. Je voulais l'entendre de près.|Merci.|*Kraak* ...MON DOS !!!", dict(display_name='Mémé Odile', gender='female', facing=(0, -1))),
         ('FisherAfter', (CXP + 1, TOP + 4), 'hgss_fisherman', "J'ai laissé ma canne là-bas. Pour une fois.", dict(facing=(0, -1))),
         ('AlixAfter', (CXP - 2, TOP + 2), 'frlg_aromalady', "J'ai fermé la bibliothèque pour ce soir.|Il y a des choses qu'on n'apprend pas dans les livres.", dict(display_name='Alix', gender='female', facing=(1, 0))),
-        ('WorkerAfter', (CXP + 6, TOP + 4), 'dppt_worker', "La route du nord est ouverte.|On a fini juste à temps pour la Veillée.", dict(facing=(-1, 0))),
+        ('WorkerAfter', (CXP + 6, TOP + 4), 'dppt_worker', "La Route 1 est ouverte.|On a fini juste à temps pour la Veillée.", dict(facing=(-1, 0))),
         ('WorkerAfter2', (CXP + 4, TOP + 6), 'dppt_worker', "Les outils sont rangés.|Ce soir on ne répare rien : on écoute.", dict(facing=(0, -1))),
         ('VisitorHiker', (CXP + 2, TOP + 4), 'hgss_picnicker', "On l'entendait depuis l'autre rive !", dict(facing=(-1, 0))),
         ('VisitorChild', (CXP - 1, TOP + 6), 'frlg_twins', "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !", dict(facing=(0, -1))),
@@ -388,7 +388,7 @@ npc('RunnerAfter', LOOP[0], 'rse_triathlete_m', "Cette cloche m'a ouvert les yeu
 
 # ============ APRÈS : chacun retourne à ce qu'il faisait. (Mémé Odile et Alix rentrent : voir ludo_house et library.)
 npc('FisherLater', PIER_END, 'hgss_fisherman', "Chut... Ça ne mord pas plus qu'avant.|Mais d'ici, maintenant, j'entends la cloche. Les poissons aussi, peut-être.", facing=(0, 1), fixed=True, **AFTER_ALL)
-npc('WorkerLater', (road[0] - 1, GUARD_Y + 1), 'dppt_worker', "La route du nord est ouverte.|On surveille encore les éboulis, mais tu peux passer.", facing=(1, 0), **AFTER_ALL)
+npc('WorkerLater', (road[0] - 1, GUARD_Y + 1), 'dppt_worker', "La Route 1 est ouverte.|On surveille encore les éboulis, mais tu peux passer.", facing=(1, 0), **AFTER_ALL)
 npc('WorkerLater2', (gen.FURN['CratesPier'][0][0], gen.FURN['CratesPier'][0][1] - 2), 'dppt_worker', "On range le matériel du chantier.|Si tu pars vers le nord, bonne route !", facing=(0, 1), **AFTER_ALL)
 
 # ---------- les Pokémon qui volent : du décor, au-dessus de tout, sans corps. Chacun dans sa zone.

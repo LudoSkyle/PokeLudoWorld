@@ -191,7 +191,7 @@ pas justifier est une erreur.
   la borde — plage (on y marche), falaise (on ne l'atteint pas), berge
   d'étang — et s'y tenir sur toute sa longueur.
 - **La falaise d'une rivière a deux étages : deux anneaux d'une case, l'un
-  dans l'autre** (mesuré tuile par tuile sur la route du nord). L'anneau de
+  dans l'autre** (mesuré tuile par tuile sur la Route 1). L'anneau de
   roche fait le tour de la terre et tombe dans l'eau ; l'anneau d'herbe est
   collé derrière lui, une case en retrait, coins compris. On marche à partir
   de la troisième case de terre. Un plateau de plus, une montagne : d'autres
@@ -618,7 +618,7 @@ au niveau de l'eau, forêts clairsemées, montagne minuscule, eau d'une teinte.
    passé deux versions à l'imiter avec d'autres tuiles avant de le voir. Si
    la planche est là, **on relève l'exemple par tuiles** : chaque tuile est
    retrouvée au pixel près, couche par couche, du dessus vers le dessous
-   (`tools/maps/north_route/survey.py`, décrit dans [levels.md](levels.md)),
+   (`tools/maps/route_1/survey.py`, décrit dans [levels.md](levels.md)),
    et la carte est posée avec ces tuiles-là. Deux styles ne se mélangent pas
    sur une carte : on prend toute la planche de l'exemple, ou rien.
 1. Sans la planche, **relever l'image case par case** avant de dessiner quoi

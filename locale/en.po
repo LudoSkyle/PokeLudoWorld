@@ -548,8 +548,8 @@ msgstr "The Professor's Laboratory."
 msgid "Les Pokémon blessés y sont soignés."
 msgstr "Injured Pokémon are healed here."
 
-msgid "Route du nord."
-msgstr "North road."
+msgid "Route 1."
+msgstr "Route 1."
 
 msgid "Elle quitte l'île par la falaise."
 msgstr "It leaves the island through the cliff."
@@ -560,8 +560,8 @@ msgstr "South pier."
 msgid "Attention : planches glissantes."
 msgstr "Careful: slippery planks."
 
-msgid "C'est dangereux par là : la route du nord n'est pas encore sûre."
-msgstr "It's dangerous that way: the north road isn't safe yet."
+msgid "C'est dangereux par là : la Route 1 n'est pas encore sûre."
+msgstr "It's dangerous that way: Route 1 isn't safe yet."
 
 msgid "Pff... pff... Je fais le tour de la place tous les matins."
 msgstr "Huff... huff... I run around the square every morning."
@@ -587,8 +587,8 @@ msgstr "A bell. Twenty years I've been walking over it."
 msgid "Vingt ans que je passais au-dessus sans la voir."
 msgstr "Twenty years I walked over it without seeing it."
 
-msgid "La route du nord est ouverte."
-msgstr "The north road is open."
+msgid "La Route 1 est ouverte."
+msgstr "Route 1 is open."
 
 msgid "On l'entendait depuis l'autre rive !"
 msgstr "We could hear it from the other shore!"
@@ -879,8 +879,8 @@ msgstr "Weather: harsh sunlight"
 msgid "Météo : brouillard"
 msgstr "Weather: fog"
 
-msgid "Route du nord"
-msgstr "North Road"
+msgid "Route 1"
+msgstr "Route 1"
 
 msgid "Au sud : Bourg-Ludo."
 msgstr "South: Bourg-Ludo."

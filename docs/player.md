@@ -122,7 +122,7 @@ bas, là où tombe son ombre — il le **saute** et retombe une case plus loin.
   une porte s'y déclencher, comme après un pas.
 
 Pour qu'une tuile se saute : lui donner la donnée `jump` et une collision
-pleine. Sur la route du nord c'est le générateur qui l'écrit.
+pleine. Sur la Route 1 c'est le générateur qui l'écrit.
 `tests/run.sh route_ledges`.
 
 ## Les traces de pas

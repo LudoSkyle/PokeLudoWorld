@@ -56,8 +56,8 @@ carte d'exemple de la route,
 icônes de `assets/items/icons/` (`named/`, `unnamed/`, `invented/`, et
 `custom/` pour celles faites pour le jeu). Les trois
 `title_*.py` dessinent les images de l'écran titre. `tools/maps/` garde les
-générateurs de cartes : `north_route/` relève une carte d'exemple tuile par
-tuile (`survey.py`) et en fabrique la route du nord (`generate.py`).
+générateurs de cartes : `route_1/` relève une carte d'exemple tuile par
+tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`).
 
 ## Règles qui ne se redemandent pas
 

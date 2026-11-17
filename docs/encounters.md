@@ -63,7 +63,7 @@ entrée fausse ou une chance sans table.
 | Carte | `encounter_rate` / `_run` | `wild` |
 |---|---|---|
 | `start_island` | 3 / 5 | en attendant la liste des espèces de la région : Mulotin 2–4 (50), Piafeuille 2–5 (35), Chenibulle 3 (15) |
-| `north_route` | 3 / 5 | les mêmes, un peu plus forts : Mulotin 3–5 (45), Piafeuille 3–6 (35), Chenibulle 4–5 (20) |
+| `route_1` | 3 / 5 | les mêmes, un peu plus forts : Mulotin 3–5 (45), Piafeuille 3–6 (35), Chenibulle 4–5 (20) |
 
 Le terrain d'essai (`tests/maps/field.tscn`) garde 10 au pas et n'a pas de réglage
 pour la course : ses tests imposent le sort.

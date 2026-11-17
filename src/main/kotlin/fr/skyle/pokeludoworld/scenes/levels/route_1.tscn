@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/flyer.tscn" id="13_flyer"]
 
 [node name="Level" type="Node2D"]
-metadata/location = "Route du nord"
+metadata/location = "Route 1"
 metadata/banner = "forest"
 metadata/music = "new_bark_town"
 metadata/daylight = true
@@ -70,7 +70,7 @@ tile_set = ExtResource("1_ian7c")
 
 [node name="SignSouth" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(760, 744)
-text = "Route du nord.|Au sud : Bourg-Ludo."
+text = "Route 1.|Au sud : Bourg-Ludo."
 
 [node name="SignEast" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(1016, 568)
@@ -78,7 +78,7 @@ text = "Route de l'est.|Le chemin n'est pas encore tracé."
 
 [node name="SignNorth" parent="World" instance=ExtResource("3_sign")]
 position = Vector2(200, 72)
-text = "Route du nord.|La montagne est droit devant."
+text = "Route 1.|La montagne est droit devant."
 
 [node name="ItemRoutePotion" parent="World" instance=ExtResource("9_readable")]
 position = Vector2(328, 184)

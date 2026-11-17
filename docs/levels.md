@@ -131,7 +131,7 @@ l'ouest, l'est et le sud.
 | `MaisonNord` | (15,7) | → `orange_house_north`, chez Anselme |
 | `MaisonSud` | (48,37) | → `orange_house_south`, chez Solange |
 | la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
-| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; en y 0, six portes `Nord0`…`Nord5` mènent à la **route du nord** (`north_route`) |
+| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; en y 0, six portes `Nord0`…`Nord5` mènent à la **Route 1** (`route_1`) |
 | la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
 | la cloche | (19,25), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
 | la jetée du sud | x 30–31, y 42–43 | le pêcheur est au bout ; des caisses sur le quai |
@@ -214,9 +214,9 @@ dépôt.
 tout se rejoint, la marge à pied et à la nage, les pontons), portes, objets à
 ramasser, la quête en trois temps, et le vol des oiseaux.
 
-## La route du nord
+## La Route 1
 
-`scenes/levels/north_route.tscn` — 69 × 50 cases, au nord de l'île. On y entre
+`scenes/levels/route_1.tscn` — 69 × 50 cases, au nord de l'île. On y entre
 par la trouée de la falaise de l'île (ses six cases `Nord0`…`Nord5`), et l'on
 arrive au bas de la carte, en (44–46, 48), par les portes `Sud0`…`Sud2`.
 
@@ -343,7 +343,7 @@ musique de route.
 
 ### Elle est produite par un générateur, à partir d'un relevé
 
-Le générateur est dans le dépôt, `tools/maps/north_route/` :
+Le générateur est dans le dépôt, `tools/maps/route_1/` :
 
 | Fichier | Rôle |
 |---|---|
@@ -355,12 +355,12 @@ Le générateur est dans le dépôt, `tools/maps/north_route/` :
 
 ```bash
 python3 tools/route_tiles.py                                # la planche route.png (puis réimporter)
-python3 tools/maps/north_route/survey.py                    # le relevé -> survey.json
-python3 tools/maps/north_route/survey.py --why=46,38        # ce qui est trouvé sur une case, et les pixels inexpliqués
-python3 tools/maps/north_route/generate.py                  # contrôle seulement
-python3 tools/maps/north_route/generate.py --write          # écrit la scène et le TileSet
-python3 tools/maps/north_route/generate.py --compare        # les cases qui diffèrent de l'exemple
-python3 tools/maps/north_route/generate.py --preview a.png  # la carte sans passer par Godot
+python3 tools/maps/route_1/survey.py                    # le relevé -> survey.json
+python3 tools/maps/route_1/survey.py --why=46,38        # ce qui est trouvé sur une case, et les pixels inexpliqués
+python3 tools/maps/route_1/generate.py                  # contrôle seulement
+python3 tools/maps/route_1/generate.py --write          # écrit la scène et le TileSet
+python3 tools/maps/route_1/generate.py --compare        # les cases qui diffèrent de l'exemple
+python3 tools/maps/route_1/generate.py --preview a.png  # la carte sans passer par Godot
 ```
 
 Il contrôle avant d'écrire : toute tuile posée est déclarée ; chaque lieu,
