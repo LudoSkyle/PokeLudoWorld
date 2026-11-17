@@ -124,8 +124,11 @@ chemins, où pousse la forêt**, et on le pose avec les tuiles de la Route 1
 **Trois niveaux.** La **mer**, pleine ; profonde au large. Les **plages**, de
 sable, au ras de l'eau : on y marche, et leur bord ondule dans la case d'eau
 voisine (le liseré, plein). Les **plateaux** : toute l'herbe, cernée d'une
-falaise d'une case, pleine sauf ses deux coins rentrants du haut. Il n'y a pas
-d'herbe au niveau de la plage : une tuile de sable bordé d'herbe manque encore.
+falaise d'une case. Ses flancs et son bas, où la roche se voit, sont pleins.
+**Son bord du haut ne l'est pas** : c'est de l'herbe avec un liseré, rien n'y
+dit « falaise », et derrière lui il y a la plage — on s'y tient et l'on passe
+de l'un à l'autre (Ludovic, 17/11/2026). Il n'y a pas d'herbe au niveau de la
+plage : une tuile de sable bordé d'herbe manque encore.
 
 **On change de niveau par cinq escaliers de pierre**, tous face au sud (la
 planche n'en a pas d'autres) : trois marches entre deux poteaux. Sous chacun,
@@ -135,9 +138,15 @@ une anse de plage ; au-dessus, un bord de plateau droit sur cinq cases.
 du nord-ouest à la place et de là au jardin ; du nord-est à la place et de là
 au sud-est. La jetée du sud part de la plage.
 
-**On n'arrive pas sur la place par le nord** : son bord du nord est une
-falaise. On y entre par ses deux pontons, ou par son escalier depuis la plage
-du sud. Le jardin du sud-ouest ne se rejoint que par son ponton.
+**La place** se rejoint par ses deux pontons, par son escalier depuis la plage
+du sud, et par son bord du nord depuis la crique. Le jardin du sud-ouest se
+rejoint par son ponton, ou par son bord du haut depuis la plage du sud.
+
+**L'eau reflète, le sable garde les traces** : la mer porte la donnée `water`
+et le sable des plages la donnée `sand` ([tilesets.md](tilesets.md)). Le bord
+du sable est posé à part, par-dessus l'eau (calque `Shore`), pour qu'un reflet
+passe dessous au lieu de s'étaler sur le sable. Au-dessus de l'eau, l'ombre
+d'un Pokémon volant bleuit.
 
 | Lieu | Case | |
 |---|---|---|
@@ -149,14 +158,15 @@ du sud. Le jardin du sud-ouest ne se rejoint que par son ponton.
 | `MaisonSud` | (43,33) | → `orange_house_south`, chez Solange |
 | la place | dallage x 24–32, y 22–27, sur le plateau du centre | socle de la cloche en (28,23), deux statues en (25,23) et (31,23) ; le coureur en fait le tour (x 23–33, y 21–28) |
 | la trouée du nord | x 23–27, y 0–8 | un couloir de plage entre deux falaises ; deux gardes en y 3, un contre chaque paroi ; en y 0, cinq portes `Nord0`…`Nord4` mènent à la **Route 1** (`route_1`) |
-| la crique du nord | x 19–31, y 8–17 | plage, parasol, serviette |
+| la crique du nord | x 19–31, y 8–17 | plage, parasol, serviette ; on passe sous un parasol, derrière son mât |
 | la cloche | (14,21), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (14,22), tourné vers le nord |
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
 | escaliers (colonne de gauche, rangée) | (14,13), (31,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
-| objets à ramasser | Potion en (46,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| objets à ramasser | Potion en (46,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
 
-Calques de fond, dans l'ordre : `Ground`, `Cliffs1` (la falaise des plateaux),
+Calques de fond, dans l'ordre : `Ground`, `Shore` (le bord du sable, sur
+l'eau), `Cliffs1` (la falaise des plateaux),
 `Cliffs2` (la montagne), `Paths`, `Plaza`, `Decorations` (fleurs, serviettes),
 `Grass`, `Bridges` (pontons et escaliers). Dans `World`, triés en Y : `Trees`,
 `Props` (rochers, sapins, bancs, parasols), `Houses`.

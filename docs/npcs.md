@@ -121,13 +121,13 @@ temps à l'autre est fait de plusieurs nœuds.
 | **Roland** | sur la plage de l'ouest, sous la bibliothèque (7,36) : il a plongé vingt ans dans ces eaux | sur la place, à côté du socle (`RolandAfter`) | **il reste près de la cloche** : « je peux bien la regarder une heure » |
 | **le pêcheur** | au bout de la jetée (33,48) : ça ne mord pas | sur la place (`FisherAfter`) : il a laissé sa canne | de retour au bout de la jetée (`FisherLater`) : il entend la cloche d'ici |
 | **le coureur** | fait le tour de la place | le fait dans l'autre sens (`RunnerAfter`) : dix ans dans le mauvais sens | **court toujours** : à chaque tour, il salue la cloche |
-| **les deux ouvriers** | gardent la trouée (23,3) et (27,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis au débouché de la trouée (28,11), l'autre range le quai (36,40) |
+| **les deux ouvriers** | gardent la trouée (23,3) et (27,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis au débouché de la trouée (27,11), l'autre range le quai (36,40) |
 | **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
 | **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un dans la trouée du nord (25,8), une vers la jetée (32,41), le karatéka sur la plage de la crique (24,11), bien en vue | repartis |
 | **la dame du banc** (11,14) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
 | **la baigneuse** (28,36), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |
-| **le nageur** (24,12), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
-| **le petit aux coquillages** (28,12) | n'a trouvé que des cailloux | *(à sa place)* | a un coquillage qui fait le bruit de la cloche |
+| **le nageur** (25,11), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
+| **le petit aux coquillages** (28,11) | n'a trouvé que des cailloux | *(à sa place)* | a un coquillage qui fait le bruit de la cloche |
 | **le marin** (53,18), au ponton du nord-est | les rochers ferment les passes | *(à sa place)* | une cloche, ça s'entend du large |
 | **le gamin** (25,7), devant les hautes herbes | n'ose pas y entrer | *(à sa place)* | y entrera… demain |
 | **la jardinière** (46,41), près de son banc | regarde pousser les fleurs | *(à sa place)* | jardine en fredonnant, faux |

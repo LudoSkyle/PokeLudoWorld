@@ -68,10 +68,13 @@ def route_sources():
         if route_tiles.blocks(name): out.append('%s/next_alternative_id = 2' % key)
         out.append('%s/0 = 0' % key)
         if wet: out.append('%s/0/material = %s' % (key, WATER_MATERIAL))
+        data = ['custom_data_0 = true'] if name == 'sand5' else (['custom_data_1 = true'] if wet or name.startswith('shore') else [])          # `sand` : on y laisse des traces ; `water` : on s'y reflète, l'ombre d'un volant y bleuit
+        out += ['%s/0/%s' % (key, d) for d in data]
         if route_tiles.jump(name): out.append('%s/0/custom_data_2 = Vector2i(%d, %d)' % ((key,) + route_tiles.jump(name)))          # le sens où ce rebord se saute (CharacterMovement.tryJump)
         if route_tiles.blocks(name):
             out += ['%s/0/physics_layer_0/polygon_0/points = %s' % (key, polygon([(0, 0)])), '%s/1 = 1' % key]          # la variante 1 : le même dessin, sans collision (sous un pont, sous un escalier)
             if wet: out.append('%s/1/material = %s' % (key, WATER_MATERIAL))
+            out += ['%s/1/%s' % (key, d) for d in data]
     tall = at['tall'][1] * 16
     out += ['', '[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_route_grass"]', 'resource_name = "route_grass"', 'texture = ExtResource("8_route")',
             'margins = Vector2i(0, %d)' % tall, '6:0/0 = 0', '7:0/0 = 0', '8:0/0 = 0',
