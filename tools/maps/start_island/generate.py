@@ -84,6 +84,9 @@ FRONTS = {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} | {(x + i, r
 CLEAR = FRONTS | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
 placed = {}
 nodes = []
+# Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
+# et rien ne se pose sur une piste (Ludovic, 17/11/2026). Ce qui est ici n'est pas déplacé par `settle`.
+FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29)}
 def node(text): nodes.append(text)
 def pinches(c):
     ring = [(c[0] + i, c[1] + j) for i, j in ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0))]
@@ -94,10 +97,18 @@ def pinches(c):
     for i in range(8):
         if open_[i] and open_[(i + 1) % 8]: group[find(i)] = find((i + 1) % 8)
     return len({find(i) for i in range(8) if open_[i] and i % 2 == 1}) > 1
+def fix(name, c, solid=True):
+    """Pose quelque chose sur une case choisie à la main (par Ludovic, sur capture) : on ne la déplace pas, on prévient si elle ne convient pas."""
+    if c in SOLID or c not in REACH0: print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
+    if c in lay.TRAIL: print('  !! %s : la case %s est sur une piste' % (name, c))
+    placed[name] = c
+    if solid: SOLID.add(c)
+    return c
 def settle(name, wish, solid=True, apart=2, among=None, tight=False):
-    """La case libre la plus proche de `wish` où poser quelque chose sans gêner : ni devant une porte ou un escalier, ni sur un ponton, ni dans un passage étroit, ni derrière un arbre."""
+    """La case libre la plus proche de `wish` où poser quelque chose sans gêner : ni devant une porte ou un escalier, ni sur un ponton ou une piste, ni dans un passage étroit, ni derrière un arbre."""
+    if wish in FIXED: return fix(name, wish, solid)
     for q in sorted(((wish[0] + i, wish[1] + j) for i in range(-6, 7) for j in range(-6, 7)), key=lambda q: (abs(q[0] - wish[0]) + abs(q[1] - wish[1]), q)):
-        if q in (among or REACH0) and q not in SOLID and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and (q in lay.PAVED or tight or not pinches(q)) \
+        if q in (among or REACH0) and q not in SOLID and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and q not in lay.TRAIL and (q in lay.PAVED or tight or not pinches(q)) \
                 and all(abs(q[0] - o[0]) + abs(q[1] - o[1]) >= apart for o in placed.values()):
             placed[name] = q
             if solid: SOLID.add(q)
@@ -107,8 +118,12 @@ def settle(name, wish, solid=True, apart=2, among=None, tight=False):
 
 # ------------------------------------------------------------------ mobilier (tuiles de island.png, source 10)
 TOWELS = {}
-def bench(name, wish):          # de face, deux cases : l'assise est pleine, le dossier dépasse sur la case du dessus
-    c = settle(name, wish); SOLID.add((c[0] + 1, c[1])); placed[name + '+'] = (c[0] + 1, c[1])
+def bench(name, wish, side=None):
+    if side:          # de profil, une case de large et deux de long : `side` est le côté vers lequel on s'y assoit ('west' ou 'east')
+        c = fix(name, wish); SOLID.add((c[0], c[1] - 1)); placed[name + '+'] = (c[0], c[1] - 1)
+        for j in range(3): L['Props'][(c[0], c[1] - 2 + j)] = (10, 9 if side == 'west' else 8, 3 + j, 0)
+        return c
+    c = settle(name, wish); SOLID.add((c[0] + 1, c[1])); placed[name + '+'] = (c[0] + 1, c[1])          # de face, deux cases : l'assise est pleine, le dossier dépasse sur la case du dessus
     for i in range(2):
         for j in range(2): L['Props'][(c[0] + i, c[1] - 1 + j)] = (10, 4 + i, 5 + j, 0)
     return c
@@ -121,22 +136,24 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     c = settle(name, wish, solid=False); TOWELS[name] = c
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
-BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (9, 14)), bench('BenchSouth', (46, 31)), bench('BenchSquare', (CXP + 3, TOP - 2))
+BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP + 3, TOP - 2))
 parasol('ParasolCove', (22, 11), 1); towel('TowelCove', (25, 11), 1)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
 # ------------------------------------------------------------------ panneaux, lampadaires, lueurs, objets
 def sign(name, wish, text):
-    c = settle(name, wish); node('[node name="%s" parent="World" instance=ExtResource("3_sign")]\nposition = Vector2(%d, %d)\ntext = "%s"\n' % (name, *px(c), text))
+    c = settle(name, wish)
+    if c in L['Decorations']: L['Decorations'][(c[0], c[1] - 1)] = L['Decorations'].pop(c)          # la fleur qui était là remonte d'une case
+    node('[node name="%s" parent="World" instance=ExtResource("3_sign")]\nposition = Vector2(%d, %d)\ntext = "%s"\n' % (name, *px(c), text))
 def lamp(name, wish):
     c = settle(name, wish); node('[node name="%s" parent="World" instance=ExtResource("10_lamp")]\nposition = Vector2(%d, %d)\n' % (name, *px(c)))
 sign('SignLudo', (DOORS['ludo'][0] + 2, DOORS['ludo'][1] + 1), "Maison de Ludo.|La porte n'est jamais fermée, entrez donc.")
-sign('SignLibrary', (DOORS['library'][0] + 2, DOORS['library'][1] + 1), "Bibliothèque de Bourg-Ludo.|Entrée libre. On parle à voix basse.")
+sign('SignLibrary', (1, 29), "Bibliothèque de Bourg-Ludo.|Entrée libre. On parle à voix basse.")
 sign('SignLab', (DOORS['lab'][0] + 2, DOORS['lab'][1] + 1), "Laboratoire du Professeur.|Les Pokémon blessés y sont soignés.")
 sign('SignNorth', (ROAD[-1] + 1, GUARD_Y + 7), "Route 1.|Elle quitte l'île par la falaise.")
 sign('SignPier', (PIER_END[0] - 2, 42), "Jetée du sud.|Attention : planches glissantes.")
-for name, wish in {'LampLudo': (DOORS['ludo'][0] - 2, DOORS['ludo'][1] + 1), 'LampNorth': (ROAD[0] - 1, GUARD_Y + 7), 'LampLibrary': (DOORS['library'][0] + 3, DOORS['library'][1] + 2),
-                   'LampLab': (DOORS['lab'][0] - 2, DOORS['lab'][1] + 1), 'LampSouth': (DOORS['south'][0] + 2, DOORS['south'][1] + 1), 'LampPier': (PIER_END[0] + 2, 42),
+for name, wish in {'LampLudo': (7, 13), 'LampNorth': (19, 10), 'LampLibrary': (12, 31),
+                   'LampLab': (DOORS['lab'][0] - 2, DOORS['lab'][1] + 1), 'LampSouth': (47, 37), 'LampPier': (PIER_END[0] + 2, 42),
                    'LampSquareWest': (PLAZA[0] - 2, PLAZA[1] - 2), 'LampSquareEast': (PLAZA[2] + 2, PLAZA[1] - 2)}.items(): lamp(name, wish)
 # une lueur à chaque fenêtre : le milieu des vitres de la maison, mesuré sur son image
 SHEET = village_tiles.cells()
@@ -260,7 +277,7 @@ def stand(name, c, req, forb):
     """La case la plus proche de c où un personnage immobile ne gêne personne, parmi ceux qu'il peut croiser."""
     taken = {q for n, q, r, f in NPCS if any(present(r, f, fl) and present(req, forb, fl) for fl in PHASES.values())}
     for q in sorted(((c[0] + i, c[1] + j) for i in range(-4, 5) for j in range(-4, 5)), key=lambda q: (abs(q[0] - c[0]) + abs(q[1] - c[1]), q)):
-        if q in REACH0 and q not in SOLID and q not in taken and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and (q in lay.PAVED or not pinches(q)):
+        if q in REACH0 and q not in SOLID and q not in taken and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and q not in lay.TRAIL and (q in lay.PAVED or not pinches(q)):
             if q != c: print('  (%s : %s -> %s)' % (name, c, q))
             return q
     print('  !! %s : aucune case convenable près de %s' % (name, c)); return c
@@ -303,7 +320,7 @@ npc('Roland', (LIB_STAIR[0] + 5, LIB_STAIR[1] + 3), 'frlg_ruinmaniac', "Ces eaux
 # ============ TOUJOURS LÀ : chacun près de ce qui l'occupe ; sa réplique change une fois la cloche accrochée
 npc('GrassWatcher', TALL_SW[len(TALL_SW) // 2], 'frlg_bugcatcher', "Ces herbes sont si hautes qu'on s'y perd.|Je cherche des insectes, mais je n'ai encore rien trouvé.",
     facing=(0, 1), states=["bell_hung > Il paraît que c'est toi qui as retrouvé la cloche ! Bravo !|Moi, toujours pas le moindre insecte."], movement='wander', pace=2.0, wander_layer='Background/Grass')
-npc('BenchLady', (BENCH_LUDO[0] + 2, BENCH_LUDO[1]), 'rse_expert_f', "Je viens m'asseoir ici tous les matins.|D'ici, on voit passer tout le village.", facing=(0, 1),
+npc('BenchLady', (BENCH_LUDO[0] + 2, BENCH_LUDO[1] + 1), 'rse_expert_f', "Je viens m'asseoir ici tous les matins.|D'ici, on voit passer tout le village.", facing=(0, 1),
     states=["bell_hung > Je viens toujours m'asseoir ici le matin.|Maintenant, j'attends que la cloche sonne pour rentrer."])
 npc('Sunbather', TOWELS['TowelSouth'], 'hgss_swimmer_f', "Le sable est chaud, l'eau est fraîche.|Je ne bouge plus d'ici avant la nuit.", facing=(0, 1),
     states=["bell_hung > J'ai entendu la cloche depuis ma serviette.|Je n'ai pas bougé pour autant."])
@@ -315,7 +332,7 @@ npc('Sailor', (43, 16), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferm
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])
 npc('Youngster', (48, 13), 'hgss_youngster', "Le Professeur dit que des Pokémon vivent dans ces herbes.|Sans le mien, je n'ose pas y mettre un pied.", facing=(1, 0),
     states=["bell_hung > C'est toi qui as rapporté la cloche ? Tout seul ?|Alors moi, je peux bien entrer dans ces herbes. Demain."])
-npc('Gardener', (BENCH_SOUTH[0] + 2, BENCH_SOUTH[1]), 'hgss_npc_midage_woman', "Ici, les fleurs poussent toutes seules.|Je me contente de les regarder.", facing=(0, 1),
+npc('Gardener', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 1), 'hgss_npc_midage_woman', "Ici, les fleurs poussent toutes seules.|Je me contente de les regarder.", facing=(-1, 0), fixed=True,
     states=["bell_hung > Depuis la Veillée, je jardine en fredonnant.|Ma sœur dit que je chante faux. Les fleurs ne se plaignent pas."])
 
 # ============ PENDANT la Veillée : le village autour de la cloche. Elle prend fin dès qu'on quitte l'île (on_leave).

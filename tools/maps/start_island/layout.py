@@ -70,7 +70,7 @@ GUARD_Y = 3
 START = (DOORS['ludo'][0], DOORS['ludo'][1] + 1)
 
 # --- la montagne du nord-est : la roche de l'exemple, hors de la terrasse du laboratoire
-MOUNTAIN = tidy({c for c in rect(35, 0, 54, 9) if geo.at(c) == '#' and c in INSIDE} - rect(39, 1, 50, 9))
+MOUNTAIN = tidy(({c for c in rect(35, 0, 54, 9) if geo.at(c) == '#' and c in INSIDE} - rect(39, 1, 50, 9)) | rect(44, 0, 47, 0))          # et le mur du fond court d'un bout à l'autre, sans trou
 for crumb in geo.parts(MOUNTAIN):
     if len(crumb) < 9: MOUNTAIN -= crumb
 

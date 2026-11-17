@@ -231,6 +231,16 @@ pas justifier est une erreur.
   escaliers face au sud : chaque plateau doit donc avoir un bord du bas droit
   sur cinq cases, avec de la plage dessous. Là où l'exemple monte par le côté,
   on creuse une anse.
+- **Rien ne se pose sur une piste** : ni banc, ni lampadaire, ni panneau, ni
+  personnage immobile. Une piste est ce qui reste libre ; on garnit ses bords
+  (Ludovic, 17/11/2026). Le générateur de l'île le refuse, et un test le
+  contrôle.
+- **Un lampadaire se met le plus souvent dans un angle** : au coin que font
+  deux pistes, contre un coin de falaise, au bout d'un chemin — pas
+  exclusivement, mais c'est là qu'on le cherche d'abord. Un banc de profil
+  borde une piste qui monte ; celui qui s'y tient regarde la piste.
+- **Un mur va d'un bout à l'autre** : pas de trou de deux cases dans une
+  falaise ou une montagne qui longe le bord de la carte.
 - **Ce qui vit sur une carte est du milieu de la carte.** Dans une forêt, ni
   pêcheur ni montagnard : des campeurs, des gamins, des chasseurs d'insectes.
   Au-dessus d'elle, pas d'oiseaux de mer : des Pokémon de prairie, portés par
