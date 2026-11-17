@@ -179,7 +179,8 @@ def feet(name, x, r):
     if name in village_tiles.PLANTS: return [(x + village_tiles.door(name), r)]          # le tronc
     return []
 sprites = []
-NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 31)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
+NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)}
+BARE_OF_TREES = rect(20, 18, 34, 31)          # la place : pas d'arbre, mais ses fleurs basses — ce n'est donc pas dans KEEP, qui écarte tout décor          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
 GARDEN = rect(33, 12, 36, 16)          # le parc à fleurs clôturé, au sud-ouest du laboratoire, contre le bord du plateau : la plage a reculé pour lui faire de la place (Ludovic, 17/11/2026)
 KEEP = GARDEN | NO_TREES | TRAIL | TALL | rect(*PLAZA) | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(gx + i, y0 + j) for side, gx, y0 in SIDE_STAIRS.values() for i in range(-3, 4) for j in range(-1, 4)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
@@ -188,7 +189,7 @@ taken = set()
 FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1) or c[1] >= H - 4} | (rect(0, 0, 31, 2) & INSIDE)          # et tout le haut de la carte, sous la forêt de la Route 1
 def plant(name, x, r):
     cells = [c for c in feet(name, x, r) if inb(c)]
-    if any(c not in INSIDE or c in KEEP or c in MOUNTAIN or (c in taken and not name.startswith('tree')) for c in cells): return False
+    if any(c not in INSIDE or c in KEEP or c in BARE_OF_TREES or c in MOUNTAIN or (c in taken and not name.startswith('tree')) for c in cells): return False
     sprites.append((name, x, r))
     if not name.startswith('tree'): taken.update(cells)          # deux arbres voisins se recouvrent : c'est la forêt
     return True
@@ -277,7 +278,7 @@ WOODS |= {c for name, x, r in sprites if name in village_tiles.PLANTS for c in r
 #     de chaque maison et autour de la place, éparses. Elles ont leur propre tirage : en ajouter ne déplace rien d'autre.
 BLOOM = random.Random(11)
 FLOWER_CELLS, beds = set(), []
-RESERVED = rect(12, 8, 13, 9) | rect(41, 8, 42, 9) | rect(7, 28, 8, 29)          # là où generate.py pose ses caisses et ses pots : pas de fleurs dessous
+RESERVED = rect(12, 8, 13, 9) | rect(41, 8, 42, 9) | rect(7, 28, 8, 29) | rect(22, 25, 22, 27)          # là où generate.py pose ses caisses, ses pots et le banc de la place : pas de grandes fleurs dessous
 lawn = INSIDE - KEEP - taken - MOUNTAIN - WOODS - HOUSE_AREA - RESERVED - rect(9, 13, 14, 16)          # (pas sous le banc de Ludo, que generate.py pose là)
 SCATTER = ([(0, 0), (2, 1)], [(1, 0), (0, 2), (3, 1)], [(0, 1), (2, 0)], [(0, 0), (1, 2)], [(0, 0), (2, 2), (3, 0)], [(0, 0)], [(1, 0), (0, 2)])
 KINDS = (0, 1, 2, 3, 5, 7)

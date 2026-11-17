@@ -140,7 +140,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     c = settle(name, wish, solid=False); TOWELS[name] = c
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
-BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, PLAZA[3] + 3))          # sous la place, face à l'escalier du sud : au-dessus, il n'y a plus la place
+BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (PLAZA[0] - 2, PLAZA[3] + 2), side='east')          # à gauche de la place, de profil, tourné vers elle (Ludovic, 17/11/2026)
 parasol('ParasolCove', (22, 15), 1); towel('TowelCove', (25, 15), 1)          # la crique est grande : on l'occupe au milieu, pas dans un coin — mais sans la tasser : un parasol, une serviette, deux baigneurs (Ludovic, 17/11/2026)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 

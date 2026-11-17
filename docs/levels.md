@@ -263,7 +263,8 @@ qu'on passe de la place au plateau du laboratoire.
 **Le dallage de la place est un ovale** (`layout.PAVED` : neuf cases sur six,
 coins coupés par crans, coins rentrants `pavedi…l`), remonté de deux cases. Les
 statues sont à ses coins du haut, deux lanternes dans ses coins coupés du bas,
-le banc dessous, face à l'escalier du sud. **Des caisses et des pots de fleurs** garnissent le pied de la jetée,
+le banc à sa gauche, de profil, tourné vers elle. Le gazon de la place garde
+ses fleurs basses (`layout.BARE_OF_TREES` n'en écarte que les arbres). **Des caisses et des pots de fleurs** garnissent le pied de la jetée,
 la façade du laboratoire, la bibliothèque et l'entre-deux des maisons du
 nord-ouest (`generate.put` : la case est choisie, jamais sur une piste).
 
