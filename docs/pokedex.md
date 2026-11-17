@@ -41,17 +41,15 @@ python3 -I tools/pokedex.py <dossier des CSV de PokéAPI> <dossier du kit Pokém
   de 64 × 32 par espèce (ses deux images), 25 espèces par rangée, à la place
   que donne son numéro.
 - **Sprites de marche** : `tools/pokemon_overworld.py` les découpe dans les
-  planches HGSS de `assets/pokemon/sources/` et les range dans **une planche**,
-  `assets/pokemon/overworld.png` — une case de 64 × 128 par espèce (deux
-  colonnes de quatre images de 32 × 32 : dos, dos, face, face ; gauche,
-  gauche, droite, droite), à la place de son numéro. **Un gros Pokémon** n'y
-  tient pas : il a son fichier dans `assets/pokemon/overworld/`, même
+  planches HGSS de `assets/pokemon/sources/` et écrit **un fichier par
+  espèce**, `assets/pokemon/overworld/<id>.png` — jamais de planche commune :
+  une espèce se lit, se remplace et se versionne seule. Un fichier fait
+  64 × 128 (deux colonnes de quatre images de 32 × 32 : dos, dos, face, face ;
+  gauche, gauche, droite, droite) ; celui d'un **gros Pokémon** a la même
   disposition en 128 × 256 (Steelix, Lugia, Ho-Oh, Wailord, Kyogre, Groudon,
-  Rayquaza, Dialga, Palkia, Regigigas, Giratina, Arceus). Les Pokémon du décor
-  y ont aussi le leur, que lisent les volants : un bloc brut de 64 × 128, que
-  la vue de debug ne montre pas — elle ne prend un fichier que s'il est plus
-  large qu'une case, donc celui d'un gros Pokémon. L'outil retire de ce
-  dossier tout fichier qu'il n'écrit plus.
+  Rayquaza, Dialga, Palkia, Regigigas, Giratina, Arceus). Les volants et les
+  PNJ Pokémon lisent ces mêmes fichiers. L'outil retire du dossier tout
+  fichier qu'il n'écrit plus.
 
 ### Lire une planche HGSS
 

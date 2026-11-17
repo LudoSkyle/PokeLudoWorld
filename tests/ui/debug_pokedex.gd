@@ -77,9 +77,8 @@ func test() -> void:
 		await tap("ui_right")
 	await tap("ui_down")
 	check("Joliflor a tout, sprite compris", dex().shown_number() == 182 and text_of("Lacks") == "" and dex().get_node("Control/Screen/Walker").texture != null, "%d %s" % [dex().shown_number(), text_of("Lacks")])
-	# Joliflor a aussi un fichier a lui, pour le decor : la vue montre quand meme sa case de la planche, centree et posee.
 	var shown: String = dex().get_node("Control/Screen/Walker").texture.atlas.resource_path
-	check("une espece de taille ordinaire est lue dans la planche commune, meme si elle a un fichier a elle", shown.ends_with("pokemon/overworld.png"), shown)
+	check("chaque espece a son fichier : celui de Joliflor", shown.ends_with("pokemon/overworld/bellossom.png"), shown)
 	shot("pokedex_debug_complet")
 
 	await tap("menu")

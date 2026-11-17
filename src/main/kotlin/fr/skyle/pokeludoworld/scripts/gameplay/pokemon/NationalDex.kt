@@ -49,13 +49,12 @@ object NationalDex {
 
 	const val PATH = "res://src/main/kotlin/fr/skyle/pokeludoworld/resources/pokedex/national.tsv"
 	const val ICONS = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/pokemon/icons.png"
-	const val OVERWORLD_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/pokemon/overworld/"
 
 	/**
-	 * La planche des sprites de marche : une case de 64 x 128 par espèce, à la place de son numéro, comme les
-	 * icônes. Un gros Pokémon n'y tient pas : il a son fichier dans [OVERWORLD_DIR], en 128 x 256.
+	 * Le dossier des sprites de marche : un fichier par espèce, `<id>.png` — deux colonnes de quatre images carrées
+	 * (dos, dos, face, face ; gauche, gauche, droite, droite), de 32 pixels de côté, ou 64 pour un gros Pokémon.
 	 */
-	const val OVERWORLD = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/pokemon/overworld.png"
+	const val OVERWORLD_DIR = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/pokemon/overworld/"
 
 	/** Espèces par rangée de la planche d'icônes ; une case fait 64 x 32 (deux images de 32 x 32). */
 	const val ICON_COLUMNS = 25

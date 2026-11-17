@@ -22,18 +22,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 POKEMON = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'pokemon')
 BLOCK_W, BLOCK_H = 64, 128
 
-# nom du fichier -> (planche, colonne du bloc, rangée du bloc)
-WANTED = {
-    'wingull': ('hgss_overworld_gen3.png', 0, 2),      # Goélise
-    'pelipper': ('hgss_overworld_gen3.png', 1, 2),     # Bekipan
-    'hoppip': ('hgss_overworld_gen2.png', 4, 3),       # Granivol
-    'skiploom': ('hgss_overworld_gen2.png', 5, 3),     # Floravol
-    'jumpluff': ('hgss_overworld_gen2.png', 6, 3),     # Cotovol
-    'shellder': ('hgss_overworld_gen1.png', 1, 6),     # Kokiyas
-    'corphish': ('hgss_overworld_gen3.png', 12, 6),    # Écrapince
-    'bellossom': ('hgss_overworld_gen2.png', 10, 2),   # Joliflor : au bout de la troisième rangée, dans une colonne plus étroite que les autres
-}
-# Ceux qu'on pose au sol comme des personnages : en plus, une planche de PNJ (assets/characters/pkmn_<nom>.png, quatre
+# Ceux qu'on pose au sol comme des personnages (leur nom dans national.tsv) : en plus, une planche de PNJ (assets/characters/pkmn_<nom>.png, quatre
 # rangées — bas, gauche, droite, haut — de quatre images, voir `character`).
 STANDING = ('shellder', 'corphish', 'bellossom')
 CHARACTERS = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'characters')
@@ -50,19 +39,6 @@ def character(rows_of_frames):
             for y in range(64):
                 for x in range(64): sheet[r * 80 + y][c * 64 + x] = frame[y // 2][x // 2]
     return sheet
-
-
-def cut(sheet, column, row):
-    x0, y0 = column * (BLOCK_W + 1), row * (BLOCK_H + 1)
-    backdrop = sheet[y0][x0][:3]
-    block = []
-    for y in range(BLOCK_H):
-        line = []
-        for x in range(BLOCK_W):
-            pixel = sheet[y0 + y][x0 + x] if x0 + x < len(sheet[y0 + y]) else sheet[y0][x0]          # la dernière colonne d'une planche peut être rognée de deux pixels
-            line.append((0, 0, 0, 0) if pixel[:3] == backdrop else tuple(pixel[:3]) + (255,))
-        block.append(line)
-    return block
 
 
 # ============================================================ toutes les espèces des planches HGSS
@@ -82,8 +58,6 @@ SHEETS = [
     dict(file='hgss_overworld_gen3.png', columns=13, first=252, last=386, extra={386: 3}, tall=(), wide=(321, 382, 383, 384)),
     dict(file='hgss_overworld_gen4.png', columns=11, first=387, last=493, extra={412: 2, 413: 2, 415: 1, 422: 1, 423: 1, 449: 1, 450: 1, 479: 5, 487: 4, 492: 1}, tall=(483, 484, 486, 487, 493), wide=()),
 ]
-ATLAS = os.path.join(POKEMON, 'overworld.png')          # toutes les espèces de taille ordinaire, une case de 64 x 128 chacune, à la place de son numéro
-ATLAS_COLUMNS = 25
 NATIONAL = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'resources', 'pokedex', 'national.tsv')
 
 
@@ -342,38 +316,27 @@ def everyone():
 
 
 if __name__ == '__main__':
-    sheets = {}
-    # toutes les espèces des planches : une planche pour les tailles ordinaires, un fichier par gros Pokémon
+    # Un fichier par espèce, à son nom : 64 x 128 pour une taille ordinaire, 128 x 256 pour un gros Pokémon. Pas de
+    # planche commune : chaque espèce se lit, se remplace et se versionne seule.
     ids = {}
     with open(NATIONAL, encoding='utf-8') as f:
         for line in f:
             if not line.startswith('#'): ids[int(line.split('\t')[0])] = line.split('\t')[1]
     small, large = everyone()
-    rows_needed = (max(ids) - 1) // ATLAS_COLUMNS + 1
-    atlas = [[(0, 0, 0, 0)] * (ATLAS_COLUMNS * 64) for _ in range(rows_needed * 128)]
-    for number, block in small.items():
-        x0, y0 = ((number - 1) % ATLAS_COLUMNS) * 64, ((number - 1) // ATLAS_COLUMNS) * 128
-        for y in range(128): atlas[y0 + y][x0:x0 + 64] = block[y]
-    last = max((n - 1) // ATLAS_COLUMNS for n in small) + 1
-    save(ATLAS, atlas[:last * 128])
-    for number, block in large.items(): save(os.path.join(POKEMON, 'overworld', ids[number] + '.png'), block)
-    # Un fichier qu'on n'écrit plus (une espèce prise un temps pour un gros Pokémon) ne doit pas rester : la vue de
-    # debug le montrerait à la place de la case de la planche.
-    kept = {ids[n] + '.png' for n in large} | {name + '.png' for name in WANTED}
-    for name in sorted(os.listdir(os.path.join(POKEMON, 'overworld'))):
+    folder = os.path.join(POKEMON, 'overworld')
+    for number, block in sorted({**small, **large}.items()): save(os.path.join(folder, ids[number] + '.png'), block)
+    # Un fichier qu'on n'écrit plus ne doit pas rester : on le prendrait pour le sprite d'une espèce.
+    kept = {ids[n] + '.png' for n in list(small) + list(large)}
+    for name in sorted(os.listdir(folder)):
         if name.endswith('.png') and name not in kept:
             for stale in (name, name + '.import'):
-                path = os.path.join(POKEMON, 'overworld', stale)
+                path = os.path.join(folder, stale)
                 if os.path.exists(path): os.remove(path); print('retiré', os.path.relpath(path, ROOT))
-    print('%d espèces dans %s, %d gros Pokémon à part : %s' % (len(small), os.path.relpath(ATLAS, ROOT), len(large), ', '.join(ids[n] for n in sorted(large))))
-    for name, (source, column, row) in WANTED.items():
-        if source not in sheets: sheets[source] = load(os.path.join(POKEMON, 'sources', source))[2]
-        out = os.path.join(POKEMON, 'overworld', name + '.png')
-        block = cut(sheets[source], column, row)
-        save(out, block)
+    print('%d espèces dans %s, dont %d gros Pokémon : %s' % (len(kept), os.path.relpath(folder, ROOT), len(large), ', '.join(ids[n] for n in sorted(large))))
+    numbers = {name: number for number, name in ids.items()}
+    for name in STANDING:
+        block = small[numbers[name]]
+        def frame(x0, y0): return [line[x0:x0 + 32] for line in block[y0:y0 + 32]]
+        out = os.path.join(CHARACTERS, 'pkmn_%s.png' % name)          # le bloc : dos puis face à gauche, gauche puis droite à droite
+        save(out, character([(frame(0, 64), frame(0, 96)), (frame(32, 0), frame(32, 32)), (frame(32, 64), frame(32, 96)), (frame(0, 0), frame(0, 32))]))
         print('écrit', os.path.relpath(out, ROOT))
-        if name in STANDING:
-            def frame(x0, y0): return [line[x0:x0 + 32] for line in block[y0:y0 + 32]]
-            out = os.path.join(CHARACTERS, 'pkmn_%s.png' % name)          # le bloc : dos puis face à gauche, gauche puis droite à droite
-            save(out, character([(frame(0, 64), frame(0, 96)), (frame(32, 0), frame(32, 32)), (frame(32, 64), frame(32, 96)), (frame(0, 0), frame(0, 32))]))
-            print('écrit', os.path.relpath(out, ROOT))

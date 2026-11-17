@@ -36,7 +36,6 @@ OUT = os.path.join(GAME, 'resources', 'pokedex', 'national.tsv')
 FIELDS = ('number', 'id', 'generation', 'name_fr', 'name_en', 'genus_fr', 'genus_en', 'height', 'weight', 'icon', 'overworld', 'text_fr', 'text_en')
 ICONS = os.path.join(GAME, 'assets', 'pokemon', 'icons.png')
 OVERWORLD = os.path.join(GAME, 'assets', 'pokemon', 'overworld')
-WALKERS = os.path.join(GAME, 'assets', 'pokemon', 'overworld.png')
 FR, EN = 5, 9
 COLUMNS = 25                                  # espèces par rangée de la planche d'icônes
 
@@ -69,11 +68,6 @@ if __name__ == '__main__':
         if version >= texts.get(key, (-1, ''))[0]: texts[key] = (version, r['flavor_text'])
     bodies = {int(r['species_id']): r for r in rows(api, 'pokemon') if r['is_default'] == '1'}
     kit_order = kit_ids(kit)
-    # la planche des sprites de marche (tools/pokemon_overworld.py) : une case de 64 x 128 par espèce, vide si on ne l'a pas
-    walkers = load(WALKERS)[2] if os.path.exists(WALKERS) else []
-    def walker(n):
-        x0, y0 = ((n - 1) % COLUMNS) * 64, ((n - 1) // COLUMNS) * 128
-        return y0 + 128 <= len(walkers) and any(p[3] for line in walkers[y0:y0 + 128] for p in line[x0:x0 + 64])
     species, missing = [], collections.defaultdict(list)
     width = COLUMNS * 64
     sheet = None
@@ -88,7 +82,7 @@ if __name__ == '__main__':
                  'text_fr': clean(texts.get((n, FR), (0, ''))[1]), 'text_en': clean(texts.get((n, EN), (0, ''))[1])}
         icon = os.path.join(kit, 'Graphics', 'Pokemon', 'Icons', kit_order[n - 1] + '.png') if n <= len(kit_order) else ''
         entry['icon'] = bool(icon) and os.path.exists(icon)
-        entry['overworld'] = os.path.exists(os.path.join(OVERWORLD, ident + '.png')) or walker(n)
+        entry['overworld'] = os.path.exists(os.path.join(OVERWORLD, ident + '.png'))          # un fichier par espèce (tools/pokemon_overworld.py)
         if entry['icon']:
             w, h, art = load(icon)
             if sheet is None: sheet = []
