@@ -231,14 +231,18 @@ class CharacterMovement : Node() {
 
 		// Un meuble examinable partage sa case avec la tuile qui le dessine :
 		// c'est lui qu'on veut, pas le calque de tuiles.
+		// Pareil pour un personnage assis sur un banc : la tuile du banc est
+		// pleine, et c'est à lui qu'on parle.
 		var first: Node? = null
+		var seated: Node? = null
 		for (i in 0 until hits.size) {
 			val collider = hits.get(i).get("collider") as? Node ?: continue
 			if (collider is StaticBody2D) return collider
+			if (collider is Npc && seated == null) seated = collider
 			if (first == null) first = collider
 		}
 
-		return first
+		return seated ?: first
 	}
 
 	/**

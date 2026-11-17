@@ -370,10 +370,9 @@ npc('WorkerLater', (ROAD[-1] + 1, GUARD_Y + 8), 'dppt_worker', "La Route 1 est o
 npc('WorkerLater2', (PIER_END[0] + 3, 41), 'dppt_worker', "On range le matériel du chantier.|Si tu pars vers le nord, bonne route !", facing=(0, 1), **AFTER_ALL)
 
 # ---------- des Pokémon posés, à qui l'on parle : ils « disent » leur cri, en texte et en son (`@cry:`), et ne crient pas autrement.
-LAMP_PIER = placed['LampPier']
 for name, species, label, c, cry in [('Corphish', 'corphish', 'Écrapince', (30, 12), "Krr... Krapince !"),                                # en haut à droite du gamin aux coquillages
-                                     ('Shellder', 'shellder', 'Kokiyas', (LAMP_PIER[0] + 2, LAMP_PIER[1]), "Koki... yas !"),             # à droite du lampadaire de la plage du sud
-                                     ('Bellossom', 'bellossom', 'Joliflor', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 3), "Joli ! Joliflor !")]:  # près de la dame aux fleurs, une case plus bas pour ne pas lui cacher les jambes
+                                     ('Shellder', 'shellder', 'Kokiyas', (48, 25), "Koki... yas !"),                                    # dans le creux de sable, au pied du plateau du sud-est, sous la lagune
+                                     ('Bellossom', 'bellossom', 'Joliflor', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 2), "Joli ! Joliflor !")]:  # à côté de la dame aux fleurs
     npc(name, c, 'pkmn_' + species, '@cry:%s %s' % (species, cry), display_name=label, facing=(0, 1), fixed=True)
     if c in SOLID or c not in REACH0: print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
     SOLID.add(c); placed[name] = c
