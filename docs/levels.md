@@ -293,14 +293,20 @@ colonnes, la rangée suivante décalée de deux, une rangée par case
 trois cases** : le tronc, et la cime qui retombe de chaque côté. On passe
 derrière le haut de la cime.
 
-**Deux choses de l'exemple que le jeu ne sait pas encore faire**, et qui
-ferment donc un passage :
+**Les rebords de roche se sautent, dans un seul sens** : du haut vers le bas
+de leur marche, là où tombe leur ombre ([player.md](player.md)). On retombe
+une case plus loin ; dans l'autre sens ils arrêtent.
 
-- les **rebords de roche** (`Ledges` : (15–17, 8), (18, 31–33), (46, 35–38),
-  (54, 35–38), (52, 44–45)) se sautent dans un sens dans les jeux d'origine.
-  Ici ils bloquent dans les deux. Celui de la piste du nord se contourne par
-  les hautes herbes de l'ouest : c'est le raccourci du retour, comme dans
-  l'exemple ;
+| Rebord (`Ledges`) | Se saute vers | Ce que ça donne |
+|---|---|---|
+| (15–17, 8) | le sud | le raccourci du retour sur la piste du nord ; à l'aller, on fait le tour par les hautes herbes de l'ouest |
+| (18, 31–33) | l'est | |
+| (46, 35–38), (54, 35–38) | l'est | la route de l'est se descend d'un trait ; on la remonte par les escaliers et les hautes terres |
+| (52, 44–45) | l'ouest | une sortie du bosquet de l'Antidote, pas une entrée |
+
+**Une chose de l'exemple que le jeu ne sait pas encore faire**, et qui ferme
+donc un passage :
+
 - l'**arbuste** de (61, 41) est un arbre à couper. Le bosquet qu'il garde
   (x 53–62, y 42–46) ne s'atteint donc pas — et **la seconde Poké Ball de
   l'exemple y reste**, en (58, 45) : c'est l'Antidote, la récompense de qui

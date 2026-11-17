@@ -10,6 +10,8 @@ import godot.api.Node2D
 import godot.api.PhysicsPointQueryParameters2D
 import godot.api.StaticBody2D
 import godot.core.Vector2
+import godot.core.Vector2i
+import fr.skyle.pokeludoworld.scripts.gameplay.levels.Water
 import kotlin.math.floor
 import kotlin.math.round
 
@@ -41,6 +43,16 @@ class CharacterMovement : Node() {
 
 	var isWalking: Boolean = false
 		private set
+
+	/** Vrai pendant le saut d'un rebord : un pas de deux cases, par-dessus la case du rebord. */
+	var isJumping: Boolean = false
+		private set
+
+	/** De combien de pixels le personnage est en l'air, à cet instant du saut. 0 au sol. */
+	var lift: Double = 0.0
+		private set
+
+	private var jumpLength = 0.0
 
 	/** Case visée par le pas en cours, réservée tant qu'il dure. */
 	private var claimed: Long? = null
@@ -86,15 +98,69 @@ class CharacterMovement : Node() {
 		return true
 	}
 
+	/**
+	 * Tente de sauter le rebord qui est sur la case voisine. Un rebord est une
+	 * case pleine, qui ne se saute que dans **un** sens — celui que sa tuile
+	 * porte dans la donnée `jump` du TileSet : du haut vers le bas. On retombe
+	 * une case plus loin, si elle est libre. Renvoie false s'il n'y a pas là de
+	 * rebord tourné dans ce sens, ou pas la place de retomber.
+	 *
+	 * À appeler quand [tryWalk] a refusé le pas. Seul le joueur saute : un PNJ
+	 * s'arrête devant un rebord comme devant un mur.
+	 */
+	fun tryJump(direction: Vector2): Boolean {
+		val node = body ?: return false
+		if (isWalking) return false
+
+		val step = direction * gridSize()
+		if (!jumpsAt(node.globalPosition + step, direction)) return false
+		val landing = node.globalPosition + step * 2.0
+		if (isBlocked(landing, obstacleMask)) return false
+
+		val key = cellKey(landing)
+		val owner = claims[key]
+		if (owner != null && owner !== this) return false
+		claims[key] = this
+		claimed = key
+
+		target = node.position + step * 2.0
+		jumpLength = gridSize() * 2.0
+		isWalking = true
+		isJumping = true
+		return true
+	}
+
+	/** La case qui contient [globalPoint] porte-t-elle un rebord qui se saute dans le sens [direction] ? */
+	private fun jumpsAt(globalPoint: Vector2, direction: Vector2): Boolean {
+		val node = body ?: return false
+		val level = Water.levelOf(node) ?: return false
+		val background = Water.backgroundOf(level) ?: return false
+		val way = Vector2i(direction.x.toInt(), direction.y.toInt())
+		return Water.groundLayers(background).any { layer ->
+			val cell = layer.localToMap(layer.toLocal(globalPoint))
+			layer.getCellSourceId(cell) != -1 && layer.getCellTileData(cell)?.getCustomData(JUMP) as? Vector2i == way
+		}
+	}
+
 	fun process(delta: Double) {
 		val node = body ?: return
 		if (!isWalking) return
 
-		node.position = node.position.moveToward(target, delta * gridSize() * tilesPerSecond)
+		// Un saut a son allure à lui : le même bond, qu'on arrive au pas ou en courant.
+		val pace = if (isJumping) JUMP_TILES_PER_SECOND else tilesPerSecond
+		node.position = node.position.moveToward(target, delta * gridSize() * pace)
+
+		if (isJumping) {
+			// Une cloche : au sol au départ et à l'arrivée, au plus haut au-dessus du rebord.
+			val done = (1.0 - node.position.distanceTo(target) / jumpLength).coerceIn(0.0, 1.0)
+			lift = JUMP_HEIGHT * 4.0 * done * (1.0 - done)
+		}
 
 		if (node.position.distanceTo(target) < 0.01) {
 			node.position = target
 			isWalking = false
+			isJumping = false
+			lift = 0.0
 			release()
 		}
 	}
@@ -210,6 +276,8 @@ class CharacterMovement : Node() {
 	 */
 	fun stop() {
 		isWalking = false
+		isJumping = false
+		lift = 0.0
 		release()
 	}
 
@@ -231,3 +299,12 @@ private const val LEDGE_MASK = 8
 
 /** À combien de pixels de la frontière entre deux cases on cherche un rebord. */
 private const val LEDGE_REACH = 2.0
+
+/** La donnée du TileSet qui dit dans quel sens une tuile de rebord se saute (un `Vector2i` ; nul : elle ne se saute pas). */
+private const val JUMP = "jump"
+
+/** L'allure d'un saut, en cases par seconde : deux cases en 0,4 s. */
+private const val JUMP_TILES_PER_SECOND = 5.0
+
+/** La hauteur du bond à son sommet, en pixels. */
+private const val JUMP_HEIGHT = 8.0

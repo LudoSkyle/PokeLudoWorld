@@ -68,7 +68,7 @@ func test() -> void:
 	check("on monte aux hautes terres par les marches des deux escaliers", can_step(Vector2i(51, 35), Vector2i(51, 34)) and can_step(Vector2i(51, 34), Vector2i(51, 33)) and can_step(Vector2i(57, 34), Vector2i(57, 33)) and can_step(Vector2i(57, 33), Vector2i(57, 32)),
 		"%s %s %s %s" % [can_step(Vector2i(51, 35), Vector2i(51, 34)), can_step(Vector2i(51, 34), Vector2i(51, 33)), can_step(Vector2i(57, 34), Vector2i(57, 33)), can_step(Vector2i(57, 33), Vector2i(57, 32))])
 	check("mais pas par leurs poteaux", not is_free(Vector2i(49, 34)) and not is_free(Vector2i(53, 34)) and not is_free(Vector2i(55, 33)) and not is_free(Vector2i(59, 33)))
-	check("un rebord de roche arrete le pas, dans les deux sens", not is_free(Vector2i(15, 8)) and not is_free(Vector2i(16, 8)) and not is_free(Vector2i(17, 8)) and not is_free(Vector2i(46, 36)) and not is_free(Vector2i(52, 44)))
+	check("un rebord de roche est plein : on le saute (route_ledges), on ne s'y tient pas", not is_free(Vector2i(15, 8)) and not is_free(Vector2i(16, 8)) and not is_free(Vector2i(17, 8)) and not is_free(Vector2i(46, 36)) and not is_free(Vector2i(52, 44)))
 	# L'arbre du bout du pont : pied en (37..39, 34). Ses deux rangees du bas sont pleines sur ses trois cases, pas le haut de sa cime.
 	var tree_low := [Vector2i(37, 34), Vector2i(38, 34), Vector2i(39, 34), Vector2i(37, 33), Vector2i(38, 33), Vector2i(39, 33)]
 	var tree_solid := true

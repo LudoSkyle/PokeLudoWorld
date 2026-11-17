@@ -82,6 +82,8 @@ def family(name):
 def blocks(name):
     """Cette tuile arrête-t-elle le pas ? L'eau, le sable du pied des falaises, les parois, les rebords de roche.
 
+    Un rebord est plein, et se saute dans un seul sens (`jump`) : on ne s'y tient jamais.
+
     Deux coins rentrants de la falaise d'herbe ne l'arrêtent pas : `grassk` et `grassl` sont de la
     pelouse du plateau, avec un bout de lisière dans leurs quatre rangées du haut. On s'y tient, et
     ils ne touchent le vide que par leur pointe : on n'en tombe pas. Les mêmes coins de la falaise
@@ -92,6 +94,15 @@ def blocks(name):
     if name in ('grassk', 'grassl'): return False
     if family(name) in ('rock', 'grass', 'hollow'): return name[-1] != '5'
     return name.startswith('ledge')
+
+
+def jump(name):
+    """Le sens dans lequel un rebord de roche se saute, (dx, dy), ou None : du haut vers le bas de sa marche.
+
+    Son ombre dit où est le bas : sous `ledgeL/M/R`, à l'est de `ledgeV…`, à l'ouest de `ledgeW…`.
+    """
+    if name is None or not name.startswith('ledge'): return None
+    return (1, 0) if name.startswith('ledgeV') else ((-1, 0) if name.startswith('ledgeW') else (0, 1))
 
 
 def town_tiles():

@@ -56,6 +56,9 @@ class Player : CharacterBody2D() {
 	private var movement: CharacterMovement? = null
 	private var sprite: CharacterAnimation? = null
 
+	/** La hauteur de l'image au repos, celle de la scène. */
+	private var spriteRest = 0.0
+
 	/** Temps restant avant de pouvoir refaire entendre un choc contre un mur. */
 	private var bumpWait = 0.0
 
@@ -116,6 +119,7 @@ class Player : CharacterBody2D() {
 		input = getNode("Input") as? PlayerInput
 		movement = getNode("Movement") as? CharacterMovement
 		sprite = getNode("Sprite") as? CharacterAnimation
+		spriteRest = sprite?.position?.y ?: 0.0
 
 		movement?.attach(this)
 		loadRunPose()
@@ -130,6 +134,8 @@ class Player : CharacterBody2D() {
 
 		val wasWalking = currentMovement.isWalking
 		currentMovement.process(delta)
+		// Pendant le saut d'un rebord, c'est l'image qui monte : le joueur, lui, reste au sol, où sont son tri et sa caméra.
+		sprite?.let { it.position = Vector2(it.position.x, spriteRest - currentMovement.lift) }
 
 		// Un passage gardé se déclenche à l'instant où l'on se pose dessus,
 		// avant que la touche tenue n'engage le pas suivant.
@@ -208,7 +214,7 @@ class Player : CharacterBody2D() {
 					val door = currentMovement.areaUnderfoot() as? SceneTrigger
 					if (door != null && door.isExit && door.exitDirection == currentInput.direction) {
 						door.activate()
-					} else if (!currentMovement.tryWalk(currentInput.direction) && bumpWait <= 0.0) {
+					} else if (!currentMovement.tryWalk(currentInput.direction) && !currentMovement.tryJump(currentInput.direction) && bumpWait <= 0.0) {
 						// On bute : le choc s'entend, à la cadence des pas.
 						audio?.sfx("bump")
 						bumpWait = BUMP_SECONDS

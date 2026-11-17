@@ -126,12 +126,13 @@ for c in CELLS:
 for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
 def free(c): return inb(c) and c not in SOLID
 def reach_from(start, closed=(), opened=()):
-    """Les cases qu'on atteint à pied depuis `start` ; `opened` : des cases pleines qu'on suppose ouvertes (un arbre coupé)."""
+    """Les cases qu'on atteint à pied depuis `start`, sauts de rebord compris ; `opened` : des cases pleines qu'on suppose ouvertes (un arbre coupé)."""
     seen, queue = {start}, collections.deque([start])
     while queue:
         c = queue.popleft()
         for i, j in NEIGH4:
             n = (c[0] + i, c[1] + j)
+            if route_tiles.jump(ledge.get(n)) == (i, j): n = (n[0] + i, n[1] + j)          # un rebord tourné dans ce sens se saute : on retombe une case plus loin
             if (free(n) or n in opened) and n not in seen and n not in closed: seen.add(n); queue.append(n)
     return seen
 def pinches(c):
