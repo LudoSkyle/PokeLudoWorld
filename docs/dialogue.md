@@ -216,6 +216,7 @@ combinent dans n'importe quel ordre.
 | `@take:<id>`, `@take:<id>*3` | retire l'objet du sac |
 | `@flag:<drapeau>` | pose un drapeau d'histoire — voir [quests.md](quests.md) |
 | `@sound:<jingle>` | joue un jingle, musique en pause ; le dialogue attend qu'il finisse — voir [audio.md](audio.md) |
+| `@cry:<espèce>` | fait entendre le cri d'un Pokémon, par-dessus la musique : c'est ce que « dit » un Pokémon à qui l'on parle — voir [npcs.md](npcs.md) |
 | `@reload` | recharge la carte dans un fondu **une fois le dialogue refermé** — voir [quests.md](quests.md) |
 
 ## Une question dans un dialogue

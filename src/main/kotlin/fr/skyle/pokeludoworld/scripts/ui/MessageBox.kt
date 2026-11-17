@@ -387,6 +387,8 @@ class MessageBox : CanvasLayer() {
 	 * - `@take:<objet>` ou `@take:<objet>*<nombre>` le retire du sac ;
 	 * - `@flag:<drapeau>` pose un drapeau d'histoire ;
 	 * - `@sound:<jingle>` joue un jingle, musique en pause (voir AudioManager) ;
+	 * - `@cry:<espèce>` fait entendre le cri d'un Pokémon, par-dessus la musique :
+	 *   c'est ce que « dit » un Pokémon à qui l'on parle ;
 	 * - `@reload` recharge la carte dans un fondu **une fois le dialogue
 	 *   refermé** : c'est au chargement que se décide qui est sur la carte.
 	 */
@@ -407,6 +409,7 @@ class MessageBox : CanvasLayer() {
 				}
 				"flag" -> StoryFlags.set(name)
 				"sound" -> AudioManager.instance?.jingle(name)
+				"cry" -> AudioManager.instance?.cry(name)
 			}
 			text = rest
 		}
@@ -455,4 +458,4 @@ private val SPEAKER_COLORS = mapOf(
 private const val RELOAD = "@reload "
 private const val YES = 0
 private const val NO = 1
-private val DIRECTIVE = Regex("""@(give|take|flag|sound):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)
+private val DIRECTIVE = Regex("""@(give|take|flag|sound|cry):(\w+)(?:\*(\d+))? (.*)""", RegexOption.DOT_MATCHES_ALL)

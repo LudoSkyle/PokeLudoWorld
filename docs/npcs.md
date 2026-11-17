@@ -230,9 +230,15 @@ trois Cotovol au-dessus de la rivière, deux Granivol au sud
 selon le milieu** : oiseaux de mer sur l'île, Pokémon de prairie au-dessus
 d'une forêt. `tests/run.sh route_flyers`.
 
-Sur l'île : quatre Goélise (les deux moitiés de la baie, le bras de mer de
-l'ouest, la plage du sud) et deux Bekipan (la mer de l'est, la passe du
-nord-ouest). Un autre Pokémon volant demande son image dans
+Sur l'île : quatre groupes portés par le vent (`drift = 1`, une graine par
+groupe), une ou deux Goélise, et un Bekipan avec deux Goélise.
+
+**Un Pokémon posé au sol est un PNJ** : apparence `pkmn_<espèce>`
+(`assets/characters/`, fabriquée par `tools/pokemon_overworld.py` — le Pokémon
+y est doublé, dans des cases de 64 × 80, pour tomber à la taille des volants),
+`display_name` = son nom, et un texte qui commence par `@cry:<espèce>` : la
+boîte affiche son cri et le fait entendre. Il ne crie pas autrement. Sur
+l'île : `Corphish`, `Shellder`, `Bellossom`. `tests/run.sh island_pokemon`. Un autre Pokémon volant demande son image dans
 `assets/pokemon/overworld/` (`tools/pokemon_overworld.py` la sort des planches
 de `sources/`) et un nœud sous `Sky`.
 

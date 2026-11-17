@@ -72,6 +72,9 @@ DOUBLE_STAIRS = {'stairU4': (4, 16), 'stairU5': (7, 14), 'stairU6': (5, 16), 'st
 # `pier4/5/6` : bord gauche, milieu, bord droit ; `pier1/2/3` : le dernier rang, avec son chant.
 PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 12), 'pier2': (15, 13), 'pier3': (15, 14)}
 # Des coquillages pour le sable : rien n'en avait dans ce style, ils sont dessinés ici, cernés d'un brun de sable mouillé.
+# Une clôture de bois, aux teintes du pont : un poteau par case, deux lisses. `fence7…3` : coins et côtés d'un enclos
+# (7 8 9 / 4 6 / 1 2 3), dessinés ici — la planche de la Route 1 n'en a pas.
+FENCE = {'fence7': (8, 7), 'fence8': (9, 7), 'fence9': (10, 7), 'fence4': (8, 8), 'fence6': (10, 8), 'fence1': (8, 9), 'fence2': (9, 9), 'fence3': (10, 9)}
 SHELLS = {'shell1': (13, 5), 'shell2': (14, 5), 'shell3': (15, 5), 'shell4': (14, 6)}
 SHELL_ART = {
     'shell1': (4, 5, ['.oo.oo.', 'opwopwo', 'opwpwpo', 'opwpwpo', '.opwpo.', '..opo..', '..ooo..']),           # une coquille Saint-Jacques, en éventail
@@ -117,7 +120,7 @@ def blocks(name):
     if name == 'water' or family(name) in ('deep', 'sand'): return True
     if name in ('grassk', 'grassl'): return False
     if family(name) in ('rock', 'grass', 'hollow'): return name[-1] != '5'
-    return name.startswith('ledge')
+    return name.startswith('ledge') or name.startswith('fence')
 
 
 def jump(name):
@@ -149,7 +152,7 @@ def atlas():
     out['ledgeVB'] = (15, 2)
     out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
     for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%d%d' % (side, i, j): (c0 + i, r0 + j) for j in range(3) for i in range(4)})
-    out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS)
+    out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS); out.update(FENCE)
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -293,6 +296,19 @@ def cells(survey=False):
         return [row[::-1] for row in tile] if right else tile
     for last, names in ((False, ('pier4', 'pier5', 'pier6')), (True, ('pier1', 'pier2', 'pier3'))):
         made[where[names[0]]], made[where[names[1]]], made[where[names[2]]] = edged(planks(last), False), planks(last), edged(planks(last), True)
+    # la clôture : les lisses d'abord, vers les voisins que dit la forme, puis le poteau par-dessus
+    for name in FENCE:
+        k = name[-1]
+        east, west, north, south = k in '7812', k in '8923', k in '4613', k in '4679'
+        tile = [[CLEAR] * 16 for _ in range(16)]
+        for y, tone in ((6, WOOD), (7, DARK), (10, WOOD), (11, DARK)):
+            for x in range(16):
+                if (x >= 8 and east) or (x < 8 and west): tile[y][x] = tone
+        for y in range(16):
+            if (y < 8 and north) or (y >= 8 and south): tile[y][7], tile[y][8] = WOOD, SIDE
+        for y in range(2, 14):
+            for x in range(6, 10): tile[y][x] = DARK if x in (6, 9) or y in (2, 13) else (LIGHT if y == 3 else SIDE)
+        made[where[name]] = tile
     # les coquillages
     for name, (x0, y0, art) in SHELL_ART.items():
         tile = [[CLEAR] * 16 for _ in range(16)]

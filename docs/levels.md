@@ -178,8 +178,9 @@ pas la mer (`geography.WEST_COVE`) : large sous l'escalier, étranglée par un
 cap, finie en pointe. **Aucun bord n'est une longue droite ni une diagonale pure** : des crans de
 longueurs inégales, une anse, une encoche — sur la place, la crique et les
 plateaux du nord-est et du sud-est (fin de `geography.RETOUCH`). **Dans la
-mer, un rocher sur trois est un gros** (`riverrock`, sauf à l'est, où Ludovic
-préfère les petits) : des amas, comme sur
+mer, un rocher sur trois est un gros** (`riverrock`) ; à l'est, cinq rochers
+posés d'après une capture de Ludovic (`layout.EAST_ROCKS`), et aucun autre —
+la passe n'y est plus fermée : des amas, comme sur
 l'exemple, pas un semis de cailloux. Le jardin du sud-ouest et la bibliothèque, reliés
 par une piste, ne se rejoignent que par l'escalier de côté du jardin.
 
@@ -236,8 +237,21 @@ rôle ;
 **la crique est occupée en son milieu, sans être tassée** — un parasol, une
 serviette, le nageur, le gamin aux coquillages.
 
-**Dans le ciel**, quatre Goélise et deux Bekipan, chacun dans sa zone de dix
-cases sur dix (nœud `Sky`, [npcs.md](npcs.md)).
+**Dans le ciel**, des Goélise et un Bekipan que le vent porte d'ouest en est,
+comme les Granivol de la Route 1 : quatre groupes — une ou deux Goélise, et le
+Bekipan avec deux Goélise (nœud `Sky`, `generate.PACKS`, [npcs.md](npcs.md)).
+
+**Au sol, trois Pokémon posés** à qui l'on parle : Écrapince dans la crique,
+Kokiyas près du lampadaire de la plage du sud, Joliflor près de la dame aux
+fleurs. Ils disent leur cri, en texte et en son, et ne crient pas autrement
+([npcs.md](npcs.md)). **Deux enfants font la course** sur la plage du sud, côte
+à côte ; **la mamie est assise sur son banc**.
+
+**Un potager clôturé** (`layout.GARDEN`, tuiles `fence…`) tient au sud-ouest du
+laboratoire, ouvert sur la piste ; le lampadaire du labo en est le poteau
+d'angle. **Des caisses et des pots de fleurs** garnissent le pied de la jetée,
+la façade du laboratoire, la bibliothèque et l'entre-deux des maisons du
+nord-ouest (`generate.put` : la case est choisie, jamais sur une piste).
 
 ### Elle est produite par un générateur
 

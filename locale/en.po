@@ -962,3 +962,30 @@ msgstr "Too bad there's no way down to the water."
 
 msgid "La route continue vers l'est."
 msgstr "The road goes on to the east."
+
+msgid "Krr... Krapince !"
+msgstr "Krr... Corphish!"
+
+msgid "Koki... yas !"
+msgstr "Shell... der!"
+
+msgid "Joli ! Joliflor !"
+msgstr "Bell! Bellossom!"
+
+msgid "Le premier au bout de la plage a gagné !"
+msgstr "First one to the end of the beach wins!"
+
+msgid "Pousse-toi, pousse-toi !"
+msgstr "Out of the way, out of the way!"
+
+msgid "Attends-moi ! Tu es parti avant le signal !"
+msgstr "Wait for me! You left before the signal!"
+
+msgid "Écrapince"
+msgstr "Corphish"
+
+msgid "Kokiyas"
+msgstr "Shellder"
+
+msgid "Joliflor"
+msgstr "Bellossom"

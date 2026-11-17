@@ -83,7 +83,7 @@ SOLID |= STAND | set(STATUES.values())
 FRONTS = {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} | {(x + i, r + j) for x, r in STAIRS.values() for i in range(5) for j in (-2, -1, 0, 1, 2)}
 for side, gx, y0 in lay.SIDE_STAIRS.values():          # et de part et d'autre d'un escalier de côté
     FRONTS |= {(gx + i, y0 + j) for i in range(-3, 4) for j in range(-1, 4)}
-CLEAR = FRONTS | lay.FLOWER_CELLS | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
+CLEAR = FRONTS | lay.FLOWER_CELLS | (lay.GARDEN - {(39, 13)}) | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
 placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
@@ -326,7 +326,7 @@ npc('Roland', (7, 36), 'frlg_ruinmaniac', "Ces eaux, j'y ai plongé vingt ans.|E
 # ============ TOUJOURS LÀ : chacun près de ce qui l'occupe ; sa réplique change une fois la cloche accrochée
 npc('GrassWatcher', TALL_SW[len(TALL_SW) // 2], 'frlg_bugcatcher', "Ces herbes sont si hautes qu'on s'y perd.|Je cherche des insectes, mais je n'ai encore rien trouvé.",
     facing=(0, 1), states=["bell_hung > Il paraît que c'est toi qui as retrouvé la cloche ! Bravo !|Moi, toujours pas le moindre insecte."], movement='wander', pace=2.0, wander_layer='Background/Grass')
-npc('BenchLady', (BENCH_LUDO[0] + 2, BENCH_LUDO[1] + 1), 'rse_expert_f', "Je viens m'asseoir ici tous les matins.|D'ici, on voit passer tout le village.", facing=(0, 1),
+npc('BenchLady', BENCH_LUDO, 'rse_expert_f', "Je viens m'asseoir ici tous les matins.|D'ici, on voit passer tout le village.", facing=(0, 1), fixed=True,          # assise sur son banc : c'est ce qu'elle dit (Ludovic, 17/11/2026)
     states=["bell_hung > Je viens toujours m'asseoir ici le matin.|Maintenant, j'attends que la cloche sonne pour rentrer."])
 npc('Sunbather', TOWELS['TowelSouth'], 'hgss_swimmer_f', "Le sable est chaud, l'eau est fraîche.|Je ne bouge plus d'ici avant la nuit.", facing=(0, 1),
     states=["bell_hung > J'ai entendu la cloche depuis ma serviette.|Je n'ai pas bougé pour autant."])
@@ -369,12 +369,51 @@ npc('FisherLater', PIER_END, 'hgss_fisherman', "Chut... Ça ne mord pas plus qu'
 npc('WorkerLater', (ROAD[-1] + 1, GUARD_Y + 8), 'dppt_worker', "La Route 1 est ouverte.|On surveille encore les éboulis, mais tu peux passer.", facing=(-1, 0), **AFTER_ALL)
 npc('WorkerLater2', (PIER_END[0] + 3, 41), 'dppt_worker', "On range le matériel du chantier.|Si tu pars vers le nord, bonne route !", facing=(0, 1), **AFTER_ALL)
 
-# ---------- les Pokémon qui volent : des oiseaux de mer, chacun dans sa zone de dix cases sur dix
+# ---------- des Pokémon posés, à qui l'on parle : ils « disent » leur cri, en texte et en son (`@cry:`), et ne crient pas autrement.
+LAMP_PIER = placed['LampPier']
+for name, species, label, c, cry in [('Corphish', 'corphish', 'Écrapince', (30, 12), "Krr... Krapince !"),                                # en haut à droite du gamin aux coquillages
+                                     ('Shellder', 'shellder', 'Kokiyas', (LAMP_PIER[0] + 2, LAMP_PIER[1]), "Koki... yas !"),             # à droite du lampadaire de la plage du sud
+                                     ('Bellossom', 'bellossom', 'Joliflor', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 3), "Joli ! Joliflor !")]:  # près de la dame aux fleurs, une case plus bas pour ne pas lui cacher les jambes
+    npc(name, c, 'pkmn_' + species, '@cry:%s %s' % (species, cry), display_name=label, facing=(0, 1), fixed=True)
+    if c in SOLID or c not in REACH0: print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
+    SOLID.add(c); placed[name] = c
+# ---------- deux enfants font la course sur la plage du sud, côte à côte : chacun sa rangée, même allure
+for name, look, row, text in [('KidRunnerA', 'hgss_tuber_m', 38, "Le premier au bout de la plage a gagné !|Pousse-toi, pousse-toi !"),
+                              ('KidRunnerB', 'hgss_tuber_f', 39, "Attends-moi ! Tu es parti avant le signal !")]:
+    lane = [(26, row), (32, row)]
+    if any((x, row) in SOLID or (x, row) not in REACH0 for x in range(26, 33)): print('  !! %s : sa rangée de course n est pas libre' % name)
+    npc(name, lane[0], look, text, facing=(1, 0), movement='patrol', pace=3.0, route=lane)
+# ---------- des objets de la vie quotidienne, là où un mur ou un coin restait nu (island.png : caisses, pot de fleurs)
+def put(name, c):
+    """Contre un mur, au pied d'une façade : la case est choisie, on ne la déplace pas — on prévient si elle gêne."""
+    if c in SOLID or c in CLEAR or c in lay.TRAIL or c in lay.HOUSE_AREA: print('  !! %s : la case %s est prise, sur une piste ou devant un passage' % (name, c))
+    placed[name] = c; SOLID.add(c)
+    return c
+def crate(name, c, stacked=False):
+    put(name, c)
+    L['Props'][c] = (10, 0 if stacked else 1, 6, 0)
+    if stacked: L['Props'][(c[0], c[1] - 1)] = (10, 0, 5, 0)
+def pot(name, c):
+    put(name, c)
+    L['Props'][c] = (10, 2, 6, 0); L['Props'][(c[0], c[1] - 1)] = (10, 2, 5, 0)
+pot('PotLudo', (13, 9))                                                               # entre les deux maisons du nord-ouest
+crate('CratesLab', (41, 9), stacked=True); crate('CrateLab', (42, 9))                 # devant la façade du laboratoire, à gauche de sa porte (pas dans le couloir de l'ouest : il mène à l'Eau Fraîche)
+crate('CratesLibrary', (7, 29), stacked=True); pot('PotLibrary', (8, 29))             # à droite de la bibliothèque
+crate('CratesPier', (30, 42), stacked=True); crate('CratePier', (29, 42))             # au pied de la jetée : ce qu'on débarque
+
+# ---------- les Pokémon qui volent : des oiseaux de mer que le vent porte d'ouest en est, comme les Granivol de la Route 1.
+# Quatre groupes (Ludovic, 17/11/2026) : une ou deux Goélise ; et un Bekipan ne va qu'avec deux Goélise. Un groupe partage
+# sa graine — même souffle, mêmes ondulations — et chacun y a sa place.
+# (nom, graine, allure en cases par seconde, [(espèce, colonne, rangée) de chacun, en cases et fractions de case])
 node('[node name="Sky" type="Node2D" parent="."]\nz_index = 40\n')
-FLYERS = {'WingullBayWest': ('wingull', (10, 12, 10, 10)), 'WingullBayEast': ('wingull', (36, 15, 10, 10)), 'WingullWest': ('wingull', (0, 18, 10, 10)), 'WingullSouth': ('wingull', (22, 38, 10, 10)),
-          'PelipperEast': ('pelipper', (44, 38, 10, 10)), 'PelipperStrait': ('pelipper', (8, 26, 10, 10))}
-for name, (species, (zx, zy, zw, zh)) in FLYERS.items():
-    node('[node name="%s" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(%d, %d, %d, %d)\n' % (name, *px((zx + zw // 2, zy + zh // 2)), species, zx, zy, zw, zh))
+PACKS = [('GullsNorth', 13, 1.6, [('wingull', 6.0, 6.0), ('wingull', 7.7, 7.1)]),
+         ('GullBay', 29, 1.4, [('wingull', 30.0, 16.0)]),
+         ('PelipperFlight', 43, 1.2, [('pelipper', 18.0, 27.5), ('wingull', 16.2, 26.4), ('wingull', 16.4, 28.9)]),
+         ('GullsSouth', 57, 1.7, [('wingull', 40.0, 42.0), ('wingull', 41.8, 43.2)])]
+for name, seed, pace, places in PACKS:
+    for i, (species, x, y) in enumerate(places):
+        node('[node name="%s%d" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(0, 0, %d, %d)\npace = %s\nseed = %d\ndrift = 1\n'
+             % (name, i, round(x * 16 + 8), round(y * 16 + 8), species, W, H, pace, seed))
 node('[node name="Triggers" type="Node2D" parent="."]\n')
 for i, x in enumerate(ROAD[1:-1]):
     node('[node name="NorthRoadblock%d" parent="Triggers" instance=ExtResource("5_roadblock")]\nposition = Vector2(%d, %d)\nguard = "%s"\npush_direction = Vector2(0, 1)\nforbidden_flag = "bell_hung"\n' % (i, *px((x, GUARD_Y)), 'GuardWest' if x - ROAD[0] <= ROAD[-1] - x else 'GuardEast'))
