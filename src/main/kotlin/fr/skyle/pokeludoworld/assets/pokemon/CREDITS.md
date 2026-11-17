@@ -51,8 +51,3 @@ Rangés avec elles, téléchargés par Ludo le 15/11/2026 : des **sprites de com
 
 **Ce qui manque** au 15/11/2026 : les formes de Hisui non chromatiques — seule
 la planche chromatique était dans les téléchargements.
-
-**Une icône du kit Pokémon Essentials v21.1** : `essentials_icon_bellossom.png`
-(`Graphics/Pokemon/Icons/BELLOSSOM.png`, deux images de face, pixels doublés).
-Les planches HGSS n'ont pas Joliflor : `tools/pokemon_overworld.py` fait de
-cette icône sa planche de PNJ (`assets/characters/pkmn_bellossom.png`).
