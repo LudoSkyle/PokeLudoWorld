@@ -26,6 +26,9 @@ BLOCK_W, BLOCK_H = 64, 128
 WANTED = {
     'wingull': ('hgss_overworld_gen3.png', 0, 2),      # Goélise
     'pelipper': ('hgss_overworld_gen3.png', 1, 2),     # Bekipan
+    'hoppip': ('hgss_overworld_gen2.png', 4, 3),       # Granivol
+    'skiploom': ('hgss_overworld_gen2.png', 5, 3),     # Floravol
+    'jumpluff': ('hgss_overworld_gen2.png', 6, 3),     # Cotovol
 }
 
 
