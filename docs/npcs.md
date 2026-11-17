@@ -187,11 +187,12 @@ l'un sur l'étang, l'autre sur l'herbe.
 
 | Réglage | Rôle |
 |---|---|
-| `species` | le fichier de `assets/pokemon/overworld/`, sans extension : `wingull` (Goélise), `pelipper` (Bekipan) |
+| `species` | le fichier de `assets/pokemon/overworld/`, sans extension : `wingull` (Goélise), `pelipper` (Bekipan), `hoppip` (Granivol), `skiploom` (Floravol), `jumpluff` (Cotovol) |
 | `zone` | la zone qu'il ne quitte pas, en cases (`Rect2i` : coin haut-gauche et taille) — dix sur dix sur l'île |
 | `pace` | sa vitesse, en cases par seconde (2,5) |
 | `rest` | le temps qu'il plane entre deux trajets, au moins et au plus (0,3 à 1,6 s) |
-| `seed` | une graine pour un vol rejouable ; 0 : un vrai hasard |
+| `seed` | une graine pour un vol rejouable ; 0 : un vrai hasard. Portés par le vent, ceux qui la partagent voyagent en groupe |
+| `drift` | le vent qui le porte : `1` vers l'est, `-1` vers l'ouest ; `0` (défaut) : il vole de lui-même |
 
 **Son vol.** Il avance par **trajets d'une à trois cases** en ligne droite. À
 chaque trajet le hasard est rejoué — le sens et la longueur — mais il **ne
@@ -199,6 +200,22 @@ rebrousse jamais chemin** : après être allé à gauche il peut monter, descend
 ou continuer à gauche, pas repartir à droite. Un trajet qui sortirait de la
 zone est raccourci ; s'il ne reste aucune case dans ce sens, il en tire un
 autre. Entre deux trajets, il plane sur place en battant des ailes.
+
+**Porté par le vent** (`drift`). Il ne vole pas, il dérive : il traverse sa
+`zone` d'un bord à l'autre **sans jamais s'arrêter**, sort d'une case et demie
+et rentre par le bord d'en face. Son allure varie d'un quart autour de `pace`
+au gré du souffle, sa route ondule d'une case de part et d'autre de la rangée
+où on l'a posé, et son image flotte de deux pixels au-dessus de son ombre. Le
+souffle se tire de la `seed` : deux volants qui la partagent ont la même
+allure et les mêmes ondulations, donc gardent leur écart — c'est ce qui fait
+un groupe. `rest` ne sert pas.
+
+Sur la route du nord : dix volants en quatre groupes, tous vers l'est, sur
+toute la largeur de la carte — trois Granivol au nord, deux Floravol,
+trois Cotovol au-dessus de la rivière, deux Granivol au sud
+(`PACKS` dans `tools/maps/north_route/generate.py`). **Le volant se choisit
+selon le milieu** : oiseaux de mer sur l'île, Pokémon de prairie au-dessus
+d'une forêt. `tests/run.sh route_flyers`.
 
 Sur l'île : quatre Goélise (les deux moitiés de la baie, le bras de mer de
 l'ouest, la plage du sud) et deux Bekipan (la mer de l'est, la passe du
