@@ -153,7 +153,15 @@ func test() -> void:
 	for c in props.get_used_cells():
 		if props.get_cell_source_id(c) == 10 and props.get_cell_atlas_coords(c) == Vector2i(4, 6) and not is_free(c) and not is_free(c + Vector2i.RIGHT):
 			benches += 1
-	check("deux bancs de face et un de profil, pleins", benches == 2 and props.get_cell_atlas_coords(Vector2i(49, 31)) == Vector2i(9, 5) and not is_free(Vector2i(49, 31)) and not is_free(Vector2i(49, 30)), "%d" % benches)
+	check("un banc de face et deux de profil, pleins", benches == 1 and props.get_cell_atlas_coords(Vector2i(49, 31)) == Vector2i(9, 5) and not is_free(Vector2i(49, 31)) and not is_free(Vector2i(49, 30))
+		and props.get_cell_atlas_coords(Vector2i(22, 27)) == Vector2i(8, 5) and not is_free(Vector2i(22, 27)) and not is_free(Vector2i(22, 26)), "%d" % benches)
+	# La place garde ses fleurs basses : du decor dans le gazon, sans collision.
+	var decor := layer("Background/Decorations")
+	var low := 0
+	for c in decor.get_used_cells():
+		if Rect2i(20, 18, 15, 14).has_point(c) and decor.get_cell_source_id(c) == ROUTE and decor.get_cell_atlas_coords(c).y == 6 and decor.get_cell_atlas_coords(c).x <= 4 and is_free(c):
+			low += 1
+	check("la place a ses fleurs basses dans le gazon", low >= 8, "%d" % low)
 	# Rien ne se pose sur une piste : ni banc, ni lampadaire, ni panneau, ni habitant immobile.
 	var paths := layer("Background/Paths")
 	var on_path: Array = []
