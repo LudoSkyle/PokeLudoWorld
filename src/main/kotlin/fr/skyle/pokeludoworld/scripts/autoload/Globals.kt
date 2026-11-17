@@ -2,6 +2,8 @@ package fr.skyle.pokeludoworld.scripts.autoload
 
 import fr.skyle.pokeludoworld.scripts.core.DayNight
 import fr.skyle.pokeludoworld.scripts.core.Weather
+import fr.skyle.pokeludoworld.scripts.gameplay.items.ItemIcons
+import fr.skyle.pokeludoworld.scripts.gameplay.items.Items
 import fr.skyle.pokeludoworld.scripts.gameplay.story.StoryFlags
 import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildEncounters
 import fr.skyle.pokeludoworld.scripts.gameplay.wild.WildTable
@@ -56,6 +58,17 @@ class Globals : Node() {
 	fun setHour(hour: Double) {
 		DayNight.forcedHour = hour.takeIf { it >= 0.0 }
 	}
+
+	/**
+	 * Les objets du catalogue sans icône utilisable sous `assets/items/icons/` —
+	 * le fichier manque, ou ne fait pas 24 × 24 —, séparés par des virgules ; vide si
+	 * chacun a la sienne.
+	 */
+	@Register
+	fun itemsWithoutIcon(): String = Items.ALL.filter {
+		val icon = if (ItemIcons.has(it.icon)) ItemIcons.of(it.icon) else null
+		icon == null || icon.getWidth() != 24 || icon.getHeight() != 24
+	}.joinToString(",") { it.id }
 
 	/**
 	 * Le temps qu'il fait, vu de Godot : son rang dans [Weather.Sky] — 0 normal,

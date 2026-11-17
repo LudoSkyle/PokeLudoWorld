@@ -535,10 +535,10 @@ Tests : `tests/run.sh island/island_quest island/island_bell_hint`.
 
 | Objet | À quoi ça ressemble | Rôle |
 |---|---|---|
-| **Registre poussiéreux** | vieux livre relié, tranche abîmée — **en place** : `dusty_register`, icône `dex:00:A:D` | l'indice |
-| **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `custom:1` | la trouvaille |
-| **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `custom:0` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
-| **Ruban de la Veillée** | nœud de tissu rouge — **en place** : `vigil_ribbon`, icône `dex:07:F:2` | le souvenir, sans usage |
+| **Registre poussiéreux** | vieux livre relié, tranche abîmée — **en place** : `dusty_register`, icône `dusty_register.png` | l'indice |
+| **Cloche ternie** | petite cloche de bronze noircie — **en place** : `tarnished_bell`, icône `tarnished_bell.png` | la trouvaille |
+| **Cloche claire** | une cloche dorée — **en place** : `clear_bell`, icône `clear_bell.png` ; la ternie quitte le sac quand on la reçoit | après la machine de soin |
+| **Ruban de la Veillée** | nœud de tissu rouge — **en place** : `vigil_ribbon`, icône `vigil_ribbon.png` | le souvenir, sans usage |
 | **Socle** *(décor)* | portique de pierre, **deux versions : vide et avec cloche** — **en place** : `assets/levels/bell_stand.png` | la place |
 | **Statue de Pokémon** *(décor)* | n'importe laquelle, devant le labo — **en place** : deux petites statues de `environments.png`, à l'entrée de la place | décor, sans rapport avec la quête |
 | **Silhouette de Pokémon** | un sprite, même sans animation — **toujours manquant** | la grotte et les herbes |
@@ -549,10 +549,13 @@ objets rares** : une ligne chacun dans le catalogue (`Items.kt`, poche
 reçoit ([bag.md](bag.md)). Il leur faut donc à chacun :
 
 - un identifiant, un nom et une description, avec leurs traductions ;
-- une **icône** : une référence dans l'un des deux atlas de `assets/items/`
-  (267 icônes officielles, 1382 de l'ItemDex — voir leur `CREDITS.md`). Un
-  livre, une cloche et un ruban s'y trouvent sans doute ; sinon, un asset à
-  fournir. Une référence fausse affiche un point d'interrogation.
+- une **icône** ([bag.md](bag.md)). Un objet de quête n'a pas d'icône toute
+  faite, son champ `icon` va la chercher : celle d'un objet officiel
+  (`"rule_book"`), une icône sans nom de la réserve
+  (`"unnamed/07_F_2_fan"`), ou une icône dessinée pour le jeu
+  (`"custom/clear_bell"`, voir le `CREDITS.md` du dossier). On ne renomme
+  pas un fichier d'icône pour l'occasion. Sans fichier, le sac affiche un
+  point d'interrogation.
 
 ## Les retouches de carte
 

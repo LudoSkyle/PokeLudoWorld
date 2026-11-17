@@ -9,7 +9,7 @@
 | `id` | identifiant ; c'est aussi sa ligne dans la sauvegarde |
 | `name`, `description` | en français, traduits à l'affichage ([i18n.md](i18n.md)) |
 | `pocket` | la poche : `ITEMS`, `KEY_ITEMS`, `BALLS` |
-| `icon` | référence dans un atlas : `frlg:12`, `dex:01:0:3` ou `custom:0` (`ItemIcons.kt`) |
+| `icon` | son icône sous `assets/items/icons/` — **par défaut, `named/<identifiant>.png`** : `potion` se dessine avec `named/potion.png` (`ItemIcons.kt`). Se donne quand l'icône ne porte pas le nom de l'objet : voir « La réserve d'icônes » |
 
 Un objet de la poche `KEY_ITEMS` est un **objet rare** (`isKey`) : unique, sans
 quantité affichée, impossible à jeter, et montré à l'écran quand on le reçoit.
@@ -21,13 +21,51 @@ fait partie de la sauvegarde ([save.md](save.md)).
 ### Ajouter un objet
 
 1. Une ligne dans `Items.ALL`, avec ses textes entre `N("...")`.
-2. Son icône : une référence vers l'un des atlas de `assets/items/`. Deux
-   contiennent **toutes** les icônes de leur planche (267 officielles, 1382 de
-   l'ItemDex) ; le troisième, `custom.png`, reçoit celles qu'on dessine pour
-   le jeu. Le `CREDITS.md` du dossier explique comment lire le numéro
-   d'une icône sur la planche d'origine. Une référence fausse affiche un point
-   d'interrogation.
+2. Son icône : par défaut, **le fichier
+   `assets/items/icons/named/<identifiant>.png`**, en 24 × 24. Plus de 900 objets ont déjà la leur, nommée d'après le nom anglais
+   de l'objet (`super_repel.png`, `great_ball.png`) : donner à l'objet
+   l'identifiant qui correspond suffit, il n'y a rien à écrire de plus. Si
+   l'icône manque, voir « La réserve d'icônes » ci-dessous. Un objet sans
+   fichier affiche un point d'interrogation, et `tests/run.sh ui/bag_icons`
+   le signale.
 3. Ses deux textes dans `locale/en.po`, puis `tests/run.sh i18n`.
+
+### La réserve d'icônes
+
+`assets/items/icons/` a quatre dossiers, fabriqués par `tools/item_icons.py`
+(le `CREDITS.md` du dossier dit d'où vient chaque icône) :
+
+| Dossier | Contenu |
+|---|---|
+| `named/` | 938 icônes d'objets officiels dont on connaît le nom, pour 908 objets |
+| `unnamed/` | 252 icônes d'objets officiels sans nom — surtout des dessins de fans — sous le numéro de leur case : `07_F_2_fan.png` |
+| `invented/` | 34 objets inventés par Kryptonlion — à ne pas utiliser sans sa permission ; Godot ne les importe pas |
+| `custom/` | **les icônes faites pour ce jeu**, et elles seules : les deux cloches |
+
+**Le nom d'un fichier dit ce qu'est l'icône, jamais à quoi le jeu
+l'emploie.** On ne renomme ni ne déplace rien dans `icons/` pour un besoin du
+jeu : c'est le champ `icon` du catalogue qui va chercher l'icône où elle est.
+
+| L'objet prend… | `icon` | Exemple |
+|---|---|---|
+| l'icône officielle qui porte son nom | rien à écrire | `potion` → `named/potion.png` |
+| un autre dessin du même objet | le nom du fichier | `"old_rod-old_colors"` : la canne d'origine, en 24 × 24 (`old_rod.png` est la récente, en 32 × 32) |
+| l'icône d'un autre objet officiel | le nom du fichier | `"rule_book"` pour le registre poussiéreux, `"tri_pass"` pour la carte du village |
+| une icône faite pour le jeu | `custom/<fichier>` | `"custom/clear_bell"` — `named/clear_bell.png` est le Glas Transparent officiel |
+| une icône sans nom | `unnamed/<fichier>` | `"unnamed/07_F_2_fan"` pour le ruban de la Veillée |
+
+- **Le sac affiche l'icône quatre fois plus grande : elle doit faire
+  24 × 24.** 48 icônes de `named/` font 32 × 32 (les cannes récentes, les
+  poches…) : `tests/run.sh ui/bag_icons` refuse qu'un objet du catalogue en
+  prenne une.
+- Une ancienne version officielle d'une icône porte sa génération :
+  `town_map_gen3.png`.
+- La flèche « Retour » du sac et le point d'interrogation d'un objet sans
+  icône sont elles aussi des icônes sans nom : `ItemIcons.BACK` et
+  `ItemIcons.UNKNOWN` les désignent par leur fichier.
+- **Nommer une case** dans `assets/items/sources/itemdex.txt` ne se fait que
+  si l'on a identifié l'objet officiel qu'elle représente ; l'icône passe
+  alors de `unnamed/` à `named/`.
 
 ### Donner un objet
 
