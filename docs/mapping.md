@@ -160,6 +160,11 @@ pas justifier est une erreur.
 
 ### C. Lignes droites
 
+- **Un bord rogné n'est ni une droite ni une diagonale pure** (Ludovic,
+  17/11/2026, sur un coin coupé en escalier régulier : « pas naturel »). Des
+  crans de longueurs inégales — trois cases, puis une —, une anse dans un long
+  bord, un cap. Regarder comment l'exemple découpe ses côtes avant de tracer.
+
 - **Jamais plus de 6 cases en ligne droite** pour une côte, un bord de plateau
   ou une lisière, hors bord de carte. Après l'outil rectangle, repasser à la
   main : retirer un coin, ajouter une bosse.

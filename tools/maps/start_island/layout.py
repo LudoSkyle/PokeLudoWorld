@@ -235,7 +235,8 @@ for where, more in BARRIERS.items():
         if c not in SEA or c in DECK: WARN.append(('rocher', where, 'pas dans l eau : %s' % (c,)))
         elif c not in ROCKS: ROCKS.append(c)
 for n, c in enumerate(ROCKS):
-    sprites.append((('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
+    big = n % 3 == 0 and all(q in SEA and q not in SAND and q not in ROCKS and q not in DECK for q in [(c[0] + 1, c[1])]) and c not in SAND          # un gros de temps en temps, comme ceux de l'exemple : des amas, pas un semis de cailloux
+    sprites.append(('riverrock' if big else ('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
 # --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
 palms = []
 COVE = rect(15, 9, 34, 18)          # la crique du nord : agrandie pour être une plage, pas une palmeraie — deux palmiers, pas plus (Ludovic, 17/11/2026)
@@ -291,10 +292,12 @@ for d in sorted(DOORS.values()):                                   # près de ch
 for c in spots:                                                    # et d'autres çà et là
     if len(beds) < 14: bed(c, len(beds)) or bed(c, len(beds) + 3) or bed(c, len(beds) + 5)
 # --- des coquillages sur le sable sec, sans collision : rien sous un escalier, ni sous un parasol
-SHELL, shells = random.Random(5), 0
-for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK):
-    if ground.get(c) == 'sand5' and SHELL.random() < 0.08:          # chacun son tour : au hasard, on ne voyait que des étoiles de mer
-        L['Decorations'][c] = tile('shell%d' % (1 + shells % 4)); shells += 1
+SHELL, shells = random.Random(5), []
+sands = [c for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK) if ground.get(c) == 'sand5']
+SHELL.shuffle(sands)
+for c in sands:          # un par un, loin les uns des autres, sur toutes les plages — et chaque sorte à son tour (au hasard, ils s'amassaient et l'on ne voyait que des étoiles de mer)
+    if len(shells) < len(sands) // 16 and all(abs(c[0] - o[0]) + abs(c[1] - o[1]) >= 5 for o in shells):
+        L['Decorations'][c] = tile('shell%d' % (1 + len(shells) % 4)); shells.append(c)
 PLAZA_LAWN = rect(21, 19, 36, 31) & INSIDE
 for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS - FLOWER_CELLS):          # plus serrées autour de la place et sur la presqu'île du sud-est
     if RNG.random() < (0.3 if c in PLAZA_LAWN else (0.22 if c[1] >= 37 and c[0] >= 40 else 0.08)): L['Decorations'][c] = tile('fl%d' % RNG.randint(1, 5))

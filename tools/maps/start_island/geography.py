@@ -144,7 +144,12 @@ RETOUCH = [
     # --- les accès aux plages, élargis (Ludovic, 17/11/2026) : la place perd ses deux coins du bas, le plateau du sud-est recule d'une colonne
     (BEACH_, (33, 30, 34, 31)), (BEACH_, (20, 30, 21, 31)), (BEACH_, (39, 25, 39, 33)), (BEACH_, (16, 32, 18, 34)),
     (PLATEAU_, (35, 18, 38, 21)),                                                      # la place et le plateau du nord-est ne font qu'un : un passage d'herbe, là où Ludovic l'a entouré (17/11/2026)
-    (BEACH_, (40, 26, 41, 26)), (BEACH_, (40, 27, 40, 27)),                           # et son coin nord-ouest est rogné : moins de boîtes (Ludovic, 17/11/2026)
+    # --- des bords qui ne sont ni droits ni en diagonale pure, comme sur l'exemple : des crans de longueurs inégales, une
+    #     anse ici, un cap là (Ludovic, 17/11/2026 : « évite les lignes droites, les diagonales pures »)
+    (BEACH_, (40, 26, 42, 26)), (BEACH_, (47, 26, 49, 26)),                           # le plateau du sud-est : un cran au coin, une anse dans son bord du nord
+    (BEACH_, (20, 25, 20, 27)), (BEACH_, (22, 31, 24, 31)), (BEACH_, (19, 32, 21, 34)), (BEACH_, (32, 31, 32, 31)), (BEACH_, (24, 18, 26, 18)),          # la place : une anse à l'ouest, des crans inégaux en bas, une encoche en haut
+    (PLATEAU_, (31, 9, 34, 10)), (PLATEAU_, (33, 11, 34, 11)), (PLATEAU_, (33, 14, 33, 15)),                                  # la crique : son coin du nord-est comblé par crans, un cap sur son flanc est
+    (BEACH_, (47, 18, 48, 18)),                                                       # le plateau du nord-est : une encoche dans son bord du sud
     # --- la mare de l'est rejoint la mer, et n'est plus un carré
     (SEA_, (50, 20, 54, 24)), (SEA_, (44, 21, 44, 22)), (BEACH_, (45, 20, 46, 20)), (BEACH_, (45, 24, 45, 24)), (BEACH_, (48, 24, 49, 24)), (BEACH_, (49, 23, 49, 23)),
 ]

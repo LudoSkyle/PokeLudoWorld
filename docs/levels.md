@@ -173,8 +173,11 @@ perdu ses deux coins du bas, le plateau du sud-est a reculé d'une colonne (le
 couloir de la plage de l'est fait trois cases), et rien n'y est planté
 (`layout.NO_PALMS`). **La mare de l'est rejoint la mer** et n'est plus un
 carré. **Le bord du haut d'un plateau se foule**, sur toute sa longueur
-(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. Le coin
-nord-ouest du plateau du sud-est est rogné en biais, pour casser la boîte. Le jardin du sud-ouest et la bibliothèque, reliés
+(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. **Aucun bord n'est une longue droite ni une diagonale pure** : des crans de
+longueurs inégales, une anse, une encoche — sur la place, la crique et les
+plateaux du nord-est et du sud-est (fin de `geography.RETOUCH`). **Dans la
+mer, un rocher sur trois est un gros** (`riverrock`) : des amas, comme sur
+l'exemple, pas un semis de cailloux. Le jardin du sud-ouest et la bibliothèque, reliés
 par une piste, ne se rejoignent que par l'escalier de côté du jardin.
 
 **Les rochers de la mer sont ceux de l'exemple.** Dans les cinq groupes que
@@ -224,10 +227,11 @@ garnissent les coins de la place, et les fleurs sont plus serrées autour
 d'elle et sur la presqu'île du sud-est. La cloche, au fond de l'eau,
 **scintille** (`Twinkle.kt`). **De grandes fleurs** que le vent couche (`5:0-7,3-4`) poussent près des
 maisons et de la place, **éparses, par une, deux ou trois, jamais en rang**
-(`layout.SCATTER`) ; **des coquillages** sans collision parsèment le sable sec, les quatre sortes
-à tour de rôle ;
-**la crique est occupée d'un bout à l'autre** — deux parasols, deux
-serviettes, le nageur, le gamin aux coquillages — et non dans un coin.
+(`layout.SCATTER`) ; **des coquillages** sans collision parsèment le sable sec : un pour seize
+cases, à cinq cases au moins les uns des autres, les quatre sortes à tour de
+rôle ;
+**la crique est occupée en son milieu, sans être tassée** — un parasol, une
+serviette, le nageur, le gamin aux coquillages.
 
 **Dans le ciel**, quatre Goélise et deux Bekipan, chacun dans sa zone de dix
 cases sur dix (nœud `Sky`, [npcs.md](npcs.md)).
