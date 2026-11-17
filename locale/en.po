@@ -989,3 +989,12 @@ msgstr "Shellder"
 
 msgid "Joliflor"
 msgstr "Bellossom"
+
+msgid "Musique"
+msgstr "Music"
+
+msgid "Cris des Pokémon"
+msgstr "Pokémon cries"
+
+msgid "Autres sons"
+msgstr "Other sounds"

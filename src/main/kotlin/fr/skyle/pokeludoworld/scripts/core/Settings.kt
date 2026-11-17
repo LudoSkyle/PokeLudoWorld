@@ -7,7 +7,8 @@ import godot.core.Error
 
 /**
  * Réglages du joueur, gardés d'un lancement à l'autre (voir [GameFiles]) :
- * la vitesse du texte et la langue.
+ * la vitesse du texte, la langue, et les trois volumes — musique, cris des
+ * Pokémon, autres sons.
  */
 object Settings {
 
@@ -33,6 +34,25 @@ object Settings {
 	var language: Int = 0
 		private set
 
+	/** Un volume va de 0 (muet) à [VOLUME_STEPS], par crans de dix pour cent. */
+	const val VOLUME_STEPS = 10
+
+	/** Les trois volumes que le joueur règle : la musique, les cris des Pokémon, et tout le reste (bruitages, jingles). */
+	enum class Volume(val key: String) { MUSIC("volume_music"), CRIES("volume_cries"), SOUNDS("volume_sounds") }
+
+	private val volumes = IntArray(Volume.entries.size) { VOLUME_STEPS }
+
+	/** Le cran de [volume], de 0 à [VOLUME_STEPS]. */
+	fun volume(volume: Volume): Int = volumes[volume.ordinal]
+
+	/** Le même, en part de 0 à 1 : ce par quoi l'AudioManager multiplie ce qu'il joue. */
+	fun gain(volume: Volume): Double = volumes[volume.ordinal].toDouble() / VOLUME_STEPS
+
+	fun setVolume(volume: Volume, step: Int) {
+		volumes[volume.ordinal] = step.coerceIn(0, VOLUME_STEPS)
+		save()
+	}
+
 	val secondsPerLetter: Double
 		get() = BASE_SECONDS_PER_LETTER / TEXT_SPEEDS[textSpeed]
 
@@ -46,6 +66,7 @@ object Settings {
 		if (file.load(GameFiles.settings) == Error.OK) {
 			textSpeed = int(file, TEXT_SPEED, DEFAULT_TEXT_SPEED).coerceIn(0, TEXT_SPEEDS.size - 1)
 			language = LANGUAGES.indexOf(file.getValue(SECTION, LANGUAGE, LANGUAGES[0]).toString()).coerceAtLeast(0)
+			Volume.entries.forEach { volumes[it.ordinal] = int(file, it.key, VOLUME_STEPS).coerceIn(0, VOLUME_STEPS) }
 		}
 		// Toujours, même sans fichier : sinon Godot suit la langue du système.
 		TranslationServer.setLocale(LANGUAGES[language])
@@ -69,6 +90,7 @@ object Settings {
 		val file = ConfigFile()
 		file.setValue(SECTION, TEXT_SPEED, textSpeed)
 		file.setValue(SECTION, LANGUAGE, LANGUAGES[language])
+		Volume.entries.forEach { file.setValue(SECTION, it.key, volumes[it.ordinal]) }
 		if (file.save(GameFiles.settings) != Error.OK) Logger.e("Reglages non enregistres : ${GameFiles.settings}")
 	}
 

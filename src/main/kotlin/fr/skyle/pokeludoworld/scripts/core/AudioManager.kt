@@ -59,6 +59,7 @@ class AudioManager : Node() {
 	private var cryPlayer: AudioStreamPlayer? = null
 	private var lastCry = ""
 	private var cryCount = 0
+	private var cryVolume = 1.0
 	private val streams = HashMap<String, AudioStream?>()
 
 	/** La musique demandée : celle qu'on entend, ou qu'on entendra après le jingle. */
@@ -91,11 +92,41 @@ class AudioManager : Node() {
 		voices = (0 until SFX_VOICES).map { player("Sfx$it") }
 		cryPlayer = player("Cry")
 
+		applyVolumes()
+
 		// Les tests jouent le jeu pour de vrai, mais en silence.
 		if (GameFiles.testing) AudioServer.setBusMute(0, true)
 
 		Logger.i("Loading audio manager ...")
 	}
+
+	private fun musicGain(): Double = Settings.gain(Settings.Volume.MUSIC)
+
+	/**
+	 * Applique les volumes réglés par le joueur (voir [Settings]) à ce qui joue
+	 * déjà : la musique, tout de suite ; bruitages et jingles gardent le leur
+	 * d'un son à l'autre. Les cris prennent le leur à chaque cri. À appeler
+	 * quand un réglage change.
+	 */
+	fun applyVolumes() {
+		Settings.load()
+		val sounds = decibels(Settings.gain(Settings.Volume.SOUNDS)).toFloat()
+		voices.forEach { it.volumeDb = sounds }
+		jinglePlayer?.volumeDb = sounds
+		cryPlayer?.volumeDb = decibels(cryVolume * Settings.gain(Settings.Volume.CRIES)).toFloat()          // le cri en cours suit, lui aussi
+		music?.volumeDb = decibels(level * musicGain()).toFloat()
+		if (leaving.isNotEmpty()) outgoing?.volumeDb = decibels(leavingLevel * musicGain()).toFloat()
+	}
+
+	/** Le volume, en décibels, auquel jouent la musique, les bruitages et le dernier cri : ce que les tests écoutent. */
+	@Register
+	fun musicDb(): Double = music?.volumeDb?.toDouble() ?: 0.0
+
+	@Register
+	fun soundsDb(): Double = voices.firstOrNull()?.volumeDb?.toDouble() ?: 0.0
+
+	@Register
+	fun cryDb(): Double = cryPlayer?.volumeDb?.toDouble() ?: 0.0
 
 	private fun player(name: String): AudioStreamPlayer {
 		val node = AudioStreamPlayer()
@@ -119,12 +150,12 @@ class AudioManager : Node() {
 		// Celle qui arrive monte.
 		if (level < 1.0) {
 			level = min(level + step, 1.0)
-			music?.volumeDb = decibels(level).toFloat()
+			music?.volumeDb = decibels(level * musicGain()).toFloat()
 		}
 		// Celle qui part s'éteint, puis se tait pour de bon.
 		if (leaving.isNotEmpty()) {
 			leavingLevel -= step
-			if (leavingLevel <= 0.0) silence() else outgoing?.volumeDb = decibels(leavingLevel).toFloat()
+			if (leavingLevel <= 0.0) silence() else outgoing?.volumeDb = decibels(leavingLevel * musicGain()).toFloat()
 		}
 	}
 
@@ -165,7 +196,7 @@ class AudioManager : Node() {
 		out.streamPaused = false
 		playing = id
 		level = if (fadeSeconds > 0.0) 0.0 else 1.0
-		out.volumeDb = decibels(level).toFloat()
+		out.volumeDb = decibels(level * musicGain()).toFloat()
 		if (id.isEmpty()) return
 
 		val stream = load("music/$id") ?: return
@@ -235,7 +266,8 @@ class AudioManager : Node() {
 		if (voice.playing) return false
 		val stream = load("cries/$species") ?: return false
 		voice.stream = stream
-		voice.volumeDb = decibels(volume).toFloat()
+		cryVolume = volume
+		voice.volumeDb = decibels(volume * Settings.gain(Settings.Volume.CRIES)).toFloat()
 		voice.play()
 		lastCry = species
 		cryCount++
