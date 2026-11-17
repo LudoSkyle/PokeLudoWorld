@@ -19,8 +19,12 @@ est l'endroit où le combat se branchera.
 - **Où** : la case doit porter une tuile du calque `Background/Grass` — le même
   qui dessine l'herbe ([tilesets.md](tilesets.md)). Rien à poser de plus.
 - **Combien** : la carte donne la chance par pas, en pour cent, sur son nœud
-  `Level` : `metadata/encounter_rate = 10`. Sans ce réglage, ou à 0, ses herbes
-  sont vides.
+  `Level` : `metadata/encounter_rate = 3` pour un pas marché,
+  `metadata/encounter_rate_run = 5` pour un pas couru — courir dans l'herbe
+  dérange davantage. Sans le second réglage, courir ou marcher revient au
+  même ; sans le premier, ou à 0, ses herbes sont vides au pas. Ces deux
+  valeurs sont celles des cartes du jeu (Ludovic, 17/11/2026 : à 10, on
+  croisait trop de monde).
 - **Qui** : la table de rencontres de la carte, `metadata/wild` (ci-dessous).
   Une carte qui a une chance mais pas de table n'a personne à montrer : pas de
   rencontre.
@@ -37,7 +41,8 @@ est l'endroit où le combat se branchera.
 Une ligne sur le nœud `Level`, lue par `WildTable.kt` :
 
 ```
-metadata/encounter_rate = 10
+metadata/encounter_rate = 3
+metadata/encounter_rate_run = 5
 metadata/wild = "mulotin:2-4*50 | piafeuille:2-5*35 | chenibulle:3*15"
 ```
 
@@ -55,9 +60,13 @@ Une entrée mal écrite (espèce inconnue, niveaux à l'envers, poids nul) est
 `tests/run.sh wild_table` passe toutes les cartes en revue et refuse une
 entrée fausse ou une chance sans table.
 
-| Carte | `encounter_rate` | `wild` |
+| Carte | `encounter_rate` / `_run` | `wild` |
 |---|---|---|
-| `start_island` | 10 | en attendant la liste des espèces de la région : Mulotin 2–4 (50), Piafeuille 2–5 (35), Chenibulle 3 (15) |
+| `start_island` | 3 / 5 | en attendant la liste des espèces de la région : Mulotin 2–4 (50), Piafeuille 2–5 (35), Chenibulle 3 (15) |
+| `north_route` | 3 / 5 | les mêmes, un peu plus forts : Mulotin 3–5 (45), Piafeuille 3–6 (35), Chenibulle 4–5 (20) |
+
+Le terrain d'essai (`tests/maps/field.tscn`) garde 10 au pas et n'a pas de réglage
+pour la course : ses tests imposent le sort.
 
 ## Les espèces
 
