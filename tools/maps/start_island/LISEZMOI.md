@@ -24,5 +24,5 @@ session où ils ont été écrits :
 **La scène a été retouchée depuis** — les six cases de la trouée du nord
 mènent maintenant à la route du nord (`Doors/Nord0`…`Nord5`). Relancer ce
 générateur écraserait ces retouches : pour le remettre en service, y reporter
-d'abord ce changement, et prendre modèle sur `tools/maps/north_route/`, qui,
+d'abord ce changement, et prendre modèle sur `tools/maps/route_1/`, qui,
 lui, tourne depuis le dépôt.

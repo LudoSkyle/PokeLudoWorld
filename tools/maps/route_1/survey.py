@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Relève la carte d'exemple tuile par tuile : reference.png -> survey.json.
 
-    python3 tools/maps/north_route/survey.py            # écrit survey.json, dit ce qui reste inexpliqué
-    python3 tools/maps/north_route/survey.py --map      # en plus, la carte des cases non reconstituées
+    python3 tools/maps/route_1/survey.py            # écrit survey.json, dit ce qui reste inexpliqué
+    python3 tools/maps/route_1/survey.py --map      # en plus, la carte des cases non reconstituées
 
 La carte d'exemple est faite des tuiles de `assets/levels/sources/town_compilation.png` :
 on ne devine donc rien, on **retrouve** chaque tuile, au pixel près. Le catalogue des tuiles

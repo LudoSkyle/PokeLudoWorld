@@ -179,8 +179,8 @@ PNJ : rien à régler par carte, il suffit que le calque s'appelle
 
 **Une planche qui a ses propres hautes herbes** apporte sa paire de sources,
 rangées de la même façon — les trois états aux colonnes 6, 7, 8 de la rangée
-0 — et s'ajoute à `FRONTS` dans `TallGrass.kt`. La route du nord a les
-siennes (`12` et `13`, voir « Les terrains de la route du nord »).
+0 — et s'ajoute à `FRONTS` dans `TallGrass.kt`. La Route 1 a les
+siennes (`12` et `13`, voir « Les terrains de la Route 1 »).
 
 Deux essais écartés, pour mémoire : un cache d'herbe attaché au personnage (il
 glisse sur l'herbe pendant le pas), et la touffe qui reste couchée tant qu'on
@@ -300,9 +300,9 @@ Les rochers :
 (`6:24,0`) : ce sont des éléments spéciaux, pas du décor
 ([mapping.md](mapping.md)).
 
-## Les terrains de la route du nord
+## Les terrains de la Route 1
 
-`north_route` ne lit **que** `route.png` (source 11) et ses hautes herbes
+`route_1` ne lit **que** `route.png` (source 11) et ses hautes herbes
 (sources 12 et 13) : la carte d'exemple qu'elle reproduit est faite des tuiles
 de `sources/town_compilation.png`, et ce sont elles qu'on a découpées. Rien de
 l'atlas `environments.png` n'y est posé — deux styles ne se mélangent pas sur
@@ -337,7 +337,7 @@ rentrants `i j / k l`.
   escalier. C'est le générateur qui choisit la variante ; les collisions,
   elles, sont déclarées par `route_tiles.blocks`.
 - **Les sources 11 à 13 sont réécrites en entier par
-  `tools/maps/north_route/generate.py --write`.** Une collision de la route ne
+  `tools/maps/route_1/generate.py --write`.** Une collision de la route ne
   se retouche pas dans l'éditeur.
 - **La falaise est un anneau d'une case**, sur le pourtour d'un niveau. Deux
   anneaux l'un dans l'autre, roche puis herbe, font la falaise à deux étages

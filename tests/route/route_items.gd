@@ -4,7 +4,7 @@ extends "res://tests/lib.gd"
 # carte d'exemple. Leur case vient du generateur : le test la lit sur la carte.
 
 func scene() -> String:
-	return "north_route"
+	return "route_1"
 
 func start() -> Vector2i:
 	return Vector2i(45, 48)

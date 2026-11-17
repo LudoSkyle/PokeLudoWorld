@@ -92,4 +92,4 @@ func test() -> void:
 	await talk("Roland, apres", Vector2i(33, 24), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
 	await walk("route du nord", Vector2i(30, 1), false)
 	await hold_until_change("la trouee du nord, la Veillee finie", "ui_up")
-	check("la route du nord est ouverte : on quitte l'ile par la trouee", str(level().scene_file_path).ends_with("north_route.tscn"), str(level().scene_file_path))
+	check("la route du nord est ouverte : on quitte l'ile par la trouee", str(level().scene_file_path).ends_with("route_1.tscn"), str(level().scene_file_path))

@@ -10,7 +10,7 @@ const SOUTH := [Vector2i(44, 49), Vector2i(45, 49), Vector2i(46, 49)]
 const ROUTE := 11          # la source du TileSet decoupee dans la planche de l'exemple (route.png)
 
 func scene() -> String:
-	return "north_route"
+	return "route_1"
 
 func start() -> Vector2i:
 	return Vector2i(45, 48)
@@ -49,7 +49,7 @@ func test() -> void:
 	check("la carte fait 69 cases sur 50, comme l'exemple", ground.get_used_rect() == Rect2i(0, 0, W, H), str(ground.get_used_rect()))
 	check("on demarre dans la trouee du sud", cell() == Vector2i(45, 48), str(cell()))
 	check("la carte donne sa chance de rencontre et sa table", int(level().get_meta("encounter_rate", 0)) == 3 and int(level().get_meta("encounter_rate_run", 0)) == 5 and str(level().get_meta("wild", "")).contains("mulotin"))
-	check("c'est une carte d'exterieur, et elle a son nom", level().get_meta("daylight", false) == true and str(level().get_meta("location", "")) == "Route du nord")
+	check("c'est une carte d'exterieur, et elle a son nom", level().get_meta("daylight", false) == true and str(level().get_meta("location", "")) == "Route 1")
 	check("tout le sol vient de la planche de la route", ground.get_cell_source_id(Vector2i(30, 24)) == ROUTE and ground.get_cell_source_id(Vector2i(45, 44)) == ROUTE)
 
 	# Ce qui bloque, ce qui porte.

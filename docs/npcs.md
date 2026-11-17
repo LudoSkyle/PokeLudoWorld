@@ -123,7 +123,7 @@ temps à l'autre est fait de plusieurs nœuds.
 | **le coureur** | fait le tour de la place | le fait dans l'autre sens (`RunnerAfter`) : dix ans dans le mauvais sens | **court toujours** : à chaque tour, il salue la cloche |
 | **les deux ouvriers** | gardent la trouée (28,3) et (33,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis à côté de la trouée (27,5), l'autre range le quai (33,39) |
 | **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
-| **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un sur la route du nord (31,7), une vers la jetée (32,39), le karatéka sur la plage de la crique (29,9), bien en vue | repartis |
+| **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un sur la Route 1 (31,7), une vers la jetée (32,39), le karatéka sur la plage de la crique (29,9), bien en vue | repartis |
 | **la dame du banc** (12,13) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
 | **la baigneuse** (39,37), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |
 | **le nageur** (24,9), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
@@ -210,10 +210,10 @@ souffle se tire de la `seed` : deux volants qui la partagent ont la même
 allure et les mêmes ondulations, donc gardent leur écart — c'est ce qui fait
 un groupe. `rest` ne sert pas.
 
-Sur la route du nord : dix volants en quatre groupes, tous vers l'est, sur
+Sur la Route 1 : dix volants en quatre groupes, tous vers l'est, sur
 toute la largeur de la carte — trois Granivol au nord, deux Floravol,
 trois Cotovol au-dessus de la rivière, deux Granivol au sud
-(`PACKS` dans `tools/maps/north_route/generate.py`). **Le volant se choisit
+(`PACKS` dans `tools/maps/route_1/generate.py`). **Le volant se choisit
 selon le milieu** : oiseaux de mer sur l'île, Pokémon de prairie au-dessus
 d'une forêt. `tests/run.sh route_flyers`.
 

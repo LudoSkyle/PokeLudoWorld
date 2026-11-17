@@ -3,7 +3,7 @@
 
     python3 tools/route_tiles.py
 
-La carte d'exemple de la route (`tools/maps/north_route/reference.png`) est faite des tuiles
+La carte d'exemple de la route (`tools/maps/route_1/reference.png`) est faite des tuiles
 de `assets/levels/sources/town_compilation.png`. Cette planche-là, le jeu ne la lit jamais :
 ce script y découpe ce dont la route a besoin, sur la grille de 16, sans rien redessiner, et
 relancer le script redonne le même fichier. Les ombres translucides de la planche (arbres,
@@ -29,7 +29,7 @@ import island_tiles  # noqa: E402
 from island_tiles import load, save, LEVELS  # noqa: E402
 
 OUTPUT = os.path.join(LEVELS, 'route.png')
-REFERENCE = os.path.join(HERE, 'maps', 'north_route', 'reference.png')
+REFERENCE = os.path.join(HERE, 'maps', 'route_1', 'reference.png')
 CLEAR = (0, 0, 0, 0)
 
 # nom : (bloc 3 x 3 sur la planche, ses coins rentrants ou None, (colonne, rangée) dans route.png, idem pour les coins)

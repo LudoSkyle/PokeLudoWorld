@@ -4,7 +4,7 @@ extends "res://tests/lib.gd"
 # Cotovol que le vent porte d'ouest en est, par groupes de deux ou trois, sans jamais se poser.
 
 func scene() -> String:
-	return "north_route"
+	return "route_1"
 
 func start() -> Vector2i:
 	return Vector2i(45, 48)
