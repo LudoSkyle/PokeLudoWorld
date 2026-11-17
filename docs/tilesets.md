@@ -259,8 +259,10 @@ décide, donc une planche de ponton posée sur l'eau ne reflète rien.
 
 ## Les terrains de l'île
 
-`start_island` reprend la plage de l'ancien village et y ajoute le relief et les
-pontons. Chaque famille est un bloc 3×3 (coins, bords, centre) plus quatre
+**L'île de départ ne se sert plus de ces terrains** : depuis le 17/11/2026 elle
+est posée avec ceux de la Route 1 (plus bas), et ses maisons viennent de
+`village.png` (source 14). Les terrains de l'atlas décrits ici restent ceux du
+terrain d'essai des tests (`tests/maps/field.tscn`). Chaque famille est un bloc 3×3 (coins, bords, centre) plus quatre
 coins rentrants ; aucune ne sait dessiner une matière **d'une seule case de
 large**. Les règles d'emploi sont dans [mapping.md](mapping.md).
 
@@ -301,6 +303,26 @@ Les rochers :
 ([mapping.md](mapping.md)).
 
 ## Les terrains de la Route 1
+
+**L'île de départ s'en sert aussi** (17/11/2026), avec trois ajouts :
+
+- **la plage** : `sand5` dans sa **variante sans collision** (`/1`). Sur la
+  Route 1 le sable est le liseré du pied des falaises, plein ; sur l'île c'est
+  aussi le sol des plages, où l'on marche. Le bord du sable reste dans la case
+  d'eau voisine, plein. Le sol posé **sous une falaise** prend aussi cette
+  variante : c'est la falaise qui arrête, et ses deux coins rentrants du haut
+  doivent rester libres ;
+- **les maisons** : `village.png`, source 14, fabriquée par
+  `tools/village_tiles.py` à partir de la même planche. Chaque maison est une
+  seule tuile de plusieurs cases, calée pour que sa porte tombe au milieu d'une
+  case, avec trois rangées de plus en bas pour son ombre. Elle bloque ses
+  quatre rangées du bas sauf la case de la porte ; on passe derrière le haut du
+  toit. Ses trois rectangles de collision sont **rentrés d'un pixel** : bord à
+  bord, le moteur les soude et y laisse un trou. Elle se trie à −1 : qui se
+  tient sur la case de la porte passe devant ;
+- le mobilier (bancs, parasols, serviettes), les lampadaires et les statues
+  restent ceux de l'atlas : la planche de la Route 1 n'en a pas encore été
+  fouillée.
 
 `route_1` ne lit **que** `route.png` (source 11) et ses hautes herbes
 (sources 12 et 13) : la carte d'exemple qu'elle reproduit est faite des tuiles

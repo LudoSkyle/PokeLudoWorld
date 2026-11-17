@@ -131,7 +131,8 @@ pas justifier est une erreur.
   30 cases de large (références, 17/11/2026 — l'ancienne limite de 65 cases
   dans chaque sens ne vaut plus). Le principe 7 demeure : la taille suit le
   contenu, et une carte qui paraît petite peut encore rétrécir. L'île fait
-  **62 × 49** (elle en a fait 72 × 52).
+  **55 × 50**, la taille de sa carte d'exemple (elle en a fait 72 × 52, puis
+  62 × 49).
 - **Aucun bâtiment au centre exact de la carte.**
 - **Dans un village, les maisons ne s'alignent pas** : chacune à sa hauteur,
   décalée d'au moins une case. **Dans une ville, la grille est admise** : des
@@ -215,6 +216,18 @@ pas justifier est une erreur.
   couper est la récompense de qui reviendra le couper, on ne le sort pas
   devant (Ludovic, 17/11/2026). Le générateur vérifie qu'il est hors
   d'atteinte aujourd'hui et à portée une fois l'obstacle ôté.
+- **Un exemple dont on n'a pas les planches donne sa géographie, pas ses
+  tuiles** (l'île de départ, 17/11/2026). On cherche d'abord quelle planche
+  explique son *terrain* ; ce qui est posé dessus et qu'aucune planche
+  n'explique dit seulement « ici, il y a quelque chose » — presque toujours un
+  arbre. On classe alors chaque case (mer, plage, plateau, chemin, forêt), on
+  pose le résultat avec les tuiles d'une carte déjà faite, pour que le jeu
+  garde un seul style, et l'on déclare à la main, en clair, ce que l'exemple ne
+  peut pas dire : retouches, escaliers, pontons, maisons.
+- **Un escalier impose sa géographie.** La planche de la Route 1 n'a que des
+  escaliers face au sud : chaque plateau doit donc avoir un bord du bas droit
+  sur cinq cases, avec de la plage dessous. Là où l'exemple monte par le côté,
+  on creuse une anse.
 - **Ce qui vit sur une carte est du milieu de la carte.** Dans une forêt, ni
   pêcheur ni montagnard : des campeurs, des gamins, des chasseurs d'insectes.
   Au-dessus d'elle, pas d'oiseaux de mer : des Pokémon de prairie, portés par

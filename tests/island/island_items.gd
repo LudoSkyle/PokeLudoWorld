@@ -1,13 +1,13 @@
 extends "res://tests/lib.gd"
 
-# Deux Poke Balls posees au sol : une Potion au fond du recoin de la pointe de l'est,
-# une Poke Ball au bord des hautes herbes. Ni l'une ni l'autre n'est un objet rare.
+# Deux Poke Balls posees au sol : une Potion au bout de la presqu'ile du sud-est,
+# une Poke Ball au fond de la plage de l'ouest. Ni l'une ni l'autre n'est un objet rare.
 
 func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(55, 31)
+	return Vector2i(46, 45)
 
 func pick(label: String, first: String, second: String, who: String, flag_name: String) -> void:
 	check(label + " : l'objet est pose au sol, et plein", level().get_node_or_null("World/" + who) != null and not is_free(cell() + Vector2i.DOWN))
@@ -32,7 +32,7 @@ func test() -> void:
 	check("la Potion est dans le sac", bag_rows().has("Potion x1"), str(bag_rows()))
 	await tap("menu")
 	await tap("menu")
-	await place(Vector2i(5, 39))
+	await place(Vector2i(3, 42))
 	await pick("la Poke Ball", "Vous trouvez une Poké Ball !", "Vous rangez la Poké Ball dans la poche Poké Balls.", "ItemBall", "found_island_ball")
 	await reload_level()
 	check("apres rechargement, elles ne reviennent pas", level().get_node_or_null("World/ItemPotion") == null and level().get_node_or_null("World/ItemBall") == null)

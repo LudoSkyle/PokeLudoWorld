@@ -51,13 +51,16 @@ src/main/kotlin/fr/skyle/pokeludoworld/
 `tools/` (hors Godot) : les scripts qui fabriquent une planche à partir d'une
 autre — `island_tiles.py` produit `assets/levels/island.png`,
 `route_tiles.py` découpe `assets/levels/route.png` dans la planche de la
-carte d'exemple de la route,
+carte d'exemple de la route, `village_tiles.py` y découpe les maisons de
+`assets/levels/village.png`,
 `weather_sheets.py` les planches de `assets/weather/`, `item_icons.py` les
 icônes de `assets/items/icons/` (`named/`, `unnamed/`, `invented/`, et
 `custom/` pour celles faites pour le jeu). Les trois
 `title_*.py` dessinent les images de l'écran titre. `tools/maps/` garde les
 générateurs de cartes : `route_1/` relève une carte d'exemple tuile par
-tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`).
+tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`) ;
+`start_island/` lit la géographie d'une carte d'exemple (`geography.py`) et en
+fabrique l'île de départ, avec les tuiles de la Route 1.
 
 ## Règles qui ne se redemandent pas
 

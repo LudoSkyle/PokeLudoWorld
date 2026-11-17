@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/interiors.png" id="2_interiors"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/island.png" id="7_island"]
 [ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/route.png" id="8_route"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/village.png" id="9_village"]
 
 [ext_resource type="Shader" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/water.gdshader" id="4_water"]
 [ext_resource type="Shader" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/shaders/window.gdshader" id="5_window"]
@@ -10880,6 +10881,31 @@ texture_region_size = Vector2i(16, 4)
 8:0/0/texture_origin = Vector2i(0, -6)
 8:0/0/y_sort_origin = 2
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_village"]
+resource_name = "village"
+texture = ExtResource("9_village")
+0:0/size_in_atlas = Vector2i(5, 9)
+0:0/0 = 0
+0:0/0/texture_origin = Vector2i(-32, 16)
+0:0/0/y_sort_origin = -1
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-7, -55, 7, -55, 7, 7, -7, 7)
+0:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(9, -55, 23, -55, 23, -9, 9, -9)
+0:0/0/physics_layer_0/polygon_2/points = PackedVector2Array(25, -55, 71, -55, 71, 7, 25, 7)
+5:0/size_in_atlas = Vector2i(5, 9)
+5:0/0 = 0
+5:0/0/texture_origin = Vector2i(-32, 16)
+5:0/0/y_sort_origin = -1
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-7, -55, 39, -55, 39, 7, -7, 7)
+5:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(41, -55, 55, -55, 55, -9, 41, -9)
+5:0/0/physics_layer_0/polygon_2/points = PackedVector2Array(57, -55, 71, -55, 71, 7, 57, 7)
+10:0/size_in_atlas = Vector2i(8, 9)
+10:0/0 = 0
+10:0/0/texture_origin = Vector2i(-56, 16)
+10:0/0/y_sort_origin = -1
+10:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-7, -55, 55, -55, 55, 7, -7, 7)
+10:0/0/physics_layer_0/polygon_1/points = PackedVector2Array(57, -55, 71, -55, 71, -9, 57, -9)
+10:0/0/physics_layer_0/polygon_2/points = PackedVector2Array(73, -55, 119, -55, 119, 7, 73, 7)
+
 [resource]
 physics_layer_0/collision_layer = 1
 physics_layer_0/collision_mask = 1
@@ -10906,3 +10932,4 @@ sources/10 = SubResource("TileSetAtlasSource_island")
 sources/11 = SubResource("TileSetAtlasSource_route")
 sources/12 = SubResource("TileSetAtlasSource_route_grass")
 sources/13 = SubResource("TileSetAtlasSource_route_grass_front")
+sources/14 = SubResource("TileSetAtlasSource_village")

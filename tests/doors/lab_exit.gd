@@ -10,4 +10,4 @@ func start() -> Vector2i:
 
 func test() -> void:
 	await hold_until_change("Bas sur le paillasson", "ui_down")
-	await arrival("village devant le labo", Vector2i(48, 10), "idle_down")
+	await arrival("village devant le labo", Vector2i(45, 9), "idle_down")
