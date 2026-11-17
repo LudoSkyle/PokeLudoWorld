@@ -208,8 +208,8 @@ pas justifier est une erreur.
   de la planche de la carte : avec leurs rambardes si elle en a, nues sinon.
   Son tablier recouvre les anneaux qu'il enjambe.
 - **Ce que l'exemple suppose que le jeu sait faire ferme un passage tant que
-  le jeu ne le sait pas** : un rebord de roche qu'on saute dans un sens, un
-  arbuste à couper, une eau où l'on surfe. On les pose quand même — c'est la
+  le jeu ne le sait pas** : un arbuste à couper, une eau où l'on surfe (le
+  rebord de roche, lui, se saute depuis le 17/11/2026). On les pose quand même — c'est la
   carte — mais on dit quel passage chacun ferme et par où l'on fait le tour.
   **Ce que l'exemple range derrière y reste** : un objet derrière un arbuste à
   couper est la récompense de qui reviendra le couper, on ne le sort pas

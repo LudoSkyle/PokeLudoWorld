@@ -95,6 +95,31 @@ Vitesse : `walk_pace`, 4 cases par seconde.
 
 On court partout, intérieurs compris.
 
+## Sauter un rebord
+
+Un rebord de roche est une **case pleine** : on ne s'y tient jamais. Mais
+quand le joueur avance vers lui dans le sens de sa marche — du haut vers le
+bas, là où tombe son ombre — il le **saute** et retombe une case plus loin.
+
+- `CharacterMovement.tryJump(direction)`, appelé par `Player` quand
+  `tryWalk` a refusé le pas. Il réussit si la case voisine porte, dans un
+  calque de `Background`, une tuile dont la donnée `jump` du TileSet vaut
+  cette direction ([tilesets.md](tilesets.md)), et si la case d'après est
+  libre. Elle est réservée comme pour un pas.
+- Le saut est **un pas de deux cases**, qu'on n'interrompt pas, à son allure
+  à lui : 5 cases par seconde, soit 0,4 s, qu'on arrive au pas ou en courant.
+- **C'est l'image qui monte**, en cloche, jusqu'à 8 px (`lift`) ; le nœud du
+  joueur reste au sol, où sont son tri en Y et sa caméra.
+- Dans l'autre sens, par le bout ou sans place pour retomber : pas de saut,
+  on bute comme sur un mur.
+- **Seul le joueur saute.** Un PNJ s'arrête devant un rebord.
+- En retombant on s'est posé sur une case : une rencontre peut s'y tirer,
+  une porte s'y déclencher, comme après un pas.
+
+Pour qu'une tuile se saute : lui donner la donnée `jump` et une collision
+pleine. Sur la route du nord c'est le générateur qui l'écrit. Il n'y a pas
+encore de son de saut. `tests/run.sh route_ledges`.
+
 ## Les traces de pas
 
 Sur le sable, un personnage — le joueur comme un PNJ — laisse derrière lui une

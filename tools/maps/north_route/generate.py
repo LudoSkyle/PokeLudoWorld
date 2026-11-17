@@ -68,6 +68,7 @@ def route_sources():
         if route_tiles.blocks(name): out.append('%s/next_alternative_id = 2' % key)
         out.append('%s/0 = 0' % key)
         if wet: out.append('%s/0/material = %s' % (key, WATER_MATERIAL))
+        if route_tiles.jump(name): out.append('%s/0/custom_data_2 = Vector2i(%d, %d)' % ((key,) + route_tiles.jump(name)))          # le sens où ce rebord se saute (CharacterMovement.tryJump)
         if route_tiles.blocks(name):
             out += ['%s/0/physics_layer_0/polygon_0/points = %s' % (key, polygon([(0, 0)])), '%s/1 = 1' % key]          # la variante 1 : le même dessin, sans collision (sous un pont, sous un escalier)
             if wet: out.append('%s/1/material = %s' % (key, WATER_MATERIAL))
@@ -89,6 +90,10 @@ def patch_tileset(write):
         island = '[ext_resource type="Texture2D" path="%sassets/levels/island.png" id="7_island"]' % RES
         assert s.count(island) == 1
         s = s.replace(island, island + '\n' + texture)
+    if 'custom_data_layer_2/name = "jump"' not in s:          # la donnée des rebords qui se sautent : un Vector2i (type 6)
+        last = 'custom_data_layer_1/type = 1\n'
+        assert s.count(last) == 1
+        s = s.replace(last, last + 'custom_data_layer_2/name = "jump"\ncustom_data_layer_2/type = 6\n')
     assert s.count('\n[resource]') == 1
     s = s.replace('\n[resource]', '\n' + route_sources() + '\n[resource]')
     s = s.rstrip('\n') + '\nsources/11 = SubResource("TileSetAtlasSource_route")\nsources/12 = SubResource("TileSetAtlasSource_route_grass")\nsources/13 = SubResource("TileSetAtlasSource_route_grass_front")\n'

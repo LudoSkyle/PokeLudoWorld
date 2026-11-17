@@ -348,8 +348,12 @@ rentrants `i j / k l`.
 - **Les ombres sont translucides** dans la planche (arbres, falaises,
   rochers) et le restent dans `route.png` : le moteur les fond sur ce qu'il y
   a dessous, comme l'exemple.
-- **Un rebord de roche bloque dans les deux sens**, faute de saut. Le jour où
-  le saut existe, c'est sa collision qui change, pas la carte.
+- **Un rebord de roche est plein, et se saute dans un sens.** Sa tuile porte
+  ce sens dans la donnée perso **`jump`** (`custom_data_layer_2`, un
+  `Vector2i`) : `(0, 1)` pour `ledgeL/M/R`, `(1, 0)` pour `ledgeV…`, `(-1, 0)`
+  pour `ledgeW…` — du côté où tombe son ombre (`route_tiles.jump`). Une tuile
+  sans cette donnée ne se saute pas. `CharacterMovement.tryJump` la lit
+  ([player.md](player.md)).
 
 Ce qui est debout est **une seule tuile de plusieurs cases**, posée sur la
 case en bas à gauche de son pied (`size_in_atlas`, `texture_origin`), dans un
