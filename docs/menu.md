@@ -123,7 +123,7 @@ au menu de pause.
 
 | Page | Lignes |
 |---|---|
-| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · Retour |
+| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · **Pokédex national** (la vue de debug, voir [pokedex.md](pokedex.md)) · Retour |
 | **les quêtes** | une ligne par quête (`Quests.ALL`) · Retour |
 | **la quête choisie** | Repartir de zéro · Étape suivante · Finir la quête · Retour |
 

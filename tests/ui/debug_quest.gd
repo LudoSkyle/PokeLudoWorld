@@ -11,7 +11,7 @@ func start() -> Vector2i:
 func test() -> void:
 	await menu_pick("Debug")
 	var tools := debug_lines()
-	check("Debug ouvre ses outils", debug_choices().visible and tools.size() == 5 and tools[0] == "Remplir le sac" and tools[1] == "Quêtes" and tools[2].begins_with("Heure : ") and tools[3].begins_with("Météo : ") and tools[4] == "Retour", str(tools))
+	check("Debug ouvre ses outils", debug_choices().visible and tools.size() == 6 and tools[0] == "Remplir le sac" and tools[1] == "Quêtes" and tools[2].begins_with("Heure : ") and tools[3].begins_with("Météo : ") and tools[4] == "Pokédex national" and tools[5] == "Retour", str(tools))
 	shot("debug_outils")
 	await tap("ui_down")
 	await tap("interact")
@@ -22,7 +22,7 @@ func test() -> void:
 	await tap("menu")
 	check("la touche du menu remonte d'une page", debug_lines() == ["La cloche de la Veillée", "Retour"] and debug_choices().visible)
 	await tap("menu")
-	check("encore d'une page", debug_lines().size() == 5 and debug_lines()[1] == "Quêtes")
+	check("encore d'une page", debug_lines().size() == 6 and debug_lines()[1] == "Quêtes")
 	await tap("menu")
 	check("puis referme les outils, pas le menu", not debug_choices().visible and menu_open())
 	await tap("menu")

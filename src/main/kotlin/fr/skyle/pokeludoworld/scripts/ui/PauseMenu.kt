@@ -132,6 +132,12 @@ class PauseMenu : CanvasLayer() {
 			return
 		}
 
+		val dex = PokedexDebug.instance
+		if (dex != null && dex.isOpen) {
+			dex.handle(interact)
+			return
+		}
+
 		val save = SaveMenu.instance
 		if (save != null && save.isOpen) {
 			save.handle(interact)
@@ -156,6 +162,11 @@ class PauseMenu : CanvasLayer() {
 						// Le temps qu'il fait défile de la même façon, sans fermer la boîte.
 						Weather.cycle()
 						tools.relabel(TOOL_WEATHER, T(Weather.label()))
+					}
+					TOOL_DEX -> {
+						// La vue de debug du Pokédex national prend tout l'écran : la boîte se referme derrière elle.
+						tools.close()
+						PokedexDebug.instance?.open()
 					}
 					else -> tools.close()
 				}
@@ -211,7 +222,7 @@ class PauseMenu : CanvasLayer() {
 	private fun showTools() {
 		debugPage = DebugPage.TOOLS
 		debugChoices?.open(
-			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_BACK_LABEL)),
+			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_DEX_LABEL), T(DEBUG_BACK_LABEL)),
 		)
 	}
 
@@ -283,11 +294,13 @@ private const val TOOL_BAG = 0
 private const val TOOL_QUESTS = 1
 private const val TOOL_TIME = 2
 private const val TOOL_WEATHER = 3
+private const val TOOL_DEX = 4
 private const val ACTION_RESET = 0
 private const val ACTION_NEXT = 1
 private const val ACTION_FINISH = 2
 private val DEBUG_BAG_LABEL = N("Remplir le sac")
 private val DEBUG_QUESTS_LABEL = N("Quêtes")
+private val DEBUG_DEX_LABEL = N("Pokédex national")
 private val DEBUG_BACK_LABEL = N("Retour")
 private val ACTION_RESET_LABEL = N("Repartir de zéro")
 private val ACTION_NEXT_LABEL = N("Étape suivante")

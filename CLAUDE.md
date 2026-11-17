@@ -24,6 +24,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 | menu de pause, options | [docs/menu.md](docs/menu.md) |
 | sac, objets, inventaire | [docs/bag.md](docs/bag.md) |
 | Pokémon sauvages, rencontres dans l'herbe | [docs/encounters.md](docs/encounters.md) |
+| Pokédex, données des espèces | [docs/pokedex.md](docs/pokedex.md) |
 | sons, musiques | [docs/audio.md](docs/audio.md) |
 | jour et nuit, teinte du dehors | [docs/daynight.md](docs/daynight.md) |
 | pluie, neige, brouillard, le temps qu'il fait | [docs/weather.md](docs/weather.md) |
