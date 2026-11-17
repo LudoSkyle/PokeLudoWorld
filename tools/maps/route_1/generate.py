@@ -170,7 +170,7 @@ npc('RouteBugCatcher', tall[len(tall) // 2], 'frlg_bugcatcher', "Les Pokémon de
 node('[node name="Overhead" type="TileMapLayer" parent="."]\ntile_set = ExtResource("1_ian7c")\n')
 node('[node name="SpawnPoint" type="Node2D" parent="."]\nposition = Vector2(%d, %d)\n' % px(gen.START))
 node('[node name="Doors" type="Node2D" parent="."]\n')
-BACK = {0: 1, 1: 2, 2: 3}          # les trois cases de la trouée du sud mènent aux trois cases du milieu de la trouée du nord de l'île
+BACK = {0: 0, 1: 1, 2: 2}          # les trois cases de la trouée du sud mènent aux trois de la sortie du nord de l'île
 for i, c in enumerate(gen.SOUTH_GATE):
     node('[node name="Sud%d" parent="Doors" instance=ExtResource("2_door")]\nposition = Vector2(%d, %d)\ntarget_scene = "%sstart_island.tscn"\ntarget_door = "Nord%d"\nentry_direction = Vector2(0, -1)\n' % (i, *px(c), LEVELS, BACK[i]))
 node('[node name="Sky" type="Node2D" parent="."]\nz_index = 40\n')

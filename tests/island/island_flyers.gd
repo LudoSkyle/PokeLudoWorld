@@ -84,3 +84,21 @@ func test() -> void:
 	# On marche dessous sans rien heurter.
 	check("un oiseau au-dessus d'une case ne la bouche pas", is_free(Vector2i(25, 10)) and not find_path(Vector2i(6, 9), Vector2i(25, 10)).is_empty())
 	shot("ile_oiseaux")
+
+	# De loin en loin, un oiseau qui passe au-dessus du joueur pousse son cri.
+	var caller: Node2D = birds[0]
+	var before: int = audio().cries_played()
+	for b in birds:
+		b.set("cry_every", Vector2(0, 0))          # les autres se taisent : on n'ecoute que celui-la
+	caller.set("cry_range", 0.5)
+	caller.set("cry_every", Vector2(0.2, 0.4))
+	await secs(2.0)
+	check("loin du joueur, un oiseau ne crie pas", audio().cries_played() == before or caller.position.distance_to(player().position) <= 8.0, "%d" % (audio().cries_played() - before))
+	caller.set("cry_range", 400.0)
+	before = audio().cries_played()
+	await secs(2.5)
+	check("au-dessus du joueur, il pousse son cri", audio().cries_played() > before and audio().last_cry_id() == str(caller.get("species")), "%d %s" % [audio().cries_played() - before, audio().last_cry_id()])
+	caller.set("cry_every", Vector2(0, 0))
+	before = audio().cries_played()
+	await secs(1.5)
+	check("regle a zero, il se tait", audio().cries_played() == before)

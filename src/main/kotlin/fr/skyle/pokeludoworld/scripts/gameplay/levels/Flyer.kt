@@ -1,6 +1,9 @@
 package fr.skyle.pokeludoworld.scripts.gameplay.levels
 
 import fr.skyle.pokeludoworld.scripts.autoload.Globals
+import fr.skyle.pokeludoworld.scripts.core.AudioManager
+import fr.skyle.pokeludoworld.scripts.core.SceneManager
+import fr.skyle.pokeludoworld.scripts.ui.MessageBox
 import fr.skyle.pokeludoworld.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -69,6 +72,21 @@ class Flyer : Node2D() {
 	@Export
 	var seed: Int = 0
 
+	/** Le temps entre deux cris, en secondes : au moins, au plus. (0, 0) : il se tait. */
+	@Category("Cri")
+	@Export
+	var cryEvery: Vector2 = Vector2(10.0, 24.0)
+
+	/** Il ne crie que si le joueur est à moins de tant de cases : c'est en passant au-dessus de lui qu'on l'entend. */
+	@Category("Cri")
+	@Export
+	var cryRange: Double = 4.0
+
+	/** Le volume de son cri, de 0 à 1 : un bruit de fond, pas un événement. */
+	@Category("Cri")
+	@Export
+	var cryVolume: Double = 0.45
+
 	/** Le vent qui le porte : 1 vers l'est, -1 vers l'ouest, 0 s'il vole de lui-même. */
 	@Category("Vol")
 	@Export
@@ -88,6 +106,7 @@ class Flyer : Node2D() {
 	private var gliding = false
 	private var wait = 0.0
 	private var clock = 0.0
+	private var cryWait = 0.0
 
 	/** Porté par le vent : sa hauteur de route, le temps du souffle (commun au groupe), sa propre phase. */
 	private var lane = 0.0
@@ -104,6 +123,7 @@ class Flyer : Node2D() {
 		// Chacun part à son heure : sans ça, tous les oiseaux de la carte bougeraient ensemble.
 		wait = random.nextDouble() * rest.y
 		clock = random.nextDouble()
+		cryWait = nextCry() * Random.Default.nextDouble()          // chacun son heure, dès le premier cri
 		if (drift != 0) {
 			heading = drift.coerceIn(-1, 1) to 0
 			lane = position.y
@@ -118,6 +138,7 @@ class Flyer : Node2D() {
 	override fun _process(delta: Double) {
 		clock += delta
 		flap()
+		call(delta)
 
 		if (drift != 0) {
 			float(delta)
@@ -136,6 +157,22 @@ class Flyer : Node2D() {
 
 		wait -= delta
 		if (wait <= 0.0) launch()
+	}
+
+	private fun nextCry(): Double = cryEvery.x + Random.Default.nextDouble() * (cryEvery.y - cryEvery.x).coerceAtLeast(0.0)
+
+	/**
+	 * Pousse son cri de loin en loin, quand il passe au-dessus du joueur — pas
+	 * pendant un dialogue. Hors de portée, ou si un autre crie déjà, il
+	 * réessaie une seconde plus tard : l'occasion n'est pas perdue.
+	 */
+	private fun call(delta: Double) {
+		if (cryEvery.y <= 0.0) return
+		cryWait -= delta
+		if (cryWait > 0.0) return
+		val player = SceneManager.instance?.playerNode
+		val near = player != null && player.isInsideTree() && globalPosition.distanceTo(player.globalPosition) <= cryRange * grid()
+		cryWait = if (near && MessageBox.instance?.isOpen != true && AudioManager.instance?.cry(species, cryVolume) == true) nextCry() else CRY_RETRY
 	}
 
 	/**
@@ -206,6 +243,7 @@ class Flyer : Node2D() {
 		private const val FRAME = 32.0
 		private const val BEATS_PER_SECOND = 5.0
 		private const val MAX_STRIDE = 3
+		private const val CRY_RETRY = 1.0
 
 		/** Porté par le vent : marge hors de la zone avant de rentrer par l'autre bord, en cases. */
 		private const val EDGE = 1.5

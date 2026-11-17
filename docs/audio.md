@@ -8,6 +8,7 @@ sons, rangées dans trois dossiers de `assets/audio/` :
 | **musique** | `music/` | celle du lieu, en boucle |
 | **jingle** | `jingles/` | **met la musique en pause**, joue, puis la musique **reprend où elle en était** |
 | **bruitage** | `sfx/` | passe **par-dessus** la musique, sans y toucher |
+| **cri** | `cries/` | le cri d'un Pokémon, un fichier par espèce (`cries/wingull.ogg`) ; `AudioManager.cry(espèce, volume)` ; un seul à la fois, par-dessus la musique. Aujourd'hui : les cinq Pokémon volants du décor ([npcs.md](npcs.md)) |
 
 Un son se désigne par le **nom de son fichier sans l'extension** : `bell`,
 `bump`, `new_bark_town`. Le format est libre : WAV, OGG ou MP3. En ajouter un, c'est déposer le fichier dans le bon

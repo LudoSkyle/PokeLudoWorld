@@ -130,7 +130,12 @@ dit « falaise », et derrière lui il y a la plage — on s'y tient et l'on pas
 de l'un à l'autre (Ludovic, 17/11/2026). Il n'y a pas d'herbe au niveau de la
 plage : une tuile de sable bordé d'herbe manque encore.
 
-**On change de niveau par cinq escaliers de pierre**, tous face au sud (la
+**La sortie du nord ressemble à ce qui la suit** : la Route 1 commence sur
+l'herbe, en hauteur, par une piste de trois cases — l'île finit donc de même,
+et non par un couloir de sable de cinq cases au ras de la plage (Ludovic,
+17/11/2026).
+
+**On change de niveau par six escaliers de pierre**, tous face au sud (la
 planche n'en a pas d'autres) : trois marches entre deux poteaux. Sous chacun,
 une anse de plage ; au-dessus, un bord de plateau droit sur cinq cases.
 
@@ -157,11 +162,11 @@ d'un Pokémon volant bleuit.
 | `Laboratoire` | (45,8) | → `lab_house` ; la grande maison de chaume, au pied de la montagne |
 | `MaisonSud` | (43,33) | → `orange_house_south`, chez Solange |
 | la place | dallage x 24–32, y 22–27, sur le plateau du centre | socle de la cloche en (28,23), deux statues en (25,23) et (31,23) ; le coureur en fait le tour (x 23–33, y 21–28) |
-| la trouée du nord | x 23–27, y 0–8 | un couloir de plage entre deux falaises ; deux gardes en y 3, un contre chaque paroi ; en y 0, cinq portes `Nord0`…`Nord4` mènent à la **Route 1** (`route_1`) |
+| la sortie du nord | x 24–26, y 0–7 | une piste de trois cases dans la forêt, sur le plateau du nord ; on y monte de la crique par un escalier ; deux gardes en y 3, de part et d'autre de la piste ; en y 0, trois portes `Nord0`…`Nord2` mènent à la **Route 1** (`route_1`) |
 | la crique du nord | x 19–31, y 8–17 | plage, parasol, serviette ; on passe sous un parasol, derrière son mât |
 | la cloche | (14,21), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (14,22), tourné vers le nord |
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
-| escaliers (colonne de gauche, rangée) | (14,13), (31,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
+| escaliers (colonne de gauche, rangée) | (23,8), (14,13), (31,13), (26,31), (2,33), (36,37) | sortie du nord, nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
 | objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
 

@@ -39,7 +39,7 @@ func test() -> void:
 
 	# AVANT. La trouee de la falaise : deux ouvriers la tiennent et renvoient le joueur.
 	check("avant : la place est vide", crowd() == 0, "%d" % crowd())
-	check("les deux gardes tiennent la trouee, un contre chaque paroi", cell_of("GuardWest") == Vector2i(23, 3) and cell_of("GuardEast") == Vector2i(27, 3),
+	check("les deux gardes tiennent la trouee, un contre chaque paroi", cell_of("GuardWest") == Vector2i(24, 3) and cell_of("GuardEast") == Vector2i(26, 3),
 		"%s %s" % [str(cell_of("GuardWest")), str(cell_of("GuardEast"))])
 	place(Vector2i(25, 7))
 	Input.action_press("ui_up")
@@ -59,9 +59,9 @@ func test() -> void:
 	check("le village est sur la place", there("OdileAfter") and there("AlixAfter") and there("VisitorPainter") and there("RolandAfter"))
 	check("dix personnes autour de la cloche, pas plus", crowd() == 10, "%d" % crowd())
 	check("trois visiteurs sont ailleurs : sur la route du nord, vers la jetee, sur la plage de la crique — bien en vue",
-		cell_of("VisitorKalos") == Vector2i(25, 8) and cell_of("VisitorFestival") == Vector2i(31, 41) and cell_of("VisitorBlackBelt") == Vector2i(24, 11),
+		cell_of("VisitorKalos") == Vector2i(29, 9) and cell_of("VisitorFestival") == Vector2i(31, 41) and cell_of("VisitorBlackBelt") == Vector2i(24, 11),
 		"%s %s %s" % [str(cell_of("VisitorKalos")), str(cell_of("VisitorFestival")), str(cell_of("VisitorBlackBelt"))])
-	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(43, 16))
+	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(43, 17))
 	# Personne ne gene : ni sur le tour de la place ou court le coureur, ni devant le socle, ni devant un escalier.
 	var ring_free := true
 	for x in range(23, 34):
@@ -87,7 +87,7 @@ func test() -> void:
 	check("les visiteurs sont repartis, Meme et Alix sont rentrees", not there("VisitorKalos") and not there("VisitorHiker") and not there("VisitorBlackBelt") and not there("OdileAfter") and not there("AlixAfter"))
 	check("le pecheur a repris sa place au bout de la jetee", cell_of("FisherLater") == Vector2i(33, 48) and not there("Fisher") and not there("FisherAfter"))
 	check("les ouvriers ont quitte la place : l'un surveille la trouee, l'autre range le quai",
-		cell_of("WorkerLater") == Vector2i(27, 11) and cell_of("WorkerLater2") == Vector2i(35, 41) and not there("WorkerAfter"))
+		cell_of("WorkerLater") == Vector2i(26, 11) and cell_of("WorkerLater2") == Vector2i(35, 41) and not there("WorkerAfter"))
 	check("le coureur court toujours", there("RunnerAfter"))
 	await talk("Roland, apres", Vector2i(31, 24), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
 	await walk("route du nord", Vector2i(25, 1), false)

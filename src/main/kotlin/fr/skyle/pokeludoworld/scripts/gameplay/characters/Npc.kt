@@ -21,6 +21,7 @@ import godot.api.Texture2D
 import godot.api.TileMapLayer
 import godot.core.PackedStringArray
 import godot.core.PackedVector2Array
+import godot.core.Rect2i
 import godot.core.Vector2
 import kotlin.math.abs
 import kotlin.math.floor
@@ -111,6 +112,14 @@ class Npc : CharacterBody2D() {
 	@Category("Deplacement")
 	@Export
 	var wanderLayer: String = ""
+
+	/**
+	 * Errance : le rectangle de cases dont il ne sort pas (coin haut-gauche et
+	 * taille). Vide, c'est [wanderLayer] qui borne ses pas — ou rien.
+	 */
+	@Category("Deplacement")
+	@Export
+	var wanderZone: Rect2i = Rect2i(0, 0, 0, 0)
 
 	/** Errance : pause entre deux gestes, tirée entre ces deux durées (secondes). */
 	@Category("Deplacement")
@@ -266,6 +275,11 @@ class Npc : CharacterBody2D() {
 		wanderPause.x + Random.nextDouble() * (wanderPause.y - wanderPause.x).coerceAtLeast(0.0)
 
 	private fun inZone(globalPoint: Vector2): Boolean {
+		if (wanderZone.size.x > 0 && wanderZone.size.y > 0) {
+			val x = kotlin.math.floor(globalPoint.x / grid()).toInt()
+			val y = kotlin.math.floor(globalPoint.y / grid()).toInt()
+			return x >= wanderZone.position.x && y >= wanderZone.position.y && x < wanderZone.position.x + wanderZone.size.x && y < wanderZone.position.y + wanderZone.size.y
+		}
 		if (wanderLayer.isEmpty()) return true
 		val layer = zone ?: findZone() ?: return false
 		val cell = layer.localToMap(layer.toLocal(globalPoint))

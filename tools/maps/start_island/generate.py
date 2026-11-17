@@ -86,7 +86,7 @@ placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
 # et rien ne se pose sur une piste (Ludovic, 17/11/2026). Ce qui est ici n'est pas déplacé par `settle`.
-FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29)}
+FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (19, 38)}
 def node(text): nodes.append(text)
 def pinches(c):
     ring = [(c[0] + i, c[1] + j) for i, j in ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0))]
@@ -153,7 +153,7 @@ sign('SignLab', (DOORS['lab'][0] + 2, DOORS['lab'][1] + 1), "Laboratoire du Prof
 sign('SignNorth', (ROAD[-1] + 1, GUARD_Y + 7), "Route 1.|Elle quitte l'île par la falaise.")
 sign('SignPier', (PIER_END[0] - 2, 42), "Jetée du sud.|Attention : planches glissantes.")
 for name, wish in {'LampLudo': (7, 13), 'LampNorth': (19, 10), 'LampLibrary': (12, 31),
-                   'LampLab': (DOORS['lab'][0] - 2, DOORS['lab'][1] + 1), 'LampSouth': (47, 37), 'LampPier': (PIER_END[0] + 2, 42),
+                   'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (19, 38), 'LampPier': (PIER_END[0] + 2, 42),
                    'LampSquareWest': (PLAZA[0] - 2, PLAZA[1] - 2), 'LampSquareEast': (PLAZA[2] + 2, PLAZA[1] - 2)}.items(): lamp(name, wish)
 # une lueur à chaque fenêtre : le milieu des vitres de la maison, mesuré sur son image
 SHEET = village_tiles.cells()
@@ -265,9 +265,9 @@ node('[node name="SpawnPoint" type="Node2D" parent="."]\nposition = Vector2(%d, 
 node('[node name="Doors" type="Node2D" parent="."]\n')
 for name, house, scene in [('MaisonLudo', 'ludo', 'ludo_house'), ('Bibliotheque', 'library', 'library'), ('Laboratoire', 'lab', 'lab_house'), ('MaisonNord', 'north', 'orange_house_north'), ('MaisonSud', 'south', 'orange_house_south')]:
     node('[node name="%s" parent="Doors" instance=ExtResource("2_door")]\nposition = Vector2(%d, %d)\ntarget_scene = "%s%s.tscn"\ntarget_door = "Entree"\nentry_direction = Vector2(0, 1)\n' % (name, *px(DOORS[house]), LEVELS, scene))
-# la trouée du nord : cinq cases, qui mènent aux trois de la Route 1
+# la sortie du nord : trois cases, qui mènent aux trois de la Route 1
 for i, c in enumerate(lay.NORTH_GATE):
-    node('[node name="Nord%d" parent="Doors" instance=ExtResource("2_door")]\nposition = Vector2(%d, %d)\ntarget_scene = "%sroute_1.tscn"\ntarget_door = "Sud%d"\nentry_direction = Vector2(0, 1)\n' % (i, *px(c), LEVELS, min(2, max(0, i - 1))))
+    node('[node name="Nord%d" parent="Doors" instance=ExtResource("2_door")]\nposition = Vector2(%d, %d)\ntarget_scene = "%sroute_1.tscn"\ntarget_door = "Sud%d"\nentry_direction = Vector2(0, 1)\n' % (i, *px(c), LEVELS, i))
 
 # ------------------------------------------------------------------ les personnages
 NPCS = []            # (nom, case, drapeau requis, drapeau interdit) des personnages immobiles
@@ -295,6 +295,7 @@ def npc(name, c, appearance, text, **kw):
     if 'movement' in kw: lines.append('movement = "%s"' % kw['movement'])
     if 'pace' in kw: lines.append('pace = %s' % kw['pace'])
     if 'wander_layer' in kw: lines.append('wander_layer = "%s"' % kw['wander_layer'])
+    if 'wander_zone' in kw: lines.append('wander_zone = Rect2i(%d, %d, %d, %d)' % kw['wander_zone'])
     if 'route' in kw: lines.append('route = PackedVector2Array(%s)' % ', '.join('%d, %d' % p for p in kw['route']))
     for k in ('required_flag', 'forbidden_flag'):
         if k in kw: lines.append('%s = "%s"' % (k, kw[k]))
@@ -328,9 +329,11 @@ npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "L'eau de la crique est la
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
 npc('ShellKid', (TOWELS['TowelCove'][0] + 4, TOWELS['TowelCove'][1]), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
-npc('Sailor', (43, 16), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1),
+npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1),
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])
+# le gamin tourne autour de ses herbes : il y entre, il en sort — un rectangle qui les déborde de deux cases
 npc('Youngster', (48, 13), 'hgss_youngster', "Le Professeur dit que des Pokémon vivent dans ces herbes.|Sans le mien, je n'ose pas y mettre un pied.", facing=(1, 0),
+    movement='wander', pace=2.0, wander_zone=(47, 11, 7, 6),
     states=["bell_hung > C'est toi qui as rapporté la cloche ? Tout seul ?|Alors moi, je peux bien entrer dans ces herbes. Demain."])
 npc('Gardener', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 1), 'hgss_npc_midage_woman', "Ici, les fleurs poussent toutes seules.|Je me contente de les regarder.", facing=(-1, 0), fixed=True,
     states=["bell_hung > Depuis la Veillée, je jardine en fredonnant.|Ma sœur dit que je chante faux. Les fleurs ne se plaignent pas."])
@@ -345,7 +348,7 @@ for name, spot, app, text, kw in [
         ('VisitorHiker', (CXP + 2, TOP + 4), 'hgss_picnicker', "On l'entendait depuis l'autre rive !", dict(facing=(-1, 0))),
         ('VisitorChild', (CXP - 1, TOP + 7), 'frlg_twins', "Elle est toute petite, la cloche ! Mais elle fait un grand bruit !", dict(facing=(0, -1))),
         ('VisitorWaitress', (CXP - 4, TOP + 2), 'rse_npc_pike_maid', "Si j'avais su, j'aurais apporté de quoi nourrir tout ce monde.", dict(facing=(1, 0))),
-        ('VisitorKalos', (ROAD[2], GUARD_Y + 5), 'hgss_hiker', "J'ai traversé toute la forêt pour venir. Ça valait la marche.", dict(facing=(0, 1))),
+        ('VisitorKalos', (ROAD[-1] + 1, GUARD_Y + 2), 'hgss_hiker', "J'ai traversé toute la forêt pour venir. Ça valait la marche.", dict(facing=(0, 1))),
         ('VisitorFestival', (PIER_END[0] - 2, 41), 'hgss_lass', "Une Veillée ! Ma grand-mère m'en parlait tout le temps.", dict(facing=(0, -1))),
         ('VisitorBlackBelt', (ROAD[1], GUARD_Y + 8), 'rse_blackbelt', "Même au dojo, on s'est arrêtés pour écouter.", dict(facing=(0, 1)))]:
     npc(name, spot, app, text, **kw, **DURING)
@@ -387,7 +390,7 @@ if BELL not in lay.SEA or (BELL[0], BELL[1] + 1) not in DECK: print('  !! la clo
 
 # ------------------------------------------------------------------ contrôles : tout se rejoint, dans les trois temps de l'histoire
 targets = {'porte ' + k: (v[0], v[1] + 1) for k, v in DOORS.items()}
-targets.update({'socle (devant)': (CXP, TOP + 4), 'devant les gardes': (ROAD[2], GUARD_Y + 1), 'derrière les gardes': (ROAD[2], GUARD_Y - 1), 'la sortie du nord': (ROAD[2], 0), 'bout de la jetée': (PIER_END[0], PIER_END[1] - 1),
+targets.update({'socle (devant)': (CXP, TOP + 4), 'devant les gardes': (ROAD[1], GUARD_Y + 1), 'derrière les gardes': (ROAD[1], GUARD_Y - 1), 'la sortie du nord': (ROAD[1], 0), 'bout de la jetée': (PIER_END[0], PIER_END[1] - 1),
                 'ponton de la cloche': (BELL[0], BELL[1] + 1), 'plage du sud': (28, 35), 'plage de l ouest': (4, 41), 'crique du nord': (25, 11), 'hautes herbes du sud-ouest': TALL_SW[0]})
 def beside(c, R): return any((c[0] + i, c[1] + j) in R for i, j in lay.NEIGH4)
 for phase, flags in PHASES.items():

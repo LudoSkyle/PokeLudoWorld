@@ -53,7 +53,7 @@ LOOP = [(PLAZA[0] - 1, PLAZA[1] - 1), (PLAZA[2] + 1, PLAZA[1] - 1), (PLAZA[2] + 
 LOOP_CELLS = rect(LOOP[0][0], LOOP[0][1], LOOP[2][0], LOOP[2][1]) - rect(LOOP[0][0] + 1, LOOP[0][1] + 1, LOOP[2][0] - 1, LOOP[2][1] - 1)
 
 # --- les escaliers : (colonne de gauche, rangée du bord). Cinq cases de large : un poteau, trois marches, un poteau.
-STAIRS = {'nord-ouest': (14, 13), 'nord-est': (31, 13), 'place': (26, 31), 'bibliotheque': (2, 33), 'sud-est': (36, 37)}
+STAIRS = {'nord': (23, 8), 'nord-ouest': (14, 13), 'nord-est': (31, 13), 'place': (26, 31), 'bibliotheque': (2, 33), 'sud-est': (36, 37)}
 STEPS = {(x + i, r) for x, r in STAIRS.values() for i in (1, 2, 3)}
 
 # --- les pontons, larges de trois cases : (sens, x0, y0, x1, y1). Ils vont du dessus d'un plateau à l'autre.
@@ -63,8 +63,9 @@ DOCKS = [('V', 8, 17, 10, 21), ('H', 8, 22, 21, 24), ('V', 15, 25, 17, 37),     
 DECK = set().union(*[rect(*d[1:]) for d in DOCKS])
 PIER_END = (33, 48)
 
-# --- la trouée du nord : le couloir de plage qui mène à la Route 1
-ROAD = [23, 24, 25, 26, 27]
+# --- la sortie du nord : une piste de trois cases dans la forêt, qui mène à la Route 1. Trois cases, comme la piste de la
+#     route : une route plus large est très rare (Ludovic, 17/11/2026).
+ROAD = [24, 25, 26]
 NORTH_GATE = [(x, 0) for x in ROAD]
 GUARD_Y = 3
 START = (DOORS['ludo'][0], DOORS['ludo'][1] + 1)
@@ -77,7 +78,8 @@ for crumb in geo.parts(MOUNTAIN):
 # --- les pistes : les chemins de l'exemple, plus ce qui mène aux portes, aux escaliers et aux pontons
 # Trois cases de large, d'un seul tenant sur chaque plateau : plus étroite, une piste n'est que deux bords collés, et les
 # chemins de l'exemple, lus case par case, donnaient des taches. On les trace donc à la main, là où l'exemple en a.
-PATHS = [(5, 9, 7, 12), (5, 10, 18, 12), (8, 13, 10, 16),                                              # nord-ouest : chez Ludo, chez Anselme, l'escalier, le ponton
+PATHS = [(ROAD[0], 0, ROAD[-1], 7),                                                                    # la sortie du nord, du haut de son escalier au bord de la carte
+         (5, 9, 7, 12), (5, 10, 18, 12), (8, 13, 10, 16),                                              # nord-ouest : chez Ludo, chez Anselme, l'escalier, le ponton
          (44, 9, 46, 12), (32, 10, 46, 12), (40, 13, 42, 17),                                          # nord-est : le laboratoire, l'escalier, le ponton
          (2, 30, 5, 32), (6, 30, 11, 32),                                                              # ouest : la bibliothèque, son escalier
          (14, 38, 18, 40),                                                                             # le jardin, au bout de son ponton
@@ -159,13 +161,17 @@ KEEP = NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(st
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
 # la forêt de l'exemple, et une lisière tout le long des bords de la carte : elle la ferme, mieux qu'une rangée de sapins
-FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1) or c[1] >= H - 4}
+FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1) or c[1] >= H - 4} | (rect(19, 0, 31, 8) & INSIDE)          # et de part et d'autre de la sortie du nord
 def plant(name, x, r):
     cells = [c for c in feet(name, x, r) if inb(c)]
     if any(c not in INSIDE or c in KEEP or c in MOUNTAIN or (c in taken and not name.startswith('tree')) for c in cells): return False
     sprites.append((name, x, r))
     if not name.startswith('tree'): taken.update(cells)          # deux arbres voisins se recouvrent : c'est la forêt
     return True
+# la sortie du nord est une trouée dans la forêt : des arbres serrés contre la piste, des deux côtés, pour qu'on ne
+# contourne pas les gardes par l'herbe
+for r in (1, 3, 5):
+    plant('treeA', ROAD[0] - 3, r); plant('treeA', ROAD[-1] + 1, r)
 # la forêt : un arbre toutes les quatre colonnes, la rangée suivante décalée de deux, là où l'exemple a de la forêt
 for r in range(1, H + 1):
     for x in range(-2, W):

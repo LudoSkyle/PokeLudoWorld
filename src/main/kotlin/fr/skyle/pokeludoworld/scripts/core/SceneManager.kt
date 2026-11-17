@@ -138,6 +138,10 @@ class SceneManager : Node() {
 	private var daylight: CanvasModulate? = null
 	private var player: Node2D? = null
 
+	/** Le joueur, où qu'il soit, ou null avant qu'une partie ait commencé (l'écran titre). */
+	val playerNode: Node2D?
+		get() = player
+
 	private var phase = Phase.IDLE
 	private var progress = 0.0
 	private var pendingScene = ""
