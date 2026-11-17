@@ -54,6 +54,11 @@ Un bruitage ne vient pas de ce pack mais du kit **Pokémon Essentials v21.1**
 |---|---|---|
 | `jump.ogg` | `Audio/SE/Player jump.ogg` | on saute un rebord |
 
+Les cris (`cries/`) viennent du même kit, copiés tels quels et renommés en
+minuscules : `Audio/SE/Cries/WINGULL.ogg`, `PELIPPER.ogg`, `HOPPIP.ogg`,
+`SKIPLOOM.ogg`, `JUMPLUFF.ogg`. Le kit en a 655 : un autre Pokémon se copie de
+la même façon.
+
 ## Le pack Gen 4
 
 **Gen 4 Sound Effects (Essentials v17.2)**, v1.0, compilé et extrait par **Deo**
