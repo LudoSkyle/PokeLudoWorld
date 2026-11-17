@@ -173,7 +173,8 @@ perdu ses deux coins du bas, le plateau du sud-est a reculé d'une colonne (le
 couloir de la plage de l'est fait trois cases), et rien n'y est planté
 (`layout.NO_PALMS`). **La mare de l'est rejoint la mer** et n'est plus un
 carré. **Le bord du haut d'un plateau se foule**, sur toute sa longueur
-(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. Le jardin du sud-ouest et la bibliothèque, reliés
+(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. Le coin
+nord-ouest du plateau du sud-est est rogné en biais, pour casser la boîte. Le jardin du sud-ouest et la bibliothèque, reliés
 par une piste, ne se rejoignent que par l'escalier de côté du jardin.
 
 **Les rochers de la mer sont ceux de l'exemple.** Dans les cinq groupes que
@@ -221,9 +222,10 @@ le mobilier — **deux au plus dans la crique** (`layout.COVE`) : on l'a
 agrandie pour en faire une plage, pas une palmeraie ; des massifs de buissons
 garnissent les coins de la place, et les fleurs sont plus serrées autour
 d'elle et sur la presqu'île du sud-est. La cloche, au fond de l'eau,
-**scintille** (`Twinkle.kt`). **Des massifs de grandes fleurs** que le vent
-couche (`5:0-7,3-4`, trois de front) poussent près des maisons et de la place
-(`layout.beds`) ; **des coquillages** sans collision parsèment le sable sec ;
+**scintille** (`Twinkle.kt`). **De grandes fleurs** que le vent couche (`5:0-7,3-4`) poussent près des
+maisons et de la place, **éparses, par une, deux ou trois, jamais en rang**
+(`layout.SCATTER`) ; **des coquillages** sans collision parsèment le sable sec, les quatre sortes
+à tour de rôle ;
 **la crique est occupée d'un bout à l'autre** — deux parasols, deux
 serviettes, le nageur, le gamin aux coquillages — et non dans un coin.
 

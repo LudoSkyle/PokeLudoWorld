@@ -74,12 +74,12 @@ PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 1
 # Des coquillages pour le sable : rien n'en avait dans ce style, ils sont dessinés ici, cernés d'un brun de sable mouillé.
 SHELLS = {'shell1': (13, 5), 'shell2': (14, 5), 'shell3': (15, 5), 'shell4': (14, 6)}
 SHELL_ART = {
-    'shell1': (4, 6, ['..ooo..', '.owpwo.', 'owpwpwo', 'owpwpwo', '.owpwo.', '..ooo..']),                      # une coquille Saint-Jacques
-    'shell2': (6, 5, ['..oo..', '.occo.', 'ocdcco', '.occdo', '..ooo.']),                                      # un bigorneau
+    'shell1': (4, 5, ['.oo.oo.', 'opwopwo', 'opwpwpo', 'opwpwpo', '.opwpo.', '..opo..', '..ooo..']),           # une coquille Saint-Jacques, en éventail
+    'shell2': (5, 5, ['...oo..', '..occo.', '.ocdcco', 'ocdccdo', 'occddo.', '.oooo..']),                      # un bigorneau, en spirale
     'shell3': (5, 4, ['...r...', '..rsr..', 'rrrsrrr', 'rsssssr', '.rsssr.', '.rsrsr.', '.rr.rr.']),           # une étoile de mer
-    'shell4': (2, 3, ['.o.........', 'owo........', '.o.........', '...........', '...........', '........oo.', '.......opwo', '........oo.']),
+    'shell4': (2, 3, ['.oo........', 'opwo.......', '.oo........', '...........', '...........', '.......ooo.', '......ocdco', '.......ooo.']),
 }
-SHELL_INK = {'o': (150, 118, 86), 'w': (255, 255, 250), 'p': (238, 170, 160), 'c': (240, 214, 170), 'd': (214, 160, 110), 'r': (196, 110, 66), 's': (238, 156, 96)}
+SHELL_INK = {'o': (150, 104, 84), 'w': (255, 240, 232), 'p': (240, 150, 140), 'c': (206, 168, 120), 'd': (150, 112, 78), 'r': (196, 110, 66), 's': (238, 156, 96)}          # un sable clair mange le blanc et le crème : il faut du rose et du brun
 TRAIL_CENTRE = (15, 4)            # une case de l'exemple où la piste est nue : son centre n'est pas sur la planche
 TRAIL_AT = (8, 1)
 KEYS, CORNERS = '789456123', 'ijkl'

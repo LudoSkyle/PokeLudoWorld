@@ -441,6 +441,15 @@ pas justifier est une erreur.
 
 ### H. Emprise des dessins
 
+- **Un seul poids de cerne par carte.** Un élément pris d'une autre planche
+  garde le cerne de sa planche : presque noir sur une carte cernée de brun, il
+  saute aux yeux (les bancs, le socle de la cloche — Ludovic, 17/11/2026). On
+  ramène son cerne à la teinte sombre de ses voisins (`island_tiles.SOFT`,
+  `tools/bell_stand.py`).
+- **Un décor clair sur un sol clair ne se voit pas** : un coquillage blanc sur
+  du sable crème disparaît. Lui donner une teinte franche, et vérifier sur une
+  capture qu'on voit chaque sorte.
+
 - **Mesurer un dessin dans l'atlas avant de le déclarer.** L'atlas n'est pas
   calé partout sur la grille : le palmier fait 53 px de large (4 cases, pas 3),
   les fougères débordent leur case. Contrôle : la composante de pixels opaques
@@ -648,7 +657,9 @@ ne ressort pas » (A).*
 - **Une touffe pour 40 à 60 cases praticables** dans le style sobre, jusqu'à
   une pour 15 dans un style chargé. Un seul style par carte.
 - **Les grandes fleurs — tournesols — vont en massifs clôturés**, symétriques
-  de chaque côté d'une maison ou le long d'un axe.
+  de chaque côté d'une maison ou le long d'un axe. **Sans clôture, elles sont
+  éparses** : une, deux ou trois, décalées, jamais côte à côte en rang
+  (Ludovic, 17/11/2026 : « pas en pack en ligne comme ça, c'est moche »).
 
 ### R. Clôtures
 
