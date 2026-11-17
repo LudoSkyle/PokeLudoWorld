@@ -47,6 +47,13 @@ en boucle telles quelles, on entend ce fondu avant la reprise.
 | `door.wav` | `SE/Door enter.wav` | on entre quelque part |
 | `door_exit.wav` | `SE/Door exit.wav` | on sort par un paillasson ou un escalier |
 
+Un bruitage ne vient pas de ce pack mais du kit **Pokémon Essentials v21.1**
+(2023-07-30), copié tel quel :
+
+| Fichier | Origine dans Essentials v21.1 | Quand |
+|---|---|---|
+| `jump.ogg` | `Audio/SE/Player jump.ogg` | on saute un rebord |
+
 ## Le pack Gen 4
 
 **Gen 4 Sound Effects (Essentials v17.2)**, v1.0, compilé et extrait par **Deo**
