@@ -12,8 +12,8 @@ import os
 from island_tiles import load, save
 
 LEVELS = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'levels')
-REGION = (1362, 279, 14, 36)          # la lanterne de bois, à tête carrée : l'atlas n'en a pas de suspendue, c'est son modèle le plus chaud (le globe gris d'avant est en 1314)
-SOFT = {(45, 45, 45): (88, 68, 48)}          # son cerne presque noir prend un brun de bois sombre
+REGION = (1173, 276, 9, 40)           # la lanterne à mât fin, chapeau de bois et verre blanc : celle que Ludovic a choisie (17/11/2026). Le globe gris d'avant est en (1314, 279, 14, 36), la lanterne à tête carrée en 1362
+SOFT = {(15, 15, 13): (58, 44, 30), (48, 36, 22): (70, 54, 36)}          # son cerne et son mât, presque noirs, prennent deux bruns de bois sombre
 
 if __name__ == '__main__':
     _, _, atlas = load(os.path.join(LEVELS, 'environments.png'))

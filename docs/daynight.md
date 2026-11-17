@@ -69,11 +69,12 @@ une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
   lampadaire est découpé dans `environments.png`, qui en a une vingtaine de
   modèles côte à côte (rangées 17-19, à partir de la colonne 71), et sorti à
   part dans `assets/levels/street_lamp.png` par `tools/street_lamp.py` : la
-  lanterne de bois à tête carrée (l'atlas n'en a pas de suspendue), son cerne
-  ramené à un brun de bois.
-- **La flamme vacille** : `flicker` (0,05 par défaut) fait varier l'éclat de
-  quelques pour cent, par deux ondes lentes décalées d'une lanterne à l'autre.
-  À 0, la lumière est fixe.
+  lanterne à mât fin, chapeau de bois et verre blanc, que Ludovic a choisie
+  parmi les modèles de l'atlas ; son cerne et son mât ramenés à deux bruns.
+- **La flamme vacille** : `flicker` (0,08) fait varier l'éclat, et `reach`
+  (0,04) la portée de la lumière, ensemble, par deux ondes lentes décalées
+  d'une lanterne à l'autre. C'est la portée qui se voit : l'éclat seul passait
+  inaperçu. À 0, la lumière est fixe.
 
 **En poser un** : instancier `street_lamp.tscn` sous `World`, sur un centre de
 case. Rien d'autre à régler. `brightness` change sa force.

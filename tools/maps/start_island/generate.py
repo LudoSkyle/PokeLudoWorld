@@ -83,7 +83,7 @@ SOLID |= STAND | set(STATUES.values())
 FRONTS = {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} | {(x + i, r + j) for x, r in STAIRS.values() for i in range(5) for j in (-2, -1, 0, 1, 2)}
 for side, gx, y0 in lay.SIDE_STAIRS.values():          # et de part et d'autre d'un escalier de côté
     FRONTS |= {(gx + i, y0 + j) for i in range(-3, 4) for j in range(-1, 4)}
-CLEAR = FRONTS | lay.FLOWER_CELLS | (lay.GARDEN - {(39, 13)}) | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
+CLEAR = FRONTS | lay.FLOWER_CELLS | lay.GARDEN | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
 placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
@@ -140,7 +140,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     c = settle(name, wish, solid=False); TOWELS[name] = c
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
-BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, TOP - 2))
+BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, PLAZA[3] + 3))          # sous la place, face à l'escalier du sud : au-dessus, il n'y a plus la place
 parasol('ParasolCove', (22, 15), 1); towel('TowelCove', (25, 15), 1)          # la crique est grande : on l'occupe au milieu, pas dans un coin — mais sans la tasser : un parasol, une serviette, deux baigneurs (Ludovic, 17/11/2026)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
@@ -158,7 +158,7 @@ sign('SignNorth', (ROAD[-1] + 1, GUARD_Y + 7), "Route 1.|Elle quitte l'île par 
 sign('SignPier', (PIER_END[0] - 2, 42), "Jetée du sud.|Attention : planches glissantes.")
 for name, wish in {'LampLudo': (7, 13), 'LampNorth': (19, 10), 'LampLibrary': (12, 31),
                    'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (20, 40), 'LampPier': (PIER_END[0] + 2, 42),
-                   'LampSquareWest': (PLAZA[0], PLAZA[1] - 2), 'LampSquareEast': (PLAZA[2], PLAZA[1] - 2)}.items(): lamp(name, wish)
+                   'LampSquareWest': (PLAZA[0], PLAZA[3]), 'LampSquareEast': (PLAZA[2], PLAZA[3])}.items(): lamp(name, wish)
 # une lueur à chaque fenêtre : le milieu des vitres de la maison, mesuré sur son image
 SHEET = village_tiles.cells()
 for name, (kind, x, r) in sorted(lay.HOUSES.items()):
@@ -373,7 +373,7 @@ npc('WorkerLater2', (PIER_END[0] + 3, 41), 'dppt_worker', "On range le matériel
 for name, species, label, c, cry in [('Corphish', 'corphish', 'Écrapince', (30, 12), "Krr... Krapince !"),                                # en haut à droite du gamin aux coquillages
                                      ('Shellder', 'shellder', 'Kokiyas', (48, 25), "Koki... yas !"),                                    # dans le creux de sable, au pied du plateau du sud-est, sous la lagune
                                      ('Bellossom', 'bellossom', 'Joliflor', (BENCH_SOUTH[0], BENCH_SOUTH[1] + 2), "Joli ! Joliflor !")]:  # à côté de la dame aux fleurs
-    npc(name, c, 'pkmn_' + species, '@cry:%s %s' % (species, cry), display_name=label, facing=(0, 1), fixed=True)
+    npc(name, c, 'pkmn_' + species, '@cry:%s %s' % (species, cry), display_name=label, facing=(-1, 0) if name == 'Bellossom' else (0, 1), fixed=True)          # Joliflor regarde du même côté que la dame
     if c in SOLID or c not in REACH0: print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
     SOLID.add(c); placed[name] = c
 # ---------- deux enfants font la course sur la plage du sud, côte à côte : chacun sa rangée, même allure
@@ -409,10 +409,13 @@ PACKS = [('GullsNorth', 13, 1.6, [('wingull', 6.0, 6.0), ('wingull', 7.7, 7.1)])
          ('GullBay', 29, 1.4, [('wingull', 30.0, 16.0)]),
          ('PelipperFlight', 43, 1.2, [('pelipper', 18.0, 27.5), ('wingull', 16.2, 26.4), ('wingull', 16.4, 28.9)]),
          ('GullsSouth', 57, 1.7, [('wingull', 40.0, 42.0), ('wingull', 41.8, 43.2)])]
+# Un groupe n'a qu'une voix : celle du plus évolué de ses membres (le Bekipan, s'il y en a un). Les autres se taisent.
+RANK = {'wingull': 0, 'pelipper': 1}
 for name, seed, pace, places in PACKS:
+    voice = max(range(len(places)), key=lambda i: (RANK[places[i][0]], -i))
     for i, (species, x, y) in enumerate(places):
-        node('[node name="%s%d" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(0, 0, %d, %d)\npace = %s\nseed = %d\ndrift = 1\n'
-             % (name, i, round(x * 16 + 8), round(y * 16 + 8), species, W, H, pace, seed))
+        node('[node name="%s%d" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(0, 0, %d, %d)\npace = %s\nseed = %d\ndrift = 1\n%s'
+             % (name, i, round(x * 16 + 8), round(y * 16 + 8), species, W, H, pace, seed, '' if i == voice else 'cry_every = Vector2(0, 0)\n'))
 node('[node name="Triggers" type="Node2D" parent="."]\n')
 for i, x in enumerate(ROAD[1:-1]):
     node('[node name="NorthRoadblock%d" parent="Triggers" instance=ExtResource("5_roadblock")]\nposition = Vector2(%d, %d)\nguard = "%s"\npush_direction = Vector2(0, 1)\nforbidden_flag = "bell_hung"\n' % (i, *px((x, GUARD_Y)), 'GuardWest' if x - ROAD[0] <= ROAD[-1] - x else 'GuardEast'))

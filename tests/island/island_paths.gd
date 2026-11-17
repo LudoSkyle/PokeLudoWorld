@@ -27,7 +27,7 @@ func at(path: String) -> Vector2i:
 func on_deck(c: Vector2i) -> bool:
 	var bridges := layer("Background/Bridges")
 	var a := bridges.get_cell_atlas_coords(c)
-	return bridges.get_cell_source_id(c) == ROUTE and (a.y == 12 and a.x >= 12 or a.x == 15 and a.y >= 13 and a.y <= 14)          # les planches de la jetee
+	return bridges.get_cell_source_id(c) == ROUTE and (a.y == 12 and a.x >= 12 or a.x == 15 and a.y >= 13 and a.y <= 14 or a in [Vector2i(13, 13), Vector2i(14, 13), Vector2i(13, 14)])          # les planches de la jetee
 
 # La mer, liseré de sable compris : les trois premieres rangees de route.png, sauf le sable plein et la pelouse.
 func is_sea(c: Vector2i) -> bool:
@@ -122,14 +122,14 @@ func test() -> void:
 
 	# La place : son dallage, le socle, les deux statues, le tour du coureur.
 	var plaza := layer("Background/Plaza")
-	check("le dallage de la place : neuf cases sur six, sur le plateau du centre", plaza.get_used_rect() == Rect2i(24, 22, 9, 6) and plaza.get_cell_source_id(Vector2i(28, 25)) == ROUTE, str(plaza.get_used_rect()))
-	check("le socle et les statues arretent, on se tient devant", not is_free(Vector2i(28, 23)) and not is_free(Vector2i(27, 24)) and not is_free(Vector2i(25, 23)) and not is_free(Vector2i(31, 23)) and is_free(Vector2i(28, 26)))
+	check("le dallage de la place : un ovale de neuf cases sur six, coins coupes, sur le plateau du centre", plaza.get_used_rect() == Rect2i(24, 20, 9, 6) and plaza.get_cell_source_id(Vector2i(28, 23)) == ROUTE and plaza.get_cell_source_id(Vector2i(24, 20)) == -1 and plaza.get_cell_source_id(Vector2i(32, 25)) == -1, str(plaza.get_used_rect()))
+	check("le socle et les statues arretent, on se tient devant", not is_free(Vector2i(28, 21)) and not is_free(Vector2i(27, 22)) and not is_free(Vector2i(25, 21)) and not is_free(Vector2i(31, 21)) and is_free(Vector2i(28, 24)))
 	var ring_free := true
 	for x in range(23, 34):
-		for y in [21, 28]:
+		for y in [19, 26]:
 			if not is_free(Vector2i(x, y)) and cell_of("Runner") != Vector2i(x, y):
 				ring_free = false
-	for y in range(21, 29):
+	for y in range(19, 27):
 		for x in [23, 33]:
 			if not is_free(Vector2i(x, y)) and cell_of("Runner") != Vector2i(x, y):
 				ring_free = false
@@ -194,9 +194,8 @@ func test() -> void:
 	var stair_of_plaza := [Vector2i(27, 31), Vector2i(28, 31), Vector2i(29, 31), Vector2i(27, 32), Vector2i(28, 32), Vector2i(29, 32)]
 	# Le bord du haut d'un plateau est de l'herbe : on y marche, sur toute sa longueur. C'est le gradin de roche, derriere, qui arrete.
 	var top_ok := true
-	for x in range(22, 34):          # (une encoche l'entame, colonnes 24 a 26 : la son bord du haut est une rangee plus bas)
-		var y := 19 if x >= 23 and x <= 27 else 18
-		top_ok = top_ok and is_free(Vector2i(x, y)) and can_step(Vector2i(x, y + 1), Vector2i(x, y)) and (not is_free(Vector2i(x, y - 1)) or x == 23 or x == 27)
+	for x in range(22, 32):          # (plus a l'est, la place rejoint le plateau du parc a fleurs)
+		top_ok = top_ok and is_free(Vector2i(x, 18)) and can_step(Vector2i(x, 19), Vector2i(x, 18)) and not is_free(Vector2i(x, 17))
 	check("on monte sur la rangee du haut de la place, d'un bout a l'autre, sans en sortir", top_ok)
 	check("on marche aussi sur le bord du haut des autres plateaux", is_free(Vector2i(45, 26)) and is_free(Vector2i(15, 36)) and not is_free(Vector2i(45, 25)))
 	check("la place et le plateau du laboratoire ne font qu'un : on passe de l'une a l'autre sans escalier", reach(Vector2i(28, 29), decks + stair_of_plaza).has(at("Doors/Laboratoire") + Vector2i.DOWN))

@@ -70,7 +70,11 @@ SIDE_STAIRS = {'W': (9, 13), 'E': (0, 16)}          # quatre colonnes sur trois 
 DOUBLE_STAIRS = {'stairU4': (4, 16), 'stairU5': (7, 14), 'stairU6': (5, 16), 'stairL4': (4, 17), 'stairL5': (5, 17), 'stairL6': (6, 17)}          # (les colonnes 0 à 5 des rangées 13 à 15 sont aux arbres du relevé)
 # La jetée : des planches en travers, étroites, entre deux longerons à pieux — un ponton, pas le tablier d'un pont.
 # `pier4/5/6` : bord gauche, milieu, bord droit ; `pier1/2/3` : le dernier rang, avec son chant.
-PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 12), 'pier2': (15, 13), 'pier3': (15, 14)}
+PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 12), 'pier2': (15, 13), 'pier3': (15, 14),
+        'pierT4': (13, 13), 'pierT5': (14, 13), 'pierT6': (13, 14)}          # `pierT…` : le premier rang, que le sable recouvre par endroits — la jetée sort de la plage, elle n'est pas posée dessus
+# Le dallage n'a que ses bords et ses coins sortants ; pour une place qui n'est pas un rectangle, ses quatre coins
+# rentrants sont faits ici : le pavé plein, et dans le coin le bout de liseré d'herbe qui raccorde les deux bords voisins.
+PAVED_INNER = {'pavedl': (14, 7), 'pavedk': (15, 7), 'pavedj': (14, 8), 'pavedi': (15, 8)}
 # Des coquillages pour le sable : rien n'en avait dans ce style, ils sont dessinés ici, cernés d'un brun de sable mouillé.
 # Une clôture de bois, aux teintes du pont : un poteau par case, deux lisses. `fence7…3` : coins et côtés d'un enclos
 # (7 8 9 / 4 6 / 1 2 3), dessinés ici — la planche de la Route 1 n'en a pas.
@@ -152,7 +156,7 @@ def atlas():
     out['ledgeVB'] = (15, 2)
     out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
     for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%d%d' % (side, i, j): (c0 + i, r0 + j) for j in range(3) for i in range(4)})
-    out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS); out.update(FENCE)
+    out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS); out.update(FENCE); out.update(PAVED_INNER)
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -296,6 +300,25 @@ def cells(survey=False):
         return [row[::-1] for row in tile] if right else tile
     for last, names in ((False, ('pier4', 'pier5', 'pier6')), (True, ('pier1', 'pier2', 'pier3'))):
         made[where[names[0]]], made[where[names[1]]], made[where[names[2]]] = edged(planks(last), False), planks(last), edged(planks(last), True)
+    # le premier rang de la jetée : le sable de la plage déborde sur ses planches, d'une épaisseur qui varie d'une colonne à l'autre
+    sand, lip = made[where['sand5']], (214, 198, 156, 255)
+    drift = [7, 7, 8, 8, 9, 9, 9, 8, 8, 7, 7, 6, 6, 6, 7, 7, 8, 8, 9, 9, 8, 8, 7, 7, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 8, 8, 7, 7, 6, 6, 6, 7, 7, 8, 8, 8, 7, 7]          # une ondulation douce, qui couvre toujours la première planche entière : des dents, ou un bout de planche qui dépasse, et la jetée a l'air d'une couronne
+    for n, k in enumerate('456'):
+        tile = [row[:] for row in made[where['pier' + k]]]
+        for a in range(16):
+            depth = drift[n * 16 + a]
+            for b in range(depth): tile[b][a] = sand[b][a]
+            tile[depth][a] = lip                                               # le bord du sable, plus sombre
+            if tile[depth + 1][a] != DARK: tile[depth + 1][a] = SIDE              # et son ombre sur le bois
+        made[where['pierT' + k]] = tile
+    # les coins rentrants du dallage
+    border = next(b for b in range(16) if made[where['paved5']][b][8] == made[where['paved8']][b][8] and b > 0)          # l'épaisseur du liseré d'herbe
+    for name, (side, top) in {'pavedl': ('4', True), 'pavedk': ('6', True), 'pavedj': ('4', False), 'pavedi': ('6', False)}.items():
+        tile = [row[:] for row in made[where['paved5']]]
+        edge = made[where['paved' + side]]
+        for b in (range(border) if top else range(16 - border, 16)):
+            for a in (range(border) if side == '4' else range(16 - border, 16)): tile[b][a] = edge[b][a]
+        made[where[name]] = tile
     # la clôture : les lisses d'abord, vers les voisins que dit la forme, puis le poteau par-dessus
     for name in FENCE:
         k = name[-1]

@@ -31,6 +31,16 @@ func test() -> void:
 			shapes_ok = false
 	check("quatre groupes", packs.size() == 4, str(packs))
 	check("une ou deux Goelise ; un Bekipan ne va qu'avec deux Goelise", shapes_ok, str(packs.values()))
+	# Un groupe n'a qu'une voix : celle du plus evolue de ses membres. Les autres se taisent.
+	var voices_ok := true
+	for seed in packs:
+		var voices: Array = []
+		for b in birds:
+			if b.get("seed") == seed and (b.get("cry_every") as Vector2).y > 0.0:
+				voices.append(str(b.get("species")))
+		if voices.size() != 1 or (packs[seed].has("pelipper") and voices[0] != "pelipper"):
+			voices_ok = false
+	check("un seul crie par groupe : le Bekipan s'il y en a un, sinon une Goelise", voices_ok)
 	check("ils volent au-dessus du decor, sous le voile", sky.z_index > 0 and sky.z_index < level().get_node("Haze").z_index, str(sky.z_index))
 	check("aucun n'a de corps : on ne les heurte pas", bodies == 0, "%d" % bodies)
 	check("chacun a son image et son ombre au sol", shadows == birds.size(), "%d" % shadows)
@@ -72,7 +82,7 @@ func test() -> void:
 	shot("ile_oiseaux")
 
 	# De loin en loin, un oiseau qui passe au-dessus du joueur pousse son cri.
-	var caller: Node2D = birds[0]
+	var caller: Node2D = birds[0]          # le premier de son groupe : c'est lui qui a la voix
 	var before: int = audio().cries_played()
 	for b in birds:
 		b.set("cry_every", Vector2(0, 0))          # les autres se taisent : on n'ecoute que celui-la

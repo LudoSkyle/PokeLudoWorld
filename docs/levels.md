@@ -159,7 +159,9 @@ rangées 37 à 39).
 
 **Il ne reste qu'un ponton : la jetée du sud**, large de trois cases, qui part
 de la plage (Ludovic, 17/11/2026). Elle est faite de planches en travers entre
-deux longerons à pieux (`pier…`), pas du tablier de pont de la Route 1. On passe d'une terre à l'autre par les
+deux longerons à pieux (`pier…`), pas du tablier de pont de la Route 1. Son
+premier rang (`pierT…`) sort du sable : la plage recouvre sa première planche
+d'un bord ondulé. On passe d'une terre à l'autre par les
 plages : la crique du nord, agrandie jusqu'au pied de la forêt et du plateau du
 nord-est ; la plage de l'est, du pied de l'escalier du nord-est à la plage du
 sud, le long de la place. Les pontons de l'exemple ne sont plus que de l'eau
@@ -240,16 +242,25 @@ serviette, le nageur, le gamin aux coquillages.
 **Dans le ciel**, des Goélise et un Bekipan que le vent porte d'ouest en est,
 comme les Granivol de la Route 1 : quatre groupes — une ou deux Goélise, et le
 Bekipan avec deux Goélise (nœud `Sky`, `generate.PACKS`, [npcs.md](npcs.md)).
+**Un groupe n'a qu'une voix** : celle du plus évolué de ses membres ; les
+autres ont `cry_every` à zéro (pareil sur la Route 1).
 
 **Au sol, trois Pokémon posés** à qui l'on parle : Écrapince dans la crique,
 Kokiyas dans le creux de sable sous la lagune de l'est, Joliflor à côté de la
-dame aux fleurs. Ils disent leur cri, en texte et en son, et ne crient pas autrement
+dame aux fleurs, tourné du même côté qu'elle. Ils disent leur cri, en texte et en son, et ne crient pas autrement
 ([npcs.md](npcs.md)). **Deux enfants font la course** sur la plage du sud, côte
 à côte ; **la mamie est assise sur son banc**.
 
-**Un potager clôturé** (`layout.GARDEN`, tuiles `fence…`) tient au sud-ouest du
-laboratoire, ouvert sur la piste ; le lampadaire du labo en est le poteau
-d'angle. **Des caisses et des pots de fleurs** garnissent le pied de la jetée,
+**Un parc à fleurs clôturé** (`layout.GARDEN`, tuiles `fence…`, cinq cases sur
+cinq, six grandes fleurs) tient au sud-ouest du laboratoire, contre le bord du
+plateau, ouvert vers la piste : la crique a reculé de deux cases pour lui
+faire de la place, et deux rangées d'herbe restent dessous — c'est par là
+qu'on passe de la place au plateau du laboratoire.
+
+**Le dallage de la place est un ovale** (`layout.PAVED` : neuf cases sur six,
+coins coupés par crans, coins rentrants `pavedi…l`), remonté de deux cases. Les
+statues sont à ses coins du haut, deux lanternes dans ses coins coupés du bas,
+le banc dessous, face à l'escalier du sud. **Des caisses et des pots de fleurs** garnissent le pied de la jetée,
 la façade du laboratoire, la bibliothèque et l'entre-deux des maisons du
 nord-ouest (`generate.put` : la case est choisie, jamais sur une piste).
 

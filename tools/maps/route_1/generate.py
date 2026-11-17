@@ -183,8 +183,8 @@ PACKS = [('Hoppip', 'hoppip', 11, 1.3, [(9.0, 7.0), (10.6, 8.2), (11.8, 6.6)]),
          ('HoppipSouth', 'hoppip', 41, 1.2, [(54.0, 39.0), (55.9, 40.3)])]
 for name, species, seed, pace, places in PACKS:
     for i, (x, y) in enumerate(places):
-        node('[node name="%s%d" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(0, 0, %d, %d)\npace = %s\nseed = %d\ndrift = 1\n'
-             % (name, i, round(x * 16 + 8), round(y * 16 + 8), species, W, H, pace, seed))
+        node('[node name="%s%d" parent="Sky" instance=ExtResource("13_flyer")]\nposition = Vector2(%d, %d)\nspecies = "%s"\nzone = Rect2i(0, 0, %d, %d)\npace = %s\nseed = %d\ndrift = 1\n%s'
+             % (name, i, round(x * 16 + 8), round(y * 16 + 8), species, W, H, pace, seed, '' if i == 0 else 'cry_every = Vector2(0, 0)\n'))          # un groupe n'a qu'une voix : les autres se taisent
 node('[node name="Readables" type="Node2D" parent="."]\n')
 # L'arbuste de l'exemple se coupe, dans les jeux d'origine. Le nôtre ne sait pas encore : il dit ce qu'ils disent.
 for i, (x, r) in enumerate(sorted((x, r) for name, x, r in gen.sprites if name == 'sapling')):
