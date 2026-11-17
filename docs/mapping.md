@@ -231,6 +231,14 @@ pas justifier est une erreur.
   escaliers face au sud : chaque plateau doit donc avoir un bord du bas droit
   sur cinq cases, avec de la plage dessous. Là où l'exemple monte par le côté,
   on creuse une anse.
+- **Une route fait trois cases de large.** Plus large est très rare — cela
+  arrive, ce n'est pas courant (Ludovic, 17/11/2026). Les pistes des
+  générateurs font trois cases.
+- **Deux cartes qui se suivent se raccordent** : à la sortie de l'une et à
+  l'entrée de l'autre, le même sol (pas du sable d'un côté et de l'herbe de
+  l'autre), la même hauteur (pas la plage d'un côté et un plateau de l'autre),
+  la même largeur de route, et autant de cases de passage. On regarde la carte
+  d'après avant de dessiner la sortie.
 - **Rien ne se pose sur une piste** : ni banc, ni lampadaire, ni panneau, ni
   personnage immobile. Une piste est ce qui reste libre ; on garnit ses bords
   (Ludovic, 17/11/2026). Le générateur de l'île le refuse, et un test le

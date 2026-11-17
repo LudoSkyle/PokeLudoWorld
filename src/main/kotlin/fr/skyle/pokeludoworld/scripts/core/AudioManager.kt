@@ -56,6 +56,9 @@ class AudioManager : Node() {
 	private var outgoing: AudioStreamPlayer? = null
 	private var jinglePlayer: AudioStreamPlayer? = null
 	private var voices: List<AudioStreamPlayer> = emptyList()
+	private var cryPlayer: AudioStreamPlayer? = null
+	private var lastCry = ""
+	private var cryCount = 0
 	private val streams = HashMap<String, AudioStream?>()
 
 	/** La musique demandée : celle qu'on entend, ou qu'on entendra après le jingle. */
@@ -86,6 +89,7 @@ class AudioManager : Node() {
 		outgoing = player("MusicOut")
 		jinglePlayer = player("Jingle")
 		voices = (0 until SFX_VOICES).map { player("Sfx$it") }
+		cryPlayer = player("Cry")
 
 		// Les tests jouent le jeu pour de vrai, mais en silence.
 		if (GameFiles.testing) AudioServer.setBusMute(0, true)
@@ -220,6 +224,24 @@ class AudioManager : Node() {
 		sfxCount++
 	}
 
+	/**
+	 * Fait entendre le cri du Pokémon [species] (`cries/<species>`), au volume
+	 * [volume] de 0 à 1. Un seul cri à la fois : si un autre joue encore, celui-ci
+	 * est passé sous silence et la fonction renvoie false — deux oiseaux qui
+	 * crient ensemble ne se couvrent pas.
+	 */
+	fun cry(species: String, volume: Double = 1.0): Boolean {
+		val voice = cryPlayer ?: return false
+		if (voice.playing) return false
+		val stream = load("cries/$species") ?: return false
+		voice.stream = stream
+		voice.volumeDb = decibels(volume).toFloat()
+		voice.play()
+		lastCry = species
+		cryCount++
+		return true
+	}
+
 	/** Le son nommé [path], sans extension : le premier format trouvé parmi [FORMATS]. */
 	private fun load(path: String): AudioStream? = streams.getOrPut(path) {
 		val file = FORMATS.map { "$DIR$path.$it" }.firstOrNull { ResourceLoader.exists(it) }
@@ -268,4 +290,10 @@ class AudioManager : Node() {
 
 	@Register
 	fun sfxPlayed(): Int = sfxCount
+
+	@Register
+	fun lastCryId(): String = lastCry
+
+	@Register
+	fun criesPlayed(): Int = cryCount
 }

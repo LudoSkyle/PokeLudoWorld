@@ -121,8 +121,9 @@ RETOUCH = [
     (SEA_, (0, 18, 12, 22)), (SEA_, (8, 23, 20, 24)), (SEA_, (14, 25, 20, 33)), (SEA_, (13, 34, 21, 36)), (SEA_, (0, 15, 0, 16)),
     (SEA_, (37, 19, 41, 22)), (SEA_, (37, 23, 50, 24)), (SEA_, (45, 25, 49, 25)), (SEA_, (51, 18, 54, 22)),
     (SEA_, (18, 46, 38, 49)), (SEA_, (0, 47, 17, 49)), (SEA_, (35, 41, 39, 47)), (SEA_, (50, 38, 54, 49)),
-    # --- la trouée du nord : un couloir au ras de la plage, entre deux falaises, jusqu'au bord de la carte (vers la Route 1)
-    (BEACH_, (23, 0, 27, 8)),
+    # --- la sortie du nord, vers la Route 1 : on y arrive **sur l'herbe, en hauteur**, comme la route commence. Le plateau du
+    #     nord est donc d'un seul tenant jusqu'au bord de la carte, et l'on y monte de la crique par un escalier.
+    (PLATEAU_, (20, 0, 30, 8)), (BEACH_, (23, 9, 27, 9)),
     # --- la plage du sud, d'un seul tenant, sans la mare que l'exemple y laisse
     (BEACH_, (22, 32, 35, 40)), (BEACH_, (36, 30, 38, 33)),
     (BEACH_, (30, 40, 36, 43)),                                                        # et une langue de sable plus large que la jetée : ses premières planches y reposent

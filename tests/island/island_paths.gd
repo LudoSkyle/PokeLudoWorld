@@ -8,7 +8,7 @@ const W := 55
 const H := 50
 const ROUTE := 11          # la planche de la Route 1 (route.png)
 const VILLAGE := 14        # les maisons (village.png)
-const ROAD := [23, 24, 25, 26, 27]
+const ROAD := [24, 25, 26]
 
 func scene() -> String:
 	return "start_island"
@@ -67,7 +67,7 @@ func test() -> void:
 		"%s %s %s" % [is_free(Vector2i(24, 41)), can_step(Vector2i(24, 40), Vector2i(24, 41)), can_step(Vector2i(24, 41), Vector2i(23, 41))])
 
 	# Les cinq escaliers : trois marches entre deux poteaux, face au sud.
-	var stairs := {"du nord-ouest": Vector2i(14, 13), "du nord-est": Vector2i(31, 13), "de la place": Vector2i(26, 31), "de la bibliotheque": Vector2i(2, 33), "du sud-est": Vector2i(36, 37)}
+	var stairs := {"du nord": Vector2i(23, 8), "du nord-ouest": Vector2i(14, 13), "du nord-est": Vector2i(31, 13), "de la place": Vector2i(26, 31), "de la bibliotheque": Vector2i(2, 33), "du sud-est": Vector2i(36, 37)}
 	var climbed := 0
 	for name in stairs:
 		var s: Vector2i = stairs[name]
@@ -76,7 +76,7 @@ func test() -> void:
 			ok = ok and can_step(s + Vector2i(i, 1), s + Vector2i(i, 0)) and can_step(s + Vector2i(i, 0), s + Vector2i(i, -1))
 		if ok:
 			climbed += 1
-	check("cinq escaliers de pierre, trois marches entre deux poteaux pleins", climbed == 5, "%d" % climbed)
+	check("six escaliers de pierre, trois marches entre deux poteaux pleins", climbed == 6, "%d" % climbed)
 
 	# Les pontons : du dessus d'un plateau a l'autre, larges de trois cases.
 	check("les pontons sont les planches de la Route 1, et l'on y marche", on_deck(Vector2i(9, 19)) and on_deck(Vector2i(14, 23)) and on_deck(Vector2i(16, 30)) and on_deck(Vector2i(41, 20)) and on_deck(Vector2i(42, 23)) and on_deck(Vector2i(33, 46))
@@ -123,7 +123,7 @@ func test() -> void:
 			var c := Vector2i(floori(n.position.x / 16.0), floori(n.position.y / 16.0))
 			if is_sea(c) or on_deck(c) or is_free(c):
 				on_land = false
-	check("huit lampadaires et cinq panneaux, pleins, sur la terre ferme", posts == 13 and on_land, "%d poteaux" % posts)
+	check("neuf lampadaires et cinq panneaux, pleins, sur la terre ferme", posts == 14 and on_land, "%d poteaux" % posts)
 	var props := layer("World/Props")
 	var benches := 0
 	for c in props.get_used_cells():
@@ -134,7 +134,7 @@ func test() -> void:
 	var paths := layer("Background/Paths")
 	var on_path: Array = []
 	for n in level().get_node("World").get_children() + level().get_node("World/Entities").get_children():
-		if n is Node2D and not (n is TileMapLayer) and str(n.name) != "Entities" and str(n.name) != "Player" and not str(n.name).begins_with("Runner") and not str(n.name).begins_with("Glow"):
+		if n is Node2D and not (n is TileMapLayer) and str(n.name) != "Entities" and str(n.name) != "Player" and not str(n.name).begins_with("Runner") and not str(n.name).begins_with("Glow") and not str(n.name).begins_with("Guard"):          # les gardes, eux, barrent la piste expres
 			var c := Vector2i(floori(n.position.x / 16.0), floori(n.position.y / 16.0))
 			if paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1):
 				on_path.append(str(n.name))
@@ -143,13 +143,13 @@ func test() -> void:
 			on_path.append("mobilier en %s" % c)
 	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
 	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 11)
-		and cell_of("ShellKid") == Vector2i(28, 11) and cell_of("Sailor") == Vector2i(43, 16) and cell_of("Youngster") == Vector2i(48, 13) and cell_of("Gardener") == Vector2i(49, 32))
+		and cell_of("ShellKid") == Vector2i(28, 11) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
 	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 11)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
 	# Tout se rejoint a pied, depuis le depart.
 	var seen := reach(cell())
 	var places := {"la place": Vector2i(28, 29), "le ponton de la cloche": Vector2i(14, 22), "le bout de la jetee du sud": Vector2i(33, 47), "les hautes herbes du sud-ouest": Vector2i(12, 42),
-		"la trouee de la falaise": Vector2i(25, 4), "la crique du nord": Vector2i(22, 13), "la plage du sud": Vector2i(28, 35), "la plage de l'ouest": Vector2i(4, 41), "la presqu'ile du sud-est": Vector2i(45, 45)}
+		"la sortie du nord": Vector2i(25, 4), "la crique du nord": Vector2i(22, 13), "la plage du sud": Vector2i(28, 35), "la plage de l'ouest": Vector2i(4, 41), "la presqu'ile du sud-est": Vector2i(45, 45)}
 	for door in ["MaisonLudo", "MaisonNord", "Bibliotheque", "Laboratoire", "MaisonSud"]:
 		places["devant " + door] = at("Doors/" + door) + Vector2i.DOWN
 	for who in ["World/ItemPotion", "World/ItemBall", "World/ItemWater", "World/SignLudo", "World/SignLibrary", "World/SignLab", "World/SignNorth", "World/SignPier"]:
@@ -186,7 +186,14 @@ func test() -> void:
 			border.append(c)
 	check("on ne marche jamais dans l'eau", wet == 0, "%d cases" % wet)
 	check("aucune case du bord n'est atteignable, hors de la trouee du nord", border.is_empty(), str(border.slice(0, 6)))
-	check("la trouee du nord : cinq cases, entre deux falaises, jusqu'au bord", is_free(Vector2i(23, 1)) and is_free(Vector2i(27, 1)) and not is_free(Vector2i(22, 1)) and not is_free(Vector2i(28, 1)) and at("Doors/Nord0") == Vector2i(23, 0) and at("Doors/Nord4") == Vector2i(27, 0))
+	# La sortie du nord ressemble a ce qui la suit : sur l'herbe, en hauteur, une piste de trois cases — comme la Route 1 commence.
+	check("la sortie du nord : une piste de trois cases dans la foret, jusqu'au bord", is_free(Vector2i(24, 1)) and is_free(Vector2i(26, 1)) and not is_free(Vector2i(23, 1)) and not is_free(Vector2i(27, 1))
+		and at("Doors/Nord0") == Vector2i(24, 0) and at("Doors/Nord2") == Vector2i(26, 0) and level().get_node_or_null("Doors/Nord3") == null)
+	check("elle est sur l'herbe du plateau, pas sur le sable : on y monte de la crique par un escalier", ground.get_cell_atlas_coords(Vector2i(25, 2)) == Vector2i(8, 1) and layer("Background/Paths").get_cell_source_id(Vector2i(24, 2)) == ROUTE
+		and ground.get_cell_atlas_coords(Vector2i(25, 9)) == Vector2i(1, 1) and can_step(Vector2i(25, 9), Vector2i(25, 8)))
+	check("on ne contourne pas les gardes par l'herbe", not is_free(Vector2i(23, 3)) and not is_free(Vector2i(27, 3)) and not is_free(Vector2i(22, 3)) and not is_free(Vector2i(28, 3)))
+	var kid: Node2D = npc("Youngster")
+	check("le gamin se promene autour de ses herbes, dans un rectangle qui les deborde", kid.get("movement") == "wander" and kid.get("wander_zone") == Rect2i(47, 11, 7, 6) and Rect2i(47, 11, 7, 6).has_point(cell_of("Youngster")), str(kid.get("wander_zone")))
 	var trees := layer("World/Trees")
 	check("la foret est celle de la Route 1", trees.get_used_cells().size() > 60 and trees.get_cell_source_id(trees.get_used_cells()[0]) == ROUTE, "%d arbres" % trees.get_used_cells().size())
 	var grass := layer("Background/Grass")

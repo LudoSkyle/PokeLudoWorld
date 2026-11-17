@@ -24,6 +24,7 @@ joueur : `CharacterMovement` pour les pas, `CharacterAnimation` pour le sprite.
 | `movement` | `static` (défaut), `wander` ou `patrol` |
 | `pace` | cases par seconde ; 4 = le joueur, 2 = les PNJ du projet de référence |
 | `wander_layer` | errance : calque de tuiles dont il ne sort pas |
+| `wander_zone` | errance : rectangle de cases dont il ne sort pas (`Rect2i` : coin haut-gauche et taille) ; il passe avant `wander_layer` |
 | `wander_pause` | errance : pause entre deux gestes, tirée entre x et y secondes |
 | `route` | ronde : cases à rejoindre l'une après l'autre, en boucle |
 
@@ -121,9 +122,11 @@ temps à l'autre est fait de plusieurs nœuds.
 | **Roland** | sur la plage de l'ouest, sous la bibliothèque (7,36) : il a plongé vingt ans dans ces eaux | sur la place, à côté du socle (`RolandAfter`) | **il reste près de la cloche** : « je peux bien la regarder une heure » |
 | **le pêcheur** | au bout de la jetée (33,48) : ça ne mord pas | sur la place (`FisherAfter`) : il a laissé sa canne | de retour au bout de la jetée (`FisherLater`) : il entend la cloche d'ici |
 | **le coureur** | fait le tour de la place | le fait dans l'autre sens (`RunnerAfter`) : dix ans dans le mauvais sens | **court toujours** : à chaque tour, il salue la cloche |
-| **les deux ouvriers** | gardent la trouée (23,3) et (27,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis au débouché de la trouée (27,11), l'autre range le quai (35,41) |
+| **les deux ouvriers** | gardent la sortie du nord (24,3) et (26,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis au pied de l'escalier du nord (26,11), l'autre range le quai (35,41) |
 | **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
-| **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un dans la trouée du nord (25,8), une vers la jetée (31,41), le karatéka sur la plage de la crique (24,11), bien en vue | repartis |
+| **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un au bord de la crique (29,9), une vers la jetée (31,41), le karatéka sur la plage de la crique (24,11), bien en vue | repartis |
+| **le marin** (43,17), près du ponton du nord-est | les rochers ferment les passes | *(à sa place)* | une cloche s'entend du large |
+| **le gamin**, autour des herbes du labo | se promène dans un rectangle qui déborde les herbes de deux cases (`wander_zone`) : il y entre, il en sort | *(pareil)* | y entrera demain |
 | **la dame du banc** (12,15) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
 | **la baigneuse** (28,36), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |
 | **le nageur** (25,11), dans la crique | l'eau la plus calme de l'île | *(à sa place)* | était dans l'eau quand elle a sonné |
@@ -192,6 +195,9 @@ l'un sur l'étang, l'autre sur l'herbe.
 | `pace` | sa vitesse, en cases par seconde (2,5) |
 | `rest` | le temps qu'il plane entre deux trajets, au moins et au plus (0,3 à 1,6 s) |
 | `seed` | une graine pour un vol rejouable ; 0 : un vrai hasard. Portés par le vent, ceux qui la partagent voyagent en groupe |
+| `cry_every` | le temps entre deux cris, au moins et au plus (10 à 24 s) ; `(0, 0)` : il se tait |
+| `cry_range` | il ne crie que si le joueur est à moins de tant de cases (4) |
+| `cry_volume` | le volume du cri, de 0 à 1 (0,45) |
 | `drift` | le vent qui le porte : `1` vers l'est, `-1` vers l'ouest ; `0` (défaut) : il vole de lui-même |
 
 **Son vol.** Il avance par **trajets d'une à trois cases** en ligne droite. À
@@ -200,6 +206,13 @@ rebrousse jamais chemin** : après être allé à gauche il peut monter, descend
 ou continuer à gauche, pas repartir à droite. Un trajet qui sortirait de la
 zone est raccourci ; s'il ne reste aucune case dans ce sens, il en tire un
 autre. Entre deux trajets, il plane sur place en battant des ailes.
+
+**Son cri.** De loin en loin, un volant qui passe au-dessus du joueur pousse
+le cri de son espèce (`assets/audio/cries/<species>`, joué par
+`AudioManager.cry`). Hors de portée, pendant un dialogue, ou si un autre crie
+déjà, il se tait et réessaie une seconde plus tard. Un seul cri à la fois,
+à mi-voix : c'est un bruit de fond. Sur l'écran titre, sans joueur, ils se
+taisent.
 
 **Porté par le vent** (`drift`). Il ne vole pas, il dérive : il traverse sa
 `zone` d'un bord à l'autre **sans jamais s'arrêter**, sort d'une case et demie
