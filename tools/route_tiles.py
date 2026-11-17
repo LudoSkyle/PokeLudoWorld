@@ -60,6 +60,9 @@ SHADOW_ROW = ('conif', 'sapling')
 # Le jeu, lui, n'en veut pas — un arbre à deux teintes a l'air d'une erreur (Ludovic, 17/11/2026) : ils ne servent
 # qu'au relevé (`cells(survey=True)`), et `layout.py` plante à leur place l'essence de leur cime.
 MIXED_TREES = {'treeAB': ('treeA', 'treeB'), 'treeBA': ('treeB', 'treeA')}
+# L'escalier de la planche ne monte que face au sud. Tourné d'un quart, le même bloc monte par le flanc d'un plateau :
+# `stairW…` descend vers l'ouest, `stairE…` vers l'est. Leurs poteaux sont en haut et en bas, leurs marches au milieu.
+SIDE_STAIRS = {'W': (9, 13), 'E': (12, 13)}
 TRAIL_CENTRE = (15, 4)            # une case de l'exemple où la piste est nue : son centre n'est pas sur la planche
 TRAIL_AT = (8, 1)
 KEYS, CORNERS = '789456123', 'ijkl'
@@ -128,6 +131,7 @@ def atlas():
     out['tall_pressing'], out['tall_pressed'] = (7, 6), (8, 6)
     out['ledgeVB'] = (15, 2)
     out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
+    for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%s' % (side, KEYS[j * 3 + i]): (c0 + i, r0 + j) for j in range(3) for i in range(3)})
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -225,6 +229,19 @@ def cells(survey=False):
                     tile = [[CLEAR if any(g[b][a][:3] == tile[b][a][:3] for g in grounds) else tile[b][a] for a in range(16)] for b in range(16)]
                 made[(at[0] + i, at[1] + j)] = tile
     made[where['ledgeVB']] = ledge_bottom(made[where['ledgeVT']])
+    # les escaliers de côté : le bloc 3 x 3 de l'escalier, tourné d'un quart de tour
+    block = [[CLEAR] * 48 for _ in range(48)]
+    for j in range(3):
+        for i in range(3):
+            tile = made.get(where['stair' + KEYS[j * 3 + i]])
+            for b in range(16):
+                for a in range(16):
+                    if tile: block[j * 16 + b][i * 16 + a] = tile[b][a]
+    turned = {'W': [[block[47 - x][y] for x in range(48)] for y in range(48)],          # le bas de l'escalier passe à gauche
+              'E': [[block[x][47 - y] for x in range(48)] for y in range(48)]}          # ou à droite
+    for side, (c0, r0) in SIDE_STAIRS.items():
+        for j in range(3):
+            for i in range(3): made[(c0 + i, r0 + j)] = [[turned[side][j * 16 + b][i * 16 + a] for a in range(16)] for b in range(16)]
     # Le rivage sans son eau : le bord du sable seul, à poser par-dessus une case d'eau. C'est ce qui laisse un reflet
     # passer dessous au lieu de s'étaler sur le sable (l'île de départ ; la Route 1 garde le bord d'une seule pièce).
     for name in [n for n in where if n.startswith('shore')]:

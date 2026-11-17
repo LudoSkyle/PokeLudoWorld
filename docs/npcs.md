@@ -125,7 +125,7 @@ temps à l'autre est fait de plusieurs nœuds.
 | **les deux ouvriers** | gardent la sortie du nord (3,3) et (5,3) : le passage est fermé | sur la place (`WorkerAfter`, `WorkerAfter2`) : la route est ouverte | l'un surveille les éboulis près de la sortie du nord (6,15), l'autre range le quai (36,41) |
 | **le peintre** | — | sur la place (`VisitorPainter`) : la lumière sur le bronze | **il reste** jusqu'au dernier coup de pinceau |
 | **les autres visiteurs** (randonneuse, enfant, serveuse, randonneur, jeune fille, karatéka) | — | trois sur la place ; un près de la sortie du nord (6,15), une vers la jetée (31,41), le karatéka au bord de la piste (2,10), bien en vue | repartis |
-| **le marin** (43,17), près du ponton du nord-est | les rochers ferment les passes | *(à sa place)* | une cloche s'entend du large |
+| **le marin** (43,17), en haut de l'escalier du nord-est | les rochers ferment les passes | *(à sa place)* | une cloche s'entend du large |
 | **le gamin**, autour des herbes du labo | se promène dans un rectangle qui déborde les herbes de deux cases (`wander_zone`) : il y entre, il en sort | *(pareil)* | y entrera demain |
 | **la dame du banc** (12,15) | vient s'asseoir tous les matins | *(à sa place)* | attend que la cloche sonne pour rentrer |
 | **la baigneuse** (28,36), sur sa serviette | ne bouge plus avant la nuit | *(à sa place)* | a entendu la cloche, n'a pas bougé pour autant |

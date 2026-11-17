@@ -121,20 +121,27 @@ RETOUCH = [
     (SEA_, (0, 18, 12, 22)), (SEA_, (8, 23, 20, 24)), (SEA_, (14, 25, 20, 33)), (SEA_, (13, 34, 21, 36)), (SEA_, (0, 15, 0, 16)),
     (SEA_, (37, 19, 41, 22)), (SEA_, (37, 23, 50, 24)), (SEA_, (45, 25, 49, 25)), (SEA_, (51, 18, 54, 22)),
     (SEA_, (18, 46, 38, 49)), (SEA_, (0, 47, 17, 49)), (SEA_, (35, 41, 39, 47)), (SEA_, (50, 38, 54, 49)),
-    # --- au nord de la crique, la forêt : le sable n'y remonte pas (la sortie de l'île est ailleurs, derrière chez Ludo)
-    (PLATEAU_, (21, 7, 29, 12)),
+    # --- la crique du nord : une grande plage, du pied du plateau du nord-ouest à celui du nord-est, qui remonte dans la
+    #     forêt et descend jusqu'au flanc de la place (Ludovic, 17/11/2026 : les plages étaient trop petites, trop étroites)
+    (PLATEAU_, (20, 0, 36, 8)),
+    (BEACH_, (15, 15, 34, 17)), (BEACH_, (20, 14, 34, 14)), (BEACH_, (21, 13, 34, 13)), (BEACH_, (23, 12, 34, 12)), (BEACH_, (24, 11, 34, 11)), (BEACH_, (27, 9, 34, 10)),
+    (BEACH_, (16, 18, 18, 21)),                                                        # et sa langue le long du flanc ouest de la place, où monte un escalier
     # --- la plage du sud, d'un seul tenant, sans la mare que l'exemple y laisse
     (BEACH_, (22, 32, 35, 40)), (BEACH_, (36, 30, 38, 33)),
     (BEACH_, (30, 40, 36, 43)),                                                        # et une langue de sable plus large que la jetée : ses premières planches y reposent
     # --- les escaliers ne montent que face au sud : sous chacun, une anse de plage ; au-dessus, un bord de plateau tout droit
     (BEACH_, (14, 14, 18, 16)), (PLATEAU_, (19, 12, 19, 13)),                          # du plateau du nord-ouest à la crique
-    (PLATEAU_, (29, 12, 36, 13)), (BEACH_, (29, 14, 35, 17)),                          # du plateau du nord-est à la crique
-    (PLATEAU_, (21, 19, 35, 31)),                                                      # la place : un plateau d'un seul bloc, et son bord du sud
+    (PLATEAU_, (35, 9, 38, 14)),                                                       # le flanc ouest du plateau du nord-est, tout droit : un escalier y monte de la crique
+    (PLATEAU_, (20, 18, 34, 31)),                                                      # la place : un plateau d'un seul bloc, et son bord du sud
     (BEACH_, (2, 34, 7, 37)), (BEACH_, (2, 38, 8, 45)),                                # de la bibliothèque à la plage de l'ouest, assez large pour rester une plage une fois la roche posée
     (PLATEAU_, (35, 36, 35, 37)), (BEACH_, (36, 38, 40, 40)),                          # du plateau du sud-est à la plage du sud
     # --- de quoi poser les maisons et faire arriver les pontons
-    (PLATEAU_, (39, 27, 45, 34)), (PLATEAU_, (44, 26, 54, 27)), (PLATEAU_, (13, 37, 19, 38)), (PLATEAU_, (0, 24, 7, 29)),
-    (PLATEAU_, (35, 16, 46, 18)), (SEA_, (36, 19, 46, 21)),                            # le plateau du nord-est finit droit, là où part son ponton
+    (PLATEAU_, (39, 27, 45, 34)), (PLATEAU_, (44, 26, 54, 27)), (PLATEAU_, (9, 36, 21, 41)), (PLATEAU_, (0, 24, 7, 29)),
+    (PLATEAU_, (7, 25, 12, 30)),                                                       # pas de creux dans le plateau de la bibliothèque : tout y est au niveau 2
+    (PLATEAU_, (36, 16, 46, 18)),                                                      # le plateau du nord-est finit droit, là où descend son escalier du sud
+    # --- à l'est de la place, une plage la sépare du plateau du sud-est : elle va du pied du plateau du nord-est à la plage du sud
+    (PLATEAU_, (32, 18, 34, 18)), (BEACH_, (35, 15, 35, 18)),                                   # la place et le plateau du nord-est ne se touchent pas par un coin : une colonne de roche les sépare
+    (BEACH_, (35, 19, 38, 33)), (BEACH_, (36, 19, 44, 25)), (BEACH_, (33, 32, 38, 34)), (SEA_, (45, 19, 50, 25)), (PLATEAU_, (35, 36, 41, 37)),
 ]
 for level, r in RETOUCH:
     cells = rect(*r)

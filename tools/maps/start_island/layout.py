@@ -53,13 +53,15 @@ LOOP = [(PLAZA[0] - 1, PLAZA[1] - 1), (PLAZA[2] + 1, PLAZA[1] - 1), (PLAZA[2] + 
 LOOP_CELLS = rect(LOOP[0][0], LOOP[0][1], LOOP[2][0], LOOP[2][1]) - rect(LOOP[0][0] + 1, LOOP[0][1] + 1, LOOP[2][0] - 1, LOOP[2][1] - 1)
 
 # --- les escaliers : (colonne de gauche, rangée du bord). Cinq cases de large : un poteau, trois marches, un poteau.
-STAIRS = {'nord-ouest': (14, 13), 'nord-est': (30, 13), 'place': (26, 31), 'bibliotheque': (2, 33), 'sud-est': (36, 37)}
+STAIRS = {'nord-ouest': (14, 13), 'nord-est': (39, 18), 'place': (26, 31), 'bibliotheque': (2, 33), 'sud-est': (36, 37)}
+# --- et trois escaliers de côté, là où l'on passait par un ponton : (côté bas 'W' ou 'E', colonne de l'anneau d'herbe, rangée
+#     du haut des marches). Trois rangées de marches, une barre de poteaux au-dessus et en dessous.
+SIDE_STAIRS = {'place, depuis la crique': ('W', 20, 19), 'jardin, vers la plage du sud': ('E', 21, 37)}
 STEPS = {(x + i, r + j) for x, r in STAIRS.values() for i in (1, 2, 3) for j in (0, 1)}          # deux rangées de marches : une par étage de la falaise
+for side, gx, y0 in SIDE_STAIRS.values(): STEPS |= {(gx + i, y0 + j) for i in ((-1, 0) if side == 'W' else (0, 1)) for j in (0, 1, 2)}
 
 # --- les pontons, larges de trois cases : (sens, x0, y0, x1, y1). Ils vont du dessus d'un plateau à l'autre.
-DOCKS = [('V', 8, 17, 10, 21), ('H', 8, 22, 21, 24), ('V', 15, 25, 17, 37),          # du nord-ouest à la place, et de là au jardin du sud-ouest
-         ('V', 40, 18, 42, 21), ('H', 36, 22, 48, 24), ('V', 46, 25, 48, 26),         # du nord-est à la place, et de là au sud-est
-         ('V', 32, 43, 34, 48)]                                                       # la jetée du sud, depuis la plage
+DOCKS = [('V', 32, 43, 34, 48)]          # un seul : la jetée du sud, depuis la plage. On passe d'une terre à l'autre par les plages et leurs escaliers (Ludovic, 17/11/2026)
 DECK = set().union(*[rect(*d[1:]) for d in DOCKS])
 PIER_END = (33, 48)
 
@@ -84,15 +86,15 @@ for crumb in geo.parts(MOUNTAIN):
 # Trois cases de large, d'un seul tenant sur chaque plateau : plus étroite, une piste n'est que deux bords collés, et les
 # chemins de l'exemple, lus case par case, donnaient des taches. On les trace donc à la main, là où l'exemple en a.
 PATHS = [(ROAD[0], 0, ROAD[-1], 12),                                                                   # la sortie du nord, de la croisée des pistes au bord de la carte
-         (9, 9, 11, 12), (3, 10, 18, 12), (8, 13, 10, 16),                                              # nord-ouest : chez Ludo, chez Anselme, l'escalier, le ponton
-         (44, 9, 46, 12), (31, 10, 46, 12), (40, 13, 42, 17),                                          # nord-est : le laboratoire, l'escalier, le ponton
+         (9, 9, 11, 12), (3, 10, 18, 12),                                                              # nord-ouest : chez Ludo, chez Anselme, l'escalier
+         (44, 9, 46, 12), (36, 10, 46, 12), (40, 13, 42, 17),                                          # nord-est : le laboratoire, ses deux escaliers
          (2, 30, 5, 32), (6, 30, 11, 32),                                                              # ouest : la bibliothèque, son escalier
-         (9, 33, 11, 38), (9, 38, 18, 40),                                                             # de là au jardin, et au bout de son ponton
-         (42, 34, 44, 36), (37, 34, 48, 36), (46, 27, 48, 36), (44, 37, 46, 46)]                        # sud-est : chez Solange, l'escalier, le ponton, la presqu'île
+         (9, 33, 11, 37), (9, 37, 20, 39),                                                             # de là au jardin, jusqu'à son escalier de côté
+         (42, 34, 44, 36), (37, 34, 48, 36), (46, 28, 48, 36), (44, 37, 46, 46)]                        # sud-est : chez Solange, l'escalier, l'allée du banc, la presqu'île
 TRAIL = tidy(set().union(*[rect(*r) for r in PATHS]) & INSIDE - MOUNTAIN - HOUSE_AREA)
 
 # --- les hautes herbes
-TALL = (rect(10, 41, 20, 43) | rect(20, 38, 21, 40) | rect(49, 12, 52, 15)) & INSIDE - TRAIL - MOUNTAIN
+TALL = (rect(10, 41, 20, 43) | rect(49, 12, 52, 15)) & INSIDE - TRAIL - MOUNTAIN
 
 # ============================================================ le sol
 def tile(name, alt=0): return (ROUTE,) + AT[name] + (alt,)
@@ -124,6 +126,7 @@ for c in sorted(PAVED):          # le dallage de la place, bordé d'herbe
 
 # ============================================================ escaliers et pontons
 stairs, deck = {}, {}
+MADE_TILES = set(route_tiles.cells())
 for x, r in STAIRS.values():
     for i, name in enumerate(('stair7', None, None, None, 'stair9')):
         if name: stairs[(x + i, r - 1)] = name
@@ -133,6 +136,16 @@ for x, r in STAIRS.values():
     if any(ring_shape.get((x + i, r)) != '2' for i in range(5)): WARN.append(('escalier', (x, r), 'le bord du plateau n est pas droit sous l escalier : %s' % [ring_shape.get((x + i, r)) for i in range(5)]))
     if any(rock_shape.get((x + i, r + 1)) != '2' for i in (1, 2, 3)): WARN.append(('escalier', (x, r), 'l anneau de roche n est pas droit sous l escalier : %s' % [rock_shape.get((x + i, r + 1)) for i in range(5)]))
     if any((x + i, r + 2) not in BEACH for i in (1, 2, 3)): WARN.append(('escalier', (x, r), 'pas de plage au pied de l escalier'))
+for where, (side, gx, y0) in SIDE_STAIRS.items():
+    cols = [gx - 2, gx - 1, gx, gx + 1] if side == 'W' else [gx + 2, gx + 1, gx, gx - 1]          # le bas, la roche, l'herbe, le haut
+    keys = {'W': ('741', '852', '852', '963'), 'E': ('963', '852', '852', '741')}[side]
+    for x, key in zip(cols, keys):
+        for y, k in [(y0 - 1, key[0])] + [(y0 + j, key[1]) for j in range(3)] + [(y0 + 3, key[2])]:
+            if AT['stair%s%s' % (side, k)] in MADE_TILES: stairs[(x, y)] = 'stair%s%s' % (side, k)
+    flank = '4' if side == 'W' else '6'
+    if any(ring_shape.get((gx, y0 + j)) != flank or rock_shape.get((cols[1], y0 + j)) != flank for j in range(3)):
+        WARN.append(('escalier de côté', where, 'le flanc du plateau n est pas droit : %s %s' % ([ring_shape.get((gx, y0 + j)) for j in range(3)], [rock_shape.get((cols[1], y0 + j)) for j in range(3)])))
+    if any((cols[0], y0 + j) not in BEACH for j in range(3)): WARN.append(('escalier de côté', where, 'pas de plage au pied'))
 for way, x0, y0, x1, y1 in DOCKS:
     for (x, y) in sorted(rect(x0, y0, x1, y1)):
         if way == 'V':
@@ -165,9 +178,9 @@ def feet(name, x, r):
     if name in village_tiles.PLANTS: return [(x + village_tiles.door(name), r)]          # le tronc
     return []
 sprites = []
-NO_TREES = rect(37, 1, 40, 6)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
+NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 21)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
 KEEP = NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
-    | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
+    | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(gx + i, y0 + j) for side, gx, y0 in SIDE_STAIRS.values() for i in range(-3, 4) for j in range(-1, 4)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
 # la forêt de l'exemple, et une lisière tout le long des bords de la carte : elle la ferme, mieux qu'une rangée de sapins
 FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1) or c[1] >= H - 4} | (rect(0, 0, 31, 2) & INSIDE)          # et tout le haut de la carte, sous la forêt de la Route 1
@@ -195,7 +208,7 @@ for r in (2, 4, 6, 8):
 # la Route 1, sur les premières rangées, la trame est la sienne, prolongée : ses colonnes tombent en face des siennes.
 for r in range(0, H + 1):
     for x in range(-2, W):
-        if ((x + SEAM - 2 * ((r + 1) % 2)) if r <= 8 and x + 1 in SHARED else (x - 2 * (r % 2))) % 4: continue
+        if ((x + SEAM - 2 * ((r + 1) % 2)) if r <= 8 and x <= 36 else (x - 2 * (r % 2))) % 4: continue          # (jusqu'à la montagne : une trame qui change au milieu d'un bois y laisse une allée)
         if r < 2 and any(c in SHARED for c in range(x, x + 3)): continue          # au-dessus de la rangée 0, seuls les arbres de la route
         cells = [c for c in feet('treeA', x, r) if inb(c)]          # au bord de la carte, un arbre dépasse : seules comptent ses cases qui y sont
         if cells and sum(1 for c in cells if c in FOREST) * 3 >= len(cells) * 2: plant('treeB' if RNG.random() < 0.15 else 'treeA', x, r)
@@ -204,22 +217,46 @@ for c in sorted(MOUNTAIN):
     if mount_shape[c] == '5' and all(mount_shape.get((c[0] + i, c[1] + j)) == '5' for i in (0, 1) for j in (-1, 0)) and RNG.random() < 0.12 \
             and not any((c[0] + i, c[1] + j) in taken for i in (-1, 0, 1, 2) for j in (-2, -1, 0, 1)):
         sprites.append(('boulder', c[0], c[1])); taken.update(feet('boulder', *c))
-ROCKS = sorted(c for c in CELLS if geo.at(c) == '#' and c in SEA and c not in SAND and all((c[0] + i, c[1] + j) not in DECK and (c[0] + i, c[1] + j) not in deck for i in (-1, 0, 1) for j in (-1, 0, 1)))
+# Les rochers de la mer sont ceux de l'exemple, là où il les pose. Dans les cinq groupes que Ludovic a entourés (17/11/2026),
+# quelques-uns de plus ferment l'eau où l'on entrera en surfant : on ne sortira pas de la carte. Jamais en ligne droite, et
+# aucun ailleurs — chaque case d'eau du dedans est fermée par des rochers qui se touchent par un côté ou par un coin.
+BARRIERS = {
+    "l'ouest": [(4, 19), (3, 22)],
+    "l'est": [(54, 17), (53, 18), (54, 21)],
+    'la plage du sud-ouest': [(1, 46), (1, 47), (2, 48), (3, 49), (6, 49), (7, 48), (9, 48)],
+    "l'ouest de la jetée": [(25, 46), (27, 49), (28, 48), (29, 49), (30, 48), (31, 49)],
+    "l'est de la jetée": [(35, 48), (36, 49), (37, 48), (38, 49)],
+}
+FORMER_DOCKS = set().union(*[rect(*d) for d in [(8, 17, 10, 21), (8, 22, 21, 24), (15, 25, 17, 37), (40, 18, 42, 21), (36, 22, 48, 24), (46, 25, 48, 26)]])          # les pontons de l'exemple, retirés : ce que l'exemple pose là, c'était leur bois, pas des rochers
+PLANKS = DECK | FORMER_DOCKS
+ROCKS = sorted(c for c in CELLS if geo.at(c) == '#' and c in SEA and c not in SAND and all((c[0] + i, c[1] + j) not in PLANKS and (c[0] + i, c[1] + j) not in deck for i in (-1, 0, 1) for j in (-1, 0, 1)))
+ROCKS = [c for n, c in enumerate(ROCKS) if not ((c[0] - 1, c[1]) in ROCKS and n % 2)]
+for where, more in BARRIERS.items():
+    for c in more:
+        if c not in SEA or c in DECK: WARN.append(('rocher', where, 'pas dans l eau : %s' % (c,)))
+        elif c not in ROCKS: ROCKS.append(c)
 for n, c in enumerate(ROCKS):
-    if (c[0] - 1, c[1]) in ROCKS and n % 2: continue
     sprites.append((('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
 # --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
 palms = []
+COVE = rect(15, 9, 34, 18)          # la crique du nord : agrandie pour être une plage, pas une palmeraie — deux palmiers, pas plus (Ludovic, 17/11/2026)
+def palm_ok(c): return c not in COVE or sum(1 for p in palms if p in COVE) < 2
 FURNISHED = rect(27, 14, 36, 17) | rect(22, 33, 31, 38) | rect(5, 34, 9, 38) | rect(29, 39, 37, 43)          # parasols et serviettes, Roland, le pied de la jetée : generate.py les pose là
 for c in sorted(BEACH, key=lambda c: (c[1], c[0])):
     if geo.OBJECTS[c[1]][c[0]] != '#' or c in KEEP or c in FURNISHED or c in DECK or c in stairs or any((c[0] + i, c[1] + j) not in BEACH for i, j in NEIGH4): continue
     if any((c[0] + i, c[1] + j) in set(stairs) | DECK for i in range(-2, 3) for j in range(-2, 3)) or c[0] in ROAD and c[1] < 10: continue
-    if all(abs(c[0] - p[0]) + abs(c[1] - p[1]) >= 5 for p in palms): palms.append(c)
+    if palm_ok(c) and all(abs(c[0] - p[0]) + abs(c[1] - p[1]) >= 5 for p in palms): palms.append(c)
+# ...et sur les grandes plages, où l'exemple n'a rien posé (c'était de la forêt, ou de l'eau), d'autres au hasard : une plage
+# nue paraît vide. Toujours à l'écart des escaliers, des passages, du mobilier, et jamais deux à moins de cinq cases.
+for c in sorted(BEACH, key=lambda c: (c[1], c[0])):
+    if c in KEEP or c in FURNISHED or c in DECK or any((c[0] + i, c[1] + j) not in BEACH for i, j in NEIGH4): continue
+    if any((c[0] + i, c[1] + j) in set(stairs) | DECK for i in range(-2, 3) for j in range(-2, 3)): continue
+    if RNG.random() < 0.5 and palm_ok(c) and all(abs(c[0] - p[0]) + abs(c[1] - p[1]) >= 4 for p in palms): palms.append(c)
 for n, c in enumerate(palms):
     name = 'palm_big' if n % 3 == 1 else 'palm'
     sprites.append((name, c[0] - village_tiles.door(name), c[1])); taken.add(c)
 # --- des massifs de buissons : aux coins de la place, et çà et là sur l'herbe
-for wish in [(22, 30), (32, 30), (22, 19), (10, 15), (50, 16), (44, 40), (3, 26), (12, 34)]:
+for wish in [(22, 30), (31, 30), (50, 16), (44, 40), (3, 26), (12, 34)]:
     cells = [(wish[0] + i, wish[1]) for i in range(3)]
     if all(c in INSIDE and c not in KEEP and c not in taken and c not in MOUNTAIN for c in cells): sprites.append(('bush', wish[0], wish[1])); taken.update(cells)
 for name, x, r in sprites:

@@ -575,8 +575,8 @@ msgstr "I dived in these waters for twenty years."
 msgid "Elles ont encore des choses à dire, je le sens."
 msgstr "They still have things to say, I can feel it."
 
-msgid "Sous le ponton de l'ouest, là où l'eau est profonde..."
-msgstr "Under the west boardwalk, where the water is deep..."
+msgid "Au bout de la jetée du sud, là où l'eau est profonde..."
+msgstr "At the end of the south pier, where the water is deep..."
 
 msgid "Moi, je n'y plonge plus. Trop froid, trop de courant."
 msgstr "I don't dive there anymore. Too cold, too much current."

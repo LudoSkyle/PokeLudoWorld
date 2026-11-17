@@ -411,6 +411,7 @@ calque trié en Y de `World` :
 | sapin, arbuste | `11:6,7` `11:7,7` | 1×3 : deux cases, et une rangée d'ombre **sous** le pied | sa case |
 | caillou, bloc brun | `11:8,11`, `11:9,10` | 1×1, 2×2 | ses cases |
 | rochers de la rivière : gros, pointu, deux petits | `11:11,9` `11:13,10` `11:14,11` `11:15,11` | 2×3, 1×2, 1×1 | rien : l'eau qui les porte bloque |
+| escalier de côté : le bloc d'escalier tourné d'un quart, `stairW7…3` (son pied est à l'ouest) et `stairE7…3` (son pied est à l'est) | `11:9-11,13-15` `11:12-14,13-15` | 2 colonnes × 3 rangées, entre deux poutres | ses poutres du haut et du bas ; les marches se foulent |
 
 - **Pourquoi deux rangées entières.** La cime retombe de chaque côté du
   tronc : une case qu'elle recouvre n'est pas une case où l'on se tient, et

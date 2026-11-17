@@ -6,7 +6,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(14, 22)
+	return Vector2i(34, 47)
 
 func test() -> void:
 	await menu_pick("Debug")
