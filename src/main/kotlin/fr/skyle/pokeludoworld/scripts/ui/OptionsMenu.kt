@@ -14,7 +14,8 @@ import godot.core.Vector2
 /**
  * Écran des options, ouvert depuis le menu de pause et posé par-dessus lui.
  *
- * Une ligne par réglage : Haut/Bas changent de ligne, Gauche/Droite changent
+ * Une ligne par réglage — vitesse du texte, langue, et trois volumes (musique,
+ * cris des Pokémon, autres sons) : Haut/Bas changent de ligne, Gauche/Droite changent
  * la valeur, qui s'applique et s'enregistre aussitôt. La dernière ligne,
  * Retour, ramène au menu — comme la touche du menu.
  *
@@ -34,6 +35,7 @@ class OptionsMenu : CanvasLayer() {
 	private var rows: List<Control> = emptyList()
 	private var speeds: List<Label> = emptyList()
 	private var languages: List<Label> = emptyList()
+	private var volumes: Map<Settings.Volume, Label?> = emptyMap()
 
 	private var row = 0
 
@@ -54,6 +56,8 @@ class OptionsMenu : CanvasLayer() {
 
 		val tongues = getNode("Control/Screen/Rows/Language/Choices")
 		languages = (0 until (tongues?.getChildCount() ?: 0)).mapNotNull { tongues?.getChild(it) as? Label }
+
+		volumes = VOLUME_ROWS.entries.associate { (row, volume) -> volume to getNode("Control/Screen/Rows/$row/Value") as? Label }
 
 		PixelShadow.attachAll(screen)
 		screen?.visible = false
@@ -95,6 +99,12 @@ class OptionsMenu : CanvasLayer() {
 				if (Input.isActionJustPressed("ui_right")) Settings.setLanguage(Settings.language + 1)
 				if (Input.isActionJustPressed("ui_left")) Settings.setLanguage(Settings.language - 1)
 			}
+			in VOLUME_ROWS.keys -> {
+				// Pas de boucle : muet et 100 % sont les deux bouts.
+				val volume = VOLUME_ROWS.getValue(rows[row].name.toString())
+				if (Input.isActionJustPressed("ui_right")) setVolume(volume, Settings.volume(volume) + 1)
+				if (Input.isActionJustPressed("ui_left")) setVolume(volume, Settings.volume(volume) - 1)
+			}
 			"Back" -> if (interact) {
 				close()
 				return
@@ -109,7 +119,19 @@ class OptionsMenu : CanvasLayer() {
 		MessageBox.instance?.secondsPerLetter = Settings.secondsPerLetter
 	}
 
+	/** Règle un volume, l'applique à ce qui joue, et fait entendre le résultat : un cri pour les cris, un bruitage pour les sons. */
+	private fun setVolume(volume: Settings.Volume, step: Int) {
+		Settings.setVolume(volume, step)
+		AudioManager.instance?.applyVolumes()
+		when (volume) {
+			Settings.Volume.CRIES -> AudioManager.instance?.cry(SAMPLE_CRY)
+			Settings.Volume.SOUNDS -> AudioManager.instance?.sfx("confirm")
+			Settings.Volume.MUSIC -> Unit          // elle joue déjà : on l'entend changer
+		}
+	}
+
 	private fun refresh() {
+		volumes.forEach { (volume, label) -> label?.text = "${Settings.volume(volume) * 100 / Settings.VOLUME_STEPS} %" }
 		speeds.forEachIndexed { index, label ->
 			label.addThemeColorOverride("font_color", if (index == Settings.textSpeed) CHOSEN else INK)
 		}
@@ -124,6 +146,12 @@ class OptionsMenu : CanvasLayer() {
 		arrow.setPosition(Vector2(arrow.getPosition().x, y))
 	}
 }
+
+/** Les lignes de volume de la scène, et le réglage de chacune. */
+private val VOLUME_ROWS = mapOf("MusicVolume" to Settings.Volume.MUSIC, "CriesVolume" to Settings.Volume.CRIES, "SoundsVolume" to Settings.Volume.SOUNDS)
+
+/** Le cri qu'on fait entendre en réglant le volume des cris. */
+private const val SAMPLE_CRY = "wingull"
 
 private val INK = Color(0.345098, 0.345098, 0.313725, 1.0)
 private val CHOSEN = Color(0.878431, 0.188235, 0.125490, 1.0)

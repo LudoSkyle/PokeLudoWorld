@@ -105,7 +105,6 @@ Bruitages et jingles d'objet viennent du pack *Gen 4 Sound Effects* de Deo
 
 ## Ce qui manque
 
-- **Un réglage du volume** dans les options (musique, bruitages).
 - **Des points de boucle** pour les musiques.
 - **Le bruit des pas dans l'herbe**, un son propre à l'escalier et au tunnel :
   le pack fourni les contient (`se_step_grass`, `se_door_slide`…), ils ne sont
@@ -122,3 +121,19 @@ principal est coupé). `AudioManager` expose ce qu'il fait : `music_id()`,
 ```bash
 tests/run.sh audio
 ```
+
+## Les volumes
+
+Trois réglages dans les options ([menu.md](menu.md)), gardés d'un lancement à
+l'autre dans `user://settings.cfg` (`Settings.Volume` : `volume_music`,
+`volume_cries`, `volume_sounds`, de 0 à 10) :
+
+| Réglage | Ce qu'il règle |
+|---|---|
+| Musique | les deux lecteurs de musique ; il multiplie le niveau du fondu |
+| Cris des Pokémon | `AudioManager.cry` : il multiplie le volume demandé par l'appelant |
+| Autres sons | les voix de bruitage et le jingle |
+
+`AudioManager.applyVolumes()` les applique à ce qui joue déjà, cri en cours
+compris ; l'écran des options l'appelle à chaque cran. `tests/run.sh
+ui/options_volume`.
