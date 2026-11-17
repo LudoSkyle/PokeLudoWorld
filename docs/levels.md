@@ -160,9 +160,10 @@ rangées 37 à 39).
 **Il ne reste qu'un ponton : la jetée du sud**, large de trois cases, qui part
 de la plage (Ludovic, 17/11/2026). Elle est faite de planches en travers entre
 deux longerons à pieux (`pier…`), pas du tablier de pont de la Route 1. Son
-premier rang (`pierT…`) sort du sable : la plage le recouvre par trois langues
-inégales, et laisse voir ses planches jusqu'au bout entre elles — pas un bord
-découpé pareil d'une case à l'autre. **Une lanterne est sur la jetée**, contre
+deux premiers rangs (`pierT…`, `pierU…`) sortent du sable **comme le grand pont
+de bois de l'atlas sort de l'herbe : le même découpage, au pixel près**
+(`route_tiles.BRIDGE_END`, lu dans `environments.png`, tourné d'un quart de
+tour, l'herbe changée en sable). **Une lanterne est sur la jetée**, contre
 son bord ouest, à mi-longueur. On passe d'une terre à l'autre par les
 plages : la crique du nord, agrandie jusqu'au pied de la forêt et du plateau du
 nord-est ; la plage de l'est, du pied de l'escalier du nord-est à la plage du

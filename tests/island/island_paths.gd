@@ -27,7 +27,7 @@ func at(path: String) -> Vector2i:
 func on_deck(c: Vector2i) -> bool:
 	var bridges := layer("Background/Bridges")
 	var a := bridges.get_cell_atlas_coords(c)
-	return bridges.get_cell_source_id(c) == ROUTE and (a.y == 12 and a.x >= 12 or a.x == 15 and a.y >= 13 and a.y <= 14 or a in [Vector2i(13, 13), Vector2i(14, 13), Vector2i(13, 14)])          # les planches de la jetee
+	return bridges.get_cell_source_id(c) == ROUTE and (a.y == 12 and a.x >= 12 or a.x == 15 and a.y >= 13 and a.y <= 14 or a in [Vector2i(13, 13), Vector2i(14, 13), Vector2i(13, 14), Vector2i(14, 14), Vector2i(13, 15), Vector2i(14, 15)])          # les planches de la jetee
 
 # La mer, liseré de sable compris : les trois premieres rangees de route.png, sauf le sable plein et la pelouse.
 func is_sea(c: Vector2i) -> bool:
