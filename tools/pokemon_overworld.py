@@ -31,13 +31,11 @@ WANTED = {
     'jumpluff': ('hgss_overworld_gen2.png', 6, 3),     # Cotovol
     'shellder': ('hgss_overworld_gen1.png', 1, 6),     # Kokiyas
     'corphish': ('hgss_overworld_gen3.png', 12, 6),    # Écrapince
+    'bellossom': ('hgss_overworld_gen2.png', 10, 2),   # Joliflor : au bout de la troisième rangée, dans une colonne plus étroite que les autres
 }
 # Ceux qu'on pose au sol comme des personnages : en plus, une planche de PNJ (assets/characters/pkmn_<nom>.png, quatre
 # rangées — bas, gauche, droite, haut — de quatre images, voir `character`).
-STANDING = ('shellder', 'corphish')
-# Les planches HGSS n'ont pas tout le monde. Joliflor vient de son icône du kit Essentials (deux images de face, pixels
-# doublés : une sur deux suffit) — il n'a donc qu'une face, quel que soit le côté d'où on lui parle.
-ICONS = {'bellossom': 'essentials_icon_bellossom.png'}
+STANDING = ('shellder', 'corphish', 'bellossom')
 CHARACTERS = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'characters')
 
 
@@ -61,7 +59,7 @@ def cut(sheet, column, row):
     for y in range(BLOCK_H):
         line = []
         for x in range(BLOCK_W):
-            pixel = sheet[y0 + y][x0 + x]
+            pixel = sheet[y0 + y][x0 + x] if x0 + x < len(sheet[y0 + y]) else sheet[y0][x0]          # la dernière colonne d'une planche peut être rognée de deux pixels
             line.append((0, 0, 0, 0) if pixel[:3] == backdrop else tuple(pixel[:3]) + (255,))
         block.append(line)
     return block
@@ -80,9 +78,3 @@ if __name__ == '__main__':
             out = os.path.join(CHARACTERS, 'pkmn_%s.png' % name)          # le bloc : dos puis face à gauche, gauche puis droite à droite
             save(out, character([(frame(0, 64), frame(0, 96)), (frame(32, 0), frame(32, 32)), (frame(32, 64), frame(32, 96)), (frame(0, 0), frame(0, 32))]))
             print('écrit', os.path.relpath(out, ROOT))
-    for name, source in ICONS.items():
-        icon = load(os.path.join(POKEMON, 'sources', source))[2]
-        frames = [[[tuple(icon[2 * y][2 * (x + 32 * k)]) for x in range(32)] for y in range(32)] for k in (0, 1)]
-        out = os.path.join(CHARACTERS, 'pkmn_%s.png' % name)
-        save(out, character([tuple(frames)] * 4))
-        print('écrit', os.path.relpath(out, ROOT))

@@ -242,8 +242,8 @@ comme les Granivol de la Route 1 : quatre groupes — une ou deux Goélise, et l
 Bekipan avec deux Goélise (nœud `Sky`, `generate.PACKS`, [npcs.md](npcs.md)).
 
 **Au sol, trois Pokémon posés** à qui l'on parle : Écrapince dans la crique,
-Kokiyas près du lampadaire de la plage du sud, Joliflor près de la dame aux
-fleurs. Ils disent leur cri, en texte et en son, et ne crient pas autrement
+Kokiyas dans le creux de sable sous la lagune de l'est, Joliflor à côté de la
+dame aux fleurs. Ils disent leur cri, en texte et en son, et ne crient pas autrement
 ([npcs.md](npcs.md)). **Deux enfants font la course** sur la plage du sud, côte
 à côte ; **la mamie est assise sur son banc**.
 
