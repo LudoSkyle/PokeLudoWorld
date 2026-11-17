@@ -110,6 +110,11 @@ bas, là où tombe son ombre — il le **saute** et retombe une case plus loin.
   à lui : 5 cases par seconde, soit 0,4 s, qu'on arrive au pas ou en courant.
 - **C'est l'image qui monte**, en cloche, jusqu'à 8 px (`lift`) ; le nœud du
   joueur reste au sol, où sont son tri en Y et sa caméra.
+- **Son ombre reste au sol** le temps du saut (`JumpShadow` dans
+  `player.tscn`, la même tache que sous un Pokémon volant) : c'est elle qui
+  dit qu'il est en l'air. Hors saut on ne la voit pas.
+- **Le saut s'entend** à l'instant où il part (`sfx/jump`), à la place du choc
+  qu'on aurait eu contre un mur.
 - Dans l'autre sens, par le bout ou sans place pour retomber : pas de saut,
   on bute comme sur un mur.
 - **Seul le joueur saute.** Un PNJ s'arrête devant un rebord.
@@ -117,8 +122,8 @@ bas, là où tombe son ombre — il le **saute** et retombe une case plus loin.
   une porte s'y déclencher, comme après un pas.
 
 Pour qu'une tuile se saute : lui donner la donnée `jump` et une collision
-pleine. Sur la route du nord c'est le générateur qui l'écrit. Il n'y a pas
-encore de son de saut. `tests/run.sh route_ledges`.
+pleine. Sur la route du nord c'est le générateur qui l'écrit.
+`tests/run.sh route_ledges`.
 
 ## Les traces de pas
 

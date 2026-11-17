@@ -92,6 +92,7 @@ musique qui s'éteignait se tait, l'autre attend en pause.
 | `cancel` | on referme un menu, on répond Non par la touche du menu | `Player` |
 | `menu` | on ouvre le menu de pause | `Player` |
 | `bump` | on bute contre un obstacle, à la cadence des pas (0,3 s) | `Player` |
+| `jump` | on saute un rebord, à l'instant où le saut part | `Player` |
 | `door` | on entre quelque part : porte, bouche de tunnel | `SceneManager.changeLevel` |
 | `door_exit` | on sort par un paillasson ou un tapis d'escalier | `SceneManager.changeLevel` |
 

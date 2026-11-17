@@ -14,11 +14,17 @@ func hop(action: String, seconds: float = 1.2) -> Array:
 	var sprite: Node2D = player().get_node("Sprite")
 	var rest: float = sprite.position.y
 	var highest := 0.0
+	var shadow: Node2D = player().get_node("JumpShadow")
+	shadow_seen = false
+	sounds = audio().sfx_played()
 	Input.action_press(action)
 	var end := Time.get_ticks_msec() + int(seconds * 1000.0)
 	while Time.get_ticks_msec() < end:
 		await process_frame
 		highest = maxf(highest, rest - sprite.position.y)
+		if shadow.visible:
+			shadow_seen = true
+			shadow_low = shadow_low and shadow.global_position.y > sprite.global_position.y
 		if highest > 0.0:
 			Input.action_release(action)          # le saut est parti : on lache, pour ne pas repartir en retombant
 			if rest - sprite.position.y < 0.001:
@@ -27,6 +33,11 @@ func hop(action: String, seconds: float = 1.2) -> Array:
 	await secs(0.5)
 	return [highest, highest > 0.0, rest - sprite.position.y]
 
+# Le dernier saut : son ombre s'est-elle montree, sous l'image ? Et le compteur de bruitages avant lui.
+var shadow_seen := false
+var shadow_low := true
+var sounds := 0
+
 func test() -> void:
 	# Le rebord de la piste du nord, (15..17, 8) : on le saute vers le sud.
 	check("un rebord est plein : on ne s'y tient pas", not is_free(Vector2i(16, 8)) and not is_free(Vector2i(46, 36)) and not is_free(Vector2i(52, 44)))
@@ -34,8 +45,11 @@ func test() -> void:
 	var jump: Array = await hop("ui_down")
 	check("vers le bas de sa marche, on le saute et on retombe une case plus loin", cell() == Vector2i(16, 9) and jump[1], "%s %s" % [cell(), jump])
 	check("le temps du saut, le joueur est en l'air, puis il retombe", jump[0] >= 6.0 and absf(jump[2]) < 0.01, str(jump))
+	check("son ombre reste au sol sous lui le temps du saut, et disparait ensuite", shadow_seen and shadow_low and not player().get_node("JumpShadow").visible, "%s %s" % [shadow_seen, shadow_low])
+	check("le saut s'entend, une fois", audio().sfx_played() == sounds + 1 and audio().last_sfx_id() == "jump", "%d %s" % [audio().sfx_played() - sounds, audio().last_sfx_id()])
 	jump = await hop("ui_up", 0.6)
 	check("dans l'autre sens il arrete : on ne remonte pas", cell() == Vector2i(16, 9) and not jump[1], "%s %s" % [cell(), jump])
+	check("la, pas d'ombre, et c'est le choc qu'on entend", not shadow_seen and audio().last_sfx_id() == "bump", "%s %s" % [shadow_seen, audio().last_sfx_id()])
 
 	# Un rebord tourne vers l'est, (46, 35..38).
 	await place(Vector2i(45, 36))
