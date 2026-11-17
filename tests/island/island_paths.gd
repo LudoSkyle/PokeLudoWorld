@@ -59,7 +59,7 @@ func test() -> void:
 
 	# Trois niveaux : la mer, la plage, les plateaux.
 	check("la mer est pleine, liseré compris", not is_free(Vector2i(2, 20)) and not is_free(Vector2i(25, 15)) and not is_free(Vector2i(45, 20)) and is_sea(Vector2i(2, 20)))
-	check("on marche sur le sable de la plage", is_free(Vector2i(28, 35)) and is_free(Vector2i(22, 13)) and is_free(Vector2i(5, 40)) and ground.get_cell_atlas_coords(Vector2i(28, 35)) == Vector2i(1, 1))
+	check("on marche sur le sable de la plage", is_free(Vector2i(28, 35)) and is_free(Vector2i(22, 13)) and is_free(Vector2i(4, 41)) and ground.get_cell_atlas_coords(Vector2i(28, 35)) == Vector2i(1, 1))
 	check("on marche sur l'herbe des plateaux", is_free(Vector2i(28, 29)) and is_free(Vector2i(8, 15)) and is_free(Vector2i(45, 14)))
 	check("la falaise d'un plateau est pleine", not is_free(Vector2i(21, 25)) and not is_free(Vector2i(21, 27)) and not is_free(Vector2i(22, 31)) and layer("Background/Cliffs1").get_cell_source_id(Vector2i(21, 25)) == ROUTE)
 	check("on ne passe pas de la plage au plateau par le pied de sa falaise", is_free(Vector2i(22, 32)) and not can_step(Vector2i(22, 32), Vector2i(22, 31)))
@@ -137,7 +137,7 @@ func test() -> void:
 	# Tout se rejoint a pied, depuis le depart.
 	var seen := reach(cell())
 	var places := {"la place": Vector2i(28, 29), "le ponton de la cloche": Vector2i(14, 22), "le bout de la jetee du sud": Vector2i(33, 47), "les hautes herbes du sud-ouest": Vector2i(12, 42),
-		"la trouee de la falaise": Vector2i(25, 4), "la crique du nord": Vector2i(22, 13), "la plage du sud": Vector2i(28, 35), "la plage de l'ouest": Vector2i(5, 40), "la presqu'ile du sud-est": Vector2i(45, 45)}
+		"la trouee de la falaise": Vector2i(25, 4), "la crique du nord": Vector2i(22, 13), "la plage du sud": Vector2i(28, 35), "la plage de l'ouest": Vector2i(4, 41), "la presqu'ile du sud-est": Vector2i(45, 45)}
 	for door in ["MaisonLudo", "MaisonNord", "Bibliotheque", "Laboratoire", "MaisonSud"]:
 		places["devant " + door] = at("Doors/" + door) + Vector2i.DOWN
 	for who in ["World/ItemPotion", "World/ItemBall", "World/ItemWater", "World/SignLudo", "World/SignLibrary", "World/SignLab", "World/SignNorth", "World/SignPier"]:

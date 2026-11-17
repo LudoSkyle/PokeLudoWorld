@@ -32,24 +32,33 @@ HOUSES = {
 }
 
 
-def atlas(): return {name: (col, 0) for name, (_, _, _, _, col) in HOUSES.items()}
-def sizes(): return {name: size for name, (_, size, _, _, _) in HOUSES.items()}
-def door(name): return HOUSES[name][3]
-def drop(name): return SHADOW
+# Ce qui pousse sur l'île et que route.png n'a pas — même forme : la « porte » est ici la colonne du pied, la seule case pleine.
+PLANTS = {
+    'palm':     ((662, 146, 697, 187), (3, 3), 6, 1, 18),      # le petit palmier des plages
+    'palm_big': ((717, 152, 769, 202), (5, 4), 14, 2, 21),     # le grand
+    'bush':     ((400, 144, 447, 187), (3, 3), 0, 1, 26),      # un massif de trois buissons
+}
+ALL = dict(HOUSES); ALL.update(PLANTS)
+
+
+def atlas(): return {name: (col, 0) for name, (_, _, _, _, col) in ALL.items()}
+def sizes(): return {name: size for name, (_, size, _, _, _) in ALL.items()}
+def door(name): return ALL[name][3]
+def drop(name): return SHADOW if name in HOUSES else 1
 
 
 def cells():
     """L'image entière : une liste de rangées de pixels RVBA."""
     town = island_tiles.source_sheet(island_tiles.TOWN)
-    columns = max(col + size[0] for _, size, _, _, col in HOUSES.values())
-    lines = max(size[1] for _, size, _, _, _ in HOUSES.values()) + SHADOW
+    columns = max(col + size[0] for _, size, _, _, col in ALL.values())
+    lines = max(size[1] for _, size, _, _, _ in ALL.values()) + SHADOW
     sheet = [[CLEAR] * (columns * 16) for _ in range(lines * 16)]
-    for name, ((x0, y0, x1, y1), (w, h), shift, _, col) in HOUSES.items():
+    for name, ((x0, y0, x1, y1), (w, h), shift, _, col) in ALL.items():
         top = h * 16 - (y1 - y0 + 1)          # le bas des murs au bas de la rangée du pied
-        for y in range(y0, y1 + 1 + SHADOW * 16):
+        for y in range(y0, y1 + 1 + drop(name) * 16):
             for x in range(x0 - shift, x0 - shift + w * 16):
                 p = town[y][x]
-                if p[3] and 0 <= x < len(town[y]): sheet[top + y - y0][col * 16 + x - (x0 - shift)] = tuple(p)
+                if p[3] and x0 - 2 <= x <= x1 + 2 + (16 if name in HOUSES else 0) or p[3] and name in HOUSES: sheet[top + y - y0][col * 16 + x - (x0 - shift)] = tuple(p)
     return sheet
 
 

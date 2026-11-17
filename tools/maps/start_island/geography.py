@@ -125,6 +125,7 @@ RETOUCH = [
     (BEACH_, (23, 0, 27, 8)),
     # --- la plage du sud, d'un seul tenant, sans la mare que l'exemple y laisse
     (BEACH_, (22, 32, 35, 40)), (BEACH_, (36, 30, 38, 33)),
+    (BEACH_, (30, 40, 36, 43)),                                                        # et une langue de sable plus large que la jetée : ses premières planches y reposent
     # --- les escaliers ne montent que face au sud : sous chacun, une anse de plage ; au-dessus, un bord de plateau tout droit
     (BEACH_, (14, 14, 18, 16)), (PLATEAU_, (19, 12, 19, 13)),                          # du plateau du nord-ouest à la crique
     (PLATEAU_, (30, 12, 36, 13)), (BEACH_, (31, 14, 35, 17)),                          # du plateau du nord-est à la crique

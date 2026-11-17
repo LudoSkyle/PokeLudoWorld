@@ -336,8 +336,12 @@ Les rochers :
 - **les coins rentrants du sable ne sont pas rangés comme ceux des falaises** :
   l'eau de `sandi` est en bas à gauche, celle de `sandk` en haut à gauche
   (`layout.SAND_CORNER`). Posés comme ceux d'une falaise, ils sont à l'envers ;
-- **le pied d'un parasol ne bloque plus** (`10:11-14,5`) : son mât est entre
-  deux cases, on passe dessous, derrière lui ;
+- **le pied d'un parasol ne bloque plus** (`10:11-14,5`) et se trie **derrière**
+  qui se tient sur sa rangée (`y_sort_origin = -1`) : on passe devant le mât,
+  la tête sous la toile, dont les deux rangées du haut restent triées devant ;
+- **les plantes de l'île** : `village.png` porte aussi un petit palmier, un
+  grand et un massif de buissons (`village_tiles.PLANTS`), découpés dans la
+  même planche avec leur ombre. Une seule case pleine chacun : le tronc ;
 - le mobilier (bancs, parasols, serviettes), les lampadaires et les statues
   restent ceux de l'atlas : la planche de la Route 1 n'en a pas encore été
   fouillée.

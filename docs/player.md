@@ -182,6 +182,10 @@ se voit aussitôt dans l'eau.
   qu'on avance ; il n'apparaît jamais d'un bloc. À l'autre bout, au bord d'une
   eau basse (le sud de l'étang du terrain d'essai, une seule case sous les
   pieds), il s'arrête à la berge au lieu d'y baver.
+- **En largeur aussi** : pendant un pas de côté le personnage est à cheval sur
+  deux colonnes, dont l'une peut être du sable. Le reflet ne garde que les
+  colonnes où il y a de l'eau, et la hauteur qu'elles ont en commun
+  (`waterPool`).
 - Il **balance d'un pixel** au rythme des rides de l'eau (quatre crans par
   seconde, comme `water.gdshader`), de quoi ne pas avoir l'air collé.
 

@@ -36,7 +36,7 @@ INSIDE = PLATEAU - RING
 
 # ============================================================ ce qu'on pose sur la géographie
 # --- les maisons : nom -> (modèle de village.png, colonne de gauche, rangée du pied). La porte est sur la rangée du pied.
-HOUSES = {'ludo': ('hut_left', 5, 8), 'north': ('hut_right', 10, 10), 'library': ('hut_left', 2, 29), 'lab': ('hall', 41, 8), 'south': ('hut_right', 40, 33)}
+HOUSES = {'ludo': ('hut_left', 5, 8), 'north': ('hut_right', 10, 9), 'library': ('hut_left', 2, 29), 'lab': ('hall', 41, 8), 'south': ('hut_right', 40, 33)}
 def box(name):
     kind, x, r = HOUSES[name]; w, h = village_tiles.sizes()[kind]
     return rect(x, r - h + 1, x + w - 1, r)
@@ -75,10 +75,14 @@ for crumb in geo.parts(MOUNTAIN):
     if len(crumb) < 9: MOUNTAIN -= crumb
 
 # --- les pistes : les chemins de l'exemple, plus ce qui mène aux portes, aux escaliers et aux pontons
-PATHS = [(5, 9, 7, 13), (8, 11, 18, 12), (2, 30, 5, 32), (42, 34, 44, 36), (44, 9, 46, 13),          # devant les cinq portes
-         (15, 11, 17, 12), (32, 11, 43, 12), (37, 34, 39, 36), (3, 31, 5, 32),                         # en haut des escaliers
-         (7, 14, 11, 16), (38, 15, 44, 17), (14, 38, 18, 40), (45, 27, 49, 29)]                        # au bout des pontons
-TRAIL = tidy(({c for c in geo.TRAIL} | set().union(*[rect(*r) for r in PATHS])) & INSIDE - MOUNTAIN - HOUSE_AREA - rect(PLAZA[0] - 2, PLAZA[1] - 2, PLAZA[2] + 2, PLAZA[3] + 2))
+# Trois cases de large, d'un seul tenant sur chaque plateau : plus étroite, une piste n'est que deux bords collés, et les
+# chemins de l'exemple, lus case par case, donnaient des taches. On les trace donc à la main, là où l'exemple en a.
+PATHS = [(5, 9, 7, 12), (5, 10, 18, 12), (8, 13, 10, 16),                                              # nord-ouest : chez Ludo, chez Anselme, l'escalier, le ponton
+         (44, 9, 46, 12), (32, 10, 46, 12), (40, 13, 42, 17),                                          # nord-est : le laboratoire, l'escalier, le ponton
+         (2, 30, 5, 32), (6, 30, 11, 32),                                                              # ouest : la bibliothèque, son escalier
+         (14, 38, 18, 40),                                                                             # le jardin, au bout de son ponton
+         (42, 34, 44, 36), (37, 34, 48, 36), (46, 27, 48, 36), (44, 37, 46, 46)]                        # sud-est : chez Solange, l'escalier, le ponton, la presqu'île
+TRAIL = tidy(set().union(*[rect(*r) for r in PATHS]) & INSIDE - MOUNTAIN - HOUSE_AREA)
 
 # --- les hautes herbes
 TALL = (rect(10, 41, 20, 43) | rect(20, 38, 21, 40) | rect(14, 4, 18, 6) | rect(49, 12, 52, 15)) & INSIDE - TRAIL - MOUNTAIN
@@ -147,9 +151,10 @@ def feet(name, x, r):
     if name.startswith('tree'): return [(x + i, r - j) for j in (1, 0) for i in range(3)]
     if name == 'boulder': return [(x, r - 1), (x + 1, r - 1), (x, r), (x + 1, r)]
     if name in ('conif', 'sapling', 'rock_s'): return [(x, r)]
+    if name in village_tiles.PLANTS: return [(x + village_tiles.door(name), r)]          # le tronc
     return []
 sprites = []
-NO_TREES = rect(37, 1, 40, 6) | rect(49, 2, 50, 9)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
+NO_TREES = rect(37, 1, 40, 6)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
 KEEP = NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
@@ -176,12 +181,30 @@ ROCKS = sorted(c for c in CELLS if geo.at(c) == '#' and c in SEA and c not in SA
 for n, c in enumerate(ROCKS):
     if (c[0] - 1, c[1]) in ROCKS and n % 2: continue
     sprites.append((('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
-for name, x, r in sprites: L['Trees' if name.startswith('tree') else 'Props'][(x, r)] = tile(name)
+# --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
+palms = []
+FURNISHED = rect(19, 9, 29, 13) | rect(22, 33, 31, 38) | rect(5, 34, 9, 38) | rect(29, 39, 37, 43)          # parasols et serviettes, Roland, le pied de la jetée : generate.py les pose là
+for c in sorted(BEACH, key=lambda c: (c[1], c[0])):
+    if geo.OBJECTS[c[1]][c[0]] != '#' or c in KEEP or c in FURNISHED or c in DECK or c in stairs or any((c[0] + i, c[1] + j) not in BEACH for i, j in NEIGH4): continue
+    if any((c[0] + i, c[1] + j) in set(stairs) | DECK for i in range(-2, 3) for j in range(-2, 3)) or c[0] in ROAD and c[1] < 10: continue
+    if all(abs(c[0] - p[0]) + abs(c[1] - p[1]) >= 5 for p in palms): palms.append(c)
+for n, c in enumerate(palms):
+    name = 'palm_big' if n % 3 == 1 else 'palm'
+    sprites.append((name, c[0] - village_tiles.door(name), c[1])); taken.add(c)
+# --- des massifs de buissons : aux coins de la place, et çà et là sur l'herbe
+for wish in [(22, 30), (32, 30), (22, 19), (10, 15), (50, 16), (44, 40), (3, 26), (12, 34)]:
+    cells = [(wish[0] + i, wish[1]) for i in range(3)]
+    if all(c in INSIDE and c not in KEEP and c not in taken and c not in MOUNTAIN for c in cells): sprites.append(('bush', wish[0], wish[1])); taken.update(cells)
+for name, x, r in sprites:
+    if name in village_tiles.PLANTS: L['Props'][(x, r)] = (VILLAGE,) + village_tiles.atlas()[name] + (0,)
+    else: L['Trees' if name.startswith('tree') else 'Props'][(x, r)] = tile(name)
 for name, (kind, x, r) in HOUSES.items(): L['Houses'][(x, r)] = (VILLAGE,) + village_tiles.atlas()[kind] + (0,)
 # des fleurs, clairsemées, sur la pelouse
 WOODS = {c for name, x, r in sprites if name.startswith('tree') for c in rect(x, r - 2, x + 2, r)}
-for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS):
-    if RNG.random() < 0.05: L['Decorations'][c] = tile('fl%d' % RNG.randint(1, 5))
+WOODS |= {c for name, x, r in sprites if name in village_tiles.PLANTS for c in rect(x, r - village_tiles.sizes()[name][1] + 1, x + village_tiles.sizes()[name][0] - 1, r)}          # et sous une palme, un buisson
+PLAZA_LAWN = rect(21, 19, 36, 31) & INSIDE
+for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS):          # plus serrées autour de la place et sur la presqu'île du sud-est
+    if RNG.random() < (0.3 if c in PLAZA_LAWN else (0.22 if c[1] >= 37 and c[0] >= 40 else 0.08)): L['Decorations'][c] = tile('fl%d' % RNG.randint(1, 5))
 
 # ============================================================ ce qui bloque
 SOLID = set(HOUSE_SOLID)
@@ -241,6 +264,7 @@ def render():
         if t[0] == VILLAGE:
             kind = [k for k, a in village_tiles.atlas().items() if a == t[1:3]][0]
             put(c, t, *village_tiles.sizes()[kind], below=village_tiles.drop(kind))
+        elif t[0] == 10: put(c, t)
         else:
             n = names.get(t[1:3]); w, h = SIZES.get(n, (1, 1)); put(c, t, w, h, route_tiles.drop(n) if n else 0)
     return img
