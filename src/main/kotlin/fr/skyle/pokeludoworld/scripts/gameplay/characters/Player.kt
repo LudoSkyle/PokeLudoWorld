@@ -16,6 +16,7 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CharacterBody2D
 import godot.api.Input
+import godot.api.Node2D
 import godot.api.ResourceLoader
 import godot.api.Texture2D
 import godot.core.Vector2
@@ -55,6 +56,9 @@ class Player : CharacterBody2D() {
 	private var input: PlayerInput? = null
 	private var movement: CharacterMovement? = null
 	private var sprite: CharacterAnimation? = null
+
+	/** L'ombre au sol, qu'on ne voit que le temps d'un saut. */
+	private var jumpShadow: Node2D? = null
 
 	/** La hauteur de l'image au repos, celle de la scène. */
 	private var spriteRest = 0.0
@@ -120,6 +124,7 @@ class Player : CharacterBody2D() {
 		movement = getNode("Movement") as? CharacterMovement
 		sprite = getNode("Sprite") as? CharacterAnimation
 		spriteRest = sprite?.position?.y ?: 0.0
+		jumpShadow = (if (hasNode("JumpShadow")) getNode("JumpShadow") else null) as? Node2D
 
 		movement?.attach(this)
 		loadRunPose()
@@ -136,6 +141,8 @@ class Player : CharacterBody2D() {
 		currentMovement.process(delta)
 		// Pendant le saut d'un rebord, c'est l'image qui monte : le joueur, lui, reste au sol, où sont son tri et sa caméra.
 		sprite?.let { it.position = Vector2(it.position.x, spriteRest - currentMovement.lift) }
+		// Son ombre reste au sol, sous lui : c'est elle qui dit qu'il est en l'air.
+		jumpShadow?.visible = currentMovement.isJumping
 
 		// Un passage gardé se déclenche à l'instant où l'on se pose dessus,
 		// avant que la touche tenue n'engage le pas suivant.
@@ -214,7 +221,11 @@ class Player : CharacterBody2D() {
 					val door = currentMovement.areaUnderfoot() as? SceneTrigger
 					if (door != null && door.isExit && door.exitDirection == currentInput.direction) {
 						door.activate()
-					} else if (!currentMovement.tryWalk(currentInput.direction) && !currentMovement.tryJump(currentInput.direction) && bumpWait <= 0.0) {
+					} else if (currentMovement.tryWalk(currentInput.direction)) {
+						// Le pas est parti.
+					} else if (currentMovement.tryJump(currentInput.direction)) {
+						audio?.sfx("jump")
+					} else if (bumpWait <= 0.0) {
 						// On bute : le choc s'entend, à la cadence des pas.
 						audio?.sfx("bump")
 						bumpWait = BUMP_SECONDS
