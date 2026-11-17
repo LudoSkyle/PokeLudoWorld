@@ -216,6 +216,27 @@ au bout avant de retomber sur l'`idle_*` — sans ça elle serait écrasée dès
 frame suivante.
 
 
+## Le Pokémon qui suit
+
+`scenes/characters/follower.tscn` (`Follower.kt`) : un Pokémon marche **une
+case derrière le joueur**, sur la case qu'il vient de quitter, à son allure —
+après un saut de rebord il rattrape les deux cases dans le temps du saut.
+Arrêté, il regarde le joueur. Il n'a pas de corps : il n'arrête personne, et
+le joueur qui rebrousse chemin passe à travers lui.
+
+`SceneManager` le pose avec le joueur dans `World/Entities` à chaque carte,
+sur la case du joueur et caché : il apparaît au premier pas. Si le joueur est
+posé ailleurs sans marcher (une scène), il se range de nouveau.
+
+Son espèce est `follower_species` du `SceneManager` (`wingull` pour l'instant ;
+vide : personne ne suit) — ce sera le premier Pokémon de l'équipe. Son image
+est le fichier de l'espèce, lu par `PokemonFrames` ([npcs.md](npcs.md)) :
+n'importe quelle espèce découpée peut suivre, sans fichier de plus.
+
+Pour savoir quand bouger, il lit dans le `CharacterMovement` du joueur le
+nombre de pas engagés (`steps`), la place d'où part le dernier (`origin`) et
+son allure (`paceNow`). `tests/run.sh follower`.
+
 ## Changement de carte
 
 Le joueur n'appartient à aucune carte : `SceneManager` le reparente. À

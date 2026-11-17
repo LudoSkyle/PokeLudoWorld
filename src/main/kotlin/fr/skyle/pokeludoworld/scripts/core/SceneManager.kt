@@ -2,6 +2,7 @@ package fr.skyle.pokeludoworld.scripts.core
 
 import fr.skyle.pokeludoworld.scripts.autoload.Globals
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.CharacterMovement
+import fr.skyle.pokeludoworld.scripts.gameplay.characters.Follower
 import fr.skyle.pokeludoworld.scripts.gameplay.items.Inventory
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerCamera
 import fr.skyle.pokeludoworld.scripts.gameplay.characters.PlayerInput
@@ -92,6 +93,16 @@ class SceneManager : Node() {
 	@Export
 	var playerScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/player.tscn"
 
+	/**
+	 * L'espèce du Pokémon qui suit le joueur (un fichier de `assets/pokemon/overworld/`), ou vide : personne ne le
+	 * suit. Provisoire : ce sera le premier Pokémon de l'équipe, le jour où il y en aura une.
+	 */
+	@Export
+	var followerSpecies: String = "wingull"
+
+	@Export
+	var followerScene: String = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/follower.tscn"
+
 	@Category("Transition")
 	@Export
 	var fadeSeconds: Double = 0.25
@@ -137,6 +148,7 @@ class SceneManager : Node() {
 	/** La teinte du jour sur la carte courante, si elle est dehors. */
 	private var daylight: CanvasModulate? = null
 	private var player: Node2D? = null
+	private var follower: Follower? = null
 
 	/** Le joueur, où qu'il soit, ou null avant qu'une partie ait commencé (l'écran titre). */
 	val playerNode: Node2D?
@@ -194,6 +206,9 @@ class SceneManager : Node() {
 		// Le joueur n'existe qu'une fois la partie lancée : sur l'écran titre il
 		// ne serait dans aucune carte, et resterait orphelin si l'on quittait là.
 		if (player == null) player = (ResourceLoader.load(playerScene) as? PackedScene)?.instantiate() as? Node2D
+		if (follower == null && followerSpecies.isNotEmpty()) {
+			follower = ((ResourceLoader.load(followerScene) as? PackedScene)?.instantiate() as? Follower)?.also { it.species = followerSpecies }
+		}
 
 		pendingScene = startScene
 		pendingDoor = ""
@@ -357,6 +372,7 @@ class SceneManager : Node() {
 
 		// Sortir le joueur AVANT de détruire l'ancienne carte, sinon il part avec.
 		currentPlayer?.getParent()?.removeChild(currentPlayer)
+		follower?.let { it.getParent()?.removeChild(it) }
 
 		level?.let {
 			host.removeChild(it)
@@ -404,6 +420,8 @@ class SceneManager : Node() {
 			return
 		}
 
+		// Le suiveur d'abord : sur la même rangée, c'est le joueur qui passe devant.
+		follower?.let { entities.addChild(it) }
 		entities.addChild(currentPlayer)
 
 		val door = arrivalDoor(next, pendingDoor)
@@ -446,6 +464,8 @@ class SceneManager : Node() {
 			reloading = false
 			settleFrames = SETTLE_FRAMES
 		}
+		// Le suiveur se range sur la case du joueur, caché jusqu'à son premier pas.
+		follower?.follow(currentPlayer)
 		// Les limites de caméra dépendent de la carte : elles doivent être reprises.
 		if (currentPlayer.hasNode("Camera")) {
 			(currentPlayer.getNode("Camera") as? PlayerCamera)?.applyLimits()

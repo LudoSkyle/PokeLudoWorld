@@ -54,6 +54,16 @@ class CharacterMovement : Node() {
 
 	private var jumpLength = 0.0
 
+	/** Le nombre de pas engagés depuis le début, et la place d'où est parti le dernier : ce que suit un [Follower]. */
+	var steps: Int = 0
+		private set
+	var origin: Vector2 = Vector2.ZERO
+		private set
+
+	/** L'allure du pas en cours, en cases par seconde. */
+	val paceNow: Double
+		get() = if (isJumping) JUMP_TILES_PER_SECOND else tilesPerSecond
+
 	/** Case visée par le pas en cours, réservée tant qu'il dure. */
 	private var claimed: Long? = null
 
@@ -93,6 +103,8 @@ class CharacterMovement : Node() {
 		claims[key] = this
 		claimed = key
 
+		origin = node.position
+		steps++
 		target = node.position + step
 		isWalking = true
 		return true
@@ -123,6 +135,8 @@ class CharacterMovement : Node() {
 		claims[key] = this
 		claimed = key
 
+		origin = node.position
+		steps++
 		target = node.position + step * 2.0
 		jumpLength = gridSize() * 2.0
 		isWalking = true
