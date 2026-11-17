@@ -126,7 +126,8 @@ tests/run.sh audio
 
 Trois réglages dans les options ([menu.md](menu.md)), gardés d'un lancement à
 l'autre dans `user://settings.cfg` (`Settings.Volume` : `volume_music`,
-`volume_cries`, `volume_sounds`, de 0 à 10) :
+`volume_cries`, `volume_sounds`, suffixés `_percent` : un pourcentage, par
+crans de 5) :
 
 | Réglage | Ce qu'il règle |
 |---|---|

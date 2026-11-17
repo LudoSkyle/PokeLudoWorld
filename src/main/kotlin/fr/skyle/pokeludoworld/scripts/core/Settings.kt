@@ -34,16 +34,19 @@ object Settings {
 	var language: Int = 0
 		private set
 
-	/** Un volume va de 0 (muet) à [VOLUME_STEPS], par crans de dix pour cent. */
-	const val VOLUME_STEPS = 10
+	/** Un volume va de 0 (muet) à [VOLUME_STEPS], par crans de cinq pour cent. */
+	const val VOLUME_STEPS = 20
 
 	/** Les trois volumes que le joueur règle : la musique, les cris des Pokémon, et tout le reste (bruitages, jingles). */
-	enum class Volume(val key: String) { MUSIC("volume_music"), CRIES("volume_cries"), SOUNDS("volume_sounds") }
+	enum class Volume(val key: String) { MUSIC("volume_music_percent"), CRIES("volume_cries_percent"), SOUNDS("volume_sounds_percent") }
 
 	private val volumes = IntArray(Volume.entries.size) { VOLUME_STEPS }
 
 	/** Le cran de [volume], de 0 à [VOLUME_STEPS]. */
 	fun volume(volume: Volume): Int = volumes[volume.ordinal]
+
+	/** Le même, en pour cent : ce qui s'affiche, et ce qui s'enregistre (le nombre de crans peut changer, pas le sens d'un pourcentage). */
+	fun percent(volume: Volume): Int = volumes[volume.ordinal] * 100 / VOLUME_STEPS
 
 	/** Le même, en part de 0 à 1 : ce par quoi l'AudioManager multiplie ce qu'il joue. */
 	fun gain(volume: Volume): Double = volumes[volume.ordinal].toDouble() / VOLUME_STEPS
@@ -66,7 +69,7 @@ object Settings {
 		if (file.load(GameFiles.settings) == Error.OK) {
 			textSpeed = int(file, TEXT_SPEED, DEFAULT_TEXT_SPEED).coerceIn(0, TEXT_SPEEDS.size - 1)
 			language = LANGUAGES.indexOf(file.getValue(SECTION, LANGUAGE, LANGUAGES[0]).toString()).coerceAtLeast(0)
-			Volume.entries.forEach { volumes[it.ordinal] = int(file, it.key, VOLUME_STEPS).coerceIn(0, VOLUME_STEPS) }
+			Volume.entries.forEach { volumes[it.ordinal] = (int(file, it.key, 100) * VOLUME_STEPS / 100).coerceIn(0, VOLUME_STEPS) }
 		}
 		// Toujours, même sans fichier : sinon Godot suit la langue du système.
 		TranslationServer.setLocale(LANGUAGES[language])
@@ -90,7 +93,7 @@ object Settings {
 		val file = ConfigFile()
 		file.setValue(SECTION, TEXT_SPEED, textSpeed)
 		file.setValue(SECTION, LANGUAGE, LANGUAGES[language])
-		Volume.entries.forEach { file.setValue(SECTION, it.key, volumes[it.ordinal]) }
+		Volume.entries.forEach { file.setValue(SECTION, it.key, percent(it)) }
 		if (file.save(GameFiles.settings) != Error.OK) Logger.e("Reglages non enregistres : ${GameFiles.settings}")
 	}
 
