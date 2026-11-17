@@ -34,5 +34,7 @@ func test() -> void:
 	await tap("menu")
 	await place(Vector2i(3, 42))
 	await pick("la Poke Ball", "Vous trouvez une Poké Ball !", "Vous rangez la Poké Ball dans la poche Poké Balls.", "ItemBall", "found_island_ball")
+	await place(Vector2i(49, 4))
+	await pick("l'Eau Fraiche", "Vous trouvez une Eau Fraîche !", "Vous rangez l'Eau Fraîche dans la poche Objets.", "ItemWater", "found_island_water")
 	await reload_level()
 	check("apres rechargement, elles ne reviennent pas", level().get_node_or_null("World/ItemPotion") == null and level().get_node_or_null("World/ItemBall") == null)

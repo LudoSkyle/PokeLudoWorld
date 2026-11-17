@@ -915,6 +915,12 @@ msgstr "On a clear day, you can even make out the lab's roof."
 msgid "La route continue vers la montagne."
 msgstr "The road goes on towards the mountain."
 
+msgid "Vous trouvez une Eau Fraîche !"
+msgstr "You found a Fresh Water!"
+
+msgid "Vous rangez l'Eau Fraîche dans la poche Objets."
+msgstr "You put the Fresh Water in the Items pocket."
+
 msgid "Cet arbre semble pouvoir être coupé !"
 msgstr "This tree looks like it can be cut down!"
 

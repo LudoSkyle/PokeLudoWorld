@@ -198,8 +198,11 @@ pas justifier est une erreur.
   de la troisième case de terre. Un plateau de plus, une montagne : d'autres
   anneaux, posés par-dessus, chacun fermé sur lui-même.
 - **Une case de falaise se juge à ce qu'on y voit et à ce qu'elle touche.**
-  Un bord — du haut compris — touche le vide par tout un côté : il arrête, et
-  l'on change de niveau par un escalier, posé sur un bord du bas tout droit.
+  Un flanc, un bas de plateau montrent la roche : ils arrêtent, et l'on
+  change de niveau par un escalier, posé sur un bord du bas tout droit. Un bord
+  du haut n'est qu'un liseré sur de l'herbe : il arrête là où il donne sur le
+  vide (la Route 1), pas là où ce qui est derrière se foule (les plages de
+  l'île).
   Un coin rentrant du haut de l'anneau d'herbe, lui, est de la pelouse avec un
   bout de lisière dans un angle, et ne touche le vide que par sa pointe : **il
   se foule**. Une case qui a l'air d'être de l'herbe et où l'on ne peut pas

@@ -94,10 +94,10 @@ def pinches(c):
     for i in range(8):
         if open_[i] and open_[(i + 1) % 8]: group[find(i)] = find((i + 1) % 8)
     return len({find(i) for i in range(8) if open_[i] and i % 2 == 1}) > 1
-def settle(name, wish, solid=True, apart=2, among=None):
+def settle(name, wish, solid=True, apart=2, among=None, tight=False):
     """La case libre la plus proche de `wish` où poser quelque chose sans gêner : ni devant une porte ou un escalier, ni sur un ponton, ni dans un passage étroit, ni derrière un arbre."""
     for q in sorted(((wish[0] + i, wish[1] + j) for i in range(-6, 7) for j in range(-6, 7)), key=lambda q: (abs(q[0] - wish[0]) + abs(q[1] - wish[1]), q)):
-        if q in (among or REACH0) and q not in SOLID and q not in CLEAR and q not in lay.WOODS and q not in lay.TALL and (q in lay.PAVED or not pinches(q)) \
+        if q in (among or REACH0) and q not in SOLID and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and (q in lay.PAVED or tight or not pinches(q)) \
                 and all(abs(q[0] - o[0]) + abs(q[1] - o[1]) >= apart for o in placed.values()):
             placed[name] = q
             if solid: SOLID.add(q)
@@ -112,8 +112,8 @@ def bench(name, wish):          # de face, deux cases : l'assise est pleine, le 
     for i in range(2):
         for j in range(2): L['Props'][(c[0] + i, c[1] - 1 + j)] = (10, 4 + i, 5 + j, 0)
     return c
-def parasol(name, wish, kind):  # deux cases de large, trois de haut ; seul le pied est plein
-    c = settle(name, wish); SOLID.add((c[0] + 1, c[1])); placed[name + '+'] = (c[0] + 1, c[1])
+def parasol(name, wish, kind):  # deux cases de large, trois de haut. Rien n'y arrête : on passe sous la toile, derrière le mât
+    c = settle(name, wish, solid=False); placed[name + '+'] = (c[0] + 1, c[1])
     for i in range(2):
         for j in range(3): L['Props'][(c[0] + i, c[1] - 2 + j)] = (10, (11, 13)[kind] + i, 3 + j, 0)
     return c
@@ -122,7 +122,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
 BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (9, 14)), bench('BenchSouth', (46, 31)), bench('BenchSquare', (CXP + 3, TOP - 2))
-parasol('ParasolCove', (21, 12), 1); towel('TowelCove', (24, 12), 1)
+parasol('ParasolCove', (22, 11), 1); towel('TowelCove', (25, 11), 1)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
 # ------------------------------------------------------------------ panneaux, lampadaires, lueurs, objets
@@ -227,9 +227,10 @@ shape = SubResource("RectangleShape2D_statue")
 
 ITEMS = {}
 FOUND = {'ItemPotion': ('potion', "Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets.", 'found_island_potion', (46, 46)),
-         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (4, 43))}
+         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (4, 43)),
+         'ItemWater': ('fresh_water', "Vous trouvez une Eau Fraîche !|Vous rangez l'Eau Fraîche dans la poche Objets.", 'found_island_water', (49, 5))}          # derrière le laboratoire
 for name, (item, text, flag, wish) in FOUND.items():
-    c = ITEMS[name] = settle(name, wish)
+    c = ITEMS[name] = settle(name, wish, tight=name == 'ItemWater')          # celui-là est au fond d'un couloir sans issue : il ne coupe le passage de personne
     node('''[node name="%s" parent="World" instance=ExtResource("9_readable")]
 position = Vector2(%d, %d)
 kind = "item"
@@ -259,7 +260,7 @@ def stand(name, c, req, forb):
     """La case la plus proche de c où un personnage immobile ne gêne personne, parmi ceux qu'il peut croiser."""
     taken = {q for n, q, r, f in NPCS if any(present(r, f, fl) and present(req, forb, fl) for fl in PHASES.values())}
     for q in sorted(((c[0] + i, c[1] + j) for i in range(-4, 5) for j in range(-4, 5)), key=lambda q: (abs(q[0] - c[0]) + abs(q[1] - c[1]), q)):
-        if q in REACH0 and q not in SOLID and q not in taken and q not in CLEAR and q not in lay.WOODS and q not in lay.TALL and (q in lay.PAVED or not pinches(q)):
+        if q in REACH0 and q not in SOLID and q not in taken and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and (q in lay.PAVED or not pinches(q)):
             if q != c: print('  (%s : %s -> %s)' % (name, c, q))
             return q
     print('  !! %s : aucune case convenable près de %s' % (name, c)); return c

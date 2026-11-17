@@ -85,17 +85,23 @@ TALL = (rect(10, 41, 20, 43) | rect(20, 38, 21, 40) | rect(14, 4, 18, 6) | rect(
 
 # ============================================================ le sol
 def tile(name, alt=0): return (ROUTE,) + AT[name] + (alt,)
-L = {n: {} for n in ['Ground', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Bridges', 'Props', 'Trees', 'Houses']}
-ORDER = ['Ground', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Bridges']
+L = {n: {} for n in ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Bridges', 'Props', 'Trees', 'Houses']}
+ORDER = ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Bridges']
 sand_shape, ring_shape, trail_shape, mount_shape = shape(SAND), shape(PLATEAU), shape(TRAIL), shape(MOUNTAIN)
 FAR = {c for c in SEA - SAND if all((c[0] + i, c[1] + j) not in SAND for i in range(-2, 3) for j in range(-2, 3))}
 DEEP = tidy(FAR)
 deep_shape = {c: (k if k in '123456789' else '5') for c, k in shape(DEEP).items()}          # le bloc d'eau profonde n'a pas de coins rentrants
-ground, cliffs = {}, {}
+# Les quatre coins rentrants du bloc de sable ne sont pas rangés comme ceux des falaises : sur la planche, l'eau de `sandi`
+# est en bas à gauche, celle de `sandk` en haut à gauche. `shape` nomme les coins comme les falaises : on traduit.
+SAND_CORNER = {'i': 'j', 'j': 'i', 'k': 'l', 'l': 'k'}
+# Le bord du haut d'un plateau est de l'herbe, avec un liseré tout en haut : rien n'y dit « falaise ». Derrière lui, sur
+# l'île, c'est la plage : on s'y tient, et l'on passe de l'un à l'autre (Ludovic, 17/11/2026). Il prend sa variante sans collision.
+OPEN_EDGE = 'grass8'
+ground, cliffs, shore = {}, {}, {}
 for c in CELLS:
     if c in DEEP: ground[c] = 'deep' + deep_shape[c]
     elif c not in SAND: ground[c] = 'water'
-    elif c not in LAND: ground[c] = 'sand' + sand_shape[c]          # le liseré : du sable bordé d'eau, dans la case d'eau
+    elif c not in LAND: ground[c] = 'water'; shore[c] = 'shore' + SAND_CORNER.get(sand_shape[c], sand_shape[c])          # le liseré : de l'eau, et par-dessus le bord du sable
     elif c in BEACH or c in RING: ground[c] = 'sand5'
     elif c in MOUNTAIN: ground[c] = 'rock5' if mount_shape[c] == '5' else 'lawn'
     else: ground[c] = 'trailC' if c in TRAIL else 'lawn'
@@ -129,7 +135,8 @@ for c in sorted(DECK):
 for c in CELLS:
     free = 1 if c in DECK or c in STEPS or c in BEACH or c in RING else 0          # sous un ponton ou un escalier, sur la plage, et sous une falaise (c'est elle qui arrête) : le même dessin, sans collision
     L['Ground'][c] = tile(ground[c], free if route_tiles.blocks(ground[c]) else 0)
-    for k, name in enumerate(cliffs[c][:2]): L['Cliffs%d' % (k + 1)][c] = tile(name, (1 if c in DECK or c in STEPS else 0) if route_tiles.blocks(name) else 0)
+    if c in shore: L['Shore'][c] = tile(shore[c])
+    for k, name in enumerate(cliffs[c][:2]): L['Cliffs%d' % (k + 1)][c] = tile(name, (1 if c in DECK or c in STEPS or name == OPEN_EDGE else 0) if route_tiles.blocks(name) else 0)
     if c in TRAIL and trail_shape[c] != '5': L['Paths'][c] = tile('trail' + trail_shape[c])
     if c in TALL: L['Grass'][c] = (GRASS_SOURCE, 6, 0, 0)
     if c in deck: L['Bridges'][c] = tile(deck[c])
@@ -142,11 +149,12 @@ def feet(name, x, r):
     if name in ('conif', 'sapling', 'rock_s'): return [(x, r)]
     return []
 sprites = []
-KEEP = TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
+NO_TREES = rect(37, 1, 40, 6) | rect(49, 2, 50, 9)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
+KEEP = NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
 # la forêt de l'exemple, et une lisière tout le long des bords de la carte : elle la ferme, mieux qu'une rangée de sapins
-FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1)}
+FOREST = set(geo.FOREST) | {c for c in INSIDE if c[0] in (0, 1, W - 2, W - 1) or c[1] in (0, 1) or c[1] >= H - 4}
 def plant(name, x, r):
     cells = [c for c in feet(name, x, r) if inb(c)]
     if any(c not in INSIDE or c in KEEP or c in MOUNTAIN or (c in taken and not name.startswith('tree')) for c in cells): return False
@@ -154,7 +162,7 @@ def plant(name, x, r):
     if not name.startswith('tree'): taken.update(cells)          # deux arbres voisins se recouvrent : c'est la forêt
     return True
 # la forêt : un arbre toutes les quatre colonnes, la rangée suivante décalée de deux, là où l'exemple a de la forêt
-for r in range(1, H):
+for r in range(1, H + 1):
     for x in range(-2, W):
         if (x - 2 * (r % 2)) % 4: continue
         cells = [c for c in feet('treeA', x, r) if inb(c)]          # au bord de la carte, un arbre dépasse : seules comptent ses cases qui y sont
@@ -179,7 +187,7 @@ for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS):
 SOLID = set(HOUSE_SOLID)
 for c in CELLS:
     if c in DECK: continue
-    if c in SEA or (any(route_tiles.blocks(n) for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
+    if c in SEA or (any(route_tiles.blocks(n) and n != OPEN_EDGE for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
 for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
 def free(c): return inb(c) and c not in SOLID
 def reach_from(start, closed=()):

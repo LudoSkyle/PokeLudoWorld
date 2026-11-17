@@ -88,6 +88,10 @@ def blocks(name):
     pelouse du plateau, avec un bout de lisière dans leurs quatre rangées du haut. On s'y tient, et
     ils ne touchent le vide que par leur pointe : on n'en tombe pas. Les mêmes coins de la falaise
     de roche restent pleins — leur dessus est le gradin de roche, où rien ne mène.
+
+    Le bord du haut (`grass8`) est de la même herbe, et bloque ici : sur la Route 1 il donne sur
+    le vide. Une carte où ce qui est derrière se foule — la plage, sur l'île de départ — le pose
+    dans sa variante sans collision.
     """
     if name is None: return False
     if name == 'water' or family(name) in ('deep', 'sand'): return True
@@ -123,6 +127,7 @@ def atlas():
     out['trailC'] = TRAIL_AT
     out['tall_pressing'], out['tall_pressed'] = (7, 6), (8, 6)
     out['ledgeVB'] = (15, 2)
+    out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -220,6 +225,11 @@ def cells(survey=False):
                     tile = [[CLEAR if any(g[b][a][:3] == tile[b][a][:3] for g in grounds) else tile[b][a] for a in range(16)] for b in range(16)]
                 made[(at[0] + i, at[1] + j)] = tile
     made[where['ledgeVB']] = ledge_bottom(made[where['ledgeVT']])
+    # Le rivage sans son eau : le bord du sable seul, à poser par-dessus une case d'eau. C'est ce qui laisse un reflet
+    # passer dessous au lieu de s'étaler sur le sable (l'île de départ ; la Route 1 garde le bord d'une seule pièce).
+    for name in [n for n in where if n.startswith('shore')]:
+        edge = made[where['sand' + name[5:]]]          # l'eau s'en va : tout ce qui est bleu et pas clair (l'écume, elle, reste au bord du sable)
+        made[where[name]] = [[CLEAR if edge[b][a][2] > edge[b][a][0] + 25 and edge[b][a][0] < 190 else edge[b][a] for a in range(16)] for b in range(16)]
     return {c: t for c, t in made.items() if any(p[3] for row in t for p in row)}
 
 

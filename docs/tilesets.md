@@ -320,6 +320,24 @@ Les rochers :
   toit. Ses trois rectangles de collision sont **rentrés d'un pixel** : bord à
   bord, le moteur les soude et y laisse un trou. Elle se trie à −1 : qui se
   tient sur la case de la porte passe devant ;
+- **le bord du haut des plateaux** : `grass8` dans sa variante sans collision.
+  Sur la Route 1 il donne sur le vide et bloque ; sur l'île ce qui est derrière
+  se foule, et rien dans son dessin ne dit « falaise » ;
+- **le rivage en deux calques** : l'eau (`water`) dans `Ground`, et par-dessus,
+  dans `Shore`, le bord du sable **sans son eau** (`shore7`…`shorel`,
+  `11:0-5,7-8`, dérivés des bords `sand…` par `route_tiles.py` : tout ce qui
+  est bleu et pas clair s'en va, l'écume reste). Les reflets se rangent juste
+  au-dessus de `Ground` : le sable du bord les recouvre. D'une seule pièce, le
+  reflet s'étalait sur le sable ;
+- **les données `water` et `sand`** : l'eau, l'eau profonde, les bords `sand…`
+  et `shore…` portent `water` (reflet, ombre bleue des volants) ; `sand5` porte
+  `sand` (traces de pas). Sur la Route 1 cela ne change rien à pied — on n'y
+  touche jamais l'eau — sauf l'ombre des volants au-dessus de la rivière ;
+- **les coins rentrants du sable ne sont pas rangés comme ceux des falaises** :
+  l'eau de `sandi` est en bas à gauche, celle de `sandk` en haut à gauche
+  (`layout.SAND_CORNER`). Posés comme ceux d'une falaise, ils sont à l'envers ;
+- **le pied d'un parasol ne bloque plus** (`10:11-14,5`) : son mât est entre
+  deux cases, on passe dessous, derrière lui ;
 - le mobilier (bancs, parasols, serviettes), les lampadaires et les statues
   restent ceux de l'atlas : la planche de la Route 1 n'en a pas encore été
   fouillée.
