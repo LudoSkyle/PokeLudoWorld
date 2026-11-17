@@ -147,8 +147,9 @@ RETOUCH = [
     # --- des bords qui ne sont ni droits ni en diagonale pure, comme sur l'exemple : des crans de longueurs inégales, une
     #     anse ici, un cap là (Ludovic, 17/11/2026 : « évite les lignes droites, les diagonales pures »)
     (BEACH_, (40, 26, 42, 26)), (BEACH_, (47, 26, 49, 26)),                           # le plateau du sud-est : un cran au coin, une anse dans son bord du nord
-    (BEACH_, (20, 25, 20, 27)), (BEACH_, (22, 31, 24, 31)), (BEACH_, (19, 32, 21, 34)), (BEACH_, (32, 31, 32, 31)), (BEACH_, (24, 18, 26, 18)),          # la place : une anse à l'ouest, des crans inégaux en bas, une encoche en haut
-    (PLATEAU_, (31, 9, 34, 10)), (PLATEAU_, (33, 11, 34, 11)), (PLATEAU_, (33, 14, 33, 15)),                                  # la crique : son coin du nord-est comblé par crans, un cap sur son flanc est
+    (BEACH_, (20, 25, 20, 27)), (BEACH_, (22, 31, 24, 31)), (BEACH_, (19, 32, 21, 34)), (BEACH_, (32, 31, 32, 31)),          # la place : une anse à l'ouest, des crans inégaux en bas, une encoche en haut
+    (PLATEAU_, (31, 9, 34, 10)), (PLATEAU_, (33, 11, 34, 11)), (PLATEAU_, (32, 11, 34, 17)),          # (et son flanc est recule de deux cases : la place qu'il faut au parc à fleurs, sans couloir d'une case dessous)
+                                      # la crique : son coin du nord-est comblé par crans, un cap sur son flanc est
     (BEACH_, (47, 18, 48, 18)),                                                       # le plateau du nord-est : une encoche dans son bord du sud
     # --- la mare de l'est rejoint la mer, et n'est plus un carré
     (SEA_, (50, 20, 54, 24)), (SEA_, (44, 21, 44, 22)), (BEACH_, (45, 20, 46, 20)), (BEACH_, (45, 24, 45, 24)), (BEACH_, (48, 24, 49, 24)), (BEACH_, (49, 23, 49, 23)),

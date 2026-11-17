@@ -47,8 +47,9 @@ for name, (kind, x, r) in HOUSES.items():          # les murs et le bas du toit 
 HOUSE_AREA = set().union(*[box(n) for n in HOUSES])
 
 # --- la place : son dallage, le socle de la cloche au milieu du haut, le tour qu'en fait le coureur
-PLAZA = (24, 22, 32, 27)          # x0, y0, x1, y1 du dallage
-PAVED = rect(*PLAZA)
+PLAZA = (24, 20, 32, 25)          # x0, y0, x1, y1 du dallage : remonté de deux cases (Ludovic, 17/11/2026)
+# Le dallage n'est pas un rectangle : ses coins sont coupés par crans, pour une place plutôt ovale.
+PAVED = {(x, y) for x, y in rect(*PLAZA) if not ((y in (PLAZA[1], PLAZA[3]) and not PLAZA[0] + 2 <= x <= PLAZA[2] - 2) or (y in (PLAZA[1] + 1, PLAZA[3] - 1) and not PLAZA[0] + 1 <= x <= PLAZA[2] - 1))}
 LOOP = [(PLAZA[0] - 1, PLAZA[1] - 1), (PLAZA[2] + 1, PLAZA[1] - 1), (PLAZA[2] + 1, PLAZA[3] + 1), (PLAZA[0] - 1, PLAZA[3] + 1)]
 LOOP_CELLS = rect(LOOP[0][0], LOOP[0][1], LOOP[2][0], LOOP[2][1]) - rect(LOOP[0][0] + 1, LOOP[0][1] + 1, LOOP[2][0] - 1, LOOP[2][1] - 1)
 
@@ -149,7 +150,8 @@ for way, x0, y0, x1, y1 in DOCKS:
     for (x, y) in sorted(rect(x0, y0, x1, y1)):
         if way == 'V':
             low = y == y1 and (x, y + 1) not in DECK          # le dernier rang de planches, au bout
-            deck[(x, y)] = {0: 'pier1' if low else 'pier4', 1: 'pier2' if low else 'pier5', 2: 'pier3' if low else 'pier6'}[x - x0]          # des planches de jetée, pas le tablier d'un pont (Ludovic, 17/11/2026)
+            head = 'pierT' if y == y0 else 'pier'          # le premier rang sort du sable
+            deck[(x, y)] = {0: 'pier1' if low else head + '4', 1: 'pier2' if low else head + '5', 2: 'pier3' if low else head + '6'}[x - x0]          # des planches de jetée, pas le tablier d'un pont (Ludovic, 17/11/2026)
         else:
             deck[(x, y)] = {0: 'bridgeH8', 1: 'bridgeH5', 2: 'bridgeH1' if x == x0 else 'bridgeH2'}[y - y0]
     if way == 'H':          # le dessous d'un ponton en travers déborde sur la rangée d'en dessous, là où c'est de l'eau
@@ -177,9 +179,9 @@ def feet(name, x, r):
     if name in village_tiles.PLANTS: return [(x + village_tiles.door(name), r)]          # le tronc
     return []
 sprites = []
-NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 21)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
-GARDEN = rect(36, 13, 39, 16)          # le potager clôturé, au sud-ouest du laboratoire : le lampadaire du labo en est le poteau d'angle (Ludovic, 17/11/2026)
-KEEP = GARDEN | NO_TREES | TRAIL | TALL | PAVED | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
+NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 31)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
+GARDEN = rect(33, 12, 37, 16)          # le parc à fleurs clôturé, au sud-ouest du laboratoire, contre le bord du plateau : la plage a reculé pour lui faire de la place (Ludovic, 17/11/2026)
+KEEP = GARDEN | NO_TREES | TRAIL | TALL | rect(*PLAZA) | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(gx + i, y0 + j) for side, gx, y0 in SIDE_STAIRS.values() for i in range(-3, 4) for j in range(-1, 4)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
 # la forêt de l'exemple, et une lisière tout le long des bords de la carte : elle la ferme, mieux qu'une rangée de sapins
@@ -275,7 +277,8 @@ WOODS |= {c for name, x, r in sprites if name in village_tiles.PLANTS for c in r
 #     de chaque maison et autour de la place, éparses. Elles ont leur propre tirage : en ajouter ne déplace rien d'autre.
 BLOOM = random.Random(11)
 FLOWER_CELLS, beds = set(), []
-lawn = INSIDE - KEEP - taken - MOUNTAIN - WOODS - HOUSE_AREA - rect(9, 13, 14, 16)          # (pas sous le banc de Ludo, que generate.py pose là)
+RESERVED = rect(12, 8, 13, 9) | rect(41, 8, 42, 9) | rect(7, 28, 8, 29)          # là où generate.py pose ses caisses et ses pots : pas de fleurs dessous
+lawn = INSIDE - KEEP - taken - MOUNTAIN - WOODS - HOUSE_AREA - RESERVED - rect(9, 13, 14, 16)          # (pas sous le banc de Ludo, que generate.py pose là)
 SCATTER = ([(0, 0), (2, 1)], [(1, 0), (0, 2), (3, 1)], [(0, 1), (2, 0)], [(0, 0), (1, 2)], [(0, 0), (2, 2), (3, 0)], [(0, 0)], [(1, 0), (0, 2)])
 KINDS = (0, 1, 2, 3, 5, 7)
 def bed(c, n):
@@ -297,17 +300,17 @@ for c in spots:                                                    # et d'autres
     if len(beds) < 14: bed(c, len(beds)) or bed(c, len(beds) + 3) or bed(c, len(beds) + 5)
 # --- le potager : une clôture de bois sur son pourtour, ouverte à l'est sur la piste, deux grandes fleurs dedans
 FENCE_CELLS = {}
-gx0, gy0, gx1, gy1 = 36, 13, 39, 16
+gx0, gy0, gx1, gy1 = 33, 12, 37, 16          # dessous, deux rangées d'herbe : c'est par là qu'on passe de la place au plateau du laboratoire
 for c in sorted(GARDEN):
     x, y = c
     if gx0 < x < gx1 and gy0 < y < gy1: continue                       # l'intérieur
-    if c in ((gx1, gy0), (gx1, gy1 - 1)): continue                     # le coin du lampadaire, et le portillon
-    k = {(gx0, gy0): '7', (gx0, gy1): '1', (gx1, gy1): '3'}.get(c) or ('8' if y == gy0 else '2' if y == gy1 else '4' if x == gx0 else '6')
+    if c == (gx1, gy0 + 2): continue                                   # le portillon, vers la piste
+    k = {(gx0, gy0): '7', (gx1, gy0): '9', (gx0, gy1): '1', (gx1, gy1): '3'}.get(c) or ('8' if y == gy0 else '2' if y == gy1 else '4' if x == gx0 else '6')
     FENCE_CELLS[c] = 'fence' + k
 for c, name in FENCE_CELLS.items(): L['Decorations'][c] = tile(name)
-for n, x in enumerate((gx0 + 1, gx0 + 2)):
-    L['Props'][(x, gy1 - 1)] = (5, KINDS[n * 2], 4, 0); L['Props'][(x, gy1 - 2)] = (5, KINDS[n * 2], 3, 0)
-    FLOWER_CELLS.update({(x, gy1 - 1), (x, gy1 - 2)})
+for n, (x, y) in enumerate([(x, y) for y in (gy1 - 1, gy1 - 3) for x in range(gx0 + 1, gx1)]):          # deux rangs de trois, un rang d'herbe entre eux : la cime d'une fleur prend la case du dessus
+    L['Props'][(x, y)] = (5, KINDS[n % len(KINDS)], 4, 0); L['Props'][(x, y - 1)] = (5, KINDS[n % len(KINDS)], 3, 0)
+    FLOWER_CELLS.update({(x, y), (x, y - 1)})
 # --- des coquillages sur le sable sec, sans collision : rien sous un escalier, ni sous un parasol
 SHELL, shells = random.Random(5), []
 sands = [c for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK) if ground.get(c) == 'sand5']

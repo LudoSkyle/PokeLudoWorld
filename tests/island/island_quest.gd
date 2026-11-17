@@ -17,7 +17,7 @@ func crowd() -> int:
 	var n := 0
 	for who in game.get_node(ENT.trim_suffix("/")).get_children():
 		var c := Vector2i(floori(who.position.x / 16.0), floori(who.position.y / 16.0))
-		if str(who.name) != "Player" and not str(who.name).begins_with("Runner") and Rect2i(21, 19, 16, 13).has_point(c):
+		if str(who.name) != "Player" and not str(who.name).begins_with("Runner") and Rect2i(21, 17, 16, 13).has_point(c):
 			n += 1
 	return n
 
@@ -65,15 +65,15 @@ func test() -> void:
 	# Personne ne gene : ni sur le tour de la place ou court le coureur, ni devant le socle, ni devant un escalier.
 	var ring_free := true
 	for x in range(23, 34):
-		for y in [21, 28]:
+		for y in [19, 26]:
 			if not is_free(Vector2i(x, y)) and cell_of("RunnerAfter") != Vector2i(x, y):
 				ring_free = false
-	for y in range(21, 29):
+	for y in range(19, 27):
 		for x in [23, 33]:
 			if not is_free(Vector2i(x, y)) and cell_of("RunnerAfter") != Vector2i(x, y):
 				ring_free = false
 	check("le tour de la place reste libre pour le coureur", ring_free)
-	check("on peut encore se tenir devant le socle", is_free(Vector2i(28, 26)))
+	check("on peut encore se tenir devant le socle", is_free(Vector2i(28, 24)))
 	check("les deux escaliers de la place restent degages", is_free(Vector2i(28, 31)) and is_free(Vector2i(28, 30)) and is_free(Vector2i(19, 20)) and is_free(Vector2i(20, 20)) and is_free(Vector2i(18, 20)))
 
 	# APRES. On entre chez Ludo : quitter l'ile met fin a la Veillee. Meme Odile est rentree.
@@ -89,7 +89,7 @@ func test() -> void:
 	check("les ouvriers ont quitte la place : l'un surveille la trouee, l'autre range le quai",
 		cell_of("WorkerLater") == Vector2i(6, 15) and cell_of("WorkerLater2") == Vector2i(36, 41) and not there("WorkerAfter"))
 	check("le coureur court toujours", there("RunnerAfter"))
-	await talk("Roland, apres", Vector2i(31, 24), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
+	await talk("Roland, apres", Vector2i(31, 22), "ui_left", "RolandAfter", "je reste encore un peu.", "idle_right")
 	await walk("route du nord", Vector2i(4, 1), false)
 	await hold_until_change("la trouee du nord, la Veillee finie", "ui_up")
 	check("la route du nord est ouverte : on quitte l'ile par la trouee", str(level().scene_file_path).ends_with("route_1.tscn"), str(level().scene_file_path))

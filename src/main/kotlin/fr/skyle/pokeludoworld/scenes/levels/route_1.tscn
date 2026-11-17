@@ -204,6 +204,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.3
 seed = 11
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="Hoppip2" parent="Sky" instance=ExtResource("13_flyer")]
 position = Vector2(197, 114)
@@ -212,6 +213,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.3
 seed = 11
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="Skiploom0" parent="Sky" instance=ExtResource("13_flyer")]
 position = Vector2(616, 248)
@@ -228,6 +230,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.1
 seed = 23
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="Jumpluff0" parent="Sky" instance=ExtResource("13_flyer")]
 position = Vector2(360, 440)
@@ -244,6 +247,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.5
 seed = 37
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="Jumpluff2" parent="Sky" instance=ExtResource("13_flyer")]
 position = Vector2(410, 450)
@@ -252,6 +256,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.5
 seed = 37
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="HoppipSouth0" parent="Sky" instance=ExtResource("13_flyer")]
 position = Vector2(872, 632)
@@ -268,6 +273,7 @@ zone = Rect2i(0, 0, 69, 50)
 pace = 1.2
 seed = 41
 drift = 1
+cry_every = Vector2(0, 0)
 
 [node name="Readables" type="Node2D" parent="."]
 
