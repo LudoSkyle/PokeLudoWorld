@@ -28,8 +28,10 @@ if [ "$1" = "--list" ]; then all_tests; echo audit; echo i18n; exit 0; fi
 if [ "$1" = "i18n" ] && [ $# -eq 1 ]; then python3 tests/audit/i18n.py | grep -vE "^  --"; exit "${PIPESTATUS[0]}"; fi
 
 # La fenetre de jeu ignore SIGTERM : on filtre sur l'executable et on tue net.
+# L'editeur et le gestionnaire de projets sont epargnes : le MCP (voir
+# addons/godot_mcp_toolkit) ne repond que tant que l'editeur est ouvert.
 kill_godot() {
-  for pid in $(ps -axo pid,command | awk '$2 ~ /MacOS\/Godot$/ {print $1}'); do kill -9 "$pid" 2>/dev/null; done
+  for pid in $(ps -axo pid,command | awk '$2 ~ /MacOS\/Godot$/ && !/ (--editor|-e|--project-manager|-p)( |$)/ {print $1}'); do kill -9 "$pid" 2>/dev/null; done
 }
 
 # run_script <script res://> <log> <motif de fin> <secondes max>
