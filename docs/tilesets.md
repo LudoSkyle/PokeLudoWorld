@@ -336,9 +336,11 @@ Les rochers :
 - **les coins rentrants du sable ne sont pas rangés comme ceux des falaises** :
   l'eau de `sandi` est en bas à gauche, celle de `sandk` en haut à gauche
   (`layout.SAND_CORNER`). Posés comme ceux d'une falaise, ils sont à l'envers ;
-- **le pied d'un parasol ne bloque plus** (`10:11-14,5`) et se trie **derrière**
-  qui se tient sur sa rangée (`y_sort_origin = -1`) : on passe devant le mât,
-  la tête sous la toile, dont les deux rangées du haut restent triées devant ;
+- **le pied d'un parasol ne bloque plus** (`10:11-14,5`), et **ses trois
+  rangées se trient ensemble**, juste derrière la rangée du pied
+  (`y_sort_origin` −1, 15 et 31) : sur cette rangée on passe devant tout le
+  parasol, toile comprise ; une rangée plus haut, on est dessous. Triées à
+  part, le bas de la toile était coupé net sur le joueur ;
 - **les plantes de l'île** : `village.png` porte aussi un petit palmier, un
   grand et un massif de buissons (`village_tiles.PLANTS`), découpés dans la
   même planche avec leur ombre. Une seule case pleine chacun : le tronc ;

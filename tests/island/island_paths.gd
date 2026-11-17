@@ -129,9 +129,21 @@ func test() -> void:
 	for c in props.get_used_cells():
 		if props.get_cell_source_id(c) == 10 and props.get_cell_atlas_coords(c) == Vector2i(4, 6) and not is_free(c) and not is_free(c + Vector2i.RIGHT):
 			benches += 1
-	check("trois bancs de bois, pleins", benches == 3, "%d" % benches)
-	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(11, 14) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 11)
-		and cell_of("ShellKid") == Vector2i(28, 11) and cell_of("Sailor") == Vector2i(43, 16) and cell_of("Youngster") == Vector2i(48, 13) and cell_of("Gardener") == Vector2i(48, 31))
+	check("deux bancs de face et un de profil, pleins", benches == 2 and props.get_cell_atlas_coords(Vector2i(49, 31)) == Vector2i(9, 5) and not is_free(Vector2i(49, 31)) and not is_free(Vector2i(49, 30)), "%d" % benches)
+	# Rien ne se pose sur une piste : ni banc, ni lampadaire, ni panneau, ni habitant immobile.
+	var paths := layer("Background/Paths")
+	var on_path: Array = []
+	for n in level().get_node("World").get_children() + level().get_node("World/Entities").get_children():
+		if n is Node2D and not (n is TileMapLayer) and str(n.name) != "Entities" and str(n.name) != "Player" and not str(n.name).begins_with("Runner") and not str(n.name).begins_with("Glow"):
+			var c := Vector2i(floori(n.position.x / 16.0), floori(n.position.y / 16.0))
+			if paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1):
+				on_path.append(str(n.name))
+	for c in props.get_used_cells():
+		if props.get_cell_source_id(c) == 10 and (paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1)):
+			on_path.append("mobilier en %s" % c)
+	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
+	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 11)
+		and cell_of("ShellKid") == Vector2i(28, 11) and cell_of("Sailor") == Vector2i(43, 16) and cell_of("Youngster") == Vector2i(48, 13) and cell_of("Gardener") == Vector2i(49, 32))
 	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 11)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
 	# Tout se rejoint a pied, depuis le depart.

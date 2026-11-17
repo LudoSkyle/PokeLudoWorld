@@ -163,7 +163,7 @@ d'un Pokémon volant bleuit.
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
 | escaliers (colonne de gauche, rangée) | (14,13), (31,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
-| objets à ramasser | Potion en (46,45), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
 
 Calques de fond, dans l'ordre : `Ground`, `Shore` (le bord du sable, sur
 l'eau), `Cliffs1` (la falaise des plateaux),

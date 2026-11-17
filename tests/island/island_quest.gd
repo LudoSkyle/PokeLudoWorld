@@ -61,7 +61,7 @@ func test() -> void:
 	check("trois visiteurs sont ailleurs : sur la route du nord, vers la jetee, sur la plage de la crique — bien en vue",
 		cell_of("VisitorKalos") == Vector2i(25, 8) and cell_of("VisitorFestival") == Vector2i(31, 41) and cell_of("VisitorBlackBelt") == Vector2i(24, 11),
 		"%s %s %s" % [str(cell_of("VisitorKalos")), str(cell_of("VisitorFestival")), str(cell_of("VisitorBlackBelt"))])
-	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(11, 14) and cell_of("Sailor") == Vector2i(43, 16))
+	check("ceux de toujours n'ont pas bouge", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sailor") == Vector2i(43, 16))
 	# Personne ne gene : ni sur le tour de la place ou court le coureur, ni devant le socle, ni devant un escalier.
 	var ring_free := true
 	for x in range(23, 34):

@@ -7,7 +7,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(46, 44)
+	return Vector2i(47, 45)
 
 func pick(label: String, first: String, second: String, who: String, flag_name: String) -> void:
 	check(label + " : l'objet est pose au sol, et plein", level().get_node_or_null("World/" + who) != null and not is_free(cell() + Vector2i.DOWN))
