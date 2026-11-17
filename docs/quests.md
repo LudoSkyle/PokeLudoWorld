@@ -239,7 +239,7 @@ le ponton de l'ouest**.
 |---|---|---|
 | l'indice du registre | « là où l'eau dort sous la pierre » | « là où l'eau dort sous les planches » |
 | Roland | devant la grotte, parle du lac souterrain | en (11,32), au bord de l'eau sous la bibliothèque ; il a plongé vingt ans dans ces eaux |
-| la Cloche ternie | au bord du lac de `cave_b2f` | `Readables/Bell`, dans l'eau en (19,25) ; on la repêche depuis le ponton de l'ouest, en (19,26). Un éclat la signale |
+| la Cloche ternie | au bord du lac de `cave_b2f` | `Readables/Bell`, dans l'eau en (14,21) ; on la repêche depuis le ponton de l'ouest, en (14,22). Un éclat la signale |
 | la route fermée | la route de l'ouest | la trouée de la falaise du nord : deux gardes et quatre cases gardées en y 3 |
 | le pêcheur | au bord du lac | au bout de la jetée du sud |
 | la Veillée | dure tant que la partie dure | **prend fin quand on quitte l'île** : `metadata/on_leave = "bell_hung > vigil_over"`. Chacun retourne alors à ce qu'il faisait ; qui est où, avant, pendant et après : [npcs.md](npcs.md) |

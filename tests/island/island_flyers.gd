@@ -7,7 +7,7 @@ func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(8, 9)
+	return Vector2i(6, 9)
 
 func test() -> void:
 	var sky: Node2D = level().get_node("Sky")
@@ -82,5 +82,5 @@ func test() -> void:
 	check("un trajet est une ligne droite de trois cases au plus", too_long == 0 and diagonal == 0, "%d trop longs, %d en biais" % [too_long, diagonal])
 	check("aucun ne rebrousse chemin d'un trajet au suivant", reversed == 0, "%d demi-tours" % reversed)
 	# On marche dessous sans rien heurter.
-	check("un oiseau au-dessus d'une case ne la bouche pas", is_free(Vector2i(30, 9)) and not find_path(Vector2i(8, 9), Vector2i(30, 9)).is_empty())
+	check("un oiseau au-dessus d'une case ne la bouche pas", is_free(Vector2i(25, 10)) and not find_path(Vector2i(6, 9), Vector2i(25, 10)).is_empty())
 	shot("ile_oiseaux")

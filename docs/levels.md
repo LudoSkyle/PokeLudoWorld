@@ -93,126 +93,114 @@ Level (Node2D)
 
 ## L'île de départ
 
-`scenes/levels/start_island.tscn` — 62 × 49 cases. C'est la carte où mènent
+`scenes/levels/start_island.tscn` — 55 × 50 cases. C'est la carte où mènent
 les sorties des intérieurs. **Une nouvelle partie commence dans la chambre de
 Ludo** (`ludo_bedroom.tscn`, `SceneManager.start_scene`), debout au milieu du
 tapis bleu, case (15,11), tourné vers le bas : on descend l'escalier, on sort
-de la maison, et l'on arrive sur l'île devant chez Ludo. L'ancien village (`start_town`) et sa grotte ont été supprimés : les tests du
-système se jouent sur un terrain d'essai ([verification.md](verification.md)).
+de la maison, et l'on arrive sur l'île devant chez Ludo.
 
-Elle est composée selon [mapping.md](mapping.md) : une baie intérieure
-entourée de terres, pas une île au milieu de l'eau. Du relief partout : chaque
-maison est sur un **plateau**, la place aussi ; le laboratoire est même **un
-étage plus haut**, sur une terrasse adossée à la falaise.
+**Elle a la géographie d'une carte d'exemple fournie par Ludovic, dans le
+style de la Route 1** (17/11/2026). Elle n'en est pas la copie : le terrain de
+l'exemple vient de `sources/seasons_trees_ponds.png`, mais ses arbres, ses
+huttes et ses pontons viennent de planches que le projet n'a pas, et l'île du
+jeu a une place et une cloche que l'exemple n'a pas. On en garde donc **où
+est la mer, où sont les plages, où sont les terres en hauteur, où passent les
+chemins, où pousse la forêt**, et on le pose avec les tuiles de la Route 1
+(`route.png`) et des maisons découpées dans la même planche (`village.png`).
 
 ```
- falaise du nord ═════════╗ trouée (gardée) ╔═════════ falaise du nord
- lisière │ NORD-OUEST, plateau │  LA CRIQUE DU NORD : plage, banc,   │ NORD-EST : terrasse,   │ lisière
-         │ Ludo, maison orange │  parasol, hautes herbes             │ puis le labo au-dessus │
- ≈passe≈      │ ponton (en T)   ~~~~~~~~~ la baie ~~~~~~~~~            ponton (en L) │
-         └────┴──────────────►  LA PLACE, sur son plateau  ◄─────────────────────────┘ ≈passe≈
- lisière │ OUEST, plateau : bibliothèque ─ponton─►  (socle de la cloche)
- ≈passe≈    (la cloche est sous ce ponton)        │
- lisière │ SUD-OUEST : hautes herbes, butte   plage du sud, palmiers, jetée   SUD-EST, plateau │ lisière
-         └────── lisière ──────┘          ≈passe≈          └──── lisière ────┘  maison orange
+ forêt │ NORD-OUEST, plateau : │ trouée du nord (gardée) │ NORD-EST, plateau : la montagne, │ forêt
+       │ Ludo, Anselme         │  LA CRIQUE : plage      │ le laboratoire                   │
+       └──escalier─────────────┘   parasol, serviette    └──escalier──────────┬─ponton──────┘
+ ~~~~ ponton ~~~~~~~~~~~~~~~~~~~~~  la baie  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ │ ~~~~~~~~~~~~~~
+      └─────── ponton ────────►  LA PLACE, sur son plateau  ◄──── ponton ─────┴──┐
+ OUEST, plateau : │ ponton       dallage, socle de la cloche, statues            │ SUD-EST, plateau :
+ la bibliothèque  │                 └──escalier──┘                               │ Solange
+   └─escalier─┐   │                                                   ┌─escalier─┘
+ plage de     │ JARDIN du sud-ouest       LA PLAGE DU SUD : parasol, jetée        la presqu'île
+ l'ouest      │ (hautes herbes)                  ~~~~ jetée ~~~~
 ```
 
-**On n'arrive pas sur la place par le nord.** La crique où débouche la trouée
-ne touche pas l'île du centre : il faut passer par le nord-est (ou le
-nord-ouest), descendre son ponton et arriver par le côté. La place se monte par
-l'ouest, l'est et le sud.
+**Trois niveaux.** La **mer**, pleine ; profonde au large. Les **plages**, de
+sable, au ras de l'eau : on y marche, et leur bord ondule dans la case d'eau
+voisine (le liseré, plein). Les **plateaux** : toute l'herbe, cernée d'une
+falaise d'une case, pleine sauf ses deux coins rentrants du haut. Il n'y a pas
+d'herbe au niveau de la plage : une tuile de sable bordé d'herbe manque encore.
+
+**On change de niveau par cinq escaliers de pierre**, tous face au sud (la
+planche n'en a pas d'autres) : trois marches entre deux poteaux. Sous chacun,
+une anse de plage ; au-dessus, un bord de plateau droit sur cinq cases.
+
+**Les pontons vont du dessus d'un plateau à l'autre**, larges de trois cases :
+du nord-ouest à la place et de là au jardin ; du nord-est à la place et de là
+au sud-est. La jetée du sud part de la plage.
+
+**On n'arrive pas sur la place par le nord** : son bord du nord est une
+falaise. On y entre par ses deux pontons, ou par son escalier depuis la plage
+du sud. Le jardin du sud-ouest ne se rejoint que par son ponton.
 
 | Lieu | Case | |
 |---|---|---|
-| départ, devant chez Ludo | (8,9) | `SpawnPoint` |
-| `MaisonLudo` | (8,8) | → `ludo_house` |
-| `Bibliotheque` | (8,27) | → `library` |
-| `Laboratoire` | (48,9) | → `lab_house` ; deux escaliers en dessous, en (48–49,11) et (48–49,14) |
-| `MaisonNord` | (15,7) | → `orange_house_north`, chez Anselme |
-| `MaisonSud` | (48,37) | → `orange_house_south`, chez Solange |
-| la place | dallage x 26–34, y 22–26, sur le plateau du centre | socle de la cloche au milieu, deux statues ; le coureur en fait le tour (x 25–35, y 21–27) |
-| la trouée de la falaise | x 28–33, y 0–3 | deux gardes en y 3, un contre chaque paroi ; en y 0, six portes `Nord0`…`Nord5` mènent à la **Route 1** (`route_1`) |
-| la crique du nord | x 20–40, y 4–10 | plage, parasol, banc, une touffe de hautes herbes (26–28,6–7) |
-| la cloche | (19,25), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (19,26), tourné vers le nord |
-| la jetée du sud | x 30–31, y 42–43 | le pêcheur est au bout ; des caisses sur le quai |
-| hautes herbes | x 6–12, y 39–42 ; (12–15,15–16) ; (26–28,6–7) | |
-| objets à ramasser | Potion en (55,32), Poké Ball en (5,40) | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| départ, devant chez Ludo | (6,9) | `SpawnPoint` |
+| `MaisonLudo` | (6,8) | → `ludo_house` ; hutte de chaume, porte à gauche |
+| `MaisonNord` | (13,10) | → `orange_house_north`, chez Anselme |
+| `Bibliotheque` | (3,29) | → `library` |
+| `Laboratoire` | (45,8) | → `lab_house` ; la grande maison de chaume, au pied de la montagne |
+| `MaisonSud` | (43,33) | → `orange_house_south`, chez Solange |
+| la place | dallage x 24–32, y 22–27, sur le plateau du centre | socle de la cloche en (28,23), deux statues en (25,23) et (31,23) ; le coureur en fait le tour (x 23–33, y 21–28) |
+| la trouée du nord | x 23–27, y 0–8 | un couloir de plage entre deux falaises ; deux gardes en y 3, un contre chaque paroi ; en y 0, cinq portes `Nord0`…`Nord4` mènent à la **Route 1** (`route_1`) |
+| la crique du nord | x 19–31, y 8–17 | plage, parasol, serviette |
+| la cloche | (14,21), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (14,22), tourné vers le nord |
+| la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
+| escaliers (colonne de gauche, rangée) | (14,13), (31,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
+| hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; derrière chez Anselme (14–18, 4–6) ; près du labo (49–52, 12–15) | |
+| objets à ramasser | Potion en (46,46), au bout de la presqu'île ; Poké Ball en (3,43), au fond de la plage de l'ouest | une Poké Ball posée au sol ([quests.md](quests.md)) |
 
-**Les escaliers.** On monte sur un plateau par un escalier à poteaux de deux
-cases, posé sur son bord du bas ou d'un côté — jamais sur celui du haut.
+Calques de fond, dans l'ordre : `Ground`, `Cliffs1` (la falaise des plateaux),
+`Cliffs2` (la montagne), `Paths`, `Plaza`, `Decorations` (fleurs, serviettes),
+`Grass`, `Bridges` (pontons et escaliers). Dans `World`, triés en Y : `Trees`,
+`Props` (rochers, sapins, bancs, parasols), `Houses`.
 
-**Les rebords.** Le bord du haut d'un plateau est de l'herbe : on s'y tient,
-mais on ne le franchit pas ([tilesets.md](tilesets.md), « Les rebords »).
-
-**Le mur du nord est une montagne en gradins.** Il tient dans les rangées 0 à
-3 — la carte ne grandit pas — et sa hauteur vient de **blocs de roche posés
-les uns sur les autres** : un socle (`World/Cliffs`), des buttes de largeurs
-inégales dessus (`CliffsMid`), et une butte de plus sur les plus larges
-(`CliffsTop`). C'est le même bloc `5:26-28,22-23` à chaque étage ; ses coins
-arrondis laissent voir le gradin du dessous. La rangée 0 n'a pas de bord : la
-montagne continue au nord, hors de la carte.
-
-**Les maisons sont serrées contre ce qui les borde.** Chez Ludo et la maison
-orange du nord **touchent le mur** : la rangée du haut de leur toit recouvre
-le pied de la falaise, rien ne passe derrière. Leur plateau s'allonge vers
-l'est et porte les arbres du pied du mur. Le laboratoire remplit toute la
-largeur de son étage ; on passe derrière lui, derrière la bibliothèque et
-derrière la maison du sud, sous la rangée du haut de leur toit.
-
-**Pas de sentier de sable sur l'herbe** : au pied d'un escalier, c'est de
-l'herbe. Le sable, c'est la plage.
-
-**Le mobilier.** Cinq bancs de bois (au fond de la place, dans la crique, au pied du
-plateau de Ludo, sur la terrasse du labo, au pied du plateau du sud-est), un
-parasol et sa serviette dans la crique et sur la plage du sud, des caisses sur
-le quai, un pot de fleurs de chaque côté de la porte des maisons orange.
-
-**Dans le ciel**, quatre Goélise et deux Bekipan volent au-dessus de la baie,
-des bras de mer et de la plage du sud, chacun dans sa zone de dix cases sur
-dix (nœud `Sky`, [npcs.md](npcs.md)).
-
-**Les pontons** font deux cases de large, portent une rambarde sur chaque côté
-qui donne sur l'eau et arrivent sur la rive par une planche de bout. Celui du
-nord-ouest est en T (il relie aussi la terre de l'ouest), celui du nord-est en
-L. La terre de l'ouest ne tient au reste que par ses deux pontons.
-
-**Les bords sont fermés par le décor, à pied comme à la nage.** Une ceinture
-d'arbres court le long des bords ouest, est et sud ; une falaise ferme le
-nord. La mer ne touche le bord qu'à **quatre passes étroites**, chacune barrée
-par une chaîne de rochers qui va d'un rocher de plage à l'autre. Aucune case
-des 4 colonnes du bord (3 rangées en bas) n'est atteignable à pied, et un
-nageur n'atteint ni le bord ni la terre de la marge.
-
-**La Veillée prend fin quand on quitte l'île** : `metadata/on_leave =
-"bell_hung > vigil_over"` (une règle « drapeau posé > drapeau à poser », lue
-par `SceneManager` au changement de carte — un rechargement n'est pas un
-départ). Qui est où avant, pendant et après : [npcs.md](npcs.md).
-
-Trois calques de fond de plus que les autres cartes, entre `Paths` et
-`Decorations` : **`Relief`** (les plateaux), **`Plaza`** (le dallage, posé sur
-le plateau) et **`Bridges`** (les pontons et les escaliers). Leurs tuiles sont
-décrites dans [tilesets.md](tilesets.md).
+**Dans le ciel**, quatre Goélise et deux Bekipan, chacun dans sa zone de dix
+cases sur dix (nœud `Sky`, [npcs.md](npcs.md)).
 
 ### Elle est produite par un générateur
 
-La carte n'a pas été peinte à la main : un script la calcule à partir d'un
-plan (terres, plateaux, pontons, bâtiments), pose les raccords de terrain,
-plante le décor en laissant des couloirs dégagés vers chaque lieu, puis
-**contrôle** avant d'écrire le `.tscn` : chaque lieu est accessible à pied,
-aucune case de la marge ne l'est, aucune barrière de rochers ne fuit, aucun
-ponton ne touche la terre par le flanc, aucun objet ni personnage n'étrangle
-un passage. Une copie en est gardée dans `tools/maps/start_island/` (`plan.py`,
-`gen.py`, `build.py`) : **une archive, pas un outil prêt à tourner** — elle
-garde les chemins de la session où elle a été écrite, voir son `LISEZMOI.md`. Retoucher la carte dans l'éditeur reste
-possible ; relancer le générateur écraserait ces retouches.
+`tools/maps/start_island/`, sur le modèle de celui de la Route 1 :
 
-Les tuiles que l'atlas n'avait pas (rambardes, planches de bout, petits
-rochers) sont fabriquées par `tools/island_tiles.py`, qui, lui, est dans le
-dépôt.
+| Fichier | Rôle |
+|---|---|
+| `reference.png` | la carte d'exemple |
+| `geography.py` | `--read` range chaque case de l'exemple dans une classe (mer, plage, chemin, herbe, forêt, toit, roche) et note où un objet est posé sur le terrain → `classes.json`. Puis il en tire la mer, les plages et les plateaux, **porte les retouches** (`RETOUCH`, en clair), et arrange les formes pour que chaque case ait sa tuile de bord |
+| `layout.py` | pose le sol, la falaise, les pistes, les pontons, les escaliers, la forêt, les maisons ; calcule ce qui bloque et ce qu'on atteint |
+| `generate.py` | pose la place, les panneaux, les lampadaires, le mobilier, les personnages et la quête ; contrôle ; écrit la scène et la source 14 du TileSet |
 
-`tests/run.sh island` : circulation (ce qui bloque, ce qui porte, les rebords,
-tout se rejoint, la marge à pied et à la nage, les pontons), portes, objets à
-ramasser, la quête en trois temps, et le vol des oiseaux.
+```bash
+python3 tools/maps/start_island/generate.py                  # contrôle seulement
+python3 tools/maps/start_island/generate.py --write          # écrit la scène et la source des maisons
+python3 tools/maps/start_island/generate.py --preview a.png  # la carte, sans passer par Godot
+python3 tools/maps/start_island/generate.py --map --where    # ce qui bloque ; où est posé quoi
+```
+
+**Rien ne se pose à la main dans l'éditeur** : relancer le générateur écrase
+la scène. Ce que l'exemple ne peut pas dire se déclare dans ces fichiers :
+
+- `geography.RETOUCH` : la trouée du nord, les anses sous les escaliers, de
+  quoi poser les maisons, la mer sous les pontons de l'exemple ;
+- `layout` : `HOUSES`, `PLAZA`, `STAIRS`, `DOCKS`, `PATHS` (les pistes qui
+  mènent aux portes, aux escaliers, aux pontons), `TALL` ;
+- `generate` : chaque panneau, lampadaire, banc, personnage a une case
+  **souhaitée** ; `settle` et `stand` prennent la plus proche qui ne gêne pas
+  — ni devant une porte ou un escalier, ni sur un ponton, ni dans un passage
+  étroit, ni derrière un arbre.
+
+Le générateur contrôle, dans les trois temps de l'histoire (avant, pendant,
+après la Veillée), que chaque lieu se rejoint à pied, que le tour du coureur
+est libre et que le bord de la carte ne s'atteint qu'à la trouée du nord.
+
+`tests/run.sh island` : circulation (les trois niveaux, escaliers, pontons,
+maisons, place, tout se rejoint, le décor ferme la carte), portes, objets à
+ramasser, la quête en trois temps, l'indice de Roland, et le vol des oiseaux.
 
 ## La Route 1
 
