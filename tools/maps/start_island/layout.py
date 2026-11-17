@@ -180,7 +180,7 @@ def feet(name, x, r):
     return []
 sprites = []
 NO_TREES = rect(37, 1, 40, 6) | {(48, 1), (48, 2)} | rect(20, 18, 34, 31)          # entre la montagne et le laboratoire : un passage, pas un bosquet (Ludovic, 17/11/2026)
-GARDEN = rect(33, 12, 37, 16)          # le parc à fleurs clôturé, au sud-ouest du laboratoire, contre le bord du plateau : la plage a reculé pour lui faire de la place (Ludovic, 17/11/2026)
+GARDEN = rect(33, 12, 36, 16)          # le parc à fleurs clôturé, au sud-ouest du laboratoire, contre le bord du plateau : la plage a reculé pour lui faire de la place (Ludovic, 17/11/2026)
 KEEP = GARDEN | NO_TREES | TRAIL | TALL | rect(*PLAZA) | LOOP_CELLS | HOUSE_AREA | DECK | set(stairs) | {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} \
     | {(x + i, r - 1 - j) for x, r in STAIRS.values() for i in range(5) for j in (0, 1)} | {(gx + i, y0 + j) for side, gx, y0 in SIDE_STAIRS.values() for i in range(-3, 4) for j in range(-1, 4)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in NEIGH8}
 taken = set()
@@ -300,7 +300,7 @@ for c in spots:                                                    # et d'autres
     if len(beds) < 14: bed(c, len(beds)) or bed(c, len(beds) + 3) or bed(c, len(beds) + 5)
 # --- le potager : une clôture de bois sur son pourtour, ouverte à l'est sur la piste, deux grandes fleurs dedans
 FENCE_CELLS = {}
-gx0, gy0, gx1, gy1 = 33, 12, 37, 16          # dessous, deux rangées d'herbe : c'est par là qu'on passe de la place au plateau du laboratoire
+gx0, gy0, gx1, gy1 = 33, 12, 36, 16          # dessous, deux rangées d'herbe : c'est par là qu'on passe de la place au plateau du laboratoire
 for c in sorted(GARDEN):
     x, y = c
     if gx0 < x < gx1 and gy0 < y < gy1: continue                       # l'intérieur

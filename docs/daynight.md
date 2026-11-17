@@ -75,6 +75,9 @@ une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
   (0,04) la portée de la lumière, ensemble, par deux ondes lentes décalées
   d'une lanterne à l'autre. C'est la portée qui se voit : l'éclat seul passait
   inaperçu. À 0, la lumière est fixe.
+- **Le halo n'a pas de cœur blanc** : son dégradé part de la moitié de sa
+  force et s'éteint doucement. À pleine force au centre, le sol brûlait sous
+  la lanterne.
 
 **En poser un** : instancier `street_lamp.tscn` sous `World`, sur un centre de
 case. Rien d'autre à régler. `brightness` change sa force.

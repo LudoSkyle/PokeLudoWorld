@@ -300,16 +300,24 @@ def cells(survey=False):
         return [row[::-1] for row in tile] if right else tile
     for last, names in ((False, ('pier4', 'pier5', 'pier6')), (True, ('pier1', 'pier2', 'pier3'))):
         made[where[names[0]]], made[where[names[1]]], made[where[names[2]]] = edged(planks(last), False), planks(last), edged(planks(last), True)
-    # le premier rang de la jetée : le sable de la plage déborde sur ses planches, d'une épaisseur qui varie d'une colonne à l'autre
+    # Le premier rang de la jetée sort du sable. Pas un bord découpé pareil d'une case à l'autre : comme au bout des ponts
+    # de la planche, où l'herbe mord le tablier par touffes, le sable le recouvre par endroits — une grosse langue près du
+    # bord gauche, une petite au milieu, une moyenne à droite — et laisse voir ses planches jusqu'au bout entre elles.
     sand, lip = made[where['sand5']], (214, 198, 156, 255)
-    drift = [7, 7, 8, 8, 9, 9, 9, 8, 8, 7, 7, 6, 6, 6, 7, 7, 8, 8, 9, 9, 8, 8, 7, 7, 6, 6, 7, 7, 8, 8, 8, 9, 9, 9, 8, 8, 7, 7, 6, 6, 6, 7, 7, 8, 8, 8, 7, 7]          # une ondulation douce, qui couvre toujours la première planche entière : des dents, ou un bout de planche qui dépasse, et la jetée a l'air d'une couronne
+    drift = [0] * 48
+    for centre, half, deep in ((10, 8, 9), (29, 4, 5), (42, 6, 7)):          # (milieu, demi-largeur, épaisseur) de chaque langue, en pixels
+        for a in range(48):
+            if abs(a - centre) < half: drift[a] = max(drift[a], round(deep * (1 - ((a - centre) / half) ** 2) ** 0.5))
     for n, k in enumerate('456'):
         tile = [row[:] for row in made[where['pier' + k]]]
         for a in range(16):
             depth = drift[n * 16 + a]
+            if not depth:
+                tile[0][a] = SIDE                                              # le bout du tablier, à nu
+                continue
             for b in range(depth): tile[b][a] = sand[b][a]
             tile[depth][a] = lip                                               # le bord du sable, plus sombre
-            if tile[depth + 1][a] != DARK: tile[depth + 1][a] = SIDE              # et son ombre sur le bois
+            if tile[depth + 1][a] != DARK: tile[depth + 1][a] = SIDE          # et son ombre sur le bois
         made[where['pierT' + k]] = tile
     # les coins rentrants du dallage
     border = next(b for b in range(16) if made[where['paved5']][b][8] == made[where['paved8']][b][8] and b > 0)          # l'épaisseur du liseré d'herbe

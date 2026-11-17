@@ -471,6 +471,9 @@ pas justifier est une erreur.
 - **Il ne touche la terre que par ses bouts**, jamais par le flanc, et chaque
   bout arrive sur la rive par une **planche de bout** : posée sur la case de
   sable, de la largeur du ponton, fermée d'un trait.
+- **Une lanterne peut tenir sur une jetée**, contre un bord, si deux cases
+  restent pour passer (Ludovic, 17/11/2026, sur la jetée de l'île). C'est la
+  seule exception à la règle qui suit.
 - **Rien sur un ponton ni devant** : ni lampadaire ni panneau sur les
   planches ; ils se posent sur le sable, à côté de l'arrivée.
 

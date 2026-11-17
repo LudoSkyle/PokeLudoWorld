@@ -88,7 +88,7 @@ placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
 # et rien ne se pose sur une piste (Ludovic, 17/11/2026). Ce qui est ici n'est pas déplacé par `settle`.
-FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (3, 42), (48, 1)}
+FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (3, 42), (48, 1), (PIER_END[0] - 1, 45)}
 SURF_ONLY = {(19, 26)}          # des cases qu'on n'atteint qu'en surfant : un objet y attend qu'on sache le faire
 def node(text): nodes.append(text)
 def pinches(c):
@@ -157,7 +157,8 @@ sign('SignLab', (DOORS['lab'][0] + 2, DOORS['lab'][1] + 1), "Laboratoire du Prof
 sign('SignNorth', (ROAD[-1] + 1, GUARD_Y + 7), "Route 1.|Elle quitte l'île par la falaise.")
 sign('SignPier', (PIER_END[0] - 2, 42), "Jetée du sud.|Attention : planches glissantes.")
 for name, wish in {'LampLudo': (7, 13), 'LampNorth': (19, 10), 'LampLibrary': (12, 31),
-                   'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (20, 40), 'LampPier': (PIER_END[0] + 2, 42),
+                   'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (20, 40), 'LampPier': (PIER_END[0] - 1, 45),          # sur la jetée, contre son bord ouest (Ludovic, 17/11/2026) : deux cases restent pour passer
+                  
                    'LampSquareWest': (PLAZA[0], PLAZA[3]), 'LampSquareEast': (PLAZA[2], PLAZA[3])}.items(): lamp(name, wish)
 # une lueur à chaque fenêtre : le milieu des vitres de la maison, mesuré sur son image
 SHEET = village_tiles.cells()

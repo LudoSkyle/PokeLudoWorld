@@ -142,9 +142,12 @@ func test() -> void:
 		if str(n.name).begins_with("Lamp") or str(n.name).begins_with("Sign"):
 			posts += 1
 			var c := Vector2i(floori(n.position.x / 16.0), floori(n.position.y / 16.0))
-			if is_sea(c) or on_deck(c) or is_free(c):
+			if str(n.name) == "LampPier":          # celui-la est sur la jetee, contre son bord : on passe a cote
+				if not on_deck(c) or is_free(c) or not is_free(c + Vector2i.RIGHT) or not is_free(c + Vector2i(2, 0)):
+					on_land = false
+			elif is_sea(c) or on_deck(c) or is_free(c):
 				on_land = false
-	check("neuf lampadaires et cinq panneaux, pleins, sur la terre ferme", posts == 14 and on_land, "%d poteaux" % posts)
+	check("neuf lampadaires et cinq panneaux, pleins : sur la terre ferme, sauf celui de la jetee", posts == 14 and on_land, "%d poteaux" % posts)
 	var props := layer("World/Props")
 	var benches := 0
 	for c in props.get_used_cells():
