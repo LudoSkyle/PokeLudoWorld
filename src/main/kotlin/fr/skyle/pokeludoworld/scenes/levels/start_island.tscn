@@ -25,7 +25,8 @@ metadata/location = "Bourg-Ludo"
 metadata/banner = "wood"
 metadata/music = "new_bark_town"
 metadata/daylight = true
-metadata/encounter_rate = 10
+metadata/encounter_rate = 3
+metadata/encounter_rate_run = 5
 metadata/wild = "mulotin:2-4*50 | piafeuille:2-5*35 | chenibulle:3*15"
 metadata/on_leave = "bell_hung > vigil_over"
 
@@ -620,29 +621,41 @@ forbidden_flag = "bell_hung"
 
 [node name="Readables" type="Node2D" parent="."]
 
-[node name="RoadEnd0" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord0" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(456, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud0"
+entry_direction = Vector2(0, 1)
 
-[node name="RoadEnd1" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord1" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(472, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud0"
+entry_direction = Vector2(0, 1)
 
-[node name="RoadEnd2" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord2" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(488, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud1"
+entry_direction = Vector2(0, 1)
 
-[node name="RoadEnd3" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord3" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(504, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud1"
+entry_direction = Vector2(0, 1)
 
-[node name="RoadEnd4" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord4" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(520, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud2"
+entry_direction = Vector2(0, 1)
 
-[node name="RoadEnd5" parent="Readables" instance=ExtResource("9_readable")]
+[node name="Nord5" parent="Doors" instance=ExtResource("2_door")]
 position = Vector2(536, 8)
-text = "La route du nord s'enfonce dans la montagne.|Le chemin n'est pas encore tracé au-delà."
+target_scene = "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/north_route.tscn"
+target_door = "Sud2"
+entry_direction = Vector2(0, 1)
 
 [node name="Bell" parent="Readables" instance=ExtResource("9_readable")]
 position = Vector2(312, 408)

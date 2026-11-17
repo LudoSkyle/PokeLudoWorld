@@ -878,3 +878,75 @@ msgstr "Weather: harsh sunlight"
 
 msgid "Météo : brouillard"
 msgstr "Weather: fog"
+
+msgid "Route du nord"
+msgstr "North Road"
+
+msgid "Au sud : Bourg-Ludo."
+msgstr "South: Bourg-Ludo."
+
+
+
+msgid "La montagne est droit devant."
+msgstr "The mountain is straight ahead."
+
+msgid "Vous trouvez un Antidote !"
+msgstr "You found an Antidote!"
+
+msgid "Vous rangez l'Antidote dans la poche Objets."
+msgstr "You put the Antidote in the Items pocket."
+
+msgid "Vous trouvez une Super Potion !"
+msgstr "You found a Super Potion!"
+
+msgid "Vous rangez la Super Potion dans la poche Objets."
+msgstr "You put the Super Potion in the Items pocket."
+
+
+
+
+
+msgid "D'ici, on voit la rivière se séparer en trois."
+msgstr "From here, you can see the river split in three."
+
+msgid "Par temps clair, on devine même le toit du laboratoire."
+msgstr "On a clear day, you can even make out the lab's roof."
+
+msgid "La route continue vers la montagne."
+msgstr "The road goes on towards the mountain."
+
+msgid "Cet arbre semble pouvoir être coupé !"
+msgstr "This tree looks like it can be cut down!"
+
+msgid "Ce rebord de roche ne se remonte pas."
+msgstr "You can't climb back up this rocky ledge."
+
+msgid "Pour aller au nord, il faut faire le tour par les hautes herbes."
+msgstr "To head north, you have to go around through the tall grass."
+
+msgid "Les Pokémon de la route sont plus vifs que ceux de l'île."
+msgstr "The Pokémon on the road are livelier than the island's."
+
+msgid "J'en ai vu un filer entre mes jambes !"
+msgstr "I saw one dart right between my legs!"
+
+msgid "Route de l'est."
+msgstr "East Road."
+
+msgid "Le chemin n'est pas encore tracé."
+msgstr "The path isn't laid out yet."
+
+msgid "La rivière a creusé son lit bien en dessous de nous."
+msgstr "The river has dug its bed far below us."
+
+msgid "Aucun sentier n'y descend : il faut prendre les ponts."
+msgstr "No trail goes down there: you have to take the bridges."
+
+msgid "D'ici, on voit les poissons remonter le courant."
+msgstr "From here, you can watch the fish swim upstream."
+
+msgid "Dommage qu'on ne puisse pas descendre jusqu'à l'eau."
+msgstr "Too bad there's no way down to the water."
+
+msgid "La route continue vers l'est."
+msgstr "The road goes on to the east."

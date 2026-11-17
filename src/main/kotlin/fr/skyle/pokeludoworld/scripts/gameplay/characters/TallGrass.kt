@@ -24,7 +24,9 @@ import godot.core.Vector2i
  *
  * Ce nœud, enfant du personnage, fait deux choses : il crée le calque de
  * devant s'il manque, et il fait **bruisser** la case où le personnage vient
- * d'entrer — la touffe s'écarte puis se referme, sur place.
+ * d'entrer — la touffe ploie puis se redresse, sur place. Comment elle ploie
+ * est l'affaire de la planche : celle de l'atlas s'écarte, celle de la route
+ * du nord se tasse et s'éclaircit.
  */
 @Script
 class TallGrass : Node() {
@@ -93,9 +95,10 @@ class TallGrass : Node() {
 	private fun show(cell: Vector2i, state: Int) {
 		val layer = grass ?: return
 		// La case a pu être retirée entre-temps : on ne repose pas d'herbe là où il n'y en a plus.
-		if (layer.getCellSourceId(cell) == -1) return
-		layer.setCell(cell, WHOLE, Vector2i(state, 0))
-		front?.setCell(cell, BOTTOM, Vector2i(state, 0))
+		val whole = layer.getCellSourceId(cell)
+		if (whole == -1) return
+		layer.setCell(cell, whole, Vector2i(state, 0))
+		front?.setCell(cell, frontOf(whole), Vector2i(state, 0))
 	}
 
 	/** Trouve les deux calques d'herbe de la carte où se trouve le personnage. */
@@ -138,14 +141,14 @@ class TallGrass : Node() {
 		val cells = layer.getUsedCells()
 		for (index in 0 until cells.size) {
 			val cell = cells[index]
-			bottoms.setCell(cell, BOTTOM, Vector2i(layer.getCellAtlasCoords(cell).x, 0))
+			bottoms.setCell(cell, frontOf(layer.getCellSourceId(cell)), Vector2i(layer.getCellAtlasCoords(cell).x, 0))
 		}
 		return bottoms
 	}
 
 	@Register
 	override fun _exitTree() {
-		// Une herbe ne reste pas écartée derrière un personnage qui disparaît.
+		// Une herbe ne reste pas ployée derrière un personnage qui disparaît.
 		if (grass?.isInsideTree() == true) rustles.forEach { show(it.cell, STANDING) }
 		rustles.clear()
 		searchedIn = null
@@ -159,11 +162,18 @@ class TallGrass : Node() {
 		private const val GRASS = "Background/Grass"
 		private const val FRONT = "GrassFront"
 
-		/** Sources du TileSet : la touffe entière, et sa moitié basse. */
-		private const val WHOLE = 5
-		private const val BOTTOM = 9
+		/**
+		 * Sources du TileSet, par paires : la touffe entière, et sa moitié basse.
+		 * Chaque planche qui a ses hautes herbes a les siennes — celles de
+		 * l'atlas, celles de la route du nord — rangées de la même façon : les
+		 * trois états aux colonnes 6, 7 et 8 de la rangée 0.
+		 */
+		private val FRONTS = mapOf(5 to 9, 12 to 13)
 
-		/** Les trois états de la touffe, colonnes de la rangée 0 : dressée, qui s'écarte, écartée. */
+		/** La source de la moitié basse d'une touffe de la source [whole]. */
+		private fun frontOf(whole: Int): Int = FRONTS[whole] ?: FRONTS.getValue(5)
+
+		/** Les trois états de la touffe, colonnes de la rangée 0 : dressée, qui ploie, ployée. */
 		private const val STANDING = 6
 		private val STATES = listOf(7, 8, 8, 7)
 	}

@@ -56,7 +56,7 @@ func test() -> void:
 	var props := layer("World/Props")
 	check("la carte fait 62 cases sur 49", ground.get_used_rect() == Rect2i(0, 0, W, H), str(ground.get_used_rect()))
 	check("on demarre devant la porte de Ludo", cell() == Vector2i(8, 9), str(cell()))
-	check("la carte donne sa chance de rencontre et sa table", int(level().get_meta("encounter_rate", 0)) == 10 and str(level().get_meta("wild", "")).contains("mulotin"))
+	check("la carte donne sa chance de rencontre et sa table", int(level().get_meta("encounter_rate", 0)) == 3 and int(level().get_meta("encounter_rate_run", 0)) == 5 and str(level().get_meta("wild", "")).contains("mulotin"))
 	# Ce qui bloque.
 	check("la mer bloque", not is_free(Vector2i(24, 14)) and not is_free(Vector2i(38, 14)) and not is_free(Vector2i(48, 24)) and not is_free(Vector2i(10, 34)))
 	check("le flanc et le bas d'un plateau bloquent", not is_free(Vector2i(12, 12)) and not is_free(Vector2i(6, 9)) and not is_free(Vector2i(23, 22)) and not is_free(Vector2i(43, 36)))
@@ -193,10 +193,10 @@ func test() -> void:
 	for c in walked:
 		if c.x < 4 or c.x >= W - 4 or c.y >= H - 3:
 			in_margin += 1
-		if c.x == 0 or c.x == W - 1 or c.y == 0 or c.y == H - 1:
+		if (c.x == 0 or c.x == W - 1 or c.y == 0 or c.y == H - 1) and not (c.y == 0 and c.x >= 28 and c.x <= 33):   # les six cases de la trouee du nord menent a la route
 			on_edge += 1
 	check("a pied, aucune case de la marge n'est atteignable (4 colonnes, 3 rangees en bas)", in_margin == 0, "%d cases" % in_margin)
-	check("ni aucune case du bord de la carte", on_edge == 0, "%d cases" % on_edge)
+	check("ni aucune case du bord de la carte, hors de la trouee du nord", on_edge == 0, "%d cases" % on_edge)
 	var swum := reach(from, true)
 	var escaped := 0
 	for c in swum:
