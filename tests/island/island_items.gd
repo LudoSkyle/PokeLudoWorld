@@ -32,9 +32,14 @@ func test() -> void:
 	check("la Potion est dans le sac", bag_rows().has("Potion x1"), str(bag_rows()))
 	await tap("menu")
 	await tap("menu")
-	await place(Vector2i(4, 45))
+	await place(Vector2i(3, 41))
 	await pick("la Poke Ball", "Vous trouvez une Poké Ball !", "Vous rangez la Poké Ball dans la poche Poké Balls.", "ItemBall", "found_island_ball")
 	await place(Vector2i(48, 2))
 	await pick("l'Eau Fraiche", "Vous trouvez une Eau Fraîche !", "Vous rangez l'Eau Fraîche dans la poche Objets.", "ItemWater", "found_island_water", "ui_up", Vector2i.UP)
+	# Le Rappel attend dans le creux du flanc ouest de la place : du sable que seule l'eau touche. On n'y vient pas a pied.
+	var revive := level().get_node_or_null("World/ItemRevive")
+	var nook := Vector2i(19, 26)
+	check("un Rappel attend dans le creux, hors d'atteinte a pied", revive != null and Vector2i(floori(revive.position.x / 16.0), floori(revive.position.y / 16.0)) == nook
+		and find_path(cell(), nook + Vector2i.LEFT).is_empty() and find_path(cell(), nook + Vector2i.UP).is_empty() and find_path(cell(), nook + Vector2i.DOWN).is_empty())
 	await reload_level()
 	check("apres rechargement, elles ne reviennent pas", level().get_node_or_null("World/ItemPotion") == null and level().get_node_or_null("World/ItemBall") == null)

@@ -88,7 +88,8 @@ placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
 # et rien ne se pose sur une piste (Ludovic, 17/11/2026). Ce qui est ici n'est pas déplacé par `settle`.
-FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (4, 46), (48, 1)}
+FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (3, 42), (48, 1)}
+SURF_ONLY = {(19, 26)}          # des cases qu'on n'atteint qu'en surfant : un objet y attend qu'on sache le faire
 def node(text): nodes.append(text)
 def pinches(c):
     ring = [(c[0] + i, c[1] + j) for i, j in ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0))]
@@ -101,14 +102,15 @@ def pinches(c):
     return len({find(i) for i in range(8) if open_[i] and i % 2 == 1}) > 1
 def fix(name, c, solid=True):
     """Pose quelque chose sur une case choisie à la main (par Ludovic, sur capture) : on ne la déplace pas, on prévient si elle ne convient pas."""
-    if c in SOLID or c not in REACH0: print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
+    if c in SOLID or (c not in REACH0 and c not in SURF_ONLY) or (c in SURF_ONLY and (c not in BEACH or not any((c[0] + i, c[1] + j) in lay.SEA for i, j in lay.NEIGH4))):
+        print('  !! %s : la case %s est prise ou hors d atteinte' % (name, c))
     if c in lay.TRAIL: print('  !! %s : la case %s est sur une piste' % (name, c))
     placed[name] = c
     if solid: SOLID.add(c)
     return c
 def settle(name, wish, solid=True, apart=2, among=None, tight=False):
     """La case libre la plus proche de `wish` où poser quelque chose sans gêner : ni devant une porte ou un escalier, ni sur un ponton ou une piste, ni dans un passage étroit, ni derrière un arbre."""
-    if wish in FIXED: return fix(name, wish, solid)
+    if wish in FIXED or wish in SURF_ONLY: return fix(name, wish, solid)
     for q in sorted(((wish[0] + i, wish[1] + j) for i in range(-6, 7) for j in range(-6, 7)), key=lambda q: (abs(q[0] - wish[0]) + abs(q[1] - wish[1]), q)):
         if q in (among or REACH0) and q not in SOLID and q not in CLEAR and q not in lay.WOODS and q not in lay.HOUSE_AREA and q not in lay.TALL and q not in lay.TRAIL and (q in lay.PAVED or tight or not pinches(q)) \
                 and all(abs(q[0] - o[0]) + abs(q[1] - o[1]) >= apart for o in placed.values()):
@@ -246,8 +248,9 @@ shape = SubResource("RectangleShape2D_statue")
 
 ITEMS = {}
 FOUND = {'ItemPotion': ('potion', "Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets.", 'found_island_potion', (46, 46)),
-         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (4, 46)),
-         'ItemWater': ('fresh_water', "Vous trouvez une Eau Fraîche !|Vous rangez l'Eau Fraîche dans la poche Objets.", 'found_island_water', (48, 1))}          # derrière le laboratoire
+         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (3, 42)),          # au fond de l'anse de l'ouest
+         'ItemWater': ('fresh_water', "Vous trouvez une Eau Fraîche !|Vous rangez l'Eau Fraîche dans la poche Objets.", 'found_island_water', (48, 1)),
+         'ItemRevive': ('revive', "Vous trouvez un Rappel !|Vous rangez le Rappel dans la poche Objets.", 'found_island_revive', (19, 26))}          # dans le creux du flanc ouest de la place : on n'y vient qu'en surfant          # derrière le laboratoire
 for name, (item, text, flag, wish) in FOUND.items():
     c = ITEMS[name] = settle(name, wish, tight=name == 'ItemWater')          # celui-là est au fond d'un couloir sans issue : il ne coupe le passage de personne
     node('''[node name="%s" parent="World" instance=ExtResource("9_readable")]
@@ -316,7 +319,7 @@ npc('GuardEast', (ROAD[-1], GUARD_Y), 'dppt_worker', CLOSED, facing=(0, 1), fixe
 npc('Runner', LOOP[0], 'rse_triathlete_m', "Pff... pff... Je fais le tour de la place tous les matins.|Ne reste pas au milieu du chemin, je perds mon rythme.",
     facing=(0, 1), movement='patrol', pace=3.0, route=LOOP, **BEFORE)
 npc('Fisher', PIER_END, 'hgss_fisherman', "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au large.", facing=(0, 1), fixed=True, **BEFORE)
-npc('Roland', (LIB_STAIR[0] + 5, LIB_STAIR[1] + 3), 'frlg_ruinmaniac', "Ces eaux, j'y ai plongé vingt ans.|Elles ont encore des choses à dire, je le sens.", display_name='Roland', gender='male', facing=(1, 0),
+npc('Roland', (7, 36), 'frlg_ruinmaniac', "Ces eaux, j'y ai plongé vingt ans.|Elles ont encore des choses à dire, je le sens.", display_name='Roland', gender='male', facing=(1, 0),
     states=["bell_register > @flag:bell_spotted Au bout de la jetée du sud, là où l'eau est profonde...|...il y a quelque chose qui accroche la lumière.|Moi, je n'y plonge plus. Trop froid, trop de courant.",
             "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe au-dessus."], **BEFORE)
 
@@ -331,7 +334,7 @@ npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "Le sable de la crique est
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
 npc('ShellKid', (29, 13), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
-npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1), fixed=True,
+npc('Sailor', (45, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1), fixed=True,
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])
 # le gamin tourne autour de ses herbes : il y entre, il en sort — un rectangle qui les déborde de deux cases
 npc('Youngster', (48, 13), 'hgss_youngster', "Le Professeur dit que des Pokémon vivent dans ces herbes.|Sans le mien, je n'ose pas y mettre un pied.", facing=(1, 0),
@@ -405,7 +408,7 @@ for phase, flags in PHASES.items():
     there = {c for n, c, req, forb in NPCS if present(req, forb, flags)}
     R = lay.reach_from(lay.START, (SOLID | there) - {lay.START})
     missing = [k for k, c in targets.items() if c not in R and c not in there]
-    missing += ['à côté de ' + k for k, c in list(placed.items()) + [(n, c) for n, c, req, forb in NPCS if present(req, forb, flags)] if not k.endswith('+') and c in (SOLID | there) and not beside(c, R)]
+    missing += ['à côté de ' + k for k, c in list(placed.items()) + [(n, c) for n, c, req, forb in NPCS if present(req, forb, flags)] if not k.endswith('+') and c in (SOLID | there) and c not in SURF_ONLY and not beside(c, R)]
     crowd = sum(1 for c in there if PLAZA[0] - 2 <= c[0] <= PLAZA[2] + 2 and PLAZA[1] - 2 <= c[1] <= PLAZA[3] + 2)
     print('%-8s : %d personnages immobiles, %d sur la place, %d cases accessibles%s' % (phase, len(there), crowd, len(R), (' — INACCESSIBLE : %s' % missing) if missing else ''))
     bad = [c for c in LOOP_CELLS if c in SOLID or c in there]

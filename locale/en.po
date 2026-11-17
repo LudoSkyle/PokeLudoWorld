@@ -896,6 +896,12 @@ msgstr "You found an Antidote!"
 msgid "Vous rangez l'Antidote dans la poche Objets."
 msgstr "You put the Antidote in the Items pocket."
 
+msgid "Vous trouvez un Rappel !"
+msgstr "You found a Revive!"
+
+msgid "Vous rangez le Rappel dans la poche Objets."
+msgstr "You put the Revive in the Items pocket."
+
 msgid "Vous trouvez une Super Potion !"
 msgstr "You found a Super Potion!"
 

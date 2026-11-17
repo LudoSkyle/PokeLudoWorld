@@ -173,10 +173,13 @@ perdu ses deux coins du bas, le plateau du sud-est a reculé d'une colonne (le
 couloir de la plage de l'est fait trois cases), et rien n'y est planté
 (`layout.NO_PALMS`). **La mare de l'est rejoint la mer** et n'est plus un
 carré. **Le bord du haut d'un plateau se foule**, sur toute sa longueur
-(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. **Aucun bord n'est une longue droite ni une diagonale pure** : des crans de
+(`layout.OPEN_EDGE`) : le générateur refuse une carte où il est fermé. **La plage de l'ouest est une anse fermée**, au tracé irrégulier, qui ne touche
+pas la mer (`geography.WEST_COVE`) : large sous l'escalier, étranglée par un
+cap, finie en pointe. **Aucun bord n'est une longue droite ni une diagonale pure** : des crans de
 longueurs inégales, une anse, une encoche — sur la place, la crique et les
 plateaux du nord-est et du sud-est (fin de `geography.RETOUCH`). **Dans la
-mer, un rocher sur trois est un gros** (`riverrock`) : des amas, comme sur
+mer, un rocher sur trois est un gros** (`riverrock`, sauf à l'est, où Ludovic
+préfère les petits) : des amas, comme sur
 l'exemple, pas un semis de cailloux. Le jardin du sud-ouest et la bibliothèque, reliés
 par une piste, ne se rejoignent que par l'escalier de côté du jardin.
 
@@ -208,7 +211,7 @@ d'un Pokémon volant bleuit.
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
 | escaliers (colonne de gauche, rangée du haut) | (14,13), (30,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; près du labo (49–52, 12–15) | |
-| objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (4,41), sur la plage de l'ouest ; Eau Fraîche en (49,5), au fond du couloir à droite du laboratoire | une Poké Ball posée au sol ([quests.md](quests.md)) |
+| objets à ramasser | Potion en (47,46), au bout de la presqu'île ; Poké Ball en (3,42), au fond de l'anse de l'ouest ; Eau Fraîche en (48,1), derrière le laboratoire ; **Rappel en (19,26)**, dans le creux du flanc ouest de la place — du sable que seule l'eau touche : on n'y vient qu'en surfant (`generate.SURF_ONLY`) | `Readable`, `kind = "item"` |
 
 Calques de fond, dans l'ordre : `Ground`, `Shore` (le bord du sable, sur
 l'eau), `Cliffs1` (la falaise des plateaux),

@@ -133,7 +133,7 @@ RETOUCH = [
     (BEACH_, (14, 14, 18, 16)), (PLATEAU_, (19, 12, 19, 13)),                          # du plateau du nord-ouest à la crique
     (PLATEAU_, (35, 9, 38, 14)),                                                       # le flanc ouest du plateau du nord-est, tout droit : un escalier y monte de la crique
     (PLATEAU_, (20, 18, 34, 31)),                                                      # la place : un plateau d'un seul bloc, et son bord du sud
-    (BEACH_, (2, 34, 7, 37)), (BEACH_, (2, 38, 8, 45)),                                # de la bibliothèque à la plage de l'ouest, assez large pour rester une plage une fois la roche posée
+    (BEACH_, (2, 34, 7, 37)),                                                          # de la bibliothèque à la plage de l'ouest (sa forme : WEST_COVE, plus bas)
     (PLATEAU_, (35, 36, 35, 37)), (BEACH_, (36, 38, 40, 40)),                          # du plateau du sud-est à la plage du sud
     # --- de quoi poser les maisons et faire arriver les pontons
     (PLATEAU_, (39, 27, 45, 34)), (PLATEAU_, (44, 26, 54, 27)), (PLATEAU_, (9, 36, 21, 41)), (PLATEAU_, (0, 24, 7, 29)),
@@ -157,6 +157,16 @@ for level, r in RETOUCH:
     cells = rect(*r)
     SEA -= cells; BEACH -= cells; PLATEAU -= cells
     {SEA_: SEA, BEACH_: BEACH, PLATEAU_: PLATEAU}[level].update(cells)
+# La plage de l'ouest est une anse fermée, au tracé irrégulier, comme sur l'exemple : large sous l'escalier, étranglée
+# par un cap à l'ouest, puis une poche qui finit en pointe. Elle ne touche pas la mer (Ludovic, 17/11/2026 : « je
+# préférais l'ancienne approche » — un rectangle ouvert sur l'eau l'avait remplacée). Rangée : (première, dernière colonne)
+# de son sable ; autour, une case de plage que l'anneau de roche prendra, et le plateau au-delà.
+WEST_COVE = {35: (2, 7), 36: (2, 7), 37: (2, 7), 38: (4, 7), 39: (5, 7), 40: (5, 6), 41: (4, 6), 42: (3, 6), 43: (4, 5)}
+_sand = {(x, y) for y, (a, b) in WEST_COVE.items() for x in range(a, b + 1)}
+_foot = {(c[0] + i, c[1] + j) for c in _sand for i in (-1, 0, 1) for j in (-1, 0, 1) if inb((c[0] + i, c[1] + j))}
+for c in rect(0, 34, 9, 46):
+    if c in _foot: SEA.discard(c); PLATEAU.discard(c); BEACH.add(c)
+    elif c[1] >= 38: SEA.discard(c); BEACH.discard(c); PLATEAU.add(c)
 
 
 # ============================================================ des formes que les tuiles savent dessiner

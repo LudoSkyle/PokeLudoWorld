@@ -222,7 +222,6 @@ for c in sorted(MOUNTAIN):
 BARRIERS = {
     "l'ouest": [(4, 19), (3, 22)],
     "l'est": [(54, 17), (53, 18), (54, 21), (53, 22), (54, 23)],
-    'la plage du sud-ouest': [(1, 46), (1, 47), (2, 48), (3, 49), (6, 49), (7, 48), (9, 48)],
     "l'ouest de la jetée": [(25, 46), (27, 49), (28, 48), (29, 49), (30, 48), (31, 49)],
     "l'est de la jetée": [(35, 48), (36, 49), (37, 48), (38, 49)],
 }
@@ -235,12 +234,13 @@ for where, more in BARRIERS.items():
         if c not in SEA or c in DECK: WARN.append(('rocher', where, 'pas dans l eau : %s' % (c,)))
         elif c not in ROCKS: ROCKS.append(c)
 for n, c in enumerate(ROCKS):
-    big = n % 3 == 0 and all(q in SEA and q not in SAND and q not in ROCKS and q not in DECK for q in [(c[0] + 1, c[1])]) and c not in SAND          # un gros de temps en temps, comme ceux de l'exemple : des amas, pas un semis de cailloux
+    big = n % 3 == 0 and not (c[0] >= 50 and c[1] < 30) and all(          # (pas à l'est : Ludovic y préfère ses petits rochers)
+        q in SEA and q not in SAND and q not in ROCKS and q not in DECK for q in [(c[0] + 1, c[1])]) and c not in SAND          # un gros de temps en temps, comme ceux de l'exemple : des amas, pas un semis de cailloux
     sprites.append(('riverrock' if big else ('pebbleA', 'spire', 'pebbleB')[n % 3], c[0], c[1]))
 # --- les palmiers des plages : là où l'exemple pose quelque chose sur le sable, espacés, jamais dans un passage
-palms = []
+palms = [(36, 24)]          # celui-là, Ludovic l'a placé : au pied de la falaise, à l'entrée du couloir de l'est (17/11/2026)
 COVE = rect(15, 9, 34, 18)          # la crique du nord : agrandie pour être une plage, pas une palmeraie — deux palmiers, pas plus (Ludovic, 17/11/2026)
-NO_PALMS = rect(36, 22, 38, 33) | rect(33, 30, 35, 33) | rect(19, 29, 21, 34)          # les passages entre deux plages : on vient de les élargir, on n'y plante rien
+NO_PALMS = rect(36, 22, 38, 33) | rect(38, 20, 44, 25) | rect(33, 30, 35, 33) | rect(19, 29, 21, 34)          # les passages entre deux plages : on vient de les élargir, on n'y plante rien
 def palm_ok(c): return c not in NO_PALMS and (c not in COVE or sum(1 for p in palms if p in COVE) < 2)
 FURNISHED = rect(20, 12, 34, 17) | rect(22, 33, 31, 38) | rect(5, 34, 9, 38) | rect(29, 39, 37, 43)          # parasols et serviettes, Roland, le pied de la jetée : generate.py les pose là
 for c in sorted(BEACH, key=lambda c: (c[1], c[0])):
