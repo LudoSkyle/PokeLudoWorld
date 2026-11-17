@@ -139,8 +139,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
 BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, TOP - 2))
-parasol('ParasolCove', (22, 15), 1); towel('TowelCove', (25, 15), 1)          # la crique est grande : on l'occupe d'un bout à l'autre, pas dans un coin (Ludovic, 17/11/2026)
-parasol('ParasolCoveEast', (29, 14), 0); towel('TowelCoveEast', (31, 15), 0)
+parasol('ParasolCove', (22, 15), 1); towel('TowelCove', (25, 15), 1)          # la crique est grande : on l'occupe au milieu, pas dans un coin — mais sans la tasser : un parasol, une serviette, deux baigneurs (Ludovic, 17/11/2026)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
 # ------------------------------------------------------------------ panneaux, lampadaires, lueurs, objets
@@ -330,7 +329,7 @@ npc('Sunbather', TOWELS['TowelSouth'], 'hgss_swimmer_f', "Le sable est chaud, l'
     states=["bell_hung > J'ai entendu la cloche depuis ma serviette.|Je n'ai pas bougé pour autant."])
 npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "Le sable de la crique est le plus fin de l'île.|Et les falaises coupent le vent : on y est bien.", facing=(0, 1),
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
-npc('ShellKid', (27, 12), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
+npc('ShellKid', (29, 13), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
 npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1), fixed=True,
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])

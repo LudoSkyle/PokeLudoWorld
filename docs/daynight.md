@@ -67,7 +67,9 @@ une case, solide comme un panneau, avec sa lumière (un `PointLight2D`).
   `(0, 4)` du centre de la case.
 - Le halo est un dégradé fabriqué dans la scène, sans asset. Le dessin du
   lampadaire est découpé dans `environments.png`, qui en a une vingtaine de
-  modèles côte à côte (rangées 17-19, à partir de la colonne 71).
+  modèles côte à côte (rangées 17-19, à partir de la colonne 71), et sorti à
+  part dans `assets/levels/street_lamp.png` par `tools/street_lamp.py`, qui
+  éclaircit d'un cran ses deux teintes les plus sombres.
 
 **En poser un** : instancier `street_lamp.tscn` sous `World`, sur un centre de
 case. Rien d'autre à régler. `brightness` change sa force.

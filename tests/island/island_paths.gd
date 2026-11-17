@@ -63,13 +63,13 @@ func test() -> void:
 	check("on marche sur le sable de la plage", is_free(Vector2i(28, 35)) and is_free(Vector2i(17, 16)) and is_free(Vector2i(5, 43)) and ground.get_cell_atlas_coords(Vector2i(28, 35)) == Vector2i(1, 1))
 	check("on marche sur l'herbe des plateaux", is_free(Vector2i(28, 29)) and is_free(Vector2i(8, 15)) and is_free(Vector2i(45, 14)))
 	var cliffs := layer("Background/Cliffs1")
-	check("la falaise d'un plateau est pleine", not is_free(Vector2i(20, 25)) and not is_free(Vector2i(20, 27)) and not is_free(Vector2i(22, 31)) and not is_free(Vector2i(19, 25)) and not is_free(Vector2i(22, 32)))
+	check("la falaise d'un plateau est pleine", not is_free(Vector2i(34, 25)) and not is_free(Vector2i(34, 27)) and not is_free(Vector2i(25, 31)) and not is_free(Vector2i(35, 25)) and not is_free(Vector2i(25, 32)))
 	# Deux etages, comme sur la Route 1 : l'anneau d'herbe (route.png, colonnes 5 a 9 des rangees 3 a 5), cerne de l'anneau de roche (colonnes 0 a 4).
-	var grass_ring := cliffs.get_cell_atlas_coords(Vector2i(20, 25))
-	var rock_ring := cliffs.get_cell_atlas_coords(Vector2i(19, 25))
-	check("elle a deux etages, l'herbe puis la roche : deux niveaux au-dessus de l'eau, comme la Route 1", cliffs.get_cell_source_id(Vector2i(20, 25)) == ROUTE and grass_ring.y >= 3 and grass_ring.y <= 5 and grass_ring.x >= 5 and grass_ring.x <= 9
-		and rock_ring.y >= 3 and rock_ring.y <= 5 and rock_ring.x <= 4 and ground.get_cell_atlas_coords(Vector2i(20, 25)) == Vector2i(1, 4), "%s %s" % [grass_ring, rock_ring])
-	check("on ne passe pas de la plage au plateau par le pied de sa falaise", is_free(Vector2i(22, 33)) and not can_step(Vector2i(22, 33), Vector2i(22, 32)))
+	var grass_ring := cliffs.get_cell_atlas_coords(Vector2i(34, 25))
+	var rock_ring := cliffs.get_cell_atlas_coords(Vector2i(35, 25))
+	check("elle a deux etages, l'herbe puis la roche : deux niveaux au-dessus de l'eau, comme la Route 1", cliffs.get_cell_source_id(Vector2i(34, 25)) == ROUTE and grass_ring.y >= 3 and grass_ring.y <= 5 and grass_ring.x >= 5 and grass_ring.x <= 9
+		and rock_ring.y >= 3 and rock_ring.y <= 5 and rock_ring.x <= 4 and ground.get_cell_atlas_coords(Vector2i(34, 25)) == Vector2i(1, 4), "%s %s" % [grass_ring, rock_ring])
+	check("on ne passe pas de la plage au plateau par le pied de sa falaise", is_free(Vector2i(36, 25)) and not can_step(Vector2i(36, 25), Vector2i(35, 25)))
 
 	# Les cinq escaliers : trois marches entre deux poteaux, face au sud.
 	var stairs := {"du nord-ouest": Vector2i(14, 13), "du nord-est": Vector2i(39, 18), "de la place": Vector2i(26, 31), "de la bibliotheque": Vector2i(2, 33), "du sud-est": Vector2i(36, 37)}
@@ -164,7 +164,7 @@ func test() -> void:
 			on_path.append("mobilier en %s" % c)
 	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
 	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 15)
-		and cell_of("ShellKid") == Vector2i(27, 12) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
+		and cell_of("ShellKid") == Vector2i(29, 13) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
 	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 15)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
 	# Tout se rejoint a pied, depuis le depart.
@@ -194,8 +194,9 @@ func test() -> void:
 	var stair_of_plaza := [Vector2i(27, 31), Vector2i(28, 31), Vector2i(29, 31), Vector2i(27, 32), Vector2i(28, 32), Vector2i(29, 32)]
 	# Le bord du haut d'un plateau est de l'herbe : on y marche, sur toute sa longueur. C'est le gradin de roche, derriere, qui arrete.
 	var top_ok := true
-	for x in range(22, 34):
-		top_ok = top_ok and is_free(Vector2i(x, 18)) and can_step(Vector2i(x, 19), Vector2i(x, 18)) and not is_free(Vector2i(x, 17))
+	for x in range(22, 34):          # (une encoche l'entame, colonnes 24 a 26 : la son bord du haut est une rangee plus bas)
+		var y := 19 if x >= 23 and x <= 27 else 18
+		top_ok = top_ok and is_free(Vector2i(x, y)) and can_step(Vector2i(x, y + 1), Vector2i(x, y)) and (not is_free(Vector2i(x, y - 1)) or x == 23 or x == 27)
 	check("on monte sur la rangee du haut de la place, d'un bout a l'autre, sans en sortir", top_ok)
 	check("on marche aussi sur le bord du haut des autres plateaux", is_free(Vector2i(45, 26)) and is_free(Vector2i(15, 36)) and not is_free(Vector2i(45, 25)))
 	check("la place et le plateau du laboratoire ne font qu'un : on passe de l'une a l'autre sans escalier", reach(Vector2i(28, 29), decks + stair_of_plaza).has(at("Doors/Laboratoire") + Vector2i.DOWN))

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/gameplay/levels/StreetLamp.kt" id="1_script"]
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/environments.png" id="2_environments"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/street_lamp.png" id="2_lamp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lamp"]
 size = Vector2(12, 12)
@@ -24,9 +24,7 @@ script = ExtResource("1_script")
 
 [node name="Sprite" type="Sprite2D" parent="."]
 position = Vector2(0, -10)
-texture = ExtResource("2_environments")
-region_enabled = true
-region_rect = Rect2(1314, 279, 14, 36)
+texture = ExtResource("2_lamp")
 
 [node name="Collider" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_lamp")
