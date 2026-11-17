@@ -141,10 +141,23 @@ class PokedexDebug : CanvasLayer() {
 	/** L'image de face du sprite de marche : la troisième de la colonne de gauche de son bloc. */
 	private fun walkerOf(entry: DexEntry): Texture2D? {
 		if (!entry.hasOverworld) return null
-		val sheet = ResourceLoader.load(NationalDex.OVERWORLD_DIR + entry.id + ".png") as? Texture2D ?: return null
+		// Son propre fichier d'abord (les gros Pokémon, ceux du décor) : deux colonnes de quatre images carrées.
+		val own = NationalDex.OVERWORLD_DIR + entry.id + ".png"
+		if (ResourceLoader.exists(own)) {
+			val sheet = ResourceLoader.load(own) as? Texture2D ?: return null
+			val side = sheet.getWidth() / 2.0
+			return AtlasTexture().apply {
+				atlas = sheet
+				region = Rect2(0.0, side * 2, side, side)
+			}
+		}
+		// Sinon sa case de la planche commune.
+		val sheet = ResourceLoader.load(NationalDex.OVERWORLD) as? Texture2D ?: return null
+		val column = (entry.number - 1) % NationalDex.ICON_COLUMNS
+		val row = (entry.number - 1) / NationalDex.ICON_COLUMNS
 		return AtlasTexture().apply {
 			atlas = sheet
-			region = Rect2(0.0, 64.0, 32.0, 32.0)
+			region = Rect2(column * 64.0, row * 128.0 + 64.0, 32.0, 32.0)
 		}
 	}
 }

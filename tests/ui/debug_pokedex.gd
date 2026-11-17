@@ -24,9 +24,9 @@ func test() -> void:
 	check("la premiere est Bulbizarre, avec ses deux noms", dex().shown_number() == 1 and text_of("Names") == "Bulbizarre / Bulbasaur", text_of("Names"))
 	check("sa taille, son poids, sa categorie", text_of("Facts").contains("0,7 m") and text_of("Facts").contains("6,9 kg") and text_of("Facts").contains("Pokémon Graine"), text_of("Facts"))
 	check("ses deux descriptions", text_of("French").length() > 40 and text_of("English").length() > 40)
-	check("son icone est la ; son sprite de marche manque, et c'est dit", dex().get_node("Control/Screen/Icon").texture != null and dex().get_node("Control/Screen/Walker").texture == null
-		and text_of("Lacks") == "Manque : sprite", text_of("Lacks"))
-	check("la liste montre quatorze especes, le curseur sur la premiere", text_of("List").split("\n").size() == 14 and text_of("List").begins_with("> 0001 Bulbizarre"), text_of("List").split("\n")[0])
+	check("son icone et son sprite de marche sont la : il ne lui manque rien", dex().get_node("Control/Screen/Icon").texture != null and dex().get_node("Control/Screen/Walker").texture != null
+		and text_of("Lacks") == "", text_of("Lacks"))
+	check("la liste montre quatorze especes, le curseur sur la premiere, sans etoile", text_of("List").split("\n").size() == 14 and text_of("List").split("\n")[0] == "> 0001 Bulbizarre", text_of("List").split("\n")[0])
 	shot("pokedex_debug")
 
 	await tap("ui_down")
@@ -42,7 +42,19 @@ func test() -> void:
 	check("la derniere n'a ni texte francais, ni icone, ni sprite : la vue le dit", text_of("Lacks") == "Manque : texte FR, icône, sprite" and text_of("French").begins_with("("), text_of("Lacks"))
 	check("la liste a suivi : la derniere ligne porte le curseur et l'etoile de ce qui manque", text_of("List").split("\n")[-1] == "> 1025 Pêchaminus *", text_of("List").split("\n")[-1])
 
-	# Une espece qui a tout : Joliflor, dont on a le sprite de marche.
+	# Un gros Pokemon a son propre fichier, pas une case de la planche : Lugia.
+	await tap("ui_down")
+	for i in 24:
+		await tap("ui_right")
+	for i in 8:
+		await tap("ui_down")
+	check("Lugia, gros Pokemon, a son sprite dans son propre fichier", dex().shown_number() == 249 and dex().get_node("Control/Screen/Walker").texture != null and text_of("Lacks") == "", "%d %s" % [dex().shown_number(), text_of("Lacks")])
+	await tap("ui_up")
+	for i in 30:
+		await tap("ui_left")
+	await tap("ui_up")
+
+	# Une espece qui a tout : Joliflor.
 	await tap("ui_down")
 	for i in 18:
 		await tap("ui_right")

@@ -40,8 +40,31 @@ python3 -I tools/pokedex.py <dossier des CSV de PokéAPI> <dossier du kit Pokém
   et rangées dans **une seule planche**, `assets/pokemon/icons.png` — une case
   de 64 × 32 par espèce (ses deux images), 25 espèces par rangée, à la place
   que donne son numéro.
-- **Sprites de marche** : un fichier par espèce dans
-  `assets/pokemon/overworld/` (`tools/pokemon_overworld.py`).
+- **Sprites de marche** : `tools/pokemon_overworld.py` les découpe dans les
+  planches HGSS de `assets/pokemon/sources/` et les range dans **une planche**,
+  `assets/pokemon/overworld.png` — une case de 64 × 128 par espèce (deux
+  colonnes de quatre images de 32 × 32 : dos, dos, face, face ; gauche,
+  gauche, droite, droite), à la place de son numéro. **Un gros Pokémon** n'y
+  tient pas : il a son fichier dans `assets/pokemon/overworld/`, même
+  disposition en 128 × 256 (Steelix, Lugia, Ho-Oh, Wailord, Kyogre, Groudon,
+  Rayquaza, Dialga, Palkia, Regigigas, Giratina, Arceus). Les Pokémon du décor
+  y ont aussi le leur, que lisent les volants.
+
+### Lire une planche HGSS
+
+Les espèces y sont dans l'ordre du Pokédex, un bloc de 64 × 128 chacune, **avec
+des blocs en plus** qu'il faut connaître — `SHEETS`, dans l'outil, les liste :
+
+- la **femelle** d'une espèce (un point rose ; le mâle a un point bleu), ou une
+  **autre forme** (les 27 autres Zarbi, les capes de Cheniti, Motisma…) : le
+  bloc qui suit, à sauter ;
+- un **gros Pokémon** : quatre blocs — dos, face, gauche, droite —, deux images
+  de 64 × 64 par bloc ; sur la planche de la 3ᵉ génération, deux blocs côte à
+  côte, quatre rangées de deux images de 64 × 32.
+
+Les comptes tombent juste (153, 144, 142 et 141 blocs). Pour contrôler une
+découpe : poser l'icône de chaque espèce au-dessus du sprite qu'on lui a
+donné, et regarder — une erreur d'un bloc décale toute la suite.
 
 Côté jeu : `NationalDex.kt` lit le `.tsv` (`NationalDex.all`, `DexEntry`). Ce
 n'est pas le catalogue des espèces qu'on rencontre (`Dex`, dans `Species.kt`,
@@ -56,7 +79,7 @@ espèce par espèce.
 |---|---|---|
 | description en français | 127 espèces, n° 899 à 1025 | PokéAPI n'a pas de texte français pour Hisui ni pour la génération 9 |
 | icône | 376 espèces, n° 650 à 1025 | le kit n'a d'icônes que jusqu'à la génération 5 |
-| sprite de marche | 1017 espèces | seuls les neuf Pokémon du décor sont sortis des planches ; les planches de `sources/` couvrent bien plus, à découper |
+| sprite de marche | 532 espèces, n° 494 à 1025 | les générations 1 à 4 sont découpées. Les planches des générations 5 à 9 (`unova_`, `kalos_`, `alola_`, `galar_`, `paldea_overworld.png`) ont chacune un autre format — cartes arrondies sur fond en damier pour la 5ᵉ — et restent à lire une à une |
 
 Noms (FR et EN), catégories, taille, poids et description anglaise : complets
 pour les 1025.
