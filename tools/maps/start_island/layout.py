@@ -266,30 +266,35 @@ for name, (kind, x, r) in HOUSES.items(): L['Houses'][(x, r)] = (VILLAGE,) + vil
 # des fleurs, clairsemées, sur la pelouse
 WOODS = {c for name, x, r in sprites if name.startswith('tree') for c in rect(x, r - 2, x + 2, r)}
 WOODS |= {c for name, x, r in sprites if name in village_tiles.PLANTS for c in rect(x, r - village_tiles.sizes()[name][1] + 1, x + village_tiles.sizes()[name][0] - 1, r)}          # et sous une palme, un buisson
-# --- les grandes fleurs, que le vent couche (`5:0-7,3-4` : un pied, une cime, on marche dedans) : en massifs de trois, près
-#     de chaque maison et autour de la place. Elles ont leur propre tirage : en ajouter ne déplace rien d'autre.
+# --- les grandes fleurs, que le vent couche (`5:0-7,3-4` : un pied, une cime, on marche dedans) : par deux ou trois, près
+#     de chaque maison et autour de la place, éparses. Elles ont leur propre tirage : en ajouter ne déplace rien d'autre.
 BLOOM = random.Random(11)
 FLOWER_CELLS, beds = set(), []
 lawn = INSIDE - KEEP - taken - MOUNTAIN - WOODS - HOUSE_AREA - rect(9, 13, 14, 16)          # (pas sous le banc de Ludo, que generate.py pose là)
-def bed(c, kind):
-    cells = [(c[0] + i, c[1]) for i in range(3)]
+SCATTER = ([(0, 0), (2, 1)], [(1, 0), (0, 2), (3, 1)], [(0, 1), (2, 0)], [(0, 0), (1, 2)], [(0, 0), (2, 2), (3, 0)], [(0, 0)], [(1, 0), (0, 2)])
+KINDS = (0, 1, 2, 3, 5, 7)
+def bed(c, n):
+    """Deux ou trois grandes fleurs éparses autour de `c` : jamais côte à côte, jamais en rang (Ludovic, 17/11/2026 : « pas en pack en ligne »)."""
+    cells = [(c[0] + i, c[1] + j) for i, j in SCATTER[n % len(SCATTER)]]
     tops = [(x, y - 1) for x, y in cells]
     if any(q not in lawn or q in FLOWER_CELLS or q in L['Props'] for q in cells + tops) or any(abs(c[0] - b[0]) + abs(c[1] - b[1]) < 6 for b in beds): return False
-    for (x, y) in cells: L['Props'][(x, y)] = (5, kind, 4, 0); L['Props'][(x, y - 1)] = (5, kind, 3, 0)
+    for k, (x, y) in enumerate(cells):
+        kind = KINDS[(n + k) % len(KINDS)]
+        L['Props'][(x, y)] = (5, kind, 4, 0); L['Props'][(x, y - 1)] = (5, kind, 3, 0)
     FLOWER_CELLS.update(cells + tops); beds.append(c); return True
-KINDS = (0, 1, 2, 3, 5, 7)
 spots = sorted(lawn); BLOOM.shuffle(spots)
-for c in [c for c in spots if c in rect(20, 18, 34, 31)]:          # trois autour de la place
-    if len(beds) < 3: bed(c, KINDS[len(beds) % len(KINDS)])
-for d in sorted(DOORS.values()):                                   # un près de chaque maison, au plus près de sa porte
+for c in [c for c in spots if c in rect(20, 18, 34, 31)]:          # autour de la place
+    if len(beds) < 3: bed(c, len(beds))
+for d in sorted(DOORS.values()):                                   # près de chaque maison, au plus près de sa porte
     for c in sorted(spots, key=lambda c: (abs(c[0] - d[0]) + abs(c[1] - d[1]), c)):
-        if abs(c[0] - d[0]) + abs(c[1] - d[1]) > 9 or bed(c, KINDS[len(beds) % len(KINDS)]): break
+        if abs(c[0] - d[0]) + abs(c[1] - d[1]) > 9 or bed(c, len(beds)): break
 for c in spots:                                                    # et d'autres çà et là
-    if len(beds) < 14: bed(c, KINDS[len(beds) % len(KINDS)])
+    if len(beds) < 14: bed(c, len(beds)) or bed(c, len(beds) + 3) or bed(c, len(beds) + 5)
 # --- des coquillages sur le sable sec, sans collision : rien sous un escalier, ni sous un parasol
-SHELL = random.Random(5)
+SHELL, shells = random.Random(5), 0
 for c in sorted(BEACH - KEEP - taken - FURNISHED - set(stairs) - DECK):
-    if ground.get(c) == 'sand5' and SHELL.random() < 0.05: L['Decorations'][c] = tile('shell%d' % SHELL.randint(1, 4))
+    if ground.get(c) == 'sand5' and SHELL.random() < 0.08:          # chacun son tour : au hasard, on ne voyait que des étoiles de mer
+        L['Decorations'][c] = tile('shell%d' % (1 + shells % 4)); shells += 1
 PLAZA_LAWN = rect(21, 19, 36, 31) & INSIDE
 for c in sorted(INSIDE - KEEP - taken - MOUNTAIN - WOODS - FLOWER_CELLS):          # plus serrées autour de la place et sur la presqu'île du sud-est
     if RNG.random() < (0.3 if c in PLAZA_LAWN else (0.22 if c[1] >= 37 and c[0] >= 40 else 0.08)): L['Decorations'][c] = tile('fl%d' % RNG.randint(1, 5))

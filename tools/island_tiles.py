@@ -74,6 +74,9 @@ PIECES = [
 ]
 RAIL = 4                      # largeur, en pixels, de la rambarde reprise sur le flanc du ponton
 FOAM = (190, 226, 244, 255)   # l'écume au pied des rochers de l'atlas
+# Les bancs de l'atlas sont cernés de presque noir : à côté des tuiles de la Route 1, cernées de brun, ils ressortent trop
+# (Ludovic, 17/11/2026). Leur cerne et son ombre prennent deux bruns du bois.
+SOFT = {(19, 37, 46): (98, 80, 54), (45, 45, 45): (120, 100, 66)}
 
 
 def load(path):
@@ -186,6 +189,7 @@ def pieces(sheets):
     for (name, (x0, y0, w, h)), transform, (col, row), (cols, rows), align in PIECES:
         source = sheets(name)
         art = [[source[y0 + y][x0 + x] for x in range(w)] for y in range(h)]
+        if name == ATLAS: art = [[(SOFT[p[:3]] + (p[3],)) if tuple(p[:3]) in SOFT else p for p in row] for row in art]
         if transform == 'flip': art = art[::-1]
         if transform == 'right': art = [[art[h - 1 - x][y] for x in range(h)] for y in range(w)]
         if transform == 'left': art = [[art[x][w - 1 - y] for x in range(h)] for y in range(w)]
