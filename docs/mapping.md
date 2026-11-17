@@ -238,7 +238,14 @@ pas justifier est une erreur.
   l'entrée de l'autre, le même sol (pas du sable d'un côté et de l'herbe de
   l'autre), la même hauteur (pas la plage d'un côté et un plateau de l'autre),
   la même largeur de route, et autant de cases de passage. On regarde la carte
-  d'après avant de dessiner la sortie.
+  d'après avant de dessiner la sortie. **Collées par leur chemin, elles
+  doivent n'en faire qu'une, au pixel près** (Ludovic, 17/11/2026) : on fixe
+  le décalage entre leurs colonnes, on colle les deux aperçus, et l'on
+  regarde — un arbre coupé par le bord a ses deux moitiés, la trame de la
+  forêt se prolonge, aucune falaise et aucune eau ne s'arrête net à la
+  couture. Le décalage se choisit pour éviter ce qui ne peut pas se suivre :
+  la sortie de l'île est derrière chez Ludo parce qu'ailleurs la rivière de la
+  route déboucherait au milieu d'un plateau. `tools/maps/seam.py`.
 - **Rien ne se pose sur une piste** : ni banc, ni lampadaire, ni panneau, ni
   personnage immobile. Une piste est ce qui reste libre ; on garnit ses bords
   (Ludovic, 17/11/2026). Le générateur de l'île le refuse, et un test le

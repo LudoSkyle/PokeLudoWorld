@@ -22,7 +22,7 @@ func test() -> void:
 	await nothing_there("avant la quete")
 
 	# Sans le Registre, Roland ne sait rien : il ne dit pas ou chercher.
-	await place(Vector2i(8, 36))
+	await place(Vector2i(8, 37))
 	await interact_facing("ui_left")
 	await wait_text("Ces eaux, j'y ai plongé vingt ans.")
 	check("sans le Registre, Roland parle de ses plongees", box_text() == "Ces eaux, j'y ai plongé vingt ans.", box_text())
@@ -33,7 +33,7 @@ func test() -> void:
 
 	# Le Registre trouve, il dit ou chercher — et la cloche apparait aussitot.
 	set_flag("bell_register")
-	await place(Vector2i(8, 36))
+	await place(Vector2i(8, 37))
 	var id := level_id()
 	await interact_facing("ui_left")
 	await wait_text("Sous le ponton de l'ouest, là où l'eau est profonde...")
