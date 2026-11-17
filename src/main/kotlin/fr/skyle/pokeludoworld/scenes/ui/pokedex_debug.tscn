@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scripts/ui/PokedexDebug.kt" id="1_script"]
 [ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/fonts/pokemon-dp-pro.ttf" id="3_font"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/pixel_grid.png" id="4_grid"]
 
 [sub_resource type="FontVariation" id="menu_font"]
 base_font = ExtResource("3_font")
@@ -78,20 +79,48 @@ offset_bottom = 208.0
 expand_mode = 1
 stretch_mode = 5
 
+[node name="WalkerGrid" type="TextureRect" parent="Control/Screen"]
+layout_mode = 0
+offset_left = 872.0
+offset_top = 80.0
+offset_right = 1000.0
+offset_bottom = 208.0
+texture = ExtResource("4_grid")
+expand_mode = 1
+stretch_mode = 1
+
 [node name="Walker" type="TextureRect" parent="Control/Screen"]
 layout_mode = 0
-offset_left = 624.0
+offset_left = 872.0
 offset_top = 80.0
-offset_right = 752.0
+offset_right = 1000.0
 offset_bottom = 208.0
 expand_mode = 1
-stretch_mode = 5
+stretch_mode = 0
+
+[node name="WalkerAxisV" type="ColorRect" parent="Control/Screen"]
+layout_mode = 0
+offset_left = 935.0
+offset_top = 80.0
+offset_right = 937.0
+offset_bottom = 208.0
+mouse_filter = 2
+color = Color(0.88, 0.19, 0.13, 0.55)
+
+[node name="WalkerAxisH" type="ColorRect" parent="Control/Screen"]
+layout_mode = 0
+offset_left = 872.0
+offset_top = 143.0
+offset_right = 1000.0
+offset_bottom = 145.0
+mouse_filter = 2
+color = Color(0.88, 0.19, 0.13, 0.55)
 
 [node name="Names" type="Label" parent="Control/Screen"]
 layout_mode = 0
 offset_left = 464.0
 offset_top = 216.0
-offset_right = 1128.0
+offset_right = 856.0
 offset_bottom = 264.0
 theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_fonts/font = SubResource("menu_font")
@@ -102,7 +131,7 @@ clip_text = true
 layout_mode = 0
 offset_left = 464.0
 offset_top = 268.0
-offset_right = 1128.0
+offset_right = 856.0
 offset_bottom = 348.0
 theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_fonts/font = SubResource("menu_font")

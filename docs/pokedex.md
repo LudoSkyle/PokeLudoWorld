@@ -70,22 +70,34 @@ donné, et regarder — une erreur d'un bloc décale toute la suite.
 travers, « après le numéro 200 il y en a énormément de mal découpés »). Une
 colonne de 63 pixels dans la planche de la 1ʳᵉ génération, et même de 61 sur
 ses deux dernières rangées seulement ; des rangées de 129 à 131 dans celle de
-la 2ᵉ. Compter 65 par colonne et 129 par rangée décale tout ce qui suit de
-quelques pixels — ce qu'une planche de vignettes réduites ne montre pas.
-L'outil lit donc les **filets de séparation** (`grid`) : les rangées, puis les
-colonnes rangée par rangée, puis le haut et la largeur de chaque bloc.
+la 2ᵉ ; la dernière de la 3ᵉ fait 160 de haut. L'outil lit donc les **filets
+de séparation** (`grid`) : les rangées, puis les colonnes rangée par rangée,
+puis le haut, la largeur et la hauteur de chaque bloc.
+
+**À l'intérieur d'un bloc non plus, rien n'est au pas** : Caratroc est posé
+deux pixels plus bas (ses pattes tombaient dans l'image d'en dessous), le
+profil de Suicune déborde d'un pixel sur la colonne voisine, et les images
+d'un gros Pokémon sont où elles veulent. On ne coupe donc **jamais au pas** :
+
+- un bloc ordinaire est découpé **par son contenu** (`split`) : les morceaux
+  d'un seul tenant, chaque gros morceau donné à la case dont il est le plus
+  près, chaque petit morceau détaché au gros le plus proche ;
+- puis chaque **paire d'images d'une direction est centrée** dans sa case, pieds
+  à deux pixels du bas, les deux images gardant leur écart (c'est l'animation)
+  (`settle`) ;
+- un gros Pokémon est découpé de même, bloc par bloc ; ceux de la 3ᵉ
+  génération, serrés jusqu'à se toucher, par les lignes les moins remplies
+  (`lanes`). Chacune de ses images est centrée pour elle-même (`settle_big`).
 
 **Les crabes marchent de côté** : Krabby et Krabboss ont leurs deux colonnes
 échangées (`sideways`).
 
-Le contrôle qui compte se fait **à pleine résolution** : aucun sprite à cheval
-sur deux images, aucun collé au bord de son bloc, la face plus symétrique que
-le profil. Trois espèces touchent naturellement leurs voisines (Cizayox,
-Caratroc) ou sont de travers par nature (Magicarpe).
-
-Côté jeu : `NationalDex.kt` lit le `.tsv` (`NationalDex.all`, `DexEntry`). Ce
-n'est pas le catalogue des espèces qu'on rencontre (`Dex`, dans `Species.kt`,
-encore provisoire).
+Le contrôle qui compte est **chiffré, image par image** : aucune image vide,
+aucune collée au bord, chacune centrée à trois pixels près, pieds près du bas.
+Sur les 493 espèces, une vingtaine restent signalées et sont normales : des
+oiseaux dont une des deux images a les ailes levées (elle est donc plus haute,
+ou moins large, que l'autre). Une planche de vignettes réduites ne suffit pas :
+un décalage de deux pixels ne s'y voit pas.
 
 ## Ce qui manque (17/11/2026)
 
@@ -112,4 +124,7 @@ la taille, le poids, les deux descriptions, et en rouge ce qui manque. Une
 Haut/Bas : une espèce (en boucle) ; Gauche/Droite : dix d'un coup ; la touche
 du menu referme. Le sprite de marche se montre de face, puis **tourne sur
 lui-même** d'un quart de tour par seconde — face, gauche, dos, droite — pour
-qu'on vérifie ses quatre côtés. `tests/run.sh ui/debug_pokedex`.
+qu'on vérifie ses quatre côtés. Il est dessiné **à la même échelle pour tous**
+(quatre pixels d'écran par pixel : un gros Pokémon est deux fois plus grand),
+sur **un damier dont chaque carreau fait un pixel du sprite**, avec les deux
+axes de sa case : on voit s'il est centré. `tests/run.sh ui/debug_pokedex`.

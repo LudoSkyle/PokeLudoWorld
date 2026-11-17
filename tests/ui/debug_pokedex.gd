@@ -32,6 +32,9 @@ func test() -> void:
 	# Le sprite de marche se montre de face, puis tourne sur lui-meme : un quart de tour par seconde.
 	var walker: TextureRect = dex().get_node("Control/Screen/Walker")
 	var front: Rect2 = walker.texture.region
+	var grid: TextureRect = dex().get_node("Control/Screen/WalkerGrid")
+	check("il est a quatre pixels d'ecran par pixel, sur un damier au pixel avec les axes de sa case", walker.size == Vector2(128, 128) and grid.visible and grid.size == Vector2(128, 128) and grid.texture.get_size() == Vector2(8, 8)
+		and dex().get_node("Control/Screen/WalkerAxisV").position.x == grid.position.x + 63, "%s %s" % [walker.size, grid.size])
 	check("il se montre d'abord de face", dex().shown_facing() == 0 and front.position == Vector2(0, 64) and front.size == Vector2(32, 32), str(front))
 	var sides := {}
 	var end := Time.get_ticks_msec() + 4300
@@ -59,6 +62,9 @@ func test() -> void:
 		await tap("ui_right")
 	for i in 8:
 		await tap("ui_down")
+	var big_walker: TextureRect = dex().get_node("Control/Screen/Walker")
+	check("un gros Pokemon est montre a la meme echelle que les autres, donc deux fois plus grand : 64 pixels sur 256", big_walker.texture.region.size == Vector2(64, 64) and big_walker.size == Vector2(256, 256)
+		and dex().get_node("Control/Screen/WalkerGrid").size == Vector2(256, 256), "%s %s" % [big_walker.texture.region.size, big_walker.size])
 	check("Lugia, gros Pokemon, a son sprite dans son propre fichier", dex().shown_number() == 249 and dex().get_node("Control/Screen/Walker").texture != null and text_of("Lacks") == "", "%d %s" % [dex().shown_number(), text_of("Lacks")])
 	await tap("ui_up")
 	for i in 30:

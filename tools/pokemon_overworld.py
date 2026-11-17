@@ -74,6 +74,7 @@ def cut(sheet, column, row):
 #     rangées — face, dos, gauche, droite — de deux images de 64 x 32 ;
 #   - `sideways` : un crabe, qui marche de côté — ses deux colonnes sont échangées (les profils à gauche, le dos et
 #     la face à droite) ; on les remet dans l'ordre des autres.
+# Un bloc ordinaire est découpé par son contenu (`split`), puis chaque paire d'images recentrée dans sa case (`settle`).
 # Les comptes tombent juste : 153, 144, 142 et 141 blocs.
 SHEETS = [
     dict(file='hgss_overworld_gen1.png', columns=15, first=1, last=151, extra={3: 1, 25: 1}, tall=(), wide=(), sideways=(98, 99)),
@@ -108,7 +109,8 @@ def grid(sheet):
     rows = spans([y for y in range(height) if sum(1 for x in range(width) if is_line(x, y)) > width * 0.6], height, 60)
     while rows[-1] + 2 * BLOCK_H + 1 <= height + 8: rows.append(rows[-1] + BLOCK_H + 1)          # la dernière rangée, sous le dernier filet
     out = []
-    for y0 in rows:
+    for r, y0 in enumerate(rows):
+        tall = (rows[r + 1] - 1 if r + 1 < len(rows) else height) - y0          # sa hauteur, jusqu'au filet suivant : de 128 à 135
         band = range(y0 + 8, min(y0 + 120, height))
         columns = spans([x for x in range(width) if sum(1 for y in band if is_line(x, y)) > len(band) * 0.6], width, 30)
         blocks = []
@@ -116,7 +118,8 @@ def grid(sheet):
             span = range(x0, min(x0 + 60, width))
             tops = [y for y in range(max(0, y0 - 8), min(height, y0 + 8)) if sum(1 for x in span if is_line(x, y)) > len(span) * 0.9]
             room = (columns[k + 1] - 1 if k + 1 < len(columns) else width) - x0          # sa largeur, jusqu'au filet suivant : parfois 61 ou 63
-            blocks.append((x0, tops[-1] + 1 if tops else y0, room))
+            top = tops[-1] + 1 if tops else y0
+            blocks.append((x0, top, room, min(tall + y0 - top, 136)))          # (sous la dernière rangée il y a les crédits : on ne descend pas plus bas)
         out.append(blocks)
     return out
 
@@ -140,11 +143,146 @@ def clear(block):
     for y in (0, 1, height - 2, height - 1):
         tones = [p for p in out[y] if p[3]]
         if len(tones) > width // 2 and len(set(tones)) <= 2: out[y] = [(0, 0, 0, 0)] * width
+    for y in range(100, height):          # sous le bloc, un filet d'une autre couleur ou le bandeau des crédits : tout ce qui suit n'est plus le bloc
+        tones = [p for p in out[y] if p[3]]
+        if len(tones) > width * 0.7 and len(set(tones)) <= 2:
+            for below in range(y, height): out[below] = [(0, 0, 0, 0)] * width
+            break
     for x in (0, 1, width - 2, width - 1):
         tones = [out[y][x] for y in range(height) if out[y][x][3]]
         if len(tones) > height // 4 and len(set(tones)) <= 2:
             for y in range(height): out[y][x] = (0, 0, 0, 0)
     return out
+
+
+def pieces(block, slot, count):
+    """Les sprites d'un morceau de planche, chacun avec ses pixels : [{(x, y): couleur}], rangés par `slot`.
+
+    On ne coupe pas au pas : on repère les morceaux d'un seul tenant, on donne chaque gros morceau à la case que dit
+    `slot(cx, cy)` d'après son centre, et chaque petit morceau détaché (une étincelle, un ruban) au gros le plus proche.
+    """
+    height, width = len(block), len(block[0])
+    solid = {(x, y): block[y][x] for y in range(height) for x in range(width) if block[y][x][3]}
+    left, parts = set(solid), []
+    while left:
+        seed = left.pop(); part, todo = {seed}, [seed]
+        while todo:
+            x, y = todo.pop()
+            for i in (-1, 0, 1):
+                for j in (-1, 0, 1):
+                    q = (x + i, y + j)
+                    if q in left: left.discard(q); part.add(q); todo.append(q)
+        parts.append(part)
+    def home(part): return slot(sum(x for x, _ in part) / len(part), sum(y for _, y in part) / len(part))
+    sprites = [dict() for _ in range(count)]
+    big_parts = [(part, home(part)) for part in parts if len(part) >= 30]
+    for part, k in big_parts:
+        for q in part: sprites[k][q] = solid[q]
+    for part in parts:
+        if len(part) >= 30: continue
+        near = min(big_parts, key=lambda b: min(abs(x - a) + abs(y - c) for x, y in part for a, c in b[0]), default=None)
+        k = near[1] if near and min(abs(x - a) + abs(y - c) for x, y in part for a, c in near[0]) <= 8 else home(part)
+        for q in part: sprites[k][q] = solid[q]
+    return sprites
+
+
+def lanes(area):
+    """Les huit sprites d'un bloc double (gros Pokémon de la 3e génération) : quatre rangées de deux, rangée par rangée.
+
+    Ils y sont serrés jusqu'à se toucher (Groudon, Rayquaza) : les morceaux d'un seul tenant ne les séparent plus. On
+    cherche donc où couper — la colonne et les trois rangées **les moins remplies** près du milieu et des quarts — et
+    chaque pixel va à la case où il tombe.
+    """
+    height, width = len(area), len(area[0])
+    def emptiest(counts, around, reach=7):
+        span = range(max(1, int(around) - reach), min(len(counts) - 1, int(around) + reach + 1))
+        return min(span, key=lambda k: (counts[k], abs(k - around)))
+    across = [sum(1 for y in range(height) if area[y][x][3]) for x in range(width)]
+    down = [sum(1 for p in line if p[3]) for line in area]
+    used = [y for y in range(height) if down[y]]
+    top, bottom = used[0], used[-1] + 1
+    cut_x = emptiest(across, width / 2, 14)
+    cuts_y = [top] + [emptiest(down, top + (bottom - top) * k / 4) for k in (1, 2, 3)] + [bottom]
+    def region(x, y):
+        row = next((k for k in range(4) if cuts_y[k] <= y < cuts_y[k + 1]), 3 if y >= cuts_y[3] else 0)
+        return row * 2 + (0 if x < cut_x else 1)
+    # Un morceau d'un seul tenant va tout entier à la case où il est presque en entier : une queue qui dépasse la coupe
+    # suit son corps. S'il est à cheval pour de bon (deux sprites qui se touchent), il est coupé pixel par pixel.
+    solid = {(x, y) for y in range(height) for x in range(width) if area[y][x][3]}
+    sprites = [dict() for _ in range(8)]
+    while solid:
+        seed = solid.pop(); part, todo = [seed], [seed]
+        while todo:
+            x, y = todo.pop()
+            for i in (-1, 0, 1):
+                for j in (-1, 0, 1):
+                    q = (x + i, y + j)
+                    if q in solid: solid.discard(q); part.append(q); todo.append(q)
+        share = {}
+        for x, y in part: share[region(x, y)] = share.get(region(x, y), 0) + 1
+        best = max(share, key=share.get)
+        whole = share[best] >= len(part) * 0.8
+        for x, y in part: sprites[best if whole else region(x, y)][(x, y)] = area[y][x]
+    return sprites
+
+
+def split(block):
+    """Les huit sprites d'un bloc ordinaire — colonne de gauche de haut en bas, puis celle de droite.
+
+    Dans la planche, les images ne sont **pas** toujours sur un pas de 32 à l'intérieur du bloc : Caratroc est posé deux
+    pixels plus bas (ses pattes tombaient dans l'image d'en dessous), le profil de Suicune déborde d'un pixel sur la
+    colonne voisine.
+    """
+    return pieces(block, lambda cx, cy: (0 if cx < 32 else 4) + min(3, max(0, int(cy // 32))), 8)
+
+
+def settle_big(directions):
+    """Un gros Pokémon : (côté d'une image, sa planche). `directions` = les deux sprites de dos, de face, de gauche, de droite.
+
+    Ses images ne sont sur aucun pas régulier dans la planche : chacune est posée pour elle-même, centrée dans sa case,
+    pieds à deux pixels du bas. Le côté de la case est le plus petit de 64 ou 96 où tout tient.
+    """
+    boxes = [(min(x for x, _ in sp), max(x for x, _ in sp), min(y for _, y in sp), max(y for _, y in sp)) for pair in directions for sp in pair if sp]
+    side = 64 if all(b - a < 64 and d - c < 62 for a, b, c, d in boxes) else 96
+    cell = [[(0, 0, 0, 0)] * (2 * side) for _ in range(4 * side)]
+    for column, (first, second) in enumerate(((0, 1), (2, 3))):
+        for k, way in enumerate((first, second)):
+            for f, sprite in enumerate(directions[way]):
+                if not sprite: continue
+                a, b = min(x for x, _ in sprite), max(x for x, _ in sprite)
+                d = max(y for _, y in sprite)
+                dx, dy = (side - (b - a + 1)) // 2 - a, (side - 3) - d
+                for (x, y), colour in sprite.items():
+                    cell[(k * 2 + f) * side + y + dy][column * side + x + dx] = colour
+    return side, cell
+
+
+def settle(sprites):
+    """Pose les huit sprites dans leurs cases : (côté d'une image, la planche du Pokémon — deux colonnes de quatre images).
+
+    Les deux images d'une même direction gardent leur écart l'une par rapport à l'autre (c'est l'animation), et la paire
+    est **centrée** dans sa case, pieds à deux pixels du bas. Si une paire ne tient pas dans 32 x 32, toutes les images
+    passent à 64 x 64 : c'est un gros Pokémon.
+    """
+    pairs = []
+    for column in (0, 1):
+        for k in (0, 2):
+            two = [sprites[column * 4 + k], sprites[column * 4 + k + 1]]
+            local = [{(x - column * 32, y - (k + f) * 32): c for (x, y), c in sprite.items()} for f, sprite in enumerate(two)]          # chacun par rapport au coin de sa case d'origine
+            pairs.append((column, k, local))
+    spans = []
+    for _, _, local in pairs:
+        xs = [x for sprite in local for x, _ in sprite]; ys = [y for sprite in local for _, y in sprite]
+        spans.append((min(xs), max(xs), min(ys), max(ys)) if xs else (0, 0, 0, 0))
+    side = 32 if all(b - a < 32 and d - c < 31 for a, b, c, d in spans) else 64
+    cell = [[(0, 0, 0, 0)] * (2 * side) for _ in range(4 * side)]
+    for (column, k, local), (a, b, c, d) in zip(pairs, spans):
+        dx = (side - (b - a + 1)) // 2 - a
+        dy = (side - 2) - d - 1 + 1          # la rangée la plus basse de la paire à deux pixels du bas
+        for f, sprite in enumerate(local):
+            for (x, y), colour in sprite.items():
+                cell[(k + f) * side + y + dy][column * side + x + dx] = colour
+    return side, cell
 
 
 def big(frames):
@@ -173,21 +311,28 @@ def everyone():
                 blocs d'un gros Pokémon n'ont pas de filet entre eux : le second est alors à sa place théorique."""
                 line, column = blocks[(slot + k) // spec['columns']], (slot + k) % spec['columns']
                 near = min(line, key=lambda b: abs(b[0] - column * (BLOCK_W + 1)))
-                return near if abs(near[0] - column * (BLOCK_W + 1)) <= 12 else (column * (BLOCK_W + 1), line[0][1], BLOCK_W)
-            if number in spec['tall']:
-                parts = [clear(raw(sheet, *at(k))) for k in range(4)]
-                large[number] = big([(part[:64], part[64:]) for part in parts])
+                return near if abs(near[0] - column * (BLOCK_W + 1)) <= 12 else (column * (BLOCK_W + 1), line[0][1], BLOCK_W, line[0][3])
+            if number in spec['tall']:          # quatre blocs — dos, face, gauche, droite —, deux images l'une sous l'autre dans chacun
+                ways = []
+                for k in range(4):
+                    x0, y0, room, tall = at(k)
+                    ways.append(pieces(clear(raw(sheet, x0, y0, room, h=tall)), lambda cx, cy, half=tall / 2: 0 if cy < half else 1, 2))
+                large[number] = settle_big(ways)[1]
                 slot += 4
-            elif number in spec['wide']:
-                (x0, y0, _), (x1, _, _) = at(0), at(1)
-                area = clear(raw(sheet, x0, y0, room=x1 - x0 + 64, w=x1 - x0 + 64, h=128))
-                bands = [([line[:64] for line in area[k * 32:k * 32 + 32]], [line[x1 - x0:x1 - x0 + 64] for line in area[k * 32:k * 32 + 32]]) for k in range(4)]
-                large[number] = big([bands[1], bands[0], bands[2], bands[3]])
+            elif number in spec['wide']:        # un seul bloc double : quatre rangées — face, dos, gauche, droite — de deux images côte à côte
+                x0, y0, room, tall = at(0)
+                room = max(room, 2 * BLOCK_W + 1)
+                line = slot // spec['columns']          # sa vraie hauteur : jusqu'à la rangée suivante, ou au bas de la planche (Groudon et Rayquaza font 160 de haut)
+                tall = (blocks[line + 1][0][1] - 1 if line + 1 < len(blocks) else len(sheet)) - y0
+                eight = lanes(clear(raw(sheet, x0, y0, room, w=room, h=tall)))
+                large[number] = settle_big([eight[2:4], eight[0:2], eight[4:6], eight[6:8]])[1]
                 slot += 2
             else:
-                block = clear(raw(sheet, *at(0)))
-                if number in spec.get('sideways', ()): block = [line[32:] + line[:32] for line in block]
-                small[number] = block
+                x0, y0, room, tall = at(0)
+                sprites = split(clear(raw(sheet, x0, y0, room, h=tall)))
+                if number in spec.get('sideways', ()): sprites = sprites[4:] + sprites[:4]
+                side, cell = settle(sprites)
+                (small if side == 32 else large)[number] = cell
                 slot += 1
             slot += spec['extra'].get(number, 0)
     return small, large

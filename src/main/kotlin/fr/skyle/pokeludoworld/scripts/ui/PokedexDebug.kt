@@ -14,6 +14,7 @@ import godot.api.Texture2D
 import godot.api.Time
 import godot.api.TextureRect
 import godot.core.Rect2
+import godot.core.Vector2
 
 /**
  * Vue de debug du Pokédex national, ouverte depuis les outils de Debug du menu
@@ -48,6 +49,9 @@ class PokedexDebug : CanvasLayer() {
 	private var lacks: Label? = null
 	private var icon: TextureRect? = null
 	private var walker: TextureRect? = null
+	private var grid: TextureRect? = null
+	private var axisV: Control? = null
+	private var axisH: Control? = null
 
 	private var selected = 0
 	private var top = 0
@@ -80,6 +84,9 @@ class PokedexDebug : CanvasLayer() {
 		lacks = getNode("Control/Screen/Lacks") as? Label
 		icon = getNode("Control/Screen/Icon") as? TextureRect
 		walker = getNode("Control/Screen/Walker") as? TextureRect
+		grid = getNode("Control/Screen/WalkerGrid") as? TextureRect
+		axisV = getNode("Control/Screen/WalkerAxisV") as? Control
+		axisH = getNode("Control/Screen/WalkerAxisH") as? Control
 		screen?.visible = false
 	}
 
@@ -137,7 +144,7 @@ class PokedexDebug : CanvasLayer() {
 		english?.text = entry.textEn.ifEmpty { "(no English description)" }
 		lacks?.text = if (entry.missing.isEmpty()) "" else "Manque : " + entry.missing.joinToString(", ")
 		icon?.texture = iconOf(entry)
-		walker?.texture = walkerOf(entry)
+		showWalker(entry)
 	}
 
 	/**
@@ -148,7 +155,30 @@ class PokedexDebug : CanvasLayer() {
 		val side = (((Time.getTicksMsec() - shownAt) / TURN_MS) % 4).toInt()
 		if (side == facing) return
 		facing = side
-		walker?.texture = walkerOf(NationalDex.all.getOrNull(selected) ?: return)
+		showWalker(NationalDex.all.getOrNull(selected) ?: return)
+	}
+
+	/**
+	 * Montre le sprite de marche **à la même échelle pour tous** — quatre pixels d'écran par pixel du sprite — sur
+	 * un damier dont chaque carreau fait un pixel du sprite, avec les deux axes de sa case : on voit d'un coup d'œil
+	 * s'il est centré, et un gros Pokémon (64 pixels de côté) est deux fois plus grand qu'un autre.
+	 */
+	private fun showWalker(entry: DexEntry) {
+		val texture = walkerOf(entry)
+		walker?.texture = texture
+		val shown = texture != null
+		grid?.visible = shown
+		axisV?.visible = shown
+		axisH?.visible = shown
+		val side = ((texture as? AtlasTexture)?.region?.size?.x ?: return) * SCALE
+		val origin = grid?.getPosition() ?: return
+		val box = Vector2(side, side)
+		walker?.setSize(box)
+		grid?.setSize(box)
+		axisV?.setPosition(Vector2(origin.x + side / 2 - 1, origin.y))
+		axisV?.setSize(Vector2(2.0, side))
+		axisH?.setPosition(Vector2(origin.x, origin.y + side / 2 - 1))
+		axisH?.setSize(Vector2(side, 2.0))
 	}
 
 	private fun measure(value: Double, unit: String): String = if (value <= 0.0) "? $unit" else "${value.toString().replace('.', ',')} $unit"
@@ -194,6 +224,9 @@ class PokedexDebug : CanvasLayer() {
 
 /** Espèces sautées par Gauche et Droite. */
 private const val PAGE = 10
+
+/** Pixels d'écran par pixel du sprite : le carreau du damier de `pixel_grid.png` fait cette taille. */
+private const val SCALE = 4.0
 
 /** Durée d'un côté, en millisecondes. */
 private const val TURN_MS = 1000L
