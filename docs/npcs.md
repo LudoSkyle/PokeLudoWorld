@@ -169,7 +169,10 @@ Des Pokémon qui volent au-dessus de la carte : `scenes/levels/flyer.tscn`
 (`Flyer.kt`), posés sous un nœud `Sky` (`z_index = 40` : au-dessus de tout le
 décor, sous le voile du dehors). **Ce sont des décors** : aucun corps, on ne
 les heurte pas, on ne leur parle pas, ils survolent la mer comme la terre. Une
-ombre au sol, sous chacun, dit qu'il est en l'air.
+ombre au sol, sous chacun, dit qu'il est en l'air. Dans son fichier de sprite
+un volant est posé au sol, comme toutes les espèces ; c'est `Flyer.kt` qui le
+dessine quelques pixels plus haut (`LIFT`, par espèce : la hauteur qu'il avait
+dans sa case de la planche d'origine).
 
 Au-dessus de l'eau, **cette ombre bleuit** : elle passe du noir translucide à un
 turquoise sombre (`WaterShadow.kt`, le nœud `Shade` de sa scène ; `on_land` et

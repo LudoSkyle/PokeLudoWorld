@@ -38,7 +38,8 @@ import kotlin.random.Random
  *
  * Son image vient de `assets/pokemon/overworld/<species>.png` : un bloc de
  * 64 × 128, deux colonnes de quatre images de 32 × 32 (dos, dos, face, face /
- * gauche, gauche, droite, droite).
+ * gauche, gauche, droite, droite). Il y est posé au sol, comme toutes les
+ * espèces ; en vol, il est dessiné quelques pixels plus haut (`LIFT`).
  *
  * Il n'a pas de reflet : trop haut, et de lui on ne voit déjà, sur terre,
  * qu'une tache d'ombre. Au-dessus de l'eau c'est donc son **ombre qui bleuit**
@@ -119,6 +120,8 @@ class Flyer : Node2D() {
 		val sheet = ResourceLoader.load("$SHEETS$species.png") as? Texture2D
 		if (sheet == null) Logger.e("Pokemon volant sans image : $species")
 		sprite?.texture = sheet
+		// Dans son fichier il est posé au sol, comme toutes les espèces : c'est ici, en vol, qu'il prend sa hauteur.
+		sprite?.offset = Vector2(0.0, -(LIFT[species] ?: DEFAULT_LIFT))
 		if (seed != 0) random = Random(seed)
 		// Chacun part à son heure : sans ça, tous les oiseaux de la carte bougeraient ensemble.
 		wait = random.nextDouble() * rest.y
@@ -241,6 +244,13 @@ class Flyer : Node2D() {
 	companion object {
 		private const val SHEETS = "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/pokemon/overworld/"
 		private const val FRAME = 32.0
+
+		/**
+		 * De combien de pixels chaque espèce vole au-dessus de la ligne du sol : la hauteur qu'elle avait dans sa
+		 * case de la planche d'origine, où les volants sont dessinés en l'air.
+		 */
+		private val LIFT = mapOf("wingull" to 3.0, "pelipper" to 2.0, "hoppip" to 4.0, "skiploom" to 4.0, "jumpluff" to 3.0)
+		private const val DEFAULT_LIFT = 3.0
 		private const val BEATS_PER_SECOND = 5.0
 		private const val MAX_STRIDE = 3
 		private const val CRY_RETRY = 1.0
