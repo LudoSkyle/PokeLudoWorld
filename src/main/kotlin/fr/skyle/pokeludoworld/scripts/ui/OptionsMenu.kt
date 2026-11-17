@@ -83,11 +83,14 @@ class OptionsMenu : CanvasLayer() {
 			return
 		}
 
-		if (Input.isActionJustPressed("ui_right") || Input.isActionJustPressed("ui_left")) {
-			AudioManager.instance?.sfx("cursor")
-		}
 		if (MenuKeys.down()) row = (row + 1) % rows.size
 		if (MenuKeys.up()) row = (row - 1 + rows.size) % rows.size
+
+		// Sur une ligne de volume, pas de bruit de curseur : le réglage fait entendre son propre son, et il n'en faut qu'un.
+		val onVolume = rows.getOrNull(row)?.name?.toString() in VOLUME_ROWS.keys
+		if (!onVolume && (Input.isActionJustPressed("ui_right") || Input.isActionJustPressed("ui_left"))) {
+			AudioManager.instance?.sfx("cursor")
+		}
 
 		when (rows.getOrNull(row)?.name?.toString()) {
 			"TextSpeed" -> {
@@ -100,7 +103,7 @@ class OptionsMenu : CanvasLayer() {
 				if (Input.isActionJustPressed("ui_left")) Settings.setLanguage(Settings.language - 1)
 			}
 			in VOLUME_ROWS.keys -> {
-				// Pas de boucle : muet et 100 % sont les deux bouts.
+				// Par crans de cinq pour cent. Pas de boucle : muet et 100 % sont les deux bouts.
 				val volume = VOLUME_ROWS.getValue(rows[row].name.toString())
 				if (Input.isActionJustPressed("ui_right")) setVolume(volume, Settings.volume(volume) + 1)
 				if (Input.isActionJustPressed("ui_left")) setVolume(volume, Settings.volume(volume) - 1)
@@ -125,13 +128,13 @@ class OptionsMenu : CanvasLayer() {
 		AudioManager.instance?.applyVolumes()
 		when (volume) {
 			Settings.Volume.CRIES -> AudioManager.instance?.cry(SAMPLE_CRY)
-			Settings.Volume.SOUNDS -> AudioManager.instance?.sfx("confirm")
+			Settings.Volume.SOUNDS -> AudioManager.instance?.sfx("cursor")
 			Settings.Volume.MUSIC -> Unit          // elle joue déjà : on l'entend changer
 		}
 	}
 
 	private fun refresh() {
-		volumes.forEach { (volume, label) -> label?.text = "${Settings.volume(volume) * 100 / Settings.VOLUME_STEPS} %" }
+		volumes.forEach { (volume, label) -> label?.text = "${Settings.percent(volume)} %" }
 		speeds.forEachIndexed { index, label ->
 			label.addThemeColorOverride("font_color", if (index == Settings.textSpeed) CHOSEN else INK)
 		}

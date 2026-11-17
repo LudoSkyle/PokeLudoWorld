@@ -75,9 +75,9 @@ qu'on la change, sans validation.
 |---|---|---|
 | Vitesse du texte | x0.5, x1 (défaut), x2, x4 | multiplie la vitesse de la boîte de dialogue ; x1 = 0,02 s par lettre |
 | Langue | Français (défaut), English | langue de tout le jeu, voir [i18n.md](i18n.md) |
-| Musique | 0 % à 100 % (défaut), par crans de 10 | le volume de la musique ; celle qui joue change aussitôt |
+| Musique | 0 % à 100 % (défaut), par crans de 5 | le volume de la musique ; celle qui joue change aussitôt |
 | Cris des Pokémon | idem | le volume des cris — ceux des volants, ceux des Pokémon à qui l'on parle ; un cri de Goélise se fait entendre à chaque cran |
-| Autres sons | idem | bruitages et jingles ; un bruitage se fait entendre à chaque cran |
+| Autres sons | idem | bruitages et jingles ; un seul bruitage se fait entendre à chaque cran (pas celui du curseur en plus) |
 
 Les réglages vivent dans `Settings.kt` et sont gardés dans
 `user://settings.cfg`. `MessageBox` les relit au démarrage. Le menu de pause
