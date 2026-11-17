@@ -109,16 +109,16 @@ chemins, où pousse la forêt**, et on le pose avec les tuiles de la Route 1
 (`route.png`) et des maisons découpées dans la même planche (`village.png`).
 
 ```
- forêt │ NORD-OUEST, plateau : │ trouée du nord (gardée) │ NORD-EST, plateau : la montagne, │ forêt
-       │ Ludo, Anselme         │  LA CRIQUE : plage      │ le laboratoire                   │
-       └──escalier─────────────┘   parasol, serviette    └──escalier──────────┬─ponton──────┘
- ~~~~ ponton ~~~~~~~~~~~~~~~~~~~~~  la baie  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ │ ~~~~~~~~~~~~~~
-      └─────── ponton ────────►  LA PLACE, sur son plateau  ◄──── ponton ─────┴──┐
- OUEST, plateau : │ ponton       dallage, socle de la cloche, statues            │ SUD-EST, plateau :
- la bibliothèque  │                 └──escalier──┘                               │ Solange
-   └─escalier─┐   │                                                   ┌─escalier─┘
- plage de     │ JARDIN du sud-ouest       LA PLAGE DU SUD : parasol, jetée        la presqu'île
- l'ouest      │ (hautes herbes)                  ~~~~ jetée ~~~~
+ forêt │ NORD-OUEST, plateau : │ forêt                    │ NORD-EST, plateau : la montagne, │ forêt
+       │ Ludo, Anselme         │  LA CRIQUE : grande plage │ le laboratoire                   │
+       └──escalier─────────────┘   parasol, serviette      └────────escalier──────────────────┘
+ ~~~~ mer de l'ouest ~~~ │ escalier                          │  PLAGE DE L'EST   (mare)  ~~ mer ~~
+ ────────────────────┐ ~ │ de côté ► LA PLACE, sur son plateau│  elle descend
+ OUEST, plateau :    │ ~ │      dallage, socle de la cloche   │  le long de       SUD-EST, plateau :
+ la bibliothèque     │ ~ │          └──escalier──┘            │  la place         Solange
+   └─escalier─┐      │ ~ (chenal)                             ▼      ┌─escalier─┘
+ plage de     │ JARDIN du sud-ouest ◄escalier  LA PLAGE DU SUD : parasol, jetée    la presqu'île
+ l'ouest      │ (hautes herbes)     de côté          ~~~~ jetée ~~~~
 ```
 
 **Trois niveaux.** La **mer**, pleine ; profonde au large. Les **plages**, de
@@ -148,13 +148,29 @@ planche n'en a pas d'autres) : deux rangées de trois marches entre deux
 poteaux, une par étage de la falaise. Sous chacun, une anse de plage ;
 au-dessus, un bord de plateau droit sur cinq cases.
 
-**Les pontons vont du dessus d'un plateau à l'autre**, larges de trois cases :
-du nord-ouest à la place et de là au jardin ; du nord-est à la place et de là
-au sud-est. La jetée du sud part de la plage.
+**Deux escaliers de côté** (`layout.SIDE_STAIRS`, tuiles `stairW…`/`stairE…` :
+le bloc d'escalier tourné d'un quart) montent un flanc de plateau, sur trois
+rangées : de la crique à la place, par son flanc ouest (colonnes 19-20,
+rangées 19 à 21) ; du jardin du sud-ouest à la plage du sud (colonnes 21-22,
+rangées 37 à 39).
 
-**La place** ne se rejoint que par ses deux pontons et par son escalier depuis
-la plage du sud. Le jardin du sud-ouest et la bibliothèque, reliés par une
-piste, ne se rejoignent que par le ponton du jardin.
+**Il ne reste qu'un ponton : la jetée du sud**, large de trois cases, qui part
+de la plage (Ludovic, 17/11/2026). On passe d'une terre à l'autre par les
+plages : la crique du nord, agrandie jusqu'au pied de la forêt et du plateau du
+nord-est ; la plage de l'est, du pied de l'escalier du nord-est à la plage du
+sud, le long de la place. Les pontons de l'exemple ne sont plus que de l'eau
+(`layout.FORMER_DOCKS` : ce que l'exemple pose là n'est pas un rocher).
+
+**La place** ne se rejoint que par ses deux escaliers : celui de côté, depuis
+la crique, et celui du sud. Le jardin du sud-ouest et la bibliothèque, reliés
+par une piste, ne se rejoignent que par l'escalier de côté du jardin.
+
+**Les rochers de la mer sont ceux de l'exemple.** Dans les cinq groupes que
+Ludovic a entourés (l'ouest, l'est, la plage du sud-ouest, les deux côtés de
+la jetée), quelques-uns de plus (`layout.BARRIERS`) ferment l'eau qu'on touche
+d'une plage : en surfant, on ne sortira pas de la carte. **Jamais en ligne
+droite, et aucun là où il n'a rien entouré** — la mer du sud-est reste
+ouverte.
 
 **L'eau reflète, le sable garde les traces** : la mer porte la donnée `water`
 et le sable des plages la donnée `sand` ([tilesets.md](tilesets.md)). Le bord
@@ -173,7 +189,7 @@ d'un Pokémon volant bleuit.
 | la place | dallage x 24–32, y 22–27, sur le plateau du centre | socle de la cloche en (28,23), deux statues en (25,23) et (31,23) ; le coureur en fait le tour (x 23–33, y 21–28) |
 | la sortie du nord | x 3–5, y 0–9 | une piste de trois cases dans la forêt, derrière chez Ludo, sur le plateau ; deux gardes en y 3, de part et d'autre de la piste ; en y 0, trois portes `Nord0`…`Nord2` mènent à la **Route 1** (`route_1`) |
 | la crique du nord | x 15–33, y 14–16 | deux bandes de plage de part et d'autre d'un bassin, chacune au pied d'un escalier ; parasol et serviette à l'est |
-| la cloche | (14,21), dans l'eau | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis le ponton de l'ouest, en (14,22), tourné vers le nord |
+| la cloche | (35,47), dans l'eau profonde, contre la jetée | n'y est qu'**après que Roland a dit où chercher** (`bell_spotted`) ; se repêche depuis la jetée du sud, en (34,47), tourné vers l'est |
 | la jetée du sud | x 32–34, y 43–48 | le pêcheur est au bout, en (33,48) |
 | escaliers (colonne de gauche, rangée du haut) | (14,13), (30,13), (26,31), (2,33), (36,37) | nord-ouest, nord-est, place, bibliothèque, sud-est |
 | hautes herbes | le jardin du sud-ouest (x 10–21, y 38–43) ; près du labo (49–52, 12–15) | |
@@ -188,8 +204,10 @@ l'eau), `Cliffs1` (la falaise des plateaux),
 **Les pistes** font trois cases de large et sont d'un seul tenant sur chaque
 plateau (`layout.PATHS`, tracées à la main là où l'exemple a ses chemins) :
 plus étroite, une piste n'est que deux bords collés. **Les plages ont leurs
-palmiers**, là où l'exemple pose quelque chose sur le sable, espacés de cinq
-cases, jamais dans un passage ni contre le mobilier ; des massifs de buissons
+palmiers**, là où l'exemple pose quelque chose sur le sable et, sur les grandes
+plages, quelques autres au hasard, espacés, jamais dans un passage ni contre
+le mobilier — **deux au plus dans la crique** (`layout.COVE`) : on l'a
+agrandie pour en faire une plage, pas une palmeraie ; des massifs de buissons
 garnissent les coins de la place, et les fleurs sont plus serrées autour
 d'elle et sur la presqu'île du sud-est. La cloche, au fond de l'eau,
 **scintille** (`Twinkle.kt`).

@@ -232,14 +232,14 @@ dans une carte du jeu.
 
 La quête se joue maintenant sur `start_island` ([levels.md](levels.md)). Les
 drapeaux, les objets et l'ordre des étapes sont les mêmes ; **seul le lieu de
-la cloche change** : elle n'est plus au fond de la grotte, elle repose **sous
-le ponton de l'ouest**.
+la cloche change** : elle n'est plus au fond de la grotte, elle repose **contre
+la jetée du sud**, le seul endroit où l'eau est profonde.
 
 | | Sur l'ancien village | Sur l'île |
 |---|---|---|
 | l'indice du registre | « là où l'eau dort sous la pierre » | « là où l'eau dort sous les planches » |
 | Roland | devant la grotte, parle du lac souterrain | en (11,32), au bord de l'eau sous la bibliothèque ; il a plongé vingt ans dans ces eaux |
-| la Cloche ternie | au bord du lac de `cave_b2f` | `Readables/Bell`, dans l'eau en (14,21) ; on la repêche depuis le ponton de l'ouest, en (14,22). Un éclat la signale |
+| la Cloche ternie | au bord du lac de `cave_b2f` | `Readables/Bell`, dans l'eau en (35,47) ; on la repêche depuis la jetée du sud, en (34,47), tourné vers l'est. Un éclat la signale |
 | la route fermée | la route de l'ouest | la trouée de la falaise du nord : deux gardes et quatre cases gardées en y 3 |
 | le pêcheur | au bord du lac | au bout de la jetée du sud |
 | la Veillée | dure tant que la partie dure | **prend fin quand on quitte l'île** : `metadata/on_leave = "bell_hung > vigil_over"`. Chacun retourne alors à ce qu'il faisait ; qui est où, avant, pendant et après : [npcs.md](npcs.md) |
@@ -296,7 +296,7 @@ par-dessus (« Repartir de zéro » le retire avec le reste, `Quest.epilogue`).
 | `bell_told` | Mémé, chez nous | le dialogue d'Alix, et les archives de la bibliothèque |
 | `bell_register` | le rayon des archives | le dialogue de Roland |
 | `bell_spotted` | **Roland**, quand il dit où chercher | la cloche sous le ponton : sans lui, il n'y a rien à repêcher |
-| `bell_tarnished` | la cloche sous le ponton de l'ouest | le dialogue du Professeur |
+| `bell_tarnished` | la cloche contre la jetée du sud | le dialogue du Professeur |
 | `bell_clean` | la machine de soin du labo | le don à Mémé |
 | `bell_ribbon` | Mémé, qui rend la cloche | le socle |
 | `bell_hung` | le socle, sur la place | **la Veillée** |

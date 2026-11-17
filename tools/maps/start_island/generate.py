@@ -81,12 +81,14 @@ STAND = {(CXP, TOP + 1), (CXP - 1, TOP + 2), (CXP, TOP + 2), (CXP + 1, TOP + 2),
 STATUES = {'StatueWest': (CXP - 3, TOP + 1), 'StatueEast': (CXP + 3, TOP + 1)}
 SOLID |= STAND | set(STATUES.values())
 FRONTS = {(d[0], d[1] + j) for d in DOORS.values() for j in (1, 2)} | {(x + i, r + j) for x, r in STAIRS.values() for i in range(5) for j in (-2, -1, 0, 1, 2)}
+for side, gx, y0 in lay.SIDE_STAIRS.values():          # et de part et d'autre d'un escalier de côté
+    FRONTS |= {(gx + i, y0 + j) for i in range(-3, 4) for j in range(-1, 4)}
 CLEAR = FRONTS | DECK | LOOP_CELLS | STEPS | {(x, y) for x in ROAD for y in range(0, GUARD_Y + 3)} | {(c[0] + i, c[1] + j) for c in DECK for i, j in lay.NEIGH4}
 placed = {}
 nodes = []
 # Les cases choisies à la main : un lampadaire se met dans un angle — au coin de deux pistes, contre un coin de falaise —,
 # et rien ne se pose sur une piste (Ludovic, 17/11/2026). Ce qui est ici n'est pas déplacé par `settle`.
-FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (19, 38)}
+FIXED = {(11, 14), (7, 13), (19, 10), (47, 37), (12, 31), (1, 29), (39, 13), (4, 46), (48, 1)}
 def node(text): nodes.append(text)
 def pinches(c):
     ring = [(c[0] + i, c[1] + j) for i, j in ((-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0))]
@@ -136,7 +138,7 @@ def towel(name, wish, kind):    # une case de large, deux de haut : on marche de
     c = settle(name, wish, solid=False); TOWELS[name] = c
     L['Decorations'][(c[0], c[1] - 1)] = (10, 15, 3 + 2 * kind, 0); L['Decorations'][c] = (10, 15, 4 + 2 * kind, 0)
     return c
-BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP + 3, TOP - 2))
+BENCH_LUDO, BENCH_SOUTH, BENCH_SQUARE = bench('BenchLudo', (11, 14)), bench('BenchSouth', (49, 31), side='west'), bench('BenchSquare', (CXP, TOP - 2))
 parasol('ParasolCove', (29, 16), 1); towel('TowelCove', (32, 16), 1)
 parasol('ParasolSouth', (25, 36), 0); towel('TowelSouth', (28, 36), 0)
 
@@ -153,8 +155,8 @@ sign('SignLab', (DOORS['lab'][0] + 2, DOORS['lab'][1] + 1), "Laboratoire du Prof
 sign('SignNorth', (ROAD[-1] + 1, GUARD_Y + 7), "Route 1.|Elle quitte l'île par la falaise.")
 sign('SignPier', (PIER_END[0] - 2, 42), "Jetée du sud.|Attention : planches glissantes.")
 for name, wish in {'LampLudo': (7, 13), 'LampNorth': (19, 10), 'LampLibrary': (12, 31),
-                   'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (19, 38), 'LampPier': (PIER_END[0] + 2, 42),
-                   'LampSquareWest': (PLAZA[0] - 2, PLAZA[1] - 2), 'LampSquareEast': (PLAZA[2] + 2, PLAZA[1] - 2)}.items(): lamp(name, wish)
+                   'LampLab': (39, 13), 'LampSouth': (47, 37), 'LampGarden': (20, 40), 'LampPier': (PIER_END[0] + 2, 42),
+                   'LampSquareWest': (PLAZA[0], PLAZA[1] - 2), 'LampSquareEast': (PLAZA[2], PLAZA[1] - 2)}.items(): lamp(name, wish)
 # une lueur à chaque fenêtre : le milieu des vitres de la maison, mesuré sur son image
 SHEET = village_tiles.cells()
 for name, (kind, x, r) in sorted(lay.HOUSES.items()):
@@ -244,8 +246,8 @@ shape = SubResource("RectangleShape2D_statue")
 
 ITEMS = {}
 FOUND = {'ItemPotion': ('potion', "Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets.", 'found_island_potion', (46, 46)),
-         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (4, 43)),
-         'ItemWater': ('fresh_water', "Vous trouvez une Eau Fraîche !|Vous rangez l'Eau Fraîche dans la poche Objets.", 'found_island_water', (49, 5))}          # derrière le laboratoire
+         'ItemBall': ('poke_ball', "Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls.", 'found_island_ball', (4, 46)),
+         'ItemWater': ('fresh_water', "Vous trouvez une Eau Fraîche !|Vous rangez l'Eau Fraîche dans la poche Objets.", 'found_island_water', (48, 1))}          # derrière le laboratoire
 for name, (item, text, flag, wish) in FOUND.items():
     c = ITEMS[name] = settle(name, wish, tight=name == 'ItemWater')          # celui-là est au fond d'un couloir sans issue : il ne coupe le passage de personne
     node('''[node name="%s" parent="World" instance=ExtResource("9_readable")]
@@ -304,7 +306,7 @@ def npc(name, c, appearance, text, **kw):
 BEFORE, DURING, AFTER_ALL = dict(forbidden_flag='bell_hung'), dict(required_flag='bell_hung', forbidden_flag='vigil_over'), dict(required_flag='vigil_over')
 STAYS = dict(required_flag='bell_hung')      # arrive pour la Veillée, et reste ensuite
 LIB_STAIR = STAIRS['bibliotheque']
-BELL = (14, 21)          # dans l'eau, contre le ponton de l'ouest : on la repêche depuis la planche du dessous
+BELL = (35, 47)          # dans l'eau profonde, contre la jetée du sud — le seul ponton de l'île : on la repêche depuis la planche d'à côté, tourné vers l'est
 TALL_SW = sorted(c for c in lay.TALL if c[1] > 30)
 
 # ============ AVANT que la cloche soit accrochée
@@ -315,7 +317,7 @@ npc('Runner', LOOP[0], 'rse_triathlete_m', "Pff... pff... Je fais le tour de la 
     facing=(0, 1), movement='patrol', pace=3.0, route=LOOP, **BEFORE)
 npc('Fisher', PIER_END, 'hgss_fisherman', "Chut... Ça ne mord pas fort aujourd'hui.|Il paraît qu'il y a de gros poissons au large.", facing=(0, 1), fixed=True, **BEFORE)
 npc('Roland', (LIB_STAIR[0] + 5, LIB_STAIR[1] + 3), 'frlg_ruinmaniac', "Ces eaux, j'y ai plongé vingt ans.|Elles ont encore des choses à dire, je le sens.", display_name='Roland', gender='male', facing=(1, 0),
-    states=["bell_register > @flag:bell_spotted Sous le ponton de l'ouest, là où l'eau est profonde...|...il y a quelque chose qui accroche la lumière.|Moi, je n'y plonge plus. Trop froid, trop de courant.",
+    states=["bell_register > @flag:bell_spotted Au bout de la jetée du sud, là où l'eau est profonde...|...il y a quelque chose qui accroche la lumière.|Moi, je n'y plonge plus. Trop froid, trop de courant.",
             "bell_tarnished > Alors c'était ça qui brillait.|Une cloche. Vingt ans que je passe au-dessus."], **BEFORE)
 
 # ============ TOUJOURS LÀ : chacun près de ce qui l'occupe ; sa réplique change une fois la cloche accrochée
@@ -329,7 +331,7 @@ npc('Swimmer', TOWELS['TowelCove'], 'hgss_swimmer_m', "L'eau de la crique est la
     states=["bell_hung > J'étais dans l'eau quand la cloche a sonné.|J'ai bu la tasse. Ça valait le coup."])
 npc('ShellKid', (TOWELS['TowelCove'][0] + 1, TOWELS['TowelCove'][1] - 1), 'hgss_tuber_m', "Je cherche des coquillages.|Pour l'instant, j'ai surtout trouvé des cailloux.", facing=(0, 1),
     states=["bell_hung > J'ai trouvé un coquillage qui fait le bruit de la cloche !|Bon, il faut l'écouter de très près."])
-npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1),
+npc('Sailor', (43, 17), 'hgss_sailor', "Tu vois ces rochers, au large ?|Ils ferment toutes les passes.|Aucun bateau n'entre dans la baie, aucun n'en sort.", facing=(0, 1), fixed=True,
     states=["bell_hung > Les rochers ferment toujours les passes.|Mais une cloche, ça s'entend du large.|Les bateaux sauront qu'il y a un village ici."])
 # le gamin tourne autour de ses herbes : il y entre, il en sort — un rectangle qui les déborde de deux cases
 npc('Youngster', (48, 13), 'hgss_youngster', "Le Professeur dit que des Pokémon vivent dans ces herbes.|Sans le mien, je n'ose pas y mettre un pied.", facing=(1, 0),
@@ -386,12 +388,13 @@ script = ExtResource("14_twinkle")
 color = Color(1, 1, 0.85, 0.9)
 polygon = PackedVector2Array(0, -3, 1, -1, 3, 0, 1, 1, 0, 3, -1, 1, -3, 0, -1, -1)
 ''' % px(BELL))
-if BELL not in lay.SEA or (BELL[0], BELL[1] + 1) not in DECK: print('  !! la cloche n est pas dans l eau contre un ponton')
+if BELL not in lay.SEA or (BELL[0] - 1, BELL[1]) not in DECK: print('  !! la cloche n est pas dans l eau contre la jetée')
+if BELL not in lay.DEEP: print('  !! la cloche n est pas en eau profonde')
 
 # ------------------------------------------------------------------ contrôles : tout se rejoint, dans les trois temps de l'histoire
 targets = {'porte ' + k: (v[0], v[1] + 1) for k, v in DOORS.items()}
 targets.update({'socle (devant)': (CXP, TOP + 4), 'devant les gardes': (ROAD[1], GUARD_Y + 1), 'derrière les gardes': (ROAD[1], GUARD_Y - 1), 'la sortie du nord': (ROAD[1], 0), 'bout de la jetée': (PIER_END[0], PIER_END[1] - 1),
-                'ponton de la cloche': (BELL[0], BELL[1] + 1), 'hautes herbes du sud-ouest': TALL_SW[0]})
+                'jetée, devant la cloche': (BELL[0] - 1, BELL[1]), 'hautes herbes du sud-ouest': TALL_SW[0]})
 def somewhere(x0, y0, x1, y1):
     """Une case de plage libre de ce rectangle : de quoi vérifier qu'on y descend."""
     cells = sorted(c for c in rect(x0, y0, x1, y1) if c in BEACH and c not in SOLID)

@@ -379,6 +379,11 @@ pas justifier est une erreur.
 - **Pour fermer**, une lisière se ferme d'abord avec des arbres ; le rocher
   vient là où un arbre ne peut pas pousser (le sable, l'eau) : en travers
   d'une passe, au bout d'une plage qui sort de la carte.
+- **Quand Ludovic entoure des rochers, on ne touche qu'à ceux-là, et à peine** (17/11/2026 : j'avais
+  remplacé tous les rochers de l'île par des lignes droites le long des bords —
+  « c'était 100 fois mieux avant, il fallait juste quelques petits
+  ajustements »). On garde ceux qui y sont, on en ajoute le peu qu'il faut pour
+  fermer, jamais alignés, et rien hors de ses tracés.
 - **Une barrière de rochers est une chaîne qui serpente** d'une rive à l'autre :
   chaque rocher touche le précédent (par un côté ou par un coin), aucun n'est
   aligné sur lui. Jamais une grille, jamais un semis au hasard.

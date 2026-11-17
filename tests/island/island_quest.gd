@@ -1,13 +1,13 @@
 extends "res://tests/lib.gd"
 
-# La cloche repose sous le ponton de l'ouest ; la trouee de la falaise est gardee jusqu'a la
+# La cloche repose contre la jetee du sud ; la trouee de la falaise est gardee jusqu'a la
 # Veillee ; la Veillee rassemble le village, puis prend fin des qu'on quitte l'ile.
 
 func scene() -> String:
 	return "start_island"
 
 func start() -> Vector2i:
-	return Vector2i(14, 22)
+	return Vector2i(34, 47)
 
 func there(n: String) -> bool:
 	return game.get_node_or_null(ENT + n) != null
@@ -22,18 +22,18 @@ func crowd() -> int:
 	return n
 
 func test() -> void:
-	# Sous le ponton : on repeche la cloche en regardant l'eau, vers le nord. Roland a dit ou
+	# Sous le ponton : on repeche la cloche en regardant l'eau, vers l'est. Roland a dit ou
 	# chercher (island_bell_hint joue cet echange) : ici son indice est pose d'office.
 	set_flag("bell_spotted")
 	await wait(4)
 	check("la cloche n'est pas encore trouvee", not flag("bell_tarnished"))
-	await interact_facing("ui_up")
+	await interact_facing("ui_right")
 	await wait_text("Quelque chose brille au fond de l'eau, juste sous le ponton.")
 	check("depuis le ponton, on voit briller quelque chose", box_text() == "Quelque chose brille au fond de l'eau, juste sous le ponton.", box_text())
 	await close_box()
 	check("on a repeche la cloche", flag("bell_tarnished"))
-	check("on n'a pas bouge du ponton", cell() == Vector2i(14, 22), str(cell()))
-	await interact_facing("ui_up")
+	check("on n'a pas bouge du ponton", cell() == Vector2i(34, 47), str(cell()))
+	await interact_facing("ui_right")
 	await secs(0.6)
 	check("une fois repechee, il n'y a plus rien a voir", not box().visible, box_text())
 
@@ -74,7 +74,7 @@ func test() -> void:
 				ring_free = false
 	check("le tour de la place reste libre pour le coureur", ring_free)
 	check("on peut encore se tenir devant le socle", is_free(Vector2i(28, 26)))
-	check("l'escalier et les deux pontons de la place restent degages", is_free(Vector2i(28, 31)) and is_free(Vector2i(28, 30)) and is_free(Vector2i(22, 23)) and is_free(Vector2i(35, 23)))
+	check("les deux escaliers de la place restent degages", is_free(Vector2i(28, 31)) and is_free(Vector2i(28, 30)) and is_free(Vector2i(19, 20)) and is_free(Vector2i(20, 20)) and is_free(Vector2i(18, 20)))
 
 	# APRES. On entre chez Ludo : quitter l'ile met fin a la Veillee. Meme Odile est rentree.
 	place(Vector2i(10, 9))
