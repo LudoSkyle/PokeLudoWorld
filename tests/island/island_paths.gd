@@ -164,7 +164,7 @@ func test() -> void:
 			on_path.append("mobilier en %s" % c)
 	check("rien n'est pose sur une piste", on_path.is_empty(), str(on_path))
 	check("des habitants vivent la : pres d'un banc, sur une serviette, pres des herbes", cell_of("BenchLady") == Vector2i(12, 15) and cell_of("Sunbather") == Vector2i(28, 36) and cell_of("Swimmer") == Vector2i(25, 15)
-		and cell_of("ShellKid") == Vector2i(29, 13) and cell_of("Sailor") == Vector2i(43, 17) and cell_of("Gardener") == Vector2i(49, 32))
+		and cell_of("ShellKid") == Vector2i(29, 13) and cell_of("Sailor") == Vector2i(45, 17) and cell_of("Gardener") == Vector2i(49, 32))
 	check("on marche sur une serviette, et l'on passe sous un parasol, derriere son mat", is_free(Vector2i(28, 35)) and is_free(Vector2i(25, 36)) and is_free(Vector2i(26, 36)) and is_free(Vector2i(22, 15)) and props.get_cell_source_id(Vector2i(25, 36)) == 10)
 
 	# Tout se rejoint a pied, depuis le depart.
