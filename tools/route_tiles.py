@@ -62,7 +62,24 @@ SHADOW_ROW = ('conif', 'sapling')
 MIXED_TREES = {'treeAB': ('treeA', 'treeB'), 'treeBA': ('treeB', 'treeA')}
 # L'escalier de la planche ne monte que face au sud. Tourné d'un quart, le même bloc monte par le flanc d'un plateau :
 # `stairW…` descend vers l'ouest, `stairE…` vers l'est. Leurs poteaux sont en haut et en bas, leurs marches au milieu.
-SIDE_STAIRS = {'W': (9, 13), 'E': (12, 13)}
+SIDE_STAIRS = {'W': (9, 13), 'E': (0, 16)}          # quatre colonnes sur trois rangées : le bas, la volée du bas, celle du haut, le haut
+# Une falaise à deux étages se monte par une volée double. Empiler deux fois la rangée de marches ne marche pas (Ludovic,
+# 17/11/2026 : « ça ne fonctionne pas d'empiler 2 simples ») : ses deux rangées du haut sont vides, la falaise s'y voit,
+# et chaque poteau a son pied au milieu. Deux rangées faites pour aller ensemble : celle du haut (`stairU…`) n'a pas de
+# pied de poteau, celle du bas (`stairL…`) a l'ombre d'une contremarche à la place du vide.
+DOUBLE_STAIRS = {'stairU4': (4, 16), 'stairU5': (7, 14), 'stairU6': (5, 16), 'stairL4': (4, 17), 'stairL5': (5, 17), 'stairL6': (6, 17)}          # (les colonnes 0 à 5 des rangées 13 à 15 sont aux arbres du relevé)
+# La jetée : des planches en travers, étroites, entre deux longerons à pieux — un ponton, pas le tablier d'un pont.
+# `pier4/5/6` : bord gauche, milieu, bord droit ; `pier1/2/3` : le dernier rang, avec son chant.
+PIER = {'pier4': (12, 12), 'pier5': (13, 12), 'pier6': (14, 12), 'pier1': (15, 12), 'pier2': (15, 13), 'pier3': (15, 14)}
+# Des coquillages pour le sable : rien n'en avait dans ce style, ils sont dessinés ici, cernés d'un brun de sable mouillé.
+SHELLS = {'shell1': (13, 5), 'shell2': (14, 5), 'shell3': (15, 5), 'shell4': (14, 6)}
+SHELL_ART = {
+    'shell1': (4, 6, ['..ooo..', '.owpwo.', 'owpwpwo', 'owpwpwo', '.owpwo.', '..ooo..']),                      # une coquille Saint-Jacques
+    'shell2': (6, 5, ['..oo..', '.occo.', 'ocdcco', '.occdo', '..ooo.']),                                      # un bigorneau
+    'shell3': (5, 4, ['...r...', '..rsr..', 'rrrsrrr', 'rsssssr', '.rsssr.', '.rsrsr.', '.rr.rr.']),           # une étoile de mer
+    'shell4': (2, 3, ['.o.........', 'owo........', '.o.........', '...........', '...........', '........oo.', '.......opwo', '........oo.']),
+}
+SHELL_INK = {'o': (150, 118, 86), 'w': (255, 255, 250), 'p': (238, 170, 160), 'c': (240, 214, 170), 'd': (214, 160, 110), 'r': (196, 110, 66), 's': (238, 156, 96)}
 TRAIL_CENTRE = (15, 4)            # une case de l'exemple où la piste est nue : son centre n'est pas sur la planche
 TRAIL_AT = (8, 1)
 KEYS, CORNERS = '789456123', 'ijkl'
@@ -131,7 +148,8 @@ def atlas():
     out['tall_pressing'], out['tall_pressed'] = (7, 6), (8, 6)
     out['ledgeVB'] = (15, 2)
     out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
-    for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%s' % (side, KEYS[j * 3 + i]): (c0 + i, r0 + j) for j in range(3) for i in range(3)})
+    for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%d%d' % (side, i, j): (c0 + i, r0 + j) for j in range(3) for i in range(4)})
+    out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS)
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -229,19 +247,59 @@ def cells(survey=False):
                     tile = [[CLEAR if any(g[b][a][:3] == tile[b][a][:3] for g in grounds) else tile[b][a] for a in range(16)] for b in range(16)]
                 made[(at[0] + i, at[1] + j)] = tile
     made[where['ledgeVB']] = ledge_bottom(made[where['ledgeVT']])
-    # les escaliers de côté : le bloc 3 x 3 de l'escalier, tourné d'un quart de tour
-    block = [[CLEAR] * 48 for _ in range(48)]
-    for j in range(3):
-        for i in range(3):
-            tile = made.get(where['stair' + KEYS[j * 3 + i]])
+    # la volée double : la rangée de marches en deux variantes qui se suivent
+    STEP_SHADE, POST, POST_FOOT = made[where['stair2']][0][0], made[where['stair4']][0][9], made[where['stair4']][15][9]
+    for k in '456':
+        up = [row[:] for row in made[where['stair' + k]]]
+        up = [[POST if p == POST_FOOT else p for p in row] for row in up]                                # le poteau continue : pas de pied au milieu
+        low = [row[:] for row in made[where['stair' + k]]]
+        for b in (0, 1):                                                                                 # l'ombre de la contremarche, là où la rangée simple est vide
+            for a in range(16):
+                if low[b][a][3] == 0 and (k == '5' or (k == '4' and a >= 13) or (k == '6' and a <= 2)): low[b][a] = STEP_SHADE
+        if k != '5': made[where['stairU' + k]] = up
+        made[where['stairL' + k]] = low
+    # les escaliers de côté : le bloc de l'escalier double (le haut, ses deux volées, le bas), tourné d'un quart de tour
+    block = [[CLEAR] * 48 for _ in range(64)]
+    for j, names in enumerate((('stair7', 'stair8', 'stair9'), ('stairU4', 'stairU5', 'stairU6'), ('stairL4', 'stairL5', 'stairL6'), ('stair1', 'stair2', 'stair3'))):
+        for i, name in enumerate(names):
+            tile = made.get(where[name])
             for b in range(16):
                 for a in range(16):
                     if tile: block[j * 16 + b][i * 16 + a] = tile[b][a]
-    turned = {'W': [[block[47 - x][y] for x in range(48)] for y in range(48)],          # le bas de l'escalier passe à gauche
-              'E': [[block[x][47 - y] for x in range(48)] for y in range(48)]}          # ou à droite
+    turned = {'W': [[block[63 - x][y] for x in range(64)] for y in range(48)],          # le bas de l'escalier passe à gauche
+              'E': [[block[x][47 - y] for x in range(64)] for y in range(48)]}          # ou à droite
     for side, (c0, r0) in SIDE_STAIRS.items():
         for j in range(3):
-            for i in range(3): made[(c0 + i, r0 + j)] = [[turned[side][j * 16 + b][i * 16 + a] for a in range(16)] for b in range(16)]
+            for i in range(4): made[(c0 + i, r0 + j)] = [[turned[side][j * 16 + b][i * 16 + a] for a in range(16)] for b in range(16)]
+    # la jetée : quatre planches par case, aux teintes du pont
+    ink = {p[:3]: None for row in made[where['bridgeV4']] for p in row}
+    DARK, SIDE, GAP, WOOD, LIGHT, SHADE = [c + (255,) for c in ((132, 97, 57), (165, 130, 82), (189, 146, 99), (222, 178, 123), (231, 195, 140), (206, 170, 115))]
+    assert all(c[:3] in ink for c in (DARK, SIDE, GAP, WOOD, LIGHT, SHADE)), 'les teintes du pont ont changé'
+    def planks(last):
+        tile = []
+        for b in range(16):
+            tone = (LIGHT, WOOD, SHADE, SIDE)[b % 4]
+            row = [tone] * 16
+            if b % 4 != 3: row[(5, 12, 2, 9)[b // 4]] = GAP                    # le joint entre deux planches, décalé d'un rang à l'autre
+            tile.append(row)
+        if last: tile[13], tile[14], tile[15] = [SHADE] * 16, [SIDE] * 16, [DARK] * 16          # le chant du dernier rang
+        return tile
+    def edged(tile, right):
+        tile = [row[:] for row in tile]
+        for b in range(16):
+            tile[b][0], tile[b][1] = DARK, SIDE                                # le longeron
+        for b, row in enumerate(('DDDD', 'DLLD', 'DSSD', 'DSSD', 'DSSD', 'DDDD')):          # la tête d'un pieu, un par case
+            for a, k in enumerate(row): tile[5 + b][a] = {'D': DARK, 'L': LIGHT, 'S': SIDE}[k]
+        return [row[::-1] for row in tile] if right else tile
+    for last, names in ((False, ('pier4', 'pier5', 'pier6')), (True, ('pier1', 'pier2', 'pier3'))):
+        made[where[names[0]]], made[where[names[1]]], made[where[names[2]]] = edged(planks(last), False), planks(last), edged(planks(last), True)
+    # les coquillages
+    for name, (x0, y0, art) in SHELL_ART.items():
+        tile = [[CLEAR] * 16 for _ in range(16)]
+        for b, row in enumerate(art):
+            for a, k in enumerate(row):
+                if k != '.': tile[y0 + b][x0 + a] = SHELL_INK[k] + (255,)
+        made[where[name]] = tile
     # Le rivage sans son eau : le bord du sable seul, à poser par-dessus une case d'eau. C'est ce qui laisse un reflet
     # passer dessous au lieu de s'étaler sur le sable (l'île de départ ; la Route 1 garde le bord d'une seule pièce).
     for name in [n for n in where if n.startswith('shore')]:

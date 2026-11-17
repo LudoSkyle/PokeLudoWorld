@@ -411,7 +411,10 @@ calque trié en Y de `World` :
 | sapin, arbuste | `11:6,7` `11:7,7` | 1×3 : deux cases, et une rangée d'ombre **sous** le pied | sa case |
 | caillou, bloc brun | `11:8,11`, `11:9,10` | 1×1, 2×2 | ses cases |
 | rochers de la rivière : gros, pointu, deux petits | `11:11,9` `11:13,10` `11:14,11` `11:15,11` | 2×3, 1×2, 1×1 | rien : l'eau qui les porte bloque |
-| escalier de côté : le bloc d'escalier tourné d'un quart, `stairW7…3` (son pied est à l'ouest) et `stairE7…3` (son pied est à l'est) | `11:9-11,13-15` `11:12-14,13-15` | 2 colonnes × 3 rangées, entre deux poutres | ses poutres du haut et du bas ; les marches se foulent |
+| volée double : la rangée de marches en deux variantes faites pour se suivre, `stairU4/5/6` (haut, sans pied de poteau) et `stairL4/5/6` (bas, l'ombre d'une contremarche à la place du vide) | `11:4-5,16` `11:7,14` `11:4-6,17` | 1×1 | rien : les marches se foulent |
+| escalier de côté : le bloc de la volée double tourné d'un quart, `stairW<colonne><rangée>` (son pied est à l'ouest) et `stairE…` (son pied est à l'est) | `11:9-12,13-15` `11:0-3,16-18` | 4 colonnes × 3 rangées, entre deux poutres | ses poutres du haut et du bas ; les marches se foulent |
+| jetée : planches en travers entre deux longerons à pieux, `pier4/5/6`, et son dernier rang `pier1/2/3` | `11:12-14,12` `11:15,12-14` | 1×1 | rien |
+| coquillages : Saint-Jacques, bigorneau, étoile de mer, deux petits (`shell1…4`) — dessinés par `route_tiles.py`, rien n'en avait dans ce style | `11:13-15,5` `11:14,6` | 1×1 | rien : du décor, sur `Decorations` |
 
 - **Pourquoi deux rangées entières.** La cime retombe de chaque côté du
   tronc : une case qu'elle recouvre n'est pas une case où l'on se tient, et

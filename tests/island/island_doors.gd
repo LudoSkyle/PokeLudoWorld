@@ -20,7 +20,7 @@ func test() -> void:
 	await visit("chez Ludo", Vector2i(10, 9), "ludo_house")
 	await visit("la bibliotheque", Vector2i(3, 30), "library")
 	await visit("le laboratoire", Vector2i(45, 9), "lab_house")
-	await visit("chez Solange, la maison du sud-est", Vector2i(43, 34), "orange_house_south")
+	await visit("chez Solange, la maison du sud-est", Vector2i(44, 34), "orange_house_south")
 
 	# Chaque maison est une seule tuile, triee juste derriere la rangee de son pied : le joueur qui entre passe devant elle, celui qui la contourne passe derriere son toit.
 	var houses: TileMapLayer = level().get_node("World/Houses")

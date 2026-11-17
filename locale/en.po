@@ -651,11 +651,11 @@ msgstr "I heard the bell from my towel."
 msgid "Je n'ai pas bougé pour autant."
 msgstr "I didn't move, mind you."
 
-msgid "L'eau de la crique est la plus calme de l'île."
-msgstr "The water in the cove is the calmest on the island."
+msgid "Le sable de la crique est le plus fin de l'île."
+msgstr "The sand in the cove is the finest on the island."
 
-msgid "Les vagues se cassent sur les rochers avant d'arriver."
-msgstr "The waves break on the rocks before they get here."
+msgid "Et les falaises coupent le vent : on y est bien."
+msgstr "And the cliffs keep the wind off: it's a good spot."
 
 msgid "J'étais dans l'eau quand la cloche a sonné."
 msgstr "I was in the water when the bell rang."

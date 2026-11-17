@@ -462,6 +462,19 @@ pas justifier est une erreur.
 
 ### J. Collisions
 
+- **La rangée du haut d'un plateau se foule, toujours.** Sa tuile est de l'herbe
+  avec un liseré : rien n'y dit « falaise ». Ce qui arrête, c'est ce qu'il y a
+  derrière (le gradin de roche, le vide). L'erreur est revenue deux fois sur
+  l'île de départ (Ludovic, 17/11/2026 : « tu n'arrêtes pas de la faire ») —
+  `layout.py` refuse maintenant une carte où ce bord est fermé, et
+  `island_paths` le parcourt d'un bout à l'autre.
+- **Un escalier de deux étages est une volée double, pas deux simples
+  empilés** : entre les deux, la falaise se voit et le poteau a un pied au
+  milieu. Chercher la tuile double ; à défaut, la fabriquer (`stairU…`,
+  `stairL…`).
+- **Un passage entre deux plages fait au moins trois cases**, et l'on n'y
+  plante rien.
+
 - **La grille de collisions du moteur est celle du plan**, case pour case.
   Contrôle après chaque génération. La sonde interroge deux points par case :
   un point pile sur une arête interne d'un polygone fusionné passe au travers.
