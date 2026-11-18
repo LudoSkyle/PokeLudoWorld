@@ -245,15 +245,16 @@ autrement. Il peut errer ou faire une ronde, comme tout PNJ. Sur l'île :
 ### Un seul sprite par espèce
 
 Qu'il soit posé, qu'il suive le joueur ou qu'il vole, un Pokémon lit **le
-fichier de son espèce**, `assets/pokemon/overworld/<espèce>.png`, et rien
-d'autre : `PokemonFrames.kt` en tire les animations d'un personnage
-(`idle_`, `walk_`, `turn_` × quatre directions), à l'échelle 1, le bas de
-l'image au bas de la case. **Il n'y a pas de planche par usage** — ne jamais
-en fabriquer une : un nouvel usage se branche sur `PokemonFrames`.
+fichier de son espèce**, `assets/pokemon/overworld/<espèce>.png` — celui du
+pack de données ([pokedex.md](pokedex.md)) — et rien d'autre.
+`PokemonFrames.kt` en tire les animations d'un personnage (`idle_`, `walk_`,
+`turn_` × quatre directions), le bas de l'image au bas de la case, comme
+Pokémon Studio. **Il n'y a pas de planche par usage** — ne jamais en fabriquer
+une : un nouvel usage se branche sur `PokemonFrames`.
 
-**Voler n'est qu'une hauteur** : `PokemonFrames.liftOf(espèce)` dit de combien
-de pixels l'espèce se tient au-dessus de la ligne du sol (0 si elle marche).
-Le PNJ, le suiveur et le volant du ciel s'en servent tous.
+**Le code n'ajoute rien au dessin** : ni saut, ni hauteur de vol. Un volant
+est dessiné en l'air dans son image, et le petit saut d'un pixel de la marche
+est dans les colonnes 1 et 3 de la planche.
 
 Le Pokémon qui suit le joueur est décrit dans [player.md](player.md).
 

@@ -45,9 +45,9 @@ patch_margin_bottom = 8
 
 [node name="Icon" type="TextureRect" parent="Control/Panel"]
 layout_mode = 0
-offset_left = 48.0
-offset_top = 48.0
-offset_right = 144.0
-offset_bottom = 144.0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 160.0
+offset_bottom = 160.0
 mouse_filter = 2
 expand_mode = 1

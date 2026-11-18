@@ -4,30 +4,24 @@ import godot.api.ResourceLoader
 import godot.api.Texture2D
 
 /**
- * Les icônes d'objets : **un fichier par icône**, sous `assets/items/icons/`.
+ * Les icônes d'objets : **un fichier par icône**, de 32 x 32, sous `assets/items/icons/`.
  *
- * - `named/` : les objets officiels qu'on sait nommer — `potion.png`,
- *   `super_repel.png`. Quand un objet a plusieurs dessins, le premier porte
- *   son nom et les autres leur origine (`old_rod-old_colors.png`) ; une
- *   ancienne version officielle porte sa génération (`town_map_gen3.png`).
- * - `unnamed/` : les objets officiels dont on n'a pas le nom, sous le numéro
- *   de leur case — `07_F_2_fan.png`.
- * - `custom/` : les icônes faites pour ce jeu — `clear_bell.png`.
+ * - à la racine : les objets du pack de données, sous leur nom — `potion.png`,
+ *   `super_repel.png` (`tools/gamedata.py`) ;
+ * - `custom/` : les icônes faites pour ce jeu — `clear_bell.png` ;
+ * - `other/` : les quelques icônes venues d'ailleurs, sous le nom de leur
+ *   case d'origine — `07_F_2_fan.png`.
  *
- * Une icône se désigne par son nom seul quand elle est dans `named/`
- * (`potion`), par son dossier et son fichier sinon (`custom/clear_bell`,
- * `unnamed/07_F_2_fan`). **Le nom d'un fichier dit ce qu'est l'icône, jamais
- * à quoi le jeu l'emploie** : se servir d'une icône sans nom ne la renomme
- * pas.
- *
- * Les dossiers sont fabriqués par `tools/item_icons.py` (voir
- * `assets/items/CREDITS.md`).
+ * Une icône se désigne par son nom seul quand elle vient du pack (`potion`),
+ * par son dossier et son fichier sinon (`custom/clear_bell`,
+ * `other/07_F_2_fan`). **Le nom d'un fichier dit ce qu'est l'icône, jamais à
+ * quoi le jeu l'emploie.** Voir `assets/items/CREDITS.md`.
  */
 object ItemIcons {
 
 	/** La flèche de la ligne « Retour » du sac, et l'icône d'un objet qui n'en a pas. */
-	const val BACK = "unnamed/00_F_F_special"
-	const val UNKNOWN = "unnamed/frlg_227"
+	const val BACK = "other/00_F_F_special"
+	const val UNKNOWN = "other/frlg_227"
 
 	private const val DIR = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/items/icons/"
 
@@ -43,6 +37,6 @@ object ItemIcons {
 		if (has(icon)) ResourceLoader.load(path(icon)) as? Texture2D else null
 	}
 
-	/** Un nom seul est dans `named/` ; `dossier/fichier` se lit tel quel. */
-	private fun path(icon: String): String = if ('/' in icon) "$DIR$icon.png" else "${DIR}named/$icon.png"
+	/** Un nom seul est à la racine, celle du pack ; `dossier/fichier` se lit tel quel. */
+	private fun path(icon: String): String = "$DIR$icon.png"
 }

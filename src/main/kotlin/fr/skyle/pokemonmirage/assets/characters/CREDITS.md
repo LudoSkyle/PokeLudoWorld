@@ -64,8 +64,7 @@ jeu n'en lit aucune ; ce qu'on en prend est sorti à part.
 |---|---|---|---|
 | `hgss_trainers_overworld.png` | les dresseurs et personnages d'Or HeartGold / Argent SoulSilver sur la carte, dans leur dessin d'origine (une planche de 957 × 1101, pas le format redessiné du Megapack) | Game Freak ; extrait publié sur The Spriters Resource | `DS _ DSi - Pokemon HeartGold _ SoulSilver - Overworld - Trainers (Overworld).png` |
 
-Téléchargée par Ludo le 15/11/2026, avec les planches de Pokémon de
-`assets/pokemon/sources/`.
+Téléchargée par Ludo le 15/11/2026.
 
 ### `sources/teraleak/` — « Teraleak OWs & Assets »
 

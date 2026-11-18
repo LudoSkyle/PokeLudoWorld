@@ -60,6 +60,9 @@ class Player : CharacterBody2D() {
 	/** L'ombre au sol, qu'on ne voit que le temps d'un saut. */
 	private var jumpShadow: Node2D? = null
 
+	/** L'ombre de tous les jours, sous ses pieds — la même que celle des PNJ. Le temps d'un saut, c'est l'autre qu'on voit. */
+	private var shadow: Node2D? = null
+
 	/** La hauteur de l'image au repos, celle de la scène. */
 	private var spriteRest = 0.0
 
@@ -125,6 +128,7 @@ class Player : CharacterBody2D() {
 		sprite = getNode("Sprite") as? CharacterAnimation
 		spriteRest = sprite?.position?.y ?: 0.0
 		jumpShadow = (if (hasNode("JumpShadow")) getNode("JumpShadow") else null) as? Node2D
+		shadow = (if (hasNode("Shadow")) getNode("Shadow") else null) as? Node2D
 
 		movement?.attach(this)
 		loadRunPose()
@@ -143,6 +147,7 @@ class Player : CharacterBody2D() {
 		sprite?.let { it.position = Vector2(it.position.x, spriteRest - currentMovement.lift) }
 		// Son ombre reste au sol, sous lui : c'est elle qui dit qu'il est en l'air.
 		jumpShadow?.visible = currentMovement.isJumping
+		shadow?.visible = !currentMovement.isJumping
 
 		// Un passage gardé se déclenche à l'instant où l'on se pose dessus,
 		// avant que la touche tenue n'engage le pas suivant.

@@ -11,7 +11,7 @@ enum class Pocket(val title: String, val bag: String) {
 
 /**
  * Un objet du jeu. [id] est aussi sa ligne dans la sauvegarde, **et le nom de
- * son icône** : `potion` se dessine avec `assets/items/icons/named/potion.png`
+ * son icône** : `potion` se dessine avec `assets/items/icons/potion.png`
  * (voir [ItemIcons]). [name] et [description] sont en français et se
  * traduisent à l'affichage.
  *
@@ -38,8 +38,8 @@ data class Item(
 
 /**
  * Le catalogue. Ajouter un objet : une ligne ici, ses deux textes dans
- * `locale/en.po`, et son icône `assets/items/icons/named/<id>.png` — près de
- * 900 objets y ont déjà la leur.
+ * `locale/en.po`, et son icône `assets/items/icons/<id>.png` — le pack de données
+ * en fournit près de 1 700.
  */
 object Items {
 
@@ -53,17 +53,15 @@ object Items {
 		Item("soda_pop", N("Soda Cool"), N("Une boisson pétillante et sucrée. Elle redonne du tonus."), Pocket.ITEMS),
 		Item("lemonade", N("Limonade"), N("Une limonade bien fraîche. Rien de tel après une longue marche."), Pocket.ITEMS),
 		Item("poke_ball", N("Poké Ball"), N("Une capsule que l'on lance pour attraper un Pokémon sauvage."), Pocket.BALLS),
-		// L'icône d'origine, en 24 x 24 ; `old_rod` tout court est le dessin récent, en 32 x 32.
-		Item("old_rod", N("Vieille canne"), N("Une canne à pêche usée. Le bois est lisse à force d'avoir servi."), Pocket.KEY_ITEMS, icon = "old_rod-old_colors"),
-		// Un plan à plat, « dessiné à la main » : c'est l'icône du Tri-Passe de FRLG. Les vraies
-		// cartes sont `town_map_gen3`, `town_map_gen4` (pliées) et `town_map` (récente, 32 x 32).
-		Item("town_map", N("Carte du village"), N("Un plan de Bourg-Ludo et de ses environs, dessiné à la main."), Pocket.KEY_ITEMS, icon = "tri_pass"),
+		Item("old_rod", N("Vieille canne"), N("Une canne à pêche usée. Le bois est lisse à force d'avoir servi."), Pocket.KEY_ITEMS),
+		Item("town_map", N("Carte du village"), N("Un plan de Bourg-Ludo et de ses environs, dessiné à la main."), Pocket.KEY_ITEMS),
+		// L'icône du Livre de Règles : un vieux livre.
 		Item("dusty_register", N("Registre poussiéreux"), N("Le vieux registre des Veillées. Sa dernière page parle d'une cloche mise à l'abri."), Pocket.KEY_ITEMS, icon = "rule_book"),
 		Item("tarnished_bell", N("Cloche ternie"), N("Une petite cloche de bronze noircie, sortie de la vase du lac souterrain."), Pocket.KEY_ITEMS, icon = "custom/tarnished_bell"),
 		// Notre cloche ; `clear_bell` tout court est le Glas Transparent officiel.
 		Item("clear_bell", N("Cloche claire"), N("La cloche de Bourg-Ludo, nettoyée. Son bronze a retrouvé sa couleur."), Pocket.KEY_ITEMS, icon = "custom/clear_bell"),
-		// Un dessin de fan de la planche de Kryptonlion, sans nom : case 07:F:2.
-		Item("vigil_ribbon", N("Ruban de la Veillée"), N("Le ruban que Mémé Odile portait à la dernière Veillée. Un souvenir."), Pocket.KEY_ITEMS, icon = "unnamed/07_F_2_fan"),
+		// Un dessin de fan de la planche de Kryptonlion (case 07:F:2), gardé : le pack n'a pas de ruban qui convienne.
+		Item("vigil_ribbon", N("Ruban de la Veillée"), N("Le ruban que Mémé Odile portait à la dernière Veillée. Un souvenir."), Pocket.KEY_ITEMS, icon = "other/07_F_2_fan"),
 	)
 
 	private val byId = ALL.associateBy { it.id }

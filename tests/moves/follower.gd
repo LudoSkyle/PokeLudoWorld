@@ -17,17 +17,17 @@ func test() -> void:
 	await wait(5)
 	check("le suiveur est la, cache sur la case du joueur tant qu'il n'a pas bouge", not follower().visible and behind() == cell(), str(behind()))
 	var sheet: String = sprite.sprite_frames.get_frame_texture("idle_down", 0).atlas.resource_path
-	check("son image est le fichier de son espece", sheet.ends_with("assets/pokemon/overworld/wingull.png"), sheet)
-	check("au pixel du jeu, et releve de sa hauteur de vol : 3 pixels", sprite.scale == Vector2(1, 1) and sprite.position == Vector2(0, -11), "%s %s" % [sprite.scale, sprite.position])
+	check("son image est le fichier de son espece, celui du pack de donnees", sheet.contains("assets/pokemon/overworld/") and sheet.ends_with(".png"), sheet)
+	check("le bas de son image est au bas de la case, sans rien ajouter a son dessin", is_equal_approx(sprite.position.y, 8.0 - 16.0 * sprite.scale.y) and sprite.offset == Vector2.ZERO, "%s %s" % [sprite.scale, sprite.position])
 
 	await walk("trois cases a droite", Vector2i(5, 2), false)
 	check("il apparait et se tient une case derriere, a gauche", follower().visible and behind() == cell() + Vector2i.LEFT, str(behind()))
-	check("arrete, il regarde le joueur", str(sprite.animation) == "idle_right", str(sprite.animation))
+	check("arrete, il regarde le joueur et continue de s'animer sur place", str(sprite.animation) == "walk_right" and sprite.is_playing() and sprite.speed_scale == 1.0, str(sprite.animation))
 	shot("follower_right")
 
 	await walk("deux cases en bas", Vector2i(5, 4), false)
 	check("il a pris le virage : une case au-dessus du joueur", behind() == cell() + Vector2i.UP, str(behind()))
-	check("et le regarde", str(sprite.animation) == "idle_down", str(sprite.animation))
+	check("et le regarde, toujours anime", str(sprite.animation) == "walk_down" and sprite.is_playing(), str(sprite.animation))
 	shot("follower_down")
 
 	# Il marche quand le joueur marche.

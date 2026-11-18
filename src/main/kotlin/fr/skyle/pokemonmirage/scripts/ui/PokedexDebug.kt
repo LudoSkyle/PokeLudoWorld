@@ -183,30 +183,24 @@ class PokedexDebug : CanvasLayer() {
 
 	private fun measure(value: Double, unit: String): String = if (value <= 0.0) "? $unit" else "${value.toString().replace('.', ',')} $unit"
 
-	/** La première des deux images de l'icône, dans sa case de la planche. */
+	/** La première des deux images de l'icône : la moitié gauche de son fichier. */
 	private fun iconOf(entry: DexEntry): Texture2D? {
 		if (!entry.hasIcon) return null
-		val sheet = ResourceLoader.load(NationalDex.ICONS) as? Texture2D ?: return null
-		val column = (entry.number - 1) % NationalDex.ICON_COLUMNS
-		val row = (entry.number - 1) / NationalDex.ICON_COLUMNS
+		val sheet = ResourceLoader.load(NationalDex.ICONS_DIR + entry.id + ".png") as? Texture2D ?: return null
 		return AtlasTexture().apply {
 			atlas = sheet
-			region = Rect2(column * 64.0, row * 32.0, 32.0, 32.0)
+			region = Rect2(0.0, 0.0, sheet.getWidth() / 2.0, sheet.getHeight().toDouble())
 		}
 	}
 
-	/**
-	 * L'image du côté [facing] du sprite de marche. Un bloc a deux colonnes de quatre images carrées : dos, dos,
-	 * face, face à gauche ; gauche, gauche, droite, droite à droite.
-	 */
+	/** La première image du côté [facing] du sprite : quatre rangées — bas, gauche, droite, haut — de quatre images carrées. */
 	private fun walkerOf(entry: DexEntry): Texture2D? {
 		if (!entry.hasOverworld) return null
-		// Chaque espèce a son fichier : deux colonnes de quatre images carrées, plus grandes pour un gros Pokémon.
 		val sheet = ResourceLoader.load(NationalDex.OVERWORLD_DIR + entry.id + ".png") as? Texture2D ?: return null
-		val side = sheet.getWidth() / 2.0
+		val side = sheet.getWidth() / 4.0
 		return AtlasTexture().apply {
 			atlas = sheet
-			region = Rect2(FRAME_AT[facing].first * side, FRAME_AT[facing].second * side, side, side)
+			region = Rect2(0.0, ROW_AT[facing] * side, side, side)
 		}
 	}
 }
@@ -220,5 +214,5 @@ private const val SCALE = 4.0
 /** Durée d'un côté, en millisecondes. */
 private const val TURN_MS = 1000L
 
-/** (colonne, rangée) de la première image de chaque côté dans un bloc : face, gauche, dos, droite. */
-private val FRAME_AT = listOf(0 to 2, 1 to 0, 0 to 0, 1 to 2)
+/** La rangée de chaque côté dans le fichier, dans l'ordre où la vue les montre : face, gauche, dos, droite. */
+private val ROW_AT = listOf(0, 1, 3, 2)

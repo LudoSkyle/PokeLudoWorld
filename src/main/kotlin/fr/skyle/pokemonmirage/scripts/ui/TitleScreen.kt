@@ -347,8 +347,9 @@ class TitleScreen : CanvasLayer() {
 		birds.forEach { bird ->
 			// Les ailes battent même pendant l'attente : l'oiseau est hors de l'écran.
 			val beat = ((clock + bird.phase) * FLYER_BEATS).toInt() % 2
-			val row = (if (bird.heading < 0.0) 0 else 2) + beat
-			bird.sprite.regionRect = Rect2(FLYER_FRAME, row * FLYER_FRAME, FLYER_FRAME, FLYER_FRAME)
+			// La planche : rangées bas, gauche, droite, haut ; les deux dessins sont dans les colonnes 0 et 2.
+			val row = if (bird.heading < 0.0) 1 else 2
+			bird.sprite.regionRect = Rect2(beat * 2 * FLYER_FRAME, row * FLYER_FRAME, FLYER_FRAME, FLYER_FRAME)
 
 			if (bird.wait > 0.0) {
 				bird.wait -= delta

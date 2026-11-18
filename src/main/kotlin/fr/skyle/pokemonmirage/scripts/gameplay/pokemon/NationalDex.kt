@@ -41,23 +41,21 @@ data class DexEntry(
 /**
  * Le Pokédex national : toutes les espèces qui existent, dans l'ordre de leur
  * numéro. Il se lit dans `resources/pokedex/national.tsv`, que fabrique
- * `tools/pokedex.py` — une espèce par ligne, ses champs séparés par des
+ * `tools/gamedata.py`, depuis le pack de données — une espèce par ligne, ses champs séparés par des
  * tabulations. Ce n'est pas le catalogue des espèces du jeu ([Dex]) : pour
  * l'instant il ne sert qu'à la vue de debug, qui montre ce qui est renseigné.
  */
 object NationalDex {
 
 	const val PATH = "res://src/main/kotlin/fr/skyle/pokemonmirage/resources/pokedex/national.tsv"
-	const val ICONS = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/icons.png"
+	/** Le dossier des icônes : un fichier par espèce, `<id>.png`, de 64 x 32 — deux images de 32 x 32. */
+	const val ICONS_DIR = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/icons/"
 
 	/**
-	 * Le dossier des sprites de marche : un fichier par espèce, `<id>.png` — deux colonnes de quatre images carrées
-	 * (dos, dos, face, face ; gauche, gauche, droite, droite), de 32 pixels de côté, ou 64 pour un gros Pokémon.
+	 * Le dossier des sprites sur la carte : un fichier par espèce, `<id>.png` — quatre rangées (bas, gauche, droite,
+	 * haut) de quatre images carrées, de 32 pixels de côté ou plus pour un gros Pokémon.
 	 */
 	const val OVERWORLD_DIR = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/overworld/"
-
-	/** Espèces par rangée de la planche d'icônes ; une case fait 64 x 32 (deux images de 32 x 32). */
-	const val ICON_COLUMNS = 25
 
 	val all: List<DexEntry> by lazy { read() }
 

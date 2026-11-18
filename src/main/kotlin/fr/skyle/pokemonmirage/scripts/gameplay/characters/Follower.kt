@@ -14,8 +14,7 @@ import kotlin.math.abs
  * case que le joueur vient de quitter, à son allure.
  *
  * Son image est celle de son espèce ([PokemonFrames]) — le fichier que lit
- * aussi un Pokémon posé sur la carte. S'il vole, il se tient plus haut, c'est
- * tout.
+ * aussi un Pokémon posé sur la carte, chaque image à sa hauteur d'origine. Il s'anime sans cesse, même arrêté.
  *
  * Il n'a pas de corps : il n'arrête personne, et le joueur qui rebrousse
  * chemin passe à travers lui. À l'arrivée sur une carte il est sur la case du
@@ -73,7 +72,6 @@ class Follower : Node2D() {
 			// Même durée que le pas du joueur, quelle que soit la distance (après un saut, il y a deux cases à rattraper).
 			val cells = (position.distanceTo(target) / grid()).coerceAtLeast(1.0)
 			speed = movement.paceNow * grid() * cells
-			sprite?.speedScale = (movement.paceNow / WALK_PACE).toFloat()
 			isWalking = position.distanceTo(target) > 0.01
 			visible = true
 		}
@@ -95,7 +93,9 @@ class Follower : Node2D() {
 		// Arrivé, il regarde le joueur.
 		if (!isWalking && player.position.distanceTo(position) > 0.01) direction = cardinal(player.position - position)
 
-		sprite?.refresh(direction, isWalking)
+		// Il s'anime sans cesse, même arrêté, et toujours à la même cadence, qu'on marche ou qu'on coure — comme dans
+		// les jeux d'origine et dans PSDK (`step_anime`). Son petit saut d'un pixel est dans son image.
+		sprite?.refresh(direction, true)
 	}
 
 	private fun cardinal(gap: Vector2): Vector2 = when {
@@ -104,8 +104,4 @@ class Follower : Node2D() {
 	}
 
 	private fun grid(): Double = Globals.instance.gridSize.toDouble()
-
-	companion object {
-		private const val WALK_PACE = 4.0
-	}
 }

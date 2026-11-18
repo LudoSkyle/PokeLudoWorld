@@ -552,7 +552,7 @@ reçoit ([bag.md](bag.md)). Il leur faut donc à chacun :
 - une **icône** ([bag.md](bag.md)). Un objet de quête n'a pas d'icône toute
   faite, son champ `icon` va la chercher : celle d'un objet officiel
   (`"rule_book"`), une icône sans nom de la réserve
-  (`"unnamed/07_F_2_fan"`), ou une icône dessinée pour le jeu
+  (`"other/07_F_2_fan"`), ou une icône dessinée pour le jeu
   (`"custom/clear_bell"`, voir le `CREDITS.md` du dossier). On ne renomme
   pas un fichier d'icône pour l'occasion. Sans fichier, le sac affiche un
   point d'interrogation.

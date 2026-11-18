@@ -15,7 +15,7 @@ func test() -> void:
 	check("chaque objet du catalogue a son icone, en 24 x 24", missing == "", missing)
 
 	for path in ["named/potion", "named/poke_ball", "named/master_ball", "named/razz_berry", "named/machine_fire", "named/rule_book", "named/tri_pass",
-			"custom/clear_bell", "custom/tarnished_bell", "unnamed/07_F_2_fan", "unnamed/00_F_F_special", "unnamed/frlg_227"]:
+			"custom/clear_bell", "custom/tarnished_bell", "other/07_F_2_fan", "other/00_F_F_special", "other/frlg_227"]:
 		var texture: Texture2D = load(ICONS + path + ".png")
 		check("%s.png fait 24 x 24" % path, texture != null and texture.get_size() == Vector2(24, 24),
 			"introuvable" if texture == null else str(texture.get_size()))

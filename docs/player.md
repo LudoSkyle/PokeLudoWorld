@@ -221,7 +221,8 @@ frame suivante.
 `scenes/characters/follower.tscn` (`Follower.kt`) : un Pokémon marche **une
 case derrière le joueur**, sur la case qu'il vient de quitter, à son allure —
 après un saut de rebord il rattrape les deux cases dans le temps du saut.
-Arrêté, il regarde le joueur. Il n'a pas de corps : il n'arrête personne, et
+Arrêté, il regarde le joueur, et **continue de s'animer sur place**, comme
+dans les jeux d'origine. Il n'a pas de corps : il n'arrête personne, et
 le joueur qui rebrousse chemin passe à travers lui.
 
 `SceneManager` le pose avec le joueur dans `World/Entities` à chaque carte,

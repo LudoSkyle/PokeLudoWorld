@@ -54,15 +54,28 @@ autre — `island_tiles.py` produit `assets/levels/island.png`,
 `route_tiles.py` découpe `assets/levels/route.png` dans la planche de la
 carte d'exemple de la route, `village_tiles.py` y découpe les maisons de
 `assets/levels/village.png`,
-`weather_sheets.py` les planches de `assets/weather/`, `item_icons.py` les
-icônes de `assets/items/icons/` (`named/`, `unnamed/`, `invented/`, et
-`custom/` pour celles faites pour le jeu). Les trois
+`gamedata.py` sort du pack de données (`vendor/GameDataPacks`) les sprites,
+icônes, cris et données des 1025 espèces, et les icônes des objets,
+`weather_sheets.py` les planches de `assets/weather/`. Les trois
 `title_*.py` dessinent les images de l'écran titre. `tools/maps/` garde les
 générateurs de cartes : `route_1/` relève une carte d'exemple tuile par
 tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`) ;
 `start_island/` lit la géographie d'une carte d'exemple (`geography.py`) et en
 fabrique l'île de départ, avec les tuiles de la Route 1. `seam.py` colle
 le bas de la route et le haut de l'île, pour vérifier qu'elles se suivent.
+
+`vendor/GameDataPacks/` (hors Godot : `vendor/.gdignore`) : le pack
+`Gen 9/scarlet-violet` des packs de données de Pokémon Studio, **copié tel
+quel dans le dépôt** — pas un sous-module ; son commit d'origine est noté dans
+`vendor/GameDataPacks/ORIGINE.md`. **C'est la base du jeu**, la même que PSDK
+et Pokémon Studio : données des espèces, objets, capacités, talents, types et
+Pokédex (`Data/Studio/*.json`), textes en sept langues
+(`Data/Text/Dialogs/*.csv`), cris, sprites sur la carte, icônes d'objets,
+sprites de combat et icônes des Pokémon (`graphics/`). Pour tout ce qu'il
+contient, on part de lui plutôt que d'une autre source. Le jeu ne lit jamais ce
+dossier : `tools/gamedata.py` en sort ce qu'il faut vers `assets/` et
+`resources/`. Licence de Pokémon Studio : attribution, usage non commercial,
+partage dans les mêmes conditions.
 
 ## Règles qui ne se redemandent pas
 

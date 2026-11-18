@@ -98,7 +98,7 @@ class SceneManager : Node() {
 	 * suit. Provisoire : ce sera le premier Pokémon de l'équipe, le jour où il y en aura une.
 	 */
 	@Export
-	var followerSpecies: String = "wingull"
+	var followerSpecies: String = "mantine"
 
 	@Export
 	var followerScene: String = "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/characters/follower.tscn"

@@ -4,7 +4,6 @@ import fr.skyle.pokemonmirage.scripts.autoload.Globals
 import fr.skyle.pokemonmirage.scripts.core.AudioManager
 import fr.skyle.pokemonmirage.scripts.core.SceneManager
 import fr.skyle.pokemonmirage.scripts.ui.MessageBox
-import fr.skyle.pokemonmirage.scripts.gameplay.characters.PokemonFrames
 import fr.skyle.pokemonmirage.scripts.log.Logger
 import godot.annotation.Category
 import godot.annotation.Export
@@ -37,11 +36,9 @@ import kotlin.random.Random
  * une [seed] sont pris dans le même souffle — même allure, mêmes
  * ondulations : ils voyagent en groupe.
  *
- * Son image vient de `assets/pokemon/overworld/<species>.png` : un bloc de
- * 64 × 128, deux colonnes de quatre images de 32 × 32 (dos, dos, face, face /
- * gauche, gauche, droite, droite). Il y est posé au sol, comme toutes les
- * espèces ; en vol, il est dessiné quelques pixels plus haut
- * ([PokemonFrames.liftOf]).
+ * Son image vient de `assets/pokemon/overworld/<species>.png` : quatre rangées
+ * — bas, gauche, droite, haut — de quatre images carrées (voir
+ * `PokemonFrames`).
  *
  * Il n'a pas de reflet : trop haut, et de lui on ne voit déjà, sur terre,
  * qu'une tache d'ombre. Au-dessus de l'eau c'est donc son **ombre qui bleuit**
@@ -122,8 +119,6 @@ class Flyer : Node2D() {
 		val sheet = ResourceLoader.load("$SHEETS$species.png") as? Texture2D
 		if (sheet == null) Logger.e("Pokemon volant sans image : $species")
 		sprite?.texture = sheet
-		// Dans son fichier il est posé au sol, comme toutes les espèces : c'est ici, en vol, qu'il prend sa hauteur.
-		sprite?.offset = Vector2(0.0, -PokemonFrames.liftOf(species))
 		if (seed != 0) random = Random(seed)
 		// Chacun part à son heure : sans ça, tous les oiseaux de la carte bougeraient ensemble.
 		wait = random.nextDouble() * rest.y
@@ -231,21 +226,24 @@ class Flyer : Node2D() {
 
 	private fun grid(): Double = Globals.instance.gridSize.toDouble()
 
-	/** L'image du moment : la colonne et la rangée du sens, plus le battement d'ailes. */
+	/**
+	 * L'image du moment : la rangée du sens, et le battement d'ailes — les colonnes 0 et 2, les deux dessins, sans le
+	 * petit saut des colonnes 1 et 3 : en l'air il ne rebondit pas, c'est le vent qui le porte.
+	 */
 	private fun flap() {
 		val beat = (clock * BEATS_PER_SECOND).toInt() % 2
-		val (column, row) = when (heading) {
-			0 to -1 -> 0 to 0
-			0 to 1 -> 0 to 2
-			-1 to 0 -> 1 to 0
-			else -> 1 to 2
+		val row = when (heading) {
+			0 to 1 -> 0
+			-1 to 0 -> 1
+			0 to -1 -> 3
+			else -> 2
 		}
-		sprite?.regionRect = Rect2(column * FRAME, (row + beat) * FRAME, FRAME, FRAME)
+		val frame = (sprite?.texture?.getWidth() ?: 128) / 4.0
+		sprite?.regionRect = Rect2(beat * 2 * frame, row * frame, frame, frame)
 	}
 
 	companion object {
 		private const val SHEETS = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/overworld/"
-		private const val FRAME = 32.0
 		private const val BEATS_PER_SECOND = 5.0
 		private const val MAX_STRIDE = 3
 		private const val CRY_RETRY = 1.0

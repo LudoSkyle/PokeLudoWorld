@@ -61,13 +61,13 @@ class Globals : Node() {
 
 	/**
 	 * Les objets du catalogue sans icône utilisable sous `assets/items/icons/` —
-	 * le fichier manque, ou ne fait pas 24 × 24 —, séparés par des virgules ; vide si
+	 * le fichier manque, ou ne fait pas 32 × 32 —, séparés par des virgules ; vide si
 	 * chacun a la sienne.
 	 */
 	@Register
 	fun itemsWithoutIcon(): String = Items.ALL.filter {
 		val icon = if (ItemIcons.has(it.icon)) ItemIcons.of(it.icon) else null
-		icon == null || icon.getWidth() != 24 || icon.getHeight() != 24
+		icon == null || icon.getWidth() != 32 || icon.getHeight() != 32
 	}.joinToString(",") { it.id }
 
 	/**
