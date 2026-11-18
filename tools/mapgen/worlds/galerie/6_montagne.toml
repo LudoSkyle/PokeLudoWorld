@@ -1,0 +1,15 @@
+# Galerie : Col rocheux.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/6_montagne.toml --plan /tmp/6_montagne.toml --preview /tmp/6_montagne.png
+
+[map]
+name = "6_montagne"
+location = "Col rocheux"
+theme = "coast"
+
+[seed]
+world = 90
+
+[style]
+kind = "mountain"
+size = [46, 66]
+character = ["rocky"]

@@ -1,0 +1,15 @@
+# Un monde d'exemple : Plage du nord — le style `beach`, la mer ouverte jusqu'au bord.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_plage.toml --preview /tmp/style_plage.png
+
+[map]
+name = "style_plage"
+location = "Plage du nord"
+theme = "coast"
+
+[seed]
+world = 14
+
+[style]
+kind = "beach"
+size = "medium"
+sea = "north"

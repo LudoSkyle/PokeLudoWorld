@@ -1,0 +1,15 @@
+# Galerie : Plage du sud.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/8_plage_sud.toml --plan /tmp/8_plage_sud.toml --preview /tmp/8_plage_sud.png
+
+[map]
+name = "8_plage_sud"
+location = "Plage du sud"
+theme = "coast"
+
+[seed]
+world = 308
+
+[style]
+kind = "beach"
+size = "medium"
+sea = "south"

@@ -1,0 +1,16 @@
+# Galerie : Route des étangs.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/3_route_etangs.toml --plan /tmp/3_route_etangs.toml --preview /tmp/3_route_etangs.png
+
+[map]
+name = "3_route_etangs"
+location = "Route des étangs"
+theme = "coast"
+
+[seed]
+world = 303
+
+[style]
+kind = "route"
+size = "medium"
+shape = "free"
+character = ["wet", "jagged"]

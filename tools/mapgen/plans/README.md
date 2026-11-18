@@ -32,7 +32,8 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 | `.` | l'herbe : un plateau, cerné de sa falaise |
 | `_` | une piste, sur un plateau — trois cases de large |
 | `"` | les hautes herbes |
-| `^` | la montagne : de la roche sur un plateau |
+| `^` | la montagne : de la roche sur un plateau, **en gradins** — sa silhouette érodée d'une case par gradin, trois par défaut (`tiers = 2` dans `[map]` pour en changer) |
+| `o` | un étang : une eau **au niveau de l'herbe**, sur le dessus d'un plateau, avec sa berge — ni falaise ni sable. Trois cases au moins dans chaque sens ; un pont (`=`) peut l'enjamber, un nénuphar (`lily1`, `lily2`, `lily3` dans `props`) s'y poser |
 
 **`objects`** — ce qu'on pose dessus :
 
@@ -54,10 +55,12 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 |---|---|
 | `.` | le niveau du plateau |
 | `1` | une **terrasse**, un cran plus haut |
+| `2` `3` `4` | une terrasse sur une terrasse : chaque niveau repose tout entier sur le dessus du précédent, à une case de son bord au moins |
 
 Le bord d'une terrasse, là où il donne sur l'herbe d'en bas, est une petite falaise d'herbe qu'on ne franchit pas :
 on y monte par un escalier de pierre (`[[terrace_stairs]]`), on en redescend aussi par un rebord. La forme d'une
-terrasse doit être fermée — par son bord, par la falaise du plateau ou par le bord de la carte.
+terrasse doit être fermée — par son bord, par la falaise du plateau ou par le bord de la carte. Contre une montagne
+(`^`), elle n'a pas de bord : la roche est un mur, et une terrasse peut aller d'un mur à l'autre.
 
 **`props`** — tout ce qui est posé, un par ligne : `sorte colonne rangée` (la case de son pied).
 
@@ -138,9 +141,28 @@ bord n'est pas droit ou qui n'a pas de plage à son pied, un rebord sans case li
 départ, une chose dont on ne peut pas s'approcher, un morceau de carte libre mais coupé du reste, le bord de la carte
 atteint ailleurs qu'à une sortie, la rangée du haut d'un plateau qui ne se foulerait pas.
 
+## La composition — `check.py`
+
+Le constructeur dit si une carte **s'assemble** ; `check.py` dit si elle est **bien composée** : il mesure sur le
+plan les règles chiffrées de [`docs/mapping.md`](../../../docs/mapping.md) — marge, ceinture de forêt, sorties,
+relief, bosquets, plages, hautes herbes, chemins, étangs, fleurs, objets, panneaux.
+
+```
+python3 tools/mapgen/check.py tools/mapgen/plans/ma_carte.toml     # règle par règle, avec les cases en cause
+python3 tools/mapgen/check.py tools/mapgen/plans/*.toml             # une ligne par carte
+```
+
+Les seuils dépendent du **style** de la carte, qu'on écrit dans sa table `[map]` : `style = "route"` (le défaut),
+`"forest"`, `"fields"`, `"beach"`, `"village"` (le défaut dès trois maisons) ou `"city"`. Sur une plage, par exemple,
+la mer touche le bord et le sable doit s'atteindre ; le détail est dans `docs/mapping.md`, « Les styles de carte ».
+
+Il rend un **taux** (la part des règles applicables qui sont respectées) et, à part, **INJOUABLE** si une sortie, une
+porte ou un objet ne s'atteint pas. Ce qui ne se mesure pas — une carte a un but, le décor guide — reste à juger à
+l'œil. Sur un plan littéral (`route_1_bis`, `start_island_bis`), il ne lit que les tuiles : une dizaine de règles.
+
 ## Ce qu'il ne fait pas encore
 
-Une montagne à plusieurs gradins, une terrasse sur une terrasse, les grottes et les intérieurs, les lueurs aux fenêtres, les passages gardés.
+Les grottes et les intérieurs, les lueurs aux fenêtres, les passages gardés.
 
 `route_2.toml` est la Route 1 refaite par le constructeur, pour juger ce qu'il sait faire : son plan est tiré de la
 Route 1 d'origine, et `route_1_et_route_2.png` montre les deux côte à côte. La Route 1 et l'île de départ ont été

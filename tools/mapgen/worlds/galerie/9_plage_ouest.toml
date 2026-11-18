@@ -1,0 +1,16 @@
+# Galerie : Plage de l'ouest.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/9_plage_ouest.toml --plan /tmp/9_plage_ouest.toml --preview /tmp/9_plage_ouest.png
+
+[map]
+name = "9_plage_ouest"
+location = "Plage de l'ouest"
+theme = "coast"
+
+[seed]
+world = 309
+
+[style]
+kind = "beach"
+size = "medium"
+sea = "west"
+character = ["rocky"]

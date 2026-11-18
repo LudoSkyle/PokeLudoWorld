@@ -1,0 +1,16 @@
+# Galerie : Île aux palmiers.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/5_route_ile.toml --plan /tmp/5_route_ile.toml --preview /tmp/5_route_ile.png
+
+[map]
+name = "5_route_ile"
+location = "Île aux palmiers"
+theme = "coast"
+
+[seed]
+world = 305
+
+[style]
+kind = "route"
+size = "large"
+shape = "island"
+character = ["sandy"]

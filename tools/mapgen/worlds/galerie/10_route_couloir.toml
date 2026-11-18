@@ -1,0 +1,15 @@
+# Galerie : une route en couloir, du nord au sud — poches, mare, herbes en travers, rebord.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/10_route_couloir.toml --plan /tmp/10.toml --preview /tmp/10.png
+
+[map]
+name = "10_route_couloir"
+location = "Route du nord au sud"
+theme = "coast"
+
+[seed]
+world = 77
+
+[style]
+size = [44, 70]
+shape = "corridor"
+axis = "vertical"

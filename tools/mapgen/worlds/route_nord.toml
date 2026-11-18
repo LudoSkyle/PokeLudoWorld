@@ -1,0 +1,42 @@
+# La route au nord de la Route 1 — une proposition du générateur. Sa sortie du sud est calée sur la sortie du nord de la
+# Route 1 (colonnes 14 à 16, même largeur de carte : 69 cases) : `cell = 15`.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/route_nord.toml --preview /tmp/route_nord.png
+
+[map]
+name = "route_nord"
+location = "Route 2"
+theme = "coast"
+banner = "forest"
+
+[seed]
+world = 2
+
+[style]
+kind = "route"
+size = [69, 60]
+shape = "free"
+character = ["wooded", "grassy"]
+
+[[exit]]
+side = "south"
+cell = 15
+name = "Sud"
+
+[[exit]]
+side = "north"
+at = 0.7
+name = "Nord"
+
+# L eau de la Route 1 arrive à son bord du nord des colonnes 28 à 68 : elle continue ici.
+[[shore]]
+side = "south"
+from = 28
+to = 68
+depth = 14
+
+# La trame des arbres de la Route 1 et ses arbres coupés par le bord (tools/mapgen/neighbor.py plans/route_1_bis.toml north).
+[seam]
+side = "south"
+high = [[0, 13], [17, 26]]          # de la colonne … à la colonne … : sa terre y est un cran plus haut que sa sortie
+phases = [[-1, 13, 3], [18, 26, 0]]          # de la colonne … à la colonne …, la trame : (colonne − trame − 2 × (rangée impaire)) multiple de 4
+trees = [["treeA", -1, 0], ["treeB", 1, 1], ["treeA", 3, 0], ["treeB", 9, 1], ["treeA", 11, 0], ["treeA", 18, 1], ["treeA", 20, 0], ["treeA", 22, 1], ["treeA", 24, 0]]          # ses arbres des rangées 0 et 1, que son bord coupe
