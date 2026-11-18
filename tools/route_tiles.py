@@ -43,6 +43,7 @@ BLOCKS = {
     'hollow': ((160, 512), (160, 560), (10, 3), (13, 3)),    # la même falaise, dessus vide : se pose sur n'importe quel sol
     'stair':  ((384, 976), None, (6, 13), None),              # escalier de pierre à poteaux : sa rangée du milieu est celle des marches
     'pond':   ((720, 400), (720, 448), (8, 16), (11, 16)),    # l'étang : une eau au niveau de l'herbe, sa berge brune en haut et sur les côtés — pas une falaise
+    'earth':  ((256, 240), (256, 288), (0, 19), (3, 19)),      # la terre nue bordée d'herbe : la plaque d'une clairière, d'un carrefour — on y marche
 }
 # nom : ((x, y) sur la planche, (colonne, rangée) dans route.png)
 SINGLES = {
