@@ -534,6 +534,8 @@ def build(plan):
         c = settle(it['name'], plan.at(it['mark'], 'objet %s' % it['name']), exact=it.get('exact', False))
         nodes['World'].append('[node name="%s" parent="World" instance=ExtResource("9_readable")]\nposition = Vector2(%d, %d)\nkind = "item"\ntext = "@give:%s %s"\nflag = "%s"\n'
                               % (it['name'], *px(c), it['item'], quote(it['text']), it.get('flag', 'found_%s_%s' % (plan.name, it['name'].lower()))))
+        ball = THEME['sources'].get('item_ball')          # sa Poké Ball : sans elle, l'objet est là mais ne se voit pas
+        if ball: nodes['World'].append('[node name="Ball" type="Sprite2D" parent="World/%s"]\ntexture = ExtResource("12_ball")\nregion_enabled = true\nregion_rect = Rect2(%d, %d, %d, %d)\n' % ((it['name'],) + tuple(ball['region'])))
     npcs = []
     for p in plan.table('npc'):
         moving = p.get('movement') in ('wander', 'patrol')
@@ -610,12 +612,12 @@ def scene(built):
 [ext_resource type="PackedScene" path="{R}scenes/levels/readable.tscn" id="9_readable"]
 [ext_resource type="PackedScene" path="{R}scenes/levels/street_lamp.tscn" id="10_lamp"]
 [ext_resource type="PackedScene" path="{R}scenes/levels/flyer.tscn" id="13_flyer"]
-
+{BALL}
 [node name="Level" type="Node2D"]
 {M}
 
 [node name="Background" type="Node2D" parent="."]
-'''.replace('{R}', RES).replace('{M}', '\n'.join(meta))
+'''.replace('{R}', RES).replace('{M}', '\n'.join(meta)).replace('{BALL}', '[ext_resource type="Texture2D" path="res://%s" id="12_ball"]\n' % THEME['sources']['item_ball']['sheet'] if THEME['sources'].get('item_ball') and built['plan'].table('item') else '')
     parts = [head] + [layer(n, 'Background') for n in built['ORDER']]
     parts.append('[node name="World" type="Node2D" parent="."]\ny_sort_enabled = true\n')
     parts += [layer(n, 'World', True) for n in ('Trees', 'Props', 'Houses')] + built['nodes']['World']

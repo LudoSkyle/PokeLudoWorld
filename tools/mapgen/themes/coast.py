@@ -32,6 +32,7 @@ lines = ['# Le décor « bord de mer ». Fabriqué par tools/mapgen/themes/coast
          'buildings = { id = 14, sheet = "%svillage.png" }' % ASSETS,
          'tall_grass = { id = 12, at = [6, 0], drawn = [6, 6] }          # la touffe animée ; `drawn` : où la voir sur la planche principale',
          'blooms = { id = 5, foot = 4, top = 3 }                         # les grandes fleurs : une colonne par sorte, la rangée du pied, celle de la cime', '',
+         'item_ball = { sheet = "%sisland.png", region = [48, 96, 16, 16] }          # la Poké Ball d\'un objet à ramasser : une image posée au sol' % ASSETS,
          '# Les tuiles du sol, des bords et des ouvrages : nom = [colonne, rangée, 1 si elle arrête].',
          '[tiles]']
 for name in sorted(AT):
