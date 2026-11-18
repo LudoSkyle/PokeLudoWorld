@@ -541,17 +541,175 @@ numérique, puis ses quatre coins rentrants `i j / k l`.
 | Nom | Cases | Calque | Collision |
 |---|---|---|---|
 | `rock` : la paroi, un gradin de roche — sa face est en bas | `15:0-2,0-2`, coins `15:3-4,0-1` | les falaises, par-dessus le sol | pleine, sauf `rock5` (le dessus plat, que rien n'atteint) |
-| `void` : le noir autour de la grotte. Ses huit bords sont des cases de vide **qui touchent la roche**, avec un liseré du côté de la roche ; son centre est le noir plein. Coins rangés à l'inverse (`l k / j i`) | `15:5-7,0-2`, coins `15:8-9,0-1` | `Ground` | pleine |
+| `void` : le noir autour de la grotte. Ses huit bords sont des cases de vide **qui touchent la roche**, avec un liseré du côté de la roche, et **du sol derrière lui jusqu'au bord de la case** (voir ci-dessous) ; son centre est le noir plein. Coins rangés à l'inverse (`l k / j i`) | `15:5-7,0-2`, coins `15:8-9,0-1` | `Ground` | pleine |
 | `pond` : un bassin dans sa berge de roche (l'eau bouge : même matériau que la mer) | `15:0-2,3-5`, coins `15:3-4,3-4` | `Paths` | pleine |
 | `earth` : une plaque de sol sombre | `15:5-7,3-5`, coins `15:8-9,3-4` | `Paths` | aucune : on y marche |
 | `lawn` : le sol de la grotte | `15:10,0` | `Ground` | aucune |
 | `rock_s`, `pebbleA`, `pebbleB` : petits rochers | `15:11,0`, `15:12,0`, `15:13,0` | `Props` | sa case |
 | `spire` : une stalagmite, 1 × 2 | `15:14,0` | `Props` | sa case du pied |
 | `boulder` : un gros bloc, 2 × 2 | `15:10,2` | `Props` | ses quatre cases |
+| `ladder` : une échelle de bois, 1 × 2, adossée au haut d'une paroi | `15:12,2` | `Bridges` | **aucune** — on monte dessus |
+
+**L'échelle est la seule tuile qui ne vienne pas de `cliffs_caves.png`** : aucun
+des huit kits de falaises n'en a. Elle est découpée dans
+`sources/ice_cave.png`, la planche de la grotte de glace — même auteur, même
+famille de dessin. C'est du **bois** : la règle F de
+[mapping.md](mapping.md) (« un rocher a la matière de ce qui le porte ») ne la
+concerne pas, et c'est la même échelle dans les deux teintes. Elle est sur le
+calque `Bridges`, avec les ponts et les escaliers, et non `Decorations` : le
+contrôleur compte tout ce qui est sur `Decorations` comme une fleur, et une
+grotte n'a rien de vivant.
 
 Le décor `tools/mapgen/themes/cave.toml` ne lit que cette planche. Les noms
 sont ceux que le constructeur attend d'un décor : c'est pourquoi le sol de la
 grotte s'appelle `lawn` et son bassin `pond`.
+
+### Le liseré du vide : du sol derrière lui, pas du noir
+
+La planche de falaises dessine le vide comme un **trou rond** : son liseré est
+un anneau arrondi d'environ 30 px, là où trois cases en demandent 32. Découpé
+tel quel, il tombait au milieu de la case et il restait **1 à 3 px de noir
+entre lui et la roche** — un filet clair qui avait l'air de flotter dans le
+noir, tout autour de la grotte (Ludovic, 18/11/2026 : « le contour ondulé est
+mis à l'envers »).
+
+La carte de référence qu'il a fournie ce jour-là ne s'y prend pas autrement, et
+c'est elle qui donne la règle : mesurée colonne par colonne, **sa case de bord
+contient du noir, le liseré, puis de la roche jusqu'au bas de la case**, qui se
+prolonge dans la case suivante. Son bord n'est pas une tuile à part : c'est une
+tuile moitié vide, moitié roche.
+
+`cavern_tiles.backfill` fait pareil pour la **grotte brune** (la grotte de glace,
+elle, pose son liseré en surcouche, voir plus bas) : on part du bord qui touche la grotte, on remonte dans le noir
+jusqu'au liseré, qui arrête, et **tout ce qu'on atteint devient la case de sol,
+au même endroit dans la case** — la trame se suit donc d'une case à l'autre.
+Aucun pixel n'est inventé. Mesuré sur une carte entière : le filet noir passe
+de 1 915 px à 145, le reste étant un pixel isolé à certaines jointures de
+tuiles, là où l'anneau se referme sur lui-même.
+
+## La planche de la grotte de glace (`ice_cavern.png`, source 16)
+
+`assets/levels/ice_cavern.png` — 240 × 256. **Ses onze premières colonnes sont
+la planche source telle quelle** (`sources/ice_cave.png`, « Evolina ice cave »
+de Phyromatical), case pour case : rien n'est déplacé, une tuile s'appelle donc
+comme dans le relevé de la carte d'exemple. Quatre colonnes de plus portent ce
+qui a dû être recalé — l'échelle et le trou à échelle.
+`tools/ice_cave_tiles.py` la fabrique, `--write` réécrit sa source ; elle est
+rangée juste avant celle de la grotte brune, elle-même avant celles de la
+route, et chacun des trois outils laisse le fichier tel que les autres l'ont
+écrit.
+
+**Ce kit se superpose. Ce n'est pas la grotte brune repeinte**, et le lire
+ainsi a donné deux décors faux de suite (18/11/2026 : « y'a rien qui va, ni
+contour, ni sol »). Ce qui a tranché : la carte d'exemple de l'auteur
+(`tools/maps/ice_cave/reference.png`), **relevée tuile par tuile et par
+couches** (`tools/maps/ice_cave/survey.py`), puis rebâtie par notre
+constructeur à partir de quatre classes de cases seulement
+(`tools/maps/ice_cave/compare.py`). Elle est faite de cinq familles, de bas en
+haut :
+
+| Famille | Cases | Calque | Ce que c'est |
+|---|---|---|---|
+| `floor…` | `16:0-2,11-13`, coins `16:3-4,11-12` | `Ground` | le **sol**, bleu-gris foncé : une matière à bords **pleine** — ses bords portent la glace pâle en dur. `lawn` est sa case du centre |
+| `earth…` | `16:5-7,13-15`, coins `16:8-9,13-14` | `Ground` | la **glace lisse**, striée (le `,` du plan) : une autre matière à bords pleine, posée à la place du sol. On y marche ; on y glissera |
+| `tall…` | `16:0-2,3-6`, plis `16:3-4,3-5` | `Cliffs1` | le **grand plateau**, sur **toute** la paroi : bord du haut (`talla`), côtés (`tallb`), puis **deux rangées de face** au sud (`tallc`, `talld`). Les plis (`…3`, `…4`) sont pour les marches que fait la face : une case dont la voisine est une rangée de face plus bas. **C'est lui qui arrête** |
+| `short…` | `16:0-2,0-2`, coins `16:3-4,0-1` | `Cliffs2` | le **petit plateau**, posé sur le grand : le dessus du grand, **en retrait d'une case à l'est et à l'ouest**. Sa lèvre (`short1`-`3`) tombe ainsi juste au-dessus de la face du grand |
+| `ring…` | `16:0-2,7-9`, coins `16:3-4,7-8` | `Ledges` | le **liseré du vide** : du noir dehors, un filet, du transparent dedans. Il se pose **sur** la dernière case de paroi, pas sur une case de vide. `void5` (`16:1,8`) est le noir plein |
+
+Ce que ça donne, et que l'ancien décor n'avait pas :
+
+- **la glace pâle est le dessus des parois** — là où l'on ne va pas — et le
+  sol est le bleu-gris. Entre les deux il y a **toujours une face de falaise**
+  quand la paroi est au nord du sol : liseré, lèvre du petit plateau, deux
+  rangées de face ;
+- **la bordure de la grotte ne fait qu'une case de glace pâle**, parce que le
+  liseré est une surcouche de la paroi : la moitié de sa case est noire ;
+- **le sol a son contour** partout où il touche la paroi, et il passe **sous**
+  le bord du haut du grand plateau là où le petit ne le couvre pas — c'est ce
+  qu'on voit dans l'arrondi de ses coins ;
+- **toute la paroi arrête**, dessus compris : chacune de ses cases porte une
+  tuile du grand plateau ;
+- **sous la paroi, de la glace claire** (`short5`), pas du sol : c'est elle
+  qu'on voit dans les jours des tuiles du grand plateau — le pied arrondi
+  d'une face, le coin d'un dessus —, et elle rejoint le liseré clair que le
+  sol porte sur son bord. Avec du sol foncé dessous, ce liseré restait seul et
+  dessinait un cadre carré autour de chaque massif (Ludovic, 18/11/2026).
+
+**Ce que le kit demande à la forme de la carte**, et que le générateur tient
+(`worldgen.generate_cave`, « kit ») :
+
+- **une paroi au-dessus d'un sol fait trois cases de haut** — son dessus, puis
+  ses deux rangées de face — **et deux de large**. Plus basse, sa face commence
+  sans dessus, coupée net ; d'une seule case de large, il lui manque un flanc.
+  Les massifs sont donc faits de blocs de 2 × 3, et une paroi plus mince
+  redevient du sol ;
+- **une matière à bords fait deux cases dans chaque sens**. Le sol n'a pas de
+  tuile pour deux angles rentrants à la fois : entre deux roches, ou entre une
+  roche et le verglas, il lui faut **deux cases**, coins compris — ou aucune
+  (le verglas touche la paroi). Une encoche de sol d'une case redevient de la
+  roche.
+
+Le constructeur **prévient** quand un plan ne les tient pas (« paroi : N cases
+coupées net », « sol : N cases trop étroites pour leurs bords ») ; le
+contrôleur en fait une règle manquée (« la carte s'assemble sans
+avertissement du constructeur »), que le balayage compte.
+
+Le petit plateau ne se pose que s'il a **trois cases de large** : à deux, ses
+deux rebords se touchent et font des rails sur le dessus d'un éperon. Plus
+mince, on voit le dessus uni du grand.
+
+Le constructeur applique cette grammaire dès que le décor déclare des `tall…`
+(`tools/mapgen/build.py`, « un décor à plateaux »). Pas de bassin : la planche
+n'a pas d'eau.
+
+Ce qui se pose :
+
+| Nom | Cases | Calque | Collision |
+|---|---|---|---|
+| `pebbleA` | `16:7,0` | `Props` | sa case. Le **caillou foncé** : au sol |
+| `spire` | `16:5,1`, 1 × 2 | `Props` | la case de son pied. Le **pic foncé** : au sol, sa pointe sur la case du dessus |
+| `roundA`, `roundB` | `16:6,1`, `16:6,2` | `Props` | leur case. Les **cailloux ronds et pâles** : jamais au sol — voir plus bas |
+| `boulder` | `16:7,1`, 2 × 2 | `Props` | ses quatre cases. Déclaré, mais le générateur ne le pose plus : sur l'exemple il est adossé au pied d'une paroi, à cheval sur elle |
+| `ladder` | `16:11,0`, 1 × 2 | `Bridges` | aucune. L'échelle qui **monte** : son pied sur la première case de sol, son haut sur la dernière rangée de face — c'est ainsi qu'elles sont sur la carte d'exemple |
+| `hole` | `16:12,0`, 3 × 2, `anchor = 1` | `Bridges` | aucune. L'échelle qui **descend** : un trou vu de dessus, son dessin posé centré dans un bloc de largeur **impaire** — à largeur paire il n'y a pas de case du milieu, et le joueur arrivait décalé |
+| `crack` | `16:6,8`, 2 × 2 | `Bridges` | aucune. Des **fissures** dans le sol, à plat : du décor, pour que le sol ne soit pas partout le même carreau. La carte d'exemple en sème seize sur ses 255 cases de sol ; le générateur en met une pour dix-huit cases de sol nu, jamais deux qui se touchent, jamais sur la glace lisse ni devant la sortie |
+
+**Chaque caillou a sa place** (Ludovic, 18/11/2026 : « sur le sol, il n'y a que
+ces deux cailloux-là » ; le relevé de la carte d'exemple le confirme case par
+case) :
+
+- **au sol, seulement les deux foncés** : le caillou (`pebbleA`, 28 fois sur
+  l'exemple) et le pic (`spire`, 23 fois). Jamais retournés, jamais sur le
+  verglas ;
+- **les ronds et pâles** (`roundA`, `roundB`) à deux endroits seulement :
+  **sur le dessus du grand plateau, là où le petit ne le couvre pas** — le
+  dessus uni d'un éperon, d'un massif épais, d'un redan (les quatorze de
+  l'exemple y sont tous) —, ou **sur le verglas**, où ils serviront d'obstacles
+  aux casse-têtes. Le générateur les pose sur les parois ; il n'en met pas
+  encore sur le verglas, faute de glissade.
+
+**Le petit plateau s'écarte sous un caillou.** Là où le petit plateau couvre
+le grand — toute la paroi du tour, jusqu'à son flanc —, le constructeur retire
+du petit la case qui porte un caillou : une **encoche d'une case**, avec sa
+lèvre au-dessus et ses coins. C'est le dessin des quatorze cailloux de
+l'exemple (liseré, bord du petit plateau, caillou, flanc du grand). Le
+générateur en pose ainsi deux ou trois **sur le tour de la grotte** (Ludovic,
+19/11/2026 : « là il n'y en a aucun sur le tour »), dans la colonne du bord du
+petit plateau, là où la paroi est assez épaisse pour garder le liseré et un
+bord entre le caillou et le vide.
+
+Les deux premières versions du décor avaient pris le rond pour un caillou de
+sol, et l'avaient retourné pour en faire un second : on ne sème pas une tuile
+avant d'avoir relevé **où** l'exemple la pose.
+
+**La mesure.** `python3 tools/maps/ice_cave/compare.py` rebâtit la carte
+d'exemple et compte les cases refaites au pixel près, au bruit du JPEG près :
+**80,5 %** aujourd'hui (78 % avant la glace claire sous la paroi). Ce qui reste en écart n'est pas la grammaire : ce sont les
+objets que le plan ne dit pas (rochers, échelles, crevasses), et les raccords
+que l'auteur a faits à la main là où deux lobes de sa grotte se rejoignent —
+un contour pincé d'une demi-case, une lèvre suivie d'un bord du haut. Avant ce
+relevé, le même calcul donnait une carte où **aucune** case de paroi n'était
+la bonne.
 
 ## Le vent dans les plantes
 

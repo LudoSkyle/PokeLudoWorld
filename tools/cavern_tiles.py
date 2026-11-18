@@ -40,6 +40,12 @@ BLOCKS = {
     'earth': ((176, 192), (224, 192), (5, 3), (8, 3), 'ijkl'),        # une plaque de sol sombre : on y marche
 }
 SINGLES = {'lawn': ((192, 32), (10, 0))}          # le sol de la grotte : le dessus uni de la roche
+# L'échelle. Seule tuile qui ne vienne pas de `cliffs_caves.png` : aucun des huit kits de falaises n'en a, et c'est du
+# **bois** — la règle F de docs/mapping.md (« un rocher a la matière de ce qui le porte ») ne vaut donc pas pour elle,
+# elle est la même dans une grotte brune et dans une grotte de glace. Découpée dans `sources/ice_cave.png`, la planche
+# de la grotte de glace, du même auteur et de la même famille de dessin. Sans pied : on monte dessus, on ne bute pas.
+LADDER_SOURCE = os.path.join(LEVELS, 'sources', 'ice_cave.png')
+DECOR = {'ladder': ((192, 64, 1, 2), (12, 2))}
 # ce qui est debout — nom : (x, y sur la planche, largeur, hauteur en cases), sa case haut-gauche dans cavern.png, les cases de son pied
 SPRITES = {
     'rock_s':  ((288, 144, 1, 1), (11, 0), [(0, 0)]),
@@ -51,12 +57,20 @@ SPRITES = {
 
 
 def atlas():
-    """{nom: (colonne, rangée) dans cavern.png} — tuiles d'une case et, pour ce qui est debout, la case haut-gauche."""
+    """{nom: (colonne, rangée) dans cavern.png} — tuiles d'une case et, pour ce qui est debout, la case haut-gauche.
+
+    Le **vide** se lit d'un demi-tour (`KEYS[::-1]`), bloc et coins. Le constructeur donne à une case de vide la forme
+    du **sol** qu'elle borde, pas la sienne : au-dessus de la grotte il demande `void2`, pas `void8`. Son liseré doit
+    donc regarder la grotte, et c'est la case du **bas** de la planche qui porte un liseré tourné vers le haut.
+    Relevé le 18/11/2026 : seuls les coins étaient retournés, et il restait une rangée de noir entre le liseré et le
+    sol, tout autour de la grotte.
+    """
     out = {name: at for name, (_, at) in SINGLES.items()}
     for name, (_, _, at, inner, order) in BLOCKS.items():
         out.update({name + KEYS[j * 3 + i]: (at[0] + i, at[1] + j) for j in range(3) for i in range(3)})
         out.update({name + order[j * 2 + i]: (inner[0] + i, inner[1] + j) for j in range(2) for i in range(2)})
     out.update({name: at for name, (_, at, _) in SPRITES.items()})
+    out.update({name: at for name, (_, at) in DECOR.items()})
     return out
 
 
@@ -67,6 +81,70 @@ def blocks(name):
     """Cette tuile arrête-t-elle ? La paroi (son dessus plat excepté), le vide tout entier, le bassin et sa berge."""
     if family(name) == 'rock': return name[-1] != '5'
     return family(name) in ('void', 'pond')
+
+
+# De quel(s) côté(s) chaque case de vide touche la grotte. Relevé sur une carte bâtie, pas déduit : le constructeur
+# donne à une case de vide la forme du **sol** qu'elle borde. (x, y) vers la grotte.
+TOWARD = {'void8': (0, 1), 'void2': (0, -1), 'void4': (1, 0), 'void6': (-1, 0),
+          'void7': (1, 1), 'void9': (-1, 1), 'void1': (1, -1), 'void3': (-1, -1),
+          'voidi': (-1, -1), 'voidj': (1, -1), 'voidk': (-1, 1), 'voidl': (1, 1)}
+
+
+def backfill(tile, toward, floor):
+    """Derrière le liseré d'une case de vide, du **sol** jusqu'au bord qui touche la grotte — et non du noir.
+
+    La planche de falaises dessine le vide comme un trou rond : son liseré est un anneau arrondi d'environ 30 px là où
+    trois cases en demandent 32. Posé tel quel il reste 1 à 3 px de noir entre lui et la roche, et ce filet clair a
+    l'air de flotter. La carte de référence du 18/11/2026 ne fait pas autrement : mesurée colonne par colonne, sa case
+    de bord contient **du noir, le liseré, puis de la roche jusqu'au bas de la case**, qui se prolonge dans la suivante
+    — son bord n'est pas une tuile à part, c'est une tuile moitié vide moitié roche. On fait pareil : ce que le liseré
+    laisse entre lui et la grotte, on le remplit avec la case de sol, au même endroit dans la case, pour que la trame
+    se suive. Aucun pixel inventé.
+
+    Comment, **par le complément** : le seul noir qui doit rester est celui qui tient au **vide**, donc aux bords qui
+    ne regardent pas la grotte. On remplit depuis ces bords-là, et tout pixel noir que ce remplissage n'atteint pas est
+    du côté de la grotte, fût-il enfermé entre deux boucles de l'anneau : il devient de la roche. La première version
+    partait du côté de la grotte, et laissait un pixel noir çà et là à chaque jointure de tuile — « tu n'as pas fini le
+    travail sur le contour de la grotte » (Ludovic, 18/11/2026).
+    """
+    def lit(p): return p[3] and max(p[:3]) > 40
+    dx, dy = toward
+    away = []          # les bords qui regardent le vide : ceux que `toward` ne désigne pas
+    if dy <= 0: away += [(i, 0) for i in range(16)]
+    if dy >= 0: away += [(i, 15) for i in range(16)]
+    if dx <= 0: away += [(0, j) for j in range(16)]
+    if dx >= 0: away += [(15, j) for j in range(16)]
+    if dy: away = [c for c in away if c[1] != (15 if dy > 0 else 0)]
+    if dx: away = [c for c in away if c[0] != (15 if dx > 0 else 0)]
+    seen, stack = set(), [c for c in away if not lit(tile[c[1]][c[0]])]
+    seen.update(stack)
+    while stack:
+        x, y = stack.pop()
+        for i, j in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            n = (x + i, y + j)
+            if 0 <= n[0] < 16 and 0 <= n[1] < 16 and n not in seen and not lit(tile[n[1]][n[0]]):
+                seen.add(n); stack.append(n)
+    out = [list(row) for row in tile]
+    filled = 0
+    for y in range(16):
+        for x in range(16):
+            if not lit(tile[y][x]) and (x, y) not in seen: out[y][x] = floor[y][x]; filled += 1
+    if filled > 170: return tile          # le liseré fuit : on ne touche à rien plutôt que de noyer la case
+    # Et pour finir, le **bord même** qui touche la grotte. Le remplissage part des bords qui regardent le vide, donc
+    # un pixel du bord d'en face peut rester noir s'il touche encore un côté : seul, il ne se voit pas dans sa tuile,
+    # mais sur la carte il tombe à la jointure de deux tuiles et fait une poussière le long du contour. Règle : sur ce
+    # bord, un pixel noir dont le voisin vers l'intérieur ne l'est pas devient de la roche lui aussi.
+    def nonblack(x, y): return lit(out[y][x]) or out[y][x] != tile[y][x]
+    for _ in range(2):
+        if dy:
+            y, inner = (15, 14) if dy > 0 else (0, 1)
+            for x in range(16):
+                if not nonblack(x, y) and nonblack(x, inner): out[y][x] = floor[y][x]
+        if dx:
+            x, inner = (15, 14) if dx > 0 else (0, 1)
+            for y in range(16):
+                if not nonblack(x, y) and nonblack(inner, y): out[y][x] = floor[y][x]
+    return [tuple(row) for row in out]
 
 
 def cells():
@@ -82,6 +160,15 @@ def cells():
     for (x, y, w, h), at, _ in SPRITES.values():
         for j in range(h):
             for i in range(w): made[(at[0] + i, at[1] + j)] = cut(x + 16 * i, y + 16 * j)
+    wood = load(LADDER_SOURCE)[2]
+    def cut_wood(x, y): return [[tuple(wood[y + j][x + i]) if wood[y + j][x + i][3] else CLEAR for i in range(16)] for j in range(16)]
+    for (x, y, w, h), at in DECOR.values():
+        for j in range(h):
+            for i in range(w): made[(at[0] + i, at[1] + j)] = cut_wood(x + 16 * i, y + 16 * j)
+    at_ = atlas()
+    floor = made[at_['rock5']]          # ce que la case de vide touche, c'est le dessus de la paroi — en glace il n'est pas le sol
+    for name, where in at_.items():          # derrière le liseré du vide : du sol, pas du noir
+        if name in TOWARD: made[where] = backfill(made[where], TOWARD[name], floor)
     return made
 
 
@@ -102,8 +189,13 @@ def source():
         if (w, h) != (1, 1): out += ['%s/size_in_atlas = Vector2i(%d, %d)' % (key, w, h)]
         out += ['%s/0 = 0' % key, '%s/0/texture_origin = Vector2i(%d, %d)' % (key, -8 * (w - 1), 8 * (h - 1)), '%s/0/y_sort_origin = -1' % key,
                 '%s/0/physics_layer_0/polygon_0/points = %s' % (key, polygon(feet))]
+    for name, ((_, _, w, h), where) in sorted(DECOR.items(), key=lambda kv: kv[1][1]):          # sans collision : on monte dessus
+        key = '%d:%d' % where
+        standing |= {(where[0] + i, where[1] + j) for i in range(w) for j in range(h)}
+        if (w, h) != (1, 1): out += ['%s/size_in_atlas = Vector2i(%d, %d)' % (key, w, h)]
+        out += ['%s/0 = 0' % key, '%s/0/texture_origin = Vector2i(%d, %d)' % (key, -8 * (w - 1), 8 * (h - 1)), '%s/0/y_sort_origin = -1' % key]
     for name, where in sorted(at.items(), key=lambda kv: (kv[1][1], kv[1][0])):
-        if where in standing or name in SPRITES: continue
+        if where in standing or name in SPRITES or name in DECOR: continue
         key, wet = '%d:%d' % where, family(name) == 'pond'
         if blocks(name): out.append('%s/next_alternative_id = 2' % key)
         out.append('%s/0 = 0' % key)

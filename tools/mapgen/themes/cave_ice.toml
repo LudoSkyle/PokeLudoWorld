@@ -1,0 +1,93 @@
+# Le décor « grotte de glace ». Fabriqué par tools/mapgen/themes/cave_ice.py : ne pas modifier à la main.
+
+name = "cave_ice"
+
+# Les planches : leur numéro de source dans le TileSet (resources/tilesets/level.tres), et l'image, pour l'aperçu.
+[sources]
+main = { id = 16, sheet = "src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/ice_cavern.png" }
+item_ball = { sheet = "src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/island.png", region = [48, 96, 16, 16] }          # la Poké Ball d'un objet à ramasser
+
+# Les tuiles : nom = [colonne, rangée, 1 si elle arrête].
+[tiles]
+earth1 = [5, 15, 0]
+earth2 = [6, 15, 0]
+earth3 = [7, 15, 0]
+earth4 = [5, 14, 0]
+earth5 = [6, 14, 0]
+earth6 = [7, 14, 0]
+earth7 = [5, 13, 0]
+earth8 = [6, 13, 0]
+earth9 = [7, 13, 0]
+earthi = [8, 13, 0]
+earthj = [9, 13, 0]
+earthk = [8, 14, 0]
+earthl = [9, 14, 0]
+floor1 = [0, 13, 0]
+floor2 = [1, 13, 0]
+floor3 = [2, 13, 0]
+floor4 = [0, 12, 0]
+floor5 = [1, 12, 0]
+floor6 = [2, 12, 0]
+floor7 = [0, 11, 0]
+floor8 = [1, 11, 0]
+floor9 = [2, 11, 0]
+floori = [3, 11, 0]
+floorj = [4, 11, 0]
+floork = [3, 12, 0]
+floorl = [4, 12, 0]
+lawn = [1, 12, 0]
+ring1 = [0, 9, 0]
+ring2 = [1, 9, 0]
+ring3 = [2, 9, 0]
+ring4 = [0, 8, 0]
+ring6 = [2, 8, 0]
+ring7 = [0, 7, 0]
+ring8 = [1, 7, 0]
+ring9 = [2, 7, 0]
+ringi = [4, 8, 0]
+ringj = [3, 8, 0]
+ringk = [4, 7, 0]
+ringl = [3, 7, 0]
+short1 = [0, 2, 0]
+short2 = [1, 2, 0]
+short3 = [2, 2, 0]
+short4 = [0, 1, 0]
+short5 = [1, 1, 0]
+short6 = [2, 1, 0]
+short7 = [0, 0, 0]
+short8 = [1, 0, 0]
+short9 = [2, 0, 0]
+shorti = [3, 0, 0]
+shortj = [4, 0, 0]
+shortk = [3, 1, 0]
+shortl = [4, 1, 0]
+talla0 = [0, 3, 1]
+talla1 = [1, 3, 1]
+talla2 = [2, 3, 1]
+talla3 = [3, 3, 1]
+talla4 = [4, 3, 1]
+tallb0 = [0, 4, 1]
+tallb1 = [1, 4, 1]
+tallb2 = [2, 4, 1]
+tallb3 = [3, 4, 1]
+tallb4 = [4, 4, 1]
+tallc0 = [0, 5, 1]
+tallc1 = [1, 5, 1]
+tallc2 = [2, 5, 1]
+tallc3 = [3, 5, 1]
+tallc4 = [4, 5, 1]
+talld0 = [0, 6, 1]
+talld1 = [1, 6, 1]
+talld2 = [2, 6, 1]
+void5 = [1, 8, 1]
+
+# Ce qui se pose : `at` sa case sur la planche, `size` sa taille en cases, `feet` les cases qu'il occupe.
+[props]
+boulder = { source = "main", at = [7, 1], size = [2, 2], drop = 0, anchor = 0, feet = [[0, -1], [1, -1], [0, 0], [1, 0]], layer = "Props" }
+pebbleA = { source = "main", at = [7, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+roundA = { source = "main", at = [6, 1], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+roundB = { source = "main", at = [6, 2], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+spire = { source = "main", at = [5, 1], size = [1, 2], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+crack = { source = "main", at = [6, 8], size = [2, 2], drop = 0, anchor = 0, feet = [], layer = "Bridges" }
+hole = { source = "main", at = [12, 0], size = [3, 2], drop = 0, anchor = 1, feet = [], layer = "Bridges" }
+ladder = { source = "main", at = [11, 0], size = [1, 2], drop = 0, anchor = 0, feet = [], layer = "Bridges" }

@@ -27,11 +27,14 @@ lines = ['# Le décor « grotte ». Fabriqué par tools/mapgen/themes/cave.py : 
          '# Les tuiles du sol, des bords et du vide : nom = [colonne, rangée, 1 si elle arrête].',
          '[tiles]']
 for name in sorted(AT):
-    if name in cavern_tiles.SPRITES: continue
+    if name in cavern_tiles.SPRITES or name in cavern_tiles.DECOR: continue
     lines.append('%s = [%d, %d, %d]' % (name, AT[name][0], AT[name][1], 1 if cavern_tiles.blocks(name) else 0))
 lines += ['', '# Ce qui se pose : `at` sa case sur la planche, `size` sa taille en cases, `feet` les cases qu\'il occupe.', '[props]']
 for name, ((_, _, w, h), at, feet) in sorted(cavern_tiles.SPRITES.items()):
     lines.append('%s = { source = "main", at = [%d, %d], size = [%d, %d], drop = 0, anchor = 0, feet = %s, layer = "Props" }' % (name, at[0], at[1], w, h, [list(f) for f in feet]))
+for name, ((_, _, w, h), at) in sorted(cavern_tiles.DECOR.items()):          # sans pied : on monte dessus, et le joueur passe devant
+    lines.append('%s = { source = "main", at = [%d, %d], size = [%d, %d], drop = 0, anchor = 0, feet = [], layer = "Bridges" }' % (name, at[0], at[1], w, h))
 out = os.path.join(HERE, 'cave.toml')
 open(out, 'w', encoding='utf-8').write('\n'.join(lines) + '\n')
-print('%s : %d tuiles, %d choses à poser' % (os.path.relpath(out), len(AT) - len(cavern_tiles.SPRITES), len(cavern_tiles.SPRITES)))
+print('%s : %d tuiles, %d choses à poser dont %d sans collision' % (os.path.relpath(out), len(AT) - len(cavern_tiles.SPRITES) - len(cavern_tiles.DECOR),
+                                                                   len(cavern_tiles.SPRITES) + len(cavern_tiles.DECOR), len(cavern_tiles.DECOR)))

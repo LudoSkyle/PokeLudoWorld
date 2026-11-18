@@ -70,3 +70,4 @@ pebbleA = { source = "main", at = [12, 0], size = [1, 1], drop = 0, anchor = 0, 
 pebbleB = { source = "main", at = [13, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
 rock_s = { source = "main", at = [11, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
 spire = { source = "main", at = [14, 0], size = [1, 2], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+ladder = { source = "main", at = [12, 2], size = [1, 2], drop = 0, anchor = 0, feet = [], layer = "Bridges" }
