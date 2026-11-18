@@ -87,7 +87,429 @@ composer, et les **règles précises**, chiffrées, qui se vérifient.
 
 ---
 
+## Les styles de carte
+
+*D'après un panel de onze cartes fourni par Ludovic le 18/11/2026. Mesuré case
+par case sur les cinq qui sont faites avec notre jeu de tuiles (taille, part de
+chaque matière, taille de chaque plaque d'herbes, de chaque étang, de chaque
+tronçon de chemin — par un classement des couleurs, à quelques cases près) ;
+lu sur l'image pour les six autres, qui viennent d'autres jeux de tuiles.*
+
+**Une règle chiffrée ne vaut pas pour toutes les cartes.** Une forêt profonde
+n'a pas de chemin, une plage n'a pas de pelouse, une ville sur une île n'a pas
+de ceinture de forêt. Avant de composer, de générer ou de contrôler une carte,
+on dit **son style** ; les sections A à R valent pour tous, sauf ce que son
+style change ici.
+
+| Style | Cartes du panel | Taille (cases) |
+|---|---|---|
+| **Route** — de campagne, de forêt, à lac, fleurie | 2, 4, 10, 11 ; Johto 29, 30-31, 35 à 38 | 60 × 115, 80 × 35, 81 × 35, 62 × 32 |
+| **Route de montagne** | Johto 42, 44, 45, 46 | une bande entre deux parois |
+| **Route côtière** | Johto 32-33, 34, 47-48 ; troisième panel 32, 33 | la mer sur un flanc |
+| **Route maritime** | troisième panel 34 | 56 × 28 |
+| **Grotte** | troisième panel 27, 35, 36, 38, 39, 40 | un étage : de 34 × 31 à 57 × 44 |
+| **Désert** | troisième panel 28, 31 | 80 × 30, 50 × 50 |
+| **Neige** — montagne, village, sources | troisième panel 37, 41, 42 | 125 × 43, 50 × 57, 70 × 75 |
+| **Forêt profonde** | 1 | 76 × 41 |
+| **Champs** | 3 | 54 × 57 |
+| **Plage** | 5 | 65 × 47 |
+| **Village** | 6, 8 | 37 × 48, 39 × 30 |
+| **Ville côtière** — sur une île, au pied d'une montagne | 7, 9 | 56 × 30, 58 × 50 |
+
+### Ce qui est commun à tous
+
+- **Les principes 1 à 18**, sans exception.
+- **Ce qui ferme la carte se voit** et la marge ne s'atteint pas (A) ; une
+  sortie est une trouée de 2 à 4 cases où passe le chemin.
+- **Rien de droit dans la nature** (C) : côtes, lisières, berges, bords de
+  plateau en crans inégaux. *Le construit, lui, est droit* : un champ, un
+  enclos, un quai, une rangée de maisons en ville.
+- **L'espace se découpe en couloirs et en poches de 3 à 6 cases** entre des
+  masses : bosquets, étangs, buttes, champs, maisons. Aucune carte du panel
+  n'a de grand vide ; seule la matière du vide change (pelouse, sable, herbes).
+- **Un étang a un contour en escalier, sa berge en haut et à gauche, et il est
+  adossé** (O). De 5 à 65 cases sur tout le panel.
+- **Les hautes herbes sont adossées** à ce qui borde le couloir (M) — quand le
+  style en a.
+- **Une récompense au bout de chaque détour** (K) : dans un recoin de forêt,
+  au fond d'une allée de blé, sur un îlot, derrière un rebord.
+- **Raccords, emprise des dessins, pontons, collisions** (G, H, I, J) : ce sont
+  des règles de dessin, pas de style.
+- **Un seul traitement du chemin par carte** (N), et un seul style de fleurs (Q).
+
+### Ce que chaque style change
+
+| | Route | Forêt profonde | Champs | Plage | Village | Ville côtière |
+|---|---|---|---|---|---|---|
+| **Ce qui ferme** | ceinture de 3 à 5 arbres ; un flanc peut être une falaise sur la mer ou une montagne | ceinture de 4 à 6 arbres | forêt, et une montagne sur un côté | la mer, large, sur un côté ; montagne et forêt sur les autres | ceinture de 3 à 4 arbres | la mer sur les quatre côtés |
+| **Arbres** (part des cases) | 32 à 48 % | ≈ 60 % | 26 % | 18 %, plus les palmiers | 41 % | des palmiers surtout |
+| **Sol qu'on foule** | pelouse | hautes herbes | pelouse en bandes, blé | sable | pelouse et sable des rues | dallage ou sable |
+| **Chemin** | tronçons de sable en pointillés, ou piste claire continue | aucun | sable sinueux entre les champs | aucun : la plage est le chemin | réseau de sable continu, 10 % de la carte | rues dallées, ou tout en sable |
+| **Hautes herbes** | 9 à 10 % de la carte, plaques de 12 à 44 | la plus grande part du sol des clairières | aucune : le blé en tient lieu | herbes de plage grises, 6 plaques de 10 à 35 | aucune au centre ; en lisière au plus | aucune, ou de petits carrés de jardin |
+| **Eau** | 8 à 9 % : étangs de 11 à 64, un ou deux lacs de 80 à 150 qu'un pont franchit | 5 mares de 12 à 50, deux passerelles | 2 étangs (21 et 36) | la mer, 30 %, deux tons ; un étang sur un plateau | 2 étangs (26 et 34), contre une maison ou un banc | la mer, 35 à 40 % ; un étang |
+| **Relief** | buttes rocheuses de 40 à 100 cases, rebords | aucun plateau ; des rebords courts | plat ; la montagne ferme le sud | montagne à gradins (17 %), buttes boisées sur le sable | une ligne de terrasse et son escalier, ou plat | terrasses concentriques, ou montagne (35 %) |
+| **Fleurs** | sobres, ou chargées (une pour 8 à 15 cases) | presque aucune | sobres | aucune : coquillages, touffes vertes | chargées, et massifs clôturés | chargées, ou aucune sur le sable |
+| **Mobilier** | panneaux, barrières ; 0 à 2 lampadaires | souches, troncs couchés | clôtures | rochers, coquillages | 6 lampadaires, bancs, boîtes aux lettres, statue | 6 à 8 lampadaires, ponton |
+| **Objets à ramasser** | un pour 500 à 600 cases (12 sur la 2, 5 sur la 4) | quelques-uns | 3, dans les allées du blé | 4, dont un sur un îlot | 1 ou 2 | 1 ou 2 |
+| **Maisons** | 0 ou 1, isolée | 0 | 0 | 1 | 5 ou 6 | 7 à 9, dont un repère |
+
+### Route
+
+*Cartes 2, 4, 10, 11.* C'est le style que les sections A à R décrivent le
+mieux ; peu de choses changent.
+
+- **Deux traitements du chemin, jamais les deux** : des tronçons de sable de
+  trois cases de large et de 4 à 20 de long, en biais, séparés par de l'herbe
+  (carte 2 : 23 tronçons de 13 à 60 cases, 6 % de la carte) ; ou une piste
+  d'herbe claire continue qui serpente (carte 4).
+- **Les hautes herbes couvrent 9 à 10 % de la carte**, en une dizaine à une
+  trentaine de plaques de 12 à 44 cases (mesuré : 26 plaques sur la 2, 11 sur
+  la 4). La fourchette de M tient.
+- **L'eau prend 8 à 9 %.** Outre les étangs, **un ou deux lacs ou bras d'eau
+  de 80 à 150 cases** coupent le trajet et se franchissent par un pont de
+  trois cases (carte 2), ou **un seul grand lac** occupe le milieu de la carte
+  et la route en fait le tour (carte 10, ≈ 350 cases, lu sur l'image).
+- **Le relief d'une route, ce sont des buttes rocheuses et des rebords**, pas
+  des plateaux sous chaque chose : trois buttes de 40 à 100 cases sur la
+  carte 2, cernées d'arbres, et une douzaine de rebords courts.
+- **Une route peut avoir une maison**, une seule : une ferme dans un enclos
+  muré avec son potager (carte 2, 18 × 10), une cabane dans un coin (carte 4).
+- **Des barrières en travers des passages secondaires** (cinq sur la carte 4)
+  et deux ou trois arbustes à baies au fond des culs-de-sac.
+- **Un côté de la route peut être la mer**, derrière une falaise à deux
+  étages, avec un pont qui sort de la carte (carte 4).
+
+### Ce que disent les routes de Johto
+
+*Douze cartes du guide officiel d'Or HeartGold / Argent SoulSilver, fournies
+par Ludovic le 18/11/2026 : les routes 29 à 38 et 42 à 48. Lues sur l'image —
+ce sont des planches de guide, réduites, on n'y compte pas les cases. **Une
+seule chose n'en est pas reprise, à sa demande : leurs arbres alignés en
+colonnes** ; les nôtres restent en quinconce (E). Leurs étangs et leurs
+plaques d'herbes rectangulaires tiennent à leurs tuiles, comme plus haut.*
+
+- **Une route est un couloir entre deux murs**, forêt ou falaise, où le trajet
+  se lit d'un bout à l'autre. Elle ne s'élargit qu'en poches : une plaque
+  d'herbes, un étang, une maison.
+- **Les rebords sont partout** : de trois à dix par route, horizontaux, longs
+  de 3 à 10 cases, tendus d'un arbre à l'autre ou d'une paroi à l'autre. Ils
+  font un raccourci pour le retour, et isolent un objet qu'on n'atteint qu'en
+  faisant le tour (routes 29, 30, 31, 36, 46). C'est le relief d'une route de
+  plaine, plus que les buttes.
+- **Une plaque d'herbes barre le couloir sur toute sa largeur**, deux à cinq
+  fois par route : on la traverse, ou un rebord et un détour permettent de
+  l'éviter. Les herbes prennent un cinquième à un quart de ce qu'on foule.
+- **Le chemin de sable n'est qu'aux deux bouts et devant ce qui compte** — une
+  sortie, une maison, une grotte, un pont. Entre les deux, on marche dans
+  l'herbe. C'est la règle des pointillés (N), en plus net.
+- **Deux à cinq objets**, chacun au fond d'un cul-de-sac : derrière un rebord,
+  sur un petit plateau, de l'autre côté d'une eau, derrière un arbuste à
+  couper.
+- **Un à trois arbres à fruits**, dans un renfoncement de lisière, jamais sur
+  le trajet.
+- **Trois à neuf dresseurs**, aux étranglements, tournés vers le couloir ; un
+  pêcheur au bord de chaque eau.
+- **Un panneau de route près de chaque bout**, et un poste de garde à cheval
+  sur la sortie quand elle donne sur une ville.
+- **Une maison au plus** (la pension de la route 34, la maison de la route
+  30), avec son chemin de sable et, près d'une ville, une clôture blanche le
+  long du chemin (routes 34, 35, 38) : la clôture guide, elle n'enferme pas.
+- **Une eau peut couper la route tout entière** (route 42 : deux lacs d'un
+  mur à l'autre). Le passage est alors ailleurs — une grotte, un détour — et
+  se dit en rendant la carte (D, « ce que l'exemple suppose que le jeu sait
+  faire »).
+
+### Route de montagne
+
+*Routes 42, 44, 45 et 46 de Johto.*
+
+- **La roche ferme la carte**, pas la forêt : des parois brunes sur les bords,
+  en gradins. La ceinture d'arbres n'existe que là où la route retrouve la
+  plaine.
+- **Une bande de 8 à 14 cases entre deux parois**, coupée de terrasses : des
+  marches de pierre sur le trajet, des rebords à côté.
+- **Peu d'arbres, en petits bosquets** ; des blocs rocheux épars.
+- **L'eau est une rivière au fond de la vallée** (route 45 : cinq ponts d'une
+  rive à l'autre, en alternance) ou des lacs d'une paroi à l'autre (42, 44).
+- **Les hautes herbes vont par blocs sur les terrasses**, une terrasse sur
+  deux.
+- **Une à trois entrées de grotte**, en haut d'un escalier, son panneau à
+  côté.
+
+### Route côtière
+
+*Routes 32-33, 34 et 47-48 de Johto.*
+
+- **La mer longe un flanc de la route jusqu'au bord de la carte**, sur toute
+  sa longueur. De l'autre côté, la ceinture de forêt ou la paroi.
+- **Une chaîne de rochers suit la côte au large**, à trois ou quatre cases du
+  rivage, d'un bout à l'autre (route 34 : deux chaînes parallèles ; route 47 :
+  une ligne en arc sous la falaise). C'est elle qui dit où s'arrête l'eau où
+  l'on ira.
+- **La côte est une falaise basse ou un rebord**, pas une plage : on regarde
+  la mer, on n'y descend qu'à un ponton ou une jetée (route 32).
+- **Le reste est une route** : herbes, rebords, objets, une maison au plus.
+
+### Ce que disent les cartes du troisième panel
+
+*Dix-sept cartes fournies par Ludovic le 18/11/2026 : six grottes, deux
+déserts, trois cartes de neige, une route maritime, et des routes de
+montagne, de côte et de forêt. Lues sur l'image ; les tailles sont déduites
+de la taille de l'image, à quelques cases près.*
+
+Elles confirment trois choses déjà écrites, et en précisent trois :
+
+- **Les petits sapins sont bien un décor** (carte 43) : seuls, épars, au bord
+  des bosquets, d'une autre teinte que les gros arbres.
+- **Une route offre le choix** (carte 43) : un chemin de terre continu d'un
+  côté, de grandes herbes de l'autre — on prend l'un ou l'autre. C'est la
+  règle « un détour existe souvent » (M), en grand.
+- **Une montagne est faite de gradins** (cartes 29, 30, 37) : des terrasses
+  qui se suivent, aux contours parallèles, reliées par dix à quinze escaliers
+  courts. Une ceinture de roche à plat n'en est qu'une ébauche.
+- **L'eau descend la montagne** (carte 29) : un lac en haut, une cascade par
+  gradin, un bassin à chaque palier. Une rivière ne traverse pas une terrasse
+  sans tomber.
+- **Un repère au centre d'une carte en terrasses** (carte 30) : une place de
+  terre avec sa fontaine, et tout le reste tourne autour.
+- **Une côte a ses îlots** (carte 33) : trois ou quatre, boisés, cernés de
+  falaise, l'un portant la récompense ; des arcs de rochers les relient et
+  ferment le large.
+
+### Grotte
+
+*Cartes 27, 35, 36, 38, 39 et 40 du troisième panel.*
+
+- **Une grotte est une tache irrégulière posée sur du noir.** Pas de marge,
+  pas de ceinture d'arbres : ce qui ferme, c'est la paroi, en deux à quatre
+  gradins concentriques, et le vide autour. Son contour n'a ni droite ni
+  angle droit de plus de quatre cases.
+- **Le sol est d'une seule matière et ne fait que 35 à 55 % de la tache** ; le
+  reste est de la roche : la paroi, et **des massifs intérieurs de 20 à 60
+  cases**, chacun coiffé d'un bloc, autour desquels tournent des couloirs de
+  **deux à quatre cases**.
+- **Des paliers** : des plates-formes d'un gradin, où l'on monte par un
+  escalier court de deux ou trois cases — trois à huit par étage.
+- **Un à trois bassins de 20 à 80 cases par étage**, au fond d'un bras ou au
+  centre ; un pont ou une passerelle en franchit un, ou bien il garde un
+  objet pour celui qui saura nager.
+- **Les échelles sont au bout des bras** : deux à quatre par étage, chacune
+  dans un cul-de-sac, et celles de deux étages se répondent. L'entrée est une
+  trouée de lumière dans la paroi, en haut ou en bas.
+- **Des stalagmites et de petits rochers le long des parois**, un pour quinze
+  à vingt cases de sol, jamais au milieu d'un couloir.
+- **Un à trois objets par étage**, au fond des culs-de-sac.
+- **Rien de vivant** : ni arbre, ni herbes, ni fleurs, ni lampadaire. Une
+  teinte par grotte — bleue, brune, verte, de glace.
+- **Dans une grotte de glace**, des plaques où l'on glisse (20 à 150 cases),
+  semées de rochers qui arrêtent : c'est l'énigme de la carte, on dit par où
+  elle se résout.
+
+### Désert
+
+*Cartes 28 et 31 du troisième panel.*
+
+- **La roche ferme la carte**, en gradins épais de six à dix cases (31).
+- **Le sable est le sol**, avec **des plaques de sable plus foncé** de 20 à 60
+  cases qui tiennent la place des hautes herbes, et des herbes sèches là où le
+  désert touche la savane (28).
+- **Des buttes de sable basses** — trois ou quatre, de 30 à 80 cases, aux
+  bords arrondis — portent un cactus ou un rocher.
+- **Une seule eau** : une oasis de plus de cent cases, aux coudes marqués.
+- **Peu de choses, et chacune se voit** : trois ou quatre cactus, deux ou
+  trois squelettes, un petit rocher pour vingt-cinq cases, jamais en grille.
+- **Un repère construit** : des ruines, un temple dans une alcôve de la
+  paroi, l'étal d'un marchand.
+
+### Neige
+
+*Cartes 37, 41 et 42 du troisième panel.*
+
+- **La neige est le sol ; la roche brune ne se voit que sur les parois.**
+- **L'eau est gelée** : des plaques de glace où l'on glisse tiennent la place
+  des étangs, et une rivière de glace sépare les plateaux d'un village, que
+  relient des ponts de bois (41 : six ponts).
+- **Les herbes sont des touffes sous la neige**, par plaques comme ailleurs.
+- **Des sapins enneigés**, en forêt serrée autour des clairières (42).
+- **Un village de neige est en plateaux** : deux à quatre maisons par
+  plateau, un escalier ou un pont de l'un à l'autre.
+- **Des sources chaudes** (42) : des bassins de 30 à 60 cases dans une
+  clairière, avec leur vapeur — le seul endroit où l'eau n'est pas prise.
+
+### Route maritime
+
+*Carte 34 du troisième panel.*
+
+- **La mer touche les quatre bords** ; il n'y a pas de terre où marcher, sauf
+  des îlots.
+- **Une île de roche à gradins** (une douzaine de cases de côté) et **quatre
+  à six îlots de sable** de trois ou quatre cases, chacun dans son halo d'eau
+  claire.
+- **Les chaînes de rochers font le parcours** : des arcs et des lignes qui
+  dessinent des couloirs pour celui qui nage — c'est le labyrinthe de la
+  carte, comme les arbres en forêt profonde.
+
+### Forêt profonde
+
+*Carte 1.*
+
+- **Les arbres sont les murs.** Ils couvrent près de 60 % de la carte : une
+  ceinture de 4 à 6 arbres, et des massifs intérieurs de 15 à 60 arbres qui
+  dessinent un labyrinthe de clairières reliées par des couloirs de 2 à 4
+  cases.
+- **Les hautes herbes sont le sol**, pas une plaque posée dessus : elles
+  couvrent la plus grande part de chaque clairière. La règle « plaques de 10 à
+  40 » de M ne s'applique pas.
+- **Pas de chemin.** Ce qui guide, ce sont les **plaques de terre nue** — une
+  dizaine, de 12 à 30 cases, une par clairière ou par carrefour : c'est là
+  qu'on respire, et c'est la seule étendue sans herbes.
+- **Cinq mares de 12 à 50 cases**, sombres, deux franchies par une passerelle
+  de planches.
+- **Des taches de lumière** — une vingtaine, de 4 à 16 cases, pur décor — et
+  une teinte sombre sur toute la carte.
+- **Ni maison, ni lampadaire, ni plateau.** Des rebords courts (huit, dans les
+  deux sens), des souches et des troncs couchés (un pour 150 cases environ),
+  très peu de fleurs.
+- **Les sorties sont des trouées de deux ou trois cases** dans la ceinture,
+  vers le milieu d'un bord.
+
+### Champs
+
+*Carte 3.*
+
+- **Les champs sont la matière de la carte** : 27 % des cases, en sept blocs
+  de 21 à 230 cases. **Leurs bords sont droits** — c'est du construit, la
+  règle C ne les concerne pas — et une clôture de bois en fait tout le tour,
+  avec une ou deux entrées par bloc.
+- **Un champ est un labyrinthe** : le blé laisse des allées de terre nue (un
+  cinquième à un quart du bloc), et l'on trouve un objet au fond de l'une
+  d'elles.
+- **Pas de hautes herbes** : le blé en tient lieu.
+- **Des chemins de sable sinueux passent entre les blocs**, larges de trois ou
+  quatre cases (cinq tronçons de 9 à 44 cases).
+- **Les bosquets remplissent ce que les champs laissent** (26 % d'arbres) ; la
+  pelouse n'est plus qu'en bandes de trois à cinq cases.
+- **Une montagne ferme un côté** (16 % de la carte), et deux étangs de 21 et
+  36 cases tiennent entre les blocs.
+
+### Plage
+
+*Carte 5.*
+
+- **La mer est d'un seul tenant, prend 30 % de la carte et touche le bord sur
+  une quarantaine de cases** (validé par Ludovic le 18/11/2026 : la règle des
+  passes étroites de A ne vaut pas ici). Elle a deux tons. Ce qui y fait barrière, ce
+  sont **des chaînes de rochers en arc** (une quarantaine de rochers en tout),
+  qui enferment un îlot de sable et son objet.
+- **Le sable est le sol** : 15 %, en une grande plage (252 cases) et une
+  seconde (81). **Pas de chemin**, pas de pelouse à remplir. Une étendue de
+  sable de 6 × 6 à 8 × 8 est admise **si elle est garnie** : un rocher brun
+  pour 15 à 20 cases, des coquillages, des touffes vertes.
+- **Les palmiers sont à 2 à 4 cases les uns des autres, souvent par deux**
+  (une trentaine), et ils se mêlent aux arbres ronds à la lisière. La règle
+  des cinq cases de E ne vaut pas ici.
+- **Les herbes de plage, grises, vont par plaques de 10 à 35 cases** (six,
+  environ un quart du sable), adossées à un rocher, une butte ou des palmiers.
+- **La forêt se tient sur un tablier d'herbe** d'une ou deux cases au bord du
+  sable ; elle ne pousse pas dans le sable.
+- **Le relief est fort** : une montagne à gradins (17 %) avec une grotte en
+  haut d'un escalier double, et des buttes boisées cernées de falaise posées
+  sur la plage même.
+- **Une maison sur le sable, sans lampadaire ni fleurs.**
+
+### Village
+
+*Cartes 6 et 8.*
+
+- **Cinq ou six maisons**, dont une rangée de trois en haut, chacune à sa
+  hauteur (B).
+- **Le réseau de sable est continu et large** — trois à cinq cases, 10 % de la
+  carte sur la 6 (164 cases) — et relie chaque porte. Il s'élargit en placette.
+- **Les arbres ferment et séparent** : 41 % des cases, une ceinture épaisse et
+  des arbres entre les maisons.
+- **Deux étangs de 26 à 34 cases, au contact du bâti** : la berge touche une
+  maison, un banc regarde l'eau.
+- **Pas de hautes herbes au centre** (aucune sur la 6) ; deux ou trois plaques
+  en lisière au plus (la 8).
+- **Le relief est facultatif** : une seule ligne de terrasse qui coupe le
+  village en deux, avec un escalier large dans l'axe (la 6), ou rien (la 8).
+  « Un plateau sous chaque maison » (D) est la règle de l'île, pas celle de
+  tout village.
+- **C'est là qu'est le mobilier** : six lampadaires, une statue, un banc, des
+  panneaux, une boîte aux lettres par maison, des massifs de tournesols
+  clôturés de part et d'autre des façades.
+
+### Ville côtière
+
+*Cartes 7 et 9.*
+
+- **La mer fait le tour** (validé par Ludovic le 18/11/2026) : elle touche
+  les quatre bords (35 à 40 % de la carte), avec une plage tout autour de la terre et des rochers épars au
+  large. Pas de ceinture de forêt.
+- **Sept à neuf bâtiments, dont un repère** qu'on voit de partout (la tour de
+  la 7), et un ponton.
+- **Le sol est dallé** (la 7) **ou tout en sable** (la 9, où il n'y a pas une
+  case de pelouse hors d'un jardin clôturé).
+- **Le relief porte la ville** : des terrasses concentriques aux contours en
+  escalier (la 7), ou une montagne à gradins qui occupe un tiers de la carte
+  (la 9).
+- **Les palmiers vont par rangs et par bosquets serrés**, cimes au contact
+  (40 à 60) — comme les arbres d'une lisière.
+- **Six à huit lampadaires, quinze à vingt-cinq personnes** : c'est le style
+  le plus peuplé.
+
+### Ce qui tient au jeu de tuiles, pas au style
+
+Les cartes 7 à 11 sont faites d'autres planches que les nôtres. Trois choses
+qu'on y voit ne sont **pas** des règles à reprendre telles quelles :
+
+- **Des hautes herbes en tapis plein**, sans trous, par plaques de 60 à 150
+  cases (10, 11) : leur tuile est un tapis. La nôtre est une touffe : elle
+  garde ses trous (M).
+- **Des sapins isolés semés sur la pelouse** (8, 10, 11) : leur sapin tient
+  sur deux cases. Notre arbre en prend trois : il reste en bosquets (E) ;
+  seuls nos petits sapins s'isolent.
+- **Des chemins aux bords arrondis, larges de deux cases** (8, 11).
+
+### Les styles dans les outils
+
+Une carte dit son style : `style = "beach"` dans la table `[map]` d'un plan,
+`kind = "beach"` dans la table `[style]` d'un monde. Sans cela, c'est une
+route — ou un village si le plan a trois maisons.
+
+| Style | Mot | Le contrôleur (`check.py`) | Le générateur (`worldgen.py`) |
+|---|---|---|---|
+| Route | `route` | ses seuils, et deux règles contre la route vide : les hautes herbes font 8 à 35 % de ce qu'on foule, et quatre motifs au moins sur huit (herbes, eau, relief, rebord, bosquet au milieu, trois objets, maison, pont ou escalier) | oui : chemin par tronçons, herbes en travers du trajet, allées de côté à rebord, étangs à plat ; en couloir (`shape = "corridor"`), des poches et une mare |
+| Route de montagne | `mountain` | ses seuils | oui : des murs de roche en gradins, une vallée en terrasses reliées par des escaliers de pierre sur le trajet ; ni rivière à cascades, ni grotte |
+| Route côtière | `seaside` | ses seuils | une première version : la mer sur un flanc et sa chaîne de rochers |
+| Plage | `beach` | ses seuils | oui, pour une carte de 40 à 70 cases de côté |
+| Forêt profonde | `forest` | ses seuils | pas encore |
+| Grotte, désert, neige, route maritime | — | pas encore : leurs règles sont ci-dessus, pas dans les outils | pas encore : le décor n'a ni paroi de grotte, ni sable de désert, ni neige |
+| Champs | `fields` | ses seuils | pas encore |
+| Village | `village` | ses seuils | pas encore |
+| Ville côtière | `city` | ses seuils | pas encore |
+
+Ce que le contrôleur change d'un style à l'autre est dans son tableau
+`STYLES` : la taille admise, l'épaisseur de la ceinture, la mer au bord,
+l'obligation d'un chemin dans chaque sortie, le relief exigé, l'écart des
+palmiers, la taille des plaques d'herbes (ou leur part du sol, en forêt
+profonde), la densité des fleurs, le nombre d'objets. La plage a trois règles
+à elle : **le sable fait un dixième de la carte au moins, la moitié du sable
+s'atteint à pied, et aucun sable nu de plus de 8 × 8**.
+
+Ce qui manque au décor `coast` pour les autres styles : le blé et ses
+clôtures, le dallage de ville, la teinte sombre et les taches de lumière, les
+herbes de plage. Et le constructeur ne sait pas poser de l'herbe au niveau du
+sable : toute pelouse y est un plateau, avec sa falaise — le « tablier
+d'herbe » au pied de la forêt d'une plage n'est donc pas rendu.
+
+---
+
 ## Règles précises
+
+**Ces règles valent pour tous les styles, sauf ce que le style de la carte change
+([Les styles de carte](#les-styles-de-carte)).** Une règle marquée *(selon le
+style)* y a son détail.
 
 **Les fourchettes sont des repères, pas des quotas.** Une carte peut s'écarter
 d'une règle chiffrée quand son thème le demande — un grand champ de blé, une
@@ -114,12 +536,16 @@ pas justifier est une erreur.
 - **La terre va jusqu'au bord ; la mer ne le touche qu'à des passes
   étroites** (4 à 7 cases), chacune barrée d'une chaîne de rochers. Une passe
   large demande une muraille de rochers : on resserre la passe plutôt que
-  d'empiler les rochers.
+  d'empiler les rochers. *(Selon le style : c'est la règle de l'île de
+  départ, qui la garde. **Sur une plage et dans une ville côtière, la mer
+  touche le bord largement** — validé par Ludovic le 18/11/2026, d'après son
+  panel : le bord de la carte y est la limite de la mer.)*
 - **Dans la marge, une plage ne fait que ses deux cases** : la lisière descend
   jusqu'à elle, et un seul rocher suffit à la fermer.
 - **La ceinture de forêt fait au moins trois arbres d'épaisseur** sur tout
   bord qui n'est pas la mer ; deux suffisent là où une falaise ou de l'eau la
-  double (références).
+  double (références). *(Selon le style : quatre à six en forêt profonde ; une
+  montagne peut tenir lieu de ceinture sur un côté.)*
 - **Une sortie est une trouée de 2 à 4 cases** dans cette ceinture, et le
   chemin la traverse (références).
 - **Aucun endroit d'où l'on ne ressort pas.** Tout ce qu'on atteint à pied, on
@@ -152,7 +578,9 @@ pas justifier est une erreur.
   (références).
 - **Le bâtiment repère est au bout d'un axe** : on le voit en arrivant
   (références).
-- **Aucune pelouse nue de plus de 4 × 4** (références ; mesuré : de 2 × 2 à
+- **Aucune pelouse nue de plus de 4 × 4** *(selon le style : sur une plage,
+  le sable garni tient jusqu'à 8 × 8 ; en forêt profonde, la seule étendue
+  nue est la plaque de terre d'une clairière)* (références ; mesuré : de 2 × 2 à
   5 × 5 selon la carte). Tout carré plus grand reçoit des hautes herbes, un
   bosquet, un étang, un chemin ou des fleurs. Une carte peut avoir **une
   respiration voulue**, jusqu'à 6 × 6 environ, si elle a une fonction — une
@@ -178,7 +606,10 @@ pas justifier est une erreur.
 ### D. Relief
 
 - **Des plateaux partout** : sous chaque maison, sous la place, et quelques
-  buttes boisées dans les lisières. L'île en a huit.
+  buttes boisées dans les lisières. L'île en a huit. *(Selon le style : c'est
+  le relief d'un village côtier. Une route a des buttes rocheuses et des
+  rebords, une forêt profonde des rebords seulement, un village de plaine
+  peut être plat.)*
 - **Une falaise basse est une ligne fine d'une case qui serpente et relie deux
   bosquets** (références). La ligne et les arbres forment ensemble la
   barrière ; l'escalier est le seul passage.
@@ -242,6 +673,11 @@ pas justifier est une erreur.
 - **Une route fait trois cases de large.** Plus large est très rare — cela
   arrive, ce n'est pas courant (Ludovic, 17/11/2026). Les pistes des
   générateurs font trois cases.
+- *(Dans le générateur : `tools/mapgen/neighbor.py` lit le bord de la carte
+  voisine et donne la sortie à la case près, l'eau à prolonger, les talus
+  qui filent hors de la carte, la trame de ses arbres et ceux que le bord
+  coupe — `tools/mapgen/worlds/README.md`. Fait pour une voisine au sud ; le
+  contour de l'eau profonde ne se suit pas encore.)*
 - **Deux cartes qui se suivent se raccordent** : à la sortie de l'une et à
   l'entrée de l'autre, le même sol (pas du sable d'un côté et de l'herbe de
   l'autre), la même hauteur (pas la plage d'un côté et un plateau de l'autre),
@@ -274,7 +710,12 @@ pas justifier est une erreur.
   plante l'essence de sa cime.
 - **Une montagne a la taille que lui donne l'exemple**, et plusieurs gradins
   posés les uns sur les autres : on érode sa silhouette d'une case par
-  gradin.
+  gradin. *(Le constructeur le fait pour toute montagne d'un plan : trois
+  gradins par défaut.)*
+- **Les terrasses s'empilent** : un niveau repose tout entier sur le dessus
+  du précédent, à une case de son bord au moins, et n'a pas de bord contre une
+  montagne — la roche est un mur. Dans un plan, la grille `levels` va de `1`
+  à `4`.
 - **Le toit d'une maison peut dépasser de son plateau** : ce n'est pas une
   contrainte (Ludovic, 15/11/2026). Ce qui compte, c'est que sa façade et sa
   porte soient sur le dessus, avec la place de sortir.
@@ -302,7 +743,12 @@ pas justifier est une erreur.
   la planche de l'île). **Jamais sur le bord du haut** : un escalier vu à
   l'envers ne ressemble à rien. Devant et derrière un escalier, rien.
 - **Rien à cheval sur un bord de plateau** : un arbre, un dallage, une fleur
-  haute sont tout entiers dessus ou tout entiers en bas.
+  haute sont tout entiers dessus ou tout entiers en bas. **« Tout entier »,
+  c'est son dessin, pas seulement son pied** (Ludovic, 18/11/2026, sur une
+  butte dont les arbres débordaient : « leur texture dépasse du terre-plein »).
+  Un arbre de butte a ses trois cases de large et ses trois de haut, cime
+  comprise, sur le dessus de la butte ; un arbre d'en bas n'y pose pas un
+  pied. Une butte trop petite pour un arbre n'en porte pas.
 
 ### E. Arbres
 
@@ -351,9 +797,14 @@ pas justifier est une erreur.
   couloirs de 3 à 6 cases. Une route peut avoir en plus **un ou deux arbres
   isolés ou en paire**, s'ils servent de repère : un arbre différent, à un
   carrefour, au bout d'un cul-de-sac.
-- **Les petits sapins comblent les creux** (références) : au bout d'une
-  rangée, dans un renfoncement de lisière, ou par paire de chaque côté d'une
-  entrée. Environ un pour six à huit gros arbres.
+- **Les petits sapins sont de la variété, pas un bouche-trou** (Ludovic,
+  18/11/2026, sur des cartes générées où ils fermaient la lisière en piles de
+  quatre : « ils ne sont pas là pour combler des trous, ils sont là pour
+  ajouter de la variété visuelle et décorative »). On en met au bord d'un
+  bois — au bout d'une rangée, dans un renfoncement, de part et d'autre d'une
+  entrée —, **seuls ou par deux, jamais empilés ni en rang**, environ un pour
+  huit gros arbres. Une lisière qui laisse passer se ferme avec un arbre de
+  plus.
 - **Une ou deux souches ou troncs couchés au pied des lisières**, jamais en
   pleine pelouse (références).
 - **Dans un village, un arbre isolé est permis en accent** à côté d'une
@@ -375,7 +826,8 @@ pas justifier est une erreur.
 - **Un arbre planté hors de la carte déborde dessus** : on n'en met que là où
   le bord est de la forêt, jamais au-dessous d'une plage ou de l'eau.
 - **Les palmiers** vont sur le sable sec, à cinq cases les uns des autres, et
-  pas au pied de la falaise du nord.
+  pas au pied de la falaise du nord. *(Selon le style : deux à quatre cases
+  sur une plage, par rangs et bosquets serrés dans une ville côtière.)*
 
 ### F. Rochers
 
@@ -400,6 +852,10 @@ pas justifier est une erreur.
   cailloux épars ne font qu'accompagner la chaîne, ils n'en font pas partie.
 - **Jamais les rochers moussus** (`5:26-31,30-31`) : ce sont des obstacles
   spéciaux.
+- *(Selon le style : les deux règles qui suivent sont celles d'une carte dont
+  la mer ne touche le bord qu'à des passes. Sur une plage et dans une ville
+  côtière, la mer va jusqu'au bord ; les chaînes de rochers y enferment un
+  îlot ou un bassin, elles ne ferment pas la carte.)*
 - **Elle ne fuit pas** : depuis le bord de la carte, la mer libre ne rejoint
   aucune eau de l'île. Contrôle automatique (générateur et test).
 - **Ni à pied, ni à la nage.** Le jour où le joueur saura nager, il passera de
@@ -581,6 +1037,8 @@ pas justifier est une erreur.
 
 *D'après les cartes de référence (17/11/2026).*
 
+- *(Selon le style : en forêt profonde elles sont le sol ; dans les champs
+  il n'y en a pas ; sur une plage ce sont des herbes grises.)*
 - **Par plaques de 10 à 40 cases, au contour déchiqueté, avec des trous** :
   une case manquante sur cinq ou six. Jamais un rectangle plein. De **petites
   touffes de 3 à 6 cases** sont permises en accent, et **une grande étendue**
@@ -608,8 +1066,13 @@ pas justifier est une erreur.
 - **Dans un village, le réseau relie chaque porte** — en T, en croix ou d'un
   tracé plus libre — et l'on y lit un axe principal ; il s'élargit en placette
   devant les bâtiments importants.
-- **Sur une route, le chemin est en pointillés** : des tronçons de 4 à 10
-  cases orientés dans le sens du trajet, séparés par de l'herbe. Variante :
+- *(Selon le style : ni forêt profonde ni plage n'ont de chemin.)*
+- *(Le générateur dessine le chemin par tronçons : aux sorties, devant une
+  porte, un pont ou un escalier, et de loin en loin ; `path = "full"` rend la
+  piste continue.)*
+- **Sur une route, le chemin est en pointillés** : des tronçons de 4 à 20
+  cases (mesuré le 18/11/2026 : de 13 à 60 cases de surface, sur trois de
+  large) orientés dans le sens du trajet, séparés par de l'herbe. Variante :
   une piste continue d'herbe plus claire. Un seul des deux par carte.
 - **Un chemin mène quelque part** : une porte, un escalier, un pont, une
   sortie.
@@ -619,10 +1082,18 @@ pas justifier est une erreur.
 *D'après les cartes de référence (17/11/2026). Les barrières de rochers sont
 en F, les pontons en I.*
 
+- **Un étang est au niveau de l'herbe, pas au fond d'une falaise** (18/11/2026,
+  d'après les cartes de référence : j'encaissais chaque mare comme un bras de
+  mer). Sa berge est dans ses propres tuiles (`pond`, [tilesets.md](tilesets.md)) ;
+  il n'a ni paroi, ni liseré de sable, ni escalier. Les falaises sont pour la
+  mer, les rivières et les très grands lacs. Dans un plan : le signe `o`.
 - **Un étang fait 12 à 60 cases, au contour en escalier**, jamais un
-  rectangle, avec sa berge brune en haut et à gauche.
+  rectangle, avec sa berge brune en haut et à gauche. Au-delà, c'est un lac
+  ou un bras d'eau : 80 à 150 cases sur une route, et un pont le franchit
+  (panel du 18/11/2026).
 - **Un à trois décors par étang moyen ou grand** : un rocher, un ou deux
-  nénuphars. Un petit étang peut rester nu.
+  nénuphars. Un petit étang peut rester nu. *(Le générateur pose les
+  nénuphars ; il n'a pas de rocher à la teinte de l'étang.)*
 - **Un étang est adossé** à un bosquet, une maison ou une falaise, et longé
   par un chemin.
 - **Sur une route de plaine ou de forêt, un étang toutes les 12 à 20 cases.**
@@ -645,7 +1116,8 @@ en F, les pontons en I.*
 relire quand la mécanique existera, avec la règle « aucun endroit d'où l'on
 ne ressort pas » (A).*
 
-- **Des segments droits de 3 à 5 cases, horizontaux, qu'on saute vers le
+- **Des segments droits de 3 à 5 cases** (jusqu'à 10 sur les routes de Johto,
+  18/11/2026)**, horizontaux, qu'on saute vers le
   bas.** Un rebord latéral est permis si la tuile existe et que le saut se lit
   sans ambiguïté.
 - **En travers d'un couloir secondaire**, comme raccourci de retour — jamais
@@ -747,6 +1219,10 @@ question sans réponse se pose à Ludovic** ; on n'y répond pas par défaut.
 ## Avant de rendre une carte
 
 1. Le générateur ne signale rien : raccords, pontons, objets, barrières, marge.
+   Pour une carte faite d'un plan (`tools/mapgen`) : le constructeur ne
+   signale rien, et `python3 tools/mapgen/check.py <plan>` donne les règles
+   chiffrées qu'elle enfreint — chacune se corrige ou se nomme à Ludovic (8).
+   Son taux ne remplace pas la repasse des jonctions (4).
 2. Grille de collisions du moteur = grille du plan, dans chaque état de
    l'histoire (avant et après la Veillée).
 3. Depuis le départ : chaque lieu est atteignable, aucune case de la marge
