@@ -56,6 +56,9 @@ class SceneManager : Node() {
 		private const val DAYLIGHT_META = "daylight"
 		private const val DAYLIGHT_NODE = "Daylight"
 
+		// La pénombre d'une carte : une couleur qui multiplie la teinte de l'heure (un sous-bois, par exemple).
+		private const val SHADE_META = "shade"
+
 		/** Le voile clair et nuageux du dehors : un rectangle sur toute la carte, au-dessus du décor. */
 		private const val HAZE_NODE = "Haze"
 		private const val HAZE_SHADER = "res://src/main/kotlin/fr/skyle/pokemonmirage/resources/shaders/sky.gdshader"
@@ -147,6 +150,7 @@ class SceneManager : Node() {
 
 	/** La teinte du jour sur la carte courante, si elle est dehors. */
 	private var daylight: CanvasModulate? = null
+	private var shade: Color = DAY
 	private var player: Node2D? = null
 	private var follower: Follower? = null
 
@@ -262,7 +266,7 @@ class SceneManager : Node() {
 
 		// Dehors, la teinte suit l'heure, et les fenêtres s'allument avec la nuit.
 		val sky = daylight
-		val tint = if (sky != null) DayNight.tint() else DAY
+		val tint = if (sky != null) shaded(DayNight.tint()) else DAY
 		sky?.color = tint
 		RenderingServer.globalShaderParameterSet(TINT_UNIFORM, tint)
 		RenderingServer.globalShaderParameterSet(LIGHT_UNIFORM, if (sky != null) DayNight.light() else 0.0)
@@ -316,6 +320,9 @@ class SceneManager : Node() {
 	}
 
 	/** Dehors, un voile clair et nuageux par-dessus toute la carte (voir sky.gdshader). */
+	/** La teinte de l'heure, assombrie par la pénombre de la carte (`metadata/shade`), s'il y en a une. */
+	private fun shaded(tint: Color): Color = Color(tint.r * shade.r, tint.g * shade.g, tint.b * shade.b, 1.0)
+
 	private fun addHaze(map: Node2D) {
 		val rect = skyRect(map) ?: return
 		val shader = ResourceLoader.load(HAZE_SHADER) as? Shader ?: return
@@ -387,10 +394,12 @@ class SceneManager : Node() {
 
 		// Une carte d'extérieur prend la teinte de l'heure ; un intérieur reste éclairé.
 		daylight = null
+		shade = DAY
 		if (next.getMeta(DAYLIGHT_META, false) == true) {
+			shade = (next.getMeta(SHADE_META, DAY) as? Color) ?: DAY
 			val sky = CanvasModulate()
 			sky.setName(DAYLIGHT_NODE)
-			sky.color = DayNight.tint()
+			sky.color = shaded(DayNight.tint())
 			next.addChild(sky)
 			daylight = sky
 			addHaze(next)
