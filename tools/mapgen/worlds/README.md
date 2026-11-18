@@ -25,8 +25,8 @@ l'ordre : `style_ile`, `style_anneau`, `style_couloir`, `style_plaine`, `style_c
 
 ```toml
 [style]
-kind = "route"                   # le style de la carte : route (le défaut), mountain, seaside, beach, forest, village ou fields
-size = "medium"                  # small (40 × 30), medium (64 × 44), large (90 × 64), ou [largeur, hauteur]
+kind = "route"                   # le style de la carte : route (le défaut), mountain, seaside, beach, forest, village, fields ou cave
+size = "medium"                  # small (40 × 30), medium (64 × 44), large (90 × 64), ou [largeur, hauteur] — une grotte : 46 × 36, 52 × 40, 66 × 50
 shape = "coast"                  # la forme générale
 character = ["rocky", "jagged"]  # un ou plusieurs caractères, qui se cumulent
 sea = "west"                     # pour coast et bay : le côté de la mer
@@ -45,11 +45,13 @@ sea = "west"                     # pour coast et bay : le côté de la mer
 
 | `fields` | des champs : **des blocs de blé clôturés, aux bords droits**, sur une grille bousculée — un champ par case, parfois un grand sur deux cases. Chacun est un petit labyrinthe : du blé par bandes de deux à quatre rangées, des allées de terre d'une case, une trouée par bande, d'un côté puis de l'autre ; un portillon de deux cases tourné vers le milieu de la carte ; un champ sur deux garde un objet au fond de sa dernière allée. Des chemins continus relient les portillons, des bosquets remplissent le reste, un ou deux étangs tiennent entre les blocs ; pas de hautes herbes. Il lui faut `size = [60, 58]` pour quatre champs : en dessous il n'y en a qu'un ou deux. `champs_apercu.png` en montre (`style_champs`). Le blé couvre 7 à 9 % de la carte — la carte de référence en a 27 % : la ceinture de forêt et les marges entre champs en prennent trop. Pas encore : la montagne qui ferme un côté |
 
+| `cave` | une grotte : **une tache de roche posée sur du noir**. La paroi fait le tour, en deux gradins ; au milieu, **des massifs de roche** autour desquels on tourne par des couloirs de deux cases au moins, et, dès que la salle est assez grande, **des éperons** — des langues de roche qui partent de la paroi et la coupent en chambres. Un à trois bassins, des plaques de sol sombre, des stalagmites et des rochers le long des parois, un ou deux gros blocs, trois objets au fond, loin de l'entrée. On entre par un couloir de trois cases au sud (`[[exit]] side = "north"` pour une seconde sortie). Rien de vivant, pas de teinte de l'heure ; le décor est `cave`, quoi que dise `theme`. `shape`, `character` et `sea` n'y changent rien. `grotte_apercu.png` en montre une |
+
 Le dernier style que le contrôleur connaît — `city` — ne s'invente pas encore : le générateur le dit et s'arrête.
 
-**`galerie/` montre treize mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
+**`galerie/` montre quatorze mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
 aperçu : six routes (plaine, forêt, étangs, anneau, île, couloir du nord au sud), une route de montagne en terrasses,
-une route côtière, deux plages, une forêt profonde, un village, des champs.
+une route côtière, deux plages, une forêt profonde, un village, des champs, une grande grotte à deux sorties.
 
 | `shape` | Ce que ça donne |
 |---|---|
@@ -205,7 +207,9 @@ l'aperçu, jonction par jonction.
 
 ## Ce qu'il ne fait pas encore
 
-- **Les styles autres que la route et la plage** : forêt profonde, champs, village, ville côtière.
+- **La ville côtière, le désert, la neige, la route maritime.**
+- **Dans une grotte** : un seul étage et une seule salle — ni paliers, ni échelles, ni entrée en trouée de lumière, ni
+  passerelle sur un bassin, ni glace où l'on glisse ; une seule teinte de roche, la brune.
 - **Sur une plage** : les herbes de plage et le tablier d'herbe au pied de la forêt (le décor et le constructeur ne
   les ont pas), les chaînes de rochers en arc autour d'un îlot, une maison sur le sable.
 - **Sur une route**, la mer ne touche jamais le bord : les passes barrées de rochers (A) sont à faire.

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Le balayage : le générateur tient-il sur des graines qu'on n'a jamais regardées ?
 
-    python3 tools/mapgen/sweep.py 7,64,333              huit formes de route, la plage, la route côtière et la route de montagne × ces graines, tailles et caractères variés
+    python3 tools/mapgen/sweep.py 7,64,333              huit formes de route et sept styles (plage, côte, montagne, forêt, village, champs, grotte) × ces graines, tailles et caractères variés
+    python3 tools/mapgen/sweep.py 7,64,333 --only cave  un seul style (ou plusieurs, séparés par des virgules)
     python3 tools/mapgen/sweep.py 7,64,333 --keep DIR   garder mondes, plans et aperçus dans DIR (sinon un dossier temporaire)
 
 Pour chaque monde : son taux de composition (`check.py`), s'il est **jouable**, et les règles qu'il enfreint. Rien
@@ -19,20 +20,22 @@ import tempfile
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SHAPES = ['free', 'island', 'ring', 'plain', 'coast', 'bay', 'corridor', 'archipelago', 'beach', 'seaside', 'mountain', 'forest', 'village', 'fields']          # (les trois derniers sont des styles, pas des formes ; la mer ouverte change de côté avec la graine)
-KINDS = ('beach', 'seaside', 'mountain', 'forest', 'village', 'fields')
+SHAPES = ['free', 'island', 'ring', 'plain', 'coast', 'bay', 'corridor', 'archipelago', 'beach', 'seaside', 'mountain', 'forest', 'village', 'fields', 'cave']          # (les sept derniers sont des styles, pas des formes ; la mer ouverte change de côté avec la graine)
+KINDS = ('beach', 'seaside', 'mountain', 'forest', 'village', 'fields', 'cave')
 SIDES = ['south', 'west', 'north', 'east']
 CHARACTERS = [[], ['rocky'], ['sandy'], ['wooded'], ['wet', 'jagged'], ['flowery', 'open']]
 WORLD = '[map]\nname = "%s"\nlocation = "Essai"\ntheme = "coast"\n\n[seed]\nworld = %d\n\n[style]\nsize = "%s"\n%s\ncharacter = [%s]\n'
 
 if __name__ == '__main__':
-    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and sys.argv[i - 1] != '--keep']
+    args = [a for i, a in enumerate(sys.argv[1:], 1) if not a.startswith('--') and sys.argv[i - 1] not in ('--keep', '--only')]
     if not args: sys.exit(__doc__)
     seeds = [int(a) for a in args[0].split(',')]
     folder = sys.argv[sys.argv.index('--keep') + 1] if '--keep' in sys.argv else tempfile.mkdtemp(prefix='mapgen_sweep_')
     os.makedirs(folder, exist_ok=True)
     rows = []
+    only = sys.argv[sys.argv.index('--only') + 1].split(',') if '--only' in sys.argv else SHAPES
     for s, shape in enumerate(SHAPES):
+        if shape not in only: continue
         for k, seed in enumerate(seeds):
             character = CHARACTERS[(k + s) % len(CHARACTERS)]
             size = ['small', 'medium'][k % 2] if shape == 'corridor' else ['medium', 'small', 'large'][k % 3]
