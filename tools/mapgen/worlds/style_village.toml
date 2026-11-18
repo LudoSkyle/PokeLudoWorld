@@ -1,0 +1,15 @@
+# Un monde d'exemple : Bourg-Essai — le style `village` : cinq maisons autour d'une placette, un réseau de chemins, deux étangs.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_village.toml --preview /tmp/style_village.png
+
+[map]
+name = "style_village"
+location = "Bourg-Essai"
+theme = "coast"
+banner = "wood"
+
+[seed]
+world = 5
+
+[style]
+kind = "village"
+size = [48, 42]

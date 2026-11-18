@@ -486,7 +486,7 @@ route — ou un village si le plan a trois maisons.
 | Forêt profonde | `forest` | ses seuils, et trois règles à elle : les arbres couvrent la moitié de la carte au moins, aucun chemin, trois plaques de terre nue au moins | oui : clairières, couloirs en boucle, herbes au sol, plaques de terre, mares, pénombre ; ni taches de lumière, ni souches, ni passerelles |
 | Grotte, désert, neige, route maritime | — | pas encore : leurs règles sont ci-dessus, pas dans les outils | pas encore : le décor n'a ni paroi de grotte, ni sable de désert, ni neige |
 | Champs | `fields` | ses seuils | pas encore |
-| Village | `village` | ses seuils | pas encore |
+| Village | `village` | ses seuils, et quatre règles à lui : quatre maisons au moins, quatre à huit lampadaires, un réseau de chemins d'un seul tenant qui relie chaque porte, aucune haute herbe au centre | oui : maisons, placette dallée, réseau de chemins, étangs, lampadaires, massifs clôturés ; ni bancs, ni boîtes aux lettres, ni statue, ni habitants |
 | Ville côtière | `city` | ses seuils | pas encore |
 
 Ce que le contrôleur change d'un style à l'autre est dans son tableau

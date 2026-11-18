@@ -314,7 +314,7 @@ def check(plan):
     rule('Q', 'par touffes de deux ou trois, une seule de temps en temps', not heavy and len(single) <= max(2, len(tufts) * 0.4) if tufts else None,
          '%d touffes : %d d une seule fleur, %d de plus de trois' % (len(tufts), len(single), len(heavy)), [min(t) for t in heavy])
     rows = [c for c in blooms if (c[0] + 1, c[1]) in blooms]
-    rule('Q', 'les grandes fleurs ne sont jamais côte à côte en rang (hors massif clôturé)', not [c for c in rows if c not in {(q[0], q[1]) for q in b['fence']}] if blooms else None, '%d paires côte à côte' % len(rows), rows)
+    rule('Q', 'les grandes fleurs ne sont jamais côte à côte en rang (hors massif clôturé)', not [c for c in rows if c not in b['GARDEN'] and c not in {(q[0], q[1]) for q in b['fence']}] if blooms else None, '%d paires côte à côte' % len(rows), rows)
     bad = (flowers | blooms) & TRAIL
     rule('Q', 'jamais de fleur sur un chemin', not bad if flowers | blooms else None, '%d fleurs sur un chemin' % len(bad), bad)
 
@@ -344,6 +344,17 @@ def check(plan):
         have = [name for name, there in motifs.items() if there]
         rule('B', 'une route a de quoi s y arrêter : quatre motifs au moins sur huit', len(have) >= 4,          # (les routes de Johto en ont de trois à six)
              '%d motifs : %s — il manque : %s' % (len(have), ', '.join(have), ', '.join(n for n in motifs if n not in have)))
+
+    # ---------------------------------------------------------------- un village
+    if kind == 'village' and not b['literal']:
+        rule('B', 'un village a quatre maisons au moins', len(doors) >= 4, '%d maisons' % len(doors))
+        lamps = len(plan.table('lamp'))
+        rule('K', 'quatre à huit lampadaires dans un village, aux entrées et aux coins de la place', 4 <= lamps <= 8, '%d lampadaires' % lamps)
+        net = pieces(TRAIL | b['PAVED'])
+        rule('N', 'le réseau de chemins est d un seul tenant et relie chaque porte', len(net) == 1 and all({(d[0], d[1] + 1), (d[0], d[1] + 2)} & net[0] for d in doors.values()) if net else False,
+             '%d morceaux de chemin' % len(net), [min(n_) for n_ in net[1:]])
+        centre_ = {c for c in CELLS if abs(c[0] - W // 2) <= W // 5 and abs(c[1] - H // 2) <= H // 5}
+        rule('M', 'aucune haute herbe au centre d un village', not TALL & centre_, '%d cases d herbes au centre' % len(TALL & centre_), TALL & centre_)
 
     # ---------------------------------------------------------------- une forêt profonde
     if kind == 'forest' and not b['literal']:

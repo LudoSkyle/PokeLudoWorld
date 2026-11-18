@@ -25,7 +25,7 @@ l'ordre : `style_ile`, `style_anneau`, `style_couloir`, `style_plaine`, `style_c
 
 ```toml
 [style]
-kind = "route"                   # le style de la carte : route (le défaut), mountain, seaside, beach ou forest
+kind = "route"                   # le style de la carte : route (le défaut), mountain, seaside, beach, forest ou village
 size = "medium"                  # small (40 × 30), medium (64 × 44), large (90 × 64), ou [largeur, hauteur]
 shape = "coast"                  # la forme générale
 character = ["rocky", "jagged"]  # un ou plusieurs caractères, qui se cumulent
@@ -41,12 +41,14 @@ sea = "west"                     # pour coast et bay : le côté de la mer
 
 | `forest` | une forêt profonde : **les arbres sont les murs** (les deux tiers de la carte), **les hautes herbes le sol**. Des clairières sur une grille bousculée, reliées par des couloirs qui font des boucles ; une plaque de terre nue par clairière, à la place d'un chemin ; une mare pour trois clairières ; presque pas de fleurs ; la carte est dans la pénombre (`shade`). Il lui faut de la place : `size = [72, 50]` donne une dizaine de clairières. `foret_apercu.png` en montre une (`style_foret`). Pas encore : les taches de lumière, les souches, les passerelles sur les mares |
 
-Les autres styles que le contrôleur connaît — `fields`, `village`, `city` — ne s'inventent pas encore : le
+| `village` | un village : **cinq maisons autour d'une placette dallée** — le bâtiment repère en haut de l'axe qui monte de l'entrée du sud, une rangée de trois en haut, deux en bas, chacune à sa hauteur. Un réseau de chemins continu relie chaque porte ; deux étangs près du bâti ; six lampadaires (les coins de la placette, l'entrée) ; deux massifs de grandes fleurs clôturés contre une façade ; des hautes herbes en lisière seulement. On peut donner ses propres `[[house]]`. Il lui faut `size = [48, 42]` au moins : en 40 × 30 aucune maison ne tient. `village_apercu.png` en montre un (`style_village`). Pas encore : bancs, boîtes aux lettres, statue, habitants — le décor n'en a pas — et les portes ne mènent nulle part |
+
+Les autres styles que le contrôleur connaît — `fields`, `city` — ne s'inventent pas encore : le
 générateur le dit et s'arrête.
 
-**`galerie/` montre onze mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
+**`galerie/` montre douze mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
 aperçu : six routes (plaine, forêt, étangs, anneau, île, couloir du nord au sud), une route de montagne en terrasses,
-une route côtière, deux plages, une forêt profonde.
+une route côtière, deux plages, une forêt profonde, un village.
 
 | `shape` | Ce que ça donne |
 |---|---|
@@ -188,9 +190,9 @@ caractères — et relève le taux de chacun :
 python3 tools/mapgen/sweep.py 29,404,6000,90
 ```
 
-Au 18/11/2026, dernier balayage (après la forêt profonde), sur 36 mondes de graines jamais regardées — 24 routes, 3
-plages, 3 routes côtières, 3 routes de montagne, 3 forêts profondes : **36 jouables, 36 à 85 % ou plus, taux moyen
-97 %**, le plus bas à 86 %. Ce n'est pas une garantie : dans la même journée, deux balayages
+Au 18/11/2026, dernier balayage (après le village), sur 26 mondes de graines jamais regardées — 16 routes, 2 de
+chacun des cinq autres styles : **26 jouables, 25 à 85 % ou plus, taux moyen 96 %**, le plus bas à 83 % (un archipel
+rocheux). Ce n'est pas une garantie : dans la même journée, deux balayages
 ont encore sorti un monde injouable chacun, pour deux raisons nouvelles — un arbre planté sur le trajet en fermant la
 lisière, des terrasses sur une carte trop petite pour elles. Les deux sont corrigées. **Après toute retouche de `worldgen.py`, balayer des graines neuves** : celles sur lesquelles on vient
 de corriger ne prouvent rien — chaque balayage de ce jour-là a sorti un défaut que le précédent n'avait pas vu.

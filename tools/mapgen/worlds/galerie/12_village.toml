@@ -1,0 +1,15 @@
+# Galerie : un village — cinq maisons autour d une placette, un réseau de chemins, deux étangs, des massifs clôturés.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/12_village.toml --plan /tmp/12.toml --preview /tmp/12.png
+
+[map]
+name = "12_village"
+location = "Bourg des étangs"
+theme = "coast"
+banner = "wood"
+
+[seed]
+world = 240
+
+[style]
+kind = "village"
+size = [54, 46]
