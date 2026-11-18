@@ -231,6 +231,15 @@ trailj = [13, 0, 0]
 trailk = [12, 1, 0]
 traill = [13, 1, 0]
 water = [3, 2, 1]
+wheat1 = [5, 21, 1]
+wheat2 = [6, 21, 1]
+wheat3 = [7, 21, 1]
+wheat4 = [5, 20, 1]
+wheat5 = [6, 20, 1]
+wheat6 = [7, 20, 1]
+wheat7 = [5, 19, 1]
+wheat8 = [6, 19, 1]
+wheat9 = [7, 19, 1]
 
 # Ce qui se pose : `at` sa case sur la planche, `size` sa taille en cases, `drop` les rangées d'ombre sous son pied,
 # `anchor` la colonne de son pied dans son image, `feet` les cases qu'il occupe (depuis son coin bas-gauche),

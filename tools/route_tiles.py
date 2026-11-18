@@ -44,6 +44,7 @@ BLOCKS = {
     'stair':  ((384, 976), None, (6, 13), None),              # escalier de pierre à poteaux : sa rangée du milieu est celle des marches
     'pond':   ((720, 400), (720, 448), (8, 16), (11, 16)),    # l'étang : une eau au niveau de l'herbe, sa berge brune en haut et sur les côtés — pas une falaise
     'earth':  ((256, 240), (256, 288), (0, 19), (3, 19)),      # la terre nue bordée d'herbe : la plaque d'une clairière, d'un carrefour — on y marche
+    'wheat':  ((208, 336), None, (5, 19), None),              # le blé : un bloc qui se pose sur la terre d'un champ ; on ne le traverse pas, on suit ses allées
 }
 # nom : ((x, y) sur la planche, (colonne, rangée) dans route.png)
 SINGLES = {
@@ -128,7 +129,7 @@ def blocks(name):
     dans sa variante sans collision.
     """
     if name is None: return False
-    if name == 'water' or family(name) in ('deep', 'sand', 'pond'): return True
+    if name == 'water' or family(name) in ('deep', 'sand', 'pond', 'wheat'): return True
     if name in ('grassk', 'grassl'): return False
     if family(name) in ('rock', 'grass', 'hollow'): return name[-1] != '5'
     return name.startswith('ledge') or name.startswith('fence')
