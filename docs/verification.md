@@ -89,6 +89,20 @@ la case change, relâcher. Avec un parcours en largeur sur les collisions du
 jeu, elle suit n'importe quel trajet. Les contrôles à faire à chaque arrivée
 sont listés dans [levels.md](levels.md).
 
+## Les tests rapides : sans lancer le jeu
+
+```
+./gradlew test
+```
+
+Ce qui ne dépend pas de Godot — une règle, un calcul, un format — se vérifie
+sur la JVM seule, en quelques millisecondes : `src/test/kotlin/`, un fichier
+par sujet (`WildTableTest`, `InventoryTest`, `StoryFlagsTest`,
+`SaveFormatTest`). **C'est là qu'on écrit un test dès que c'est possible** :
+la classe testée ne doit appeler aucune fonction du moteur (elle peut en
+importer les types). Tout ce qui a besoin d'une scène, d'une image ou d'une
+touche reste dans `tests/`, ci-dessous. `./gradlew build` les lance aussi.
+
 ## Les tests : un sujet par fichier
 
 Un test vérifie **une seule chose** — un dialogue, une porte, une pièce, un

@@ -10,6 +10,18 @@ repositories {
     google()
 }
 
+// Les tests rapides : la logique qui ne dépend pas de Godot (tables de rencontre, sac, drapeaux, format de
+// sauvegarde) se vérifie sur la JVM seule, sans lancer le jeu — `./gradlew test`. Tout ce qui a besoin du moteur
+// reste dans `tests/` (`tests/run.sh`).
+dependencies {
+    testImplementation(kotlin("test"))
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging { events("failed") }
+}
+
 godot {
     // --------- Setup ---------
     languages.set(setOf(GodotLanguage.KOTLIN, GodotLanguage.JAVA, GodotLanguage.SCALA))
