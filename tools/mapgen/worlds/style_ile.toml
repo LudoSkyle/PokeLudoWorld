@@ -1,0 +1,16 @@
+# Un monde d'exemple : Île sableuse.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_ile.toml --preview /tmp/style_ile.png
+
+[map]
+name = "style_ile"
+location = "Île sableuse"
+theme = "coast"
+
+[seed]
+world = 11
+
+[style]
+size = "medium"
+shape = "island"
+character = ["sandy"]
+

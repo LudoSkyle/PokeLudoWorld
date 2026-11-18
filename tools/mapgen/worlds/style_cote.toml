@@ -1,0 +1,16 @@
+# Un monde d'exemple : Côte rocheuse.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_cote.toml --preview /tmp/style_cote.png
+
+[map]
+name = "style_cote"
+location = "Côte rocheuse"
+theme = "coast"
+
+[seed]
+world = 15
+
+[style]
+size = "medium"
+shape = "coast"
+character = ["rocky", "jagged"]
+sea = "west"

@@ -1,0 +1,16 @@
+# Un monde d'exemple : Plaine ouverte.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_plaine.toml --preview /tmp/style_plaine.png
+
+[map]
+name = "style_plaine"
+location = "Plaine ouverte"
+theme = "coast"
+
+[seed]
+world = 14
+
+[style]
+size = "medium"
+shape = "plain"
+character = ["open", "grassy"]
+

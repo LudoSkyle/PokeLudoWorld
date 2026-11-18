@@ -42,6 +42,73 @@ DEFAULTS = {
 }
 NEIGH4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
+# ============================================================ les directives : orienter la carte en quelques mots
+# `[style]` règle plusieurs nombres d'un coup. Ce qu'on écrit soi-même dans [relief], [climate], [vegetation] passe
+# toujours devant. Les styles viennent des cartes d'exemple (une plaine de champs et de bosquets, une côte et sa
+# baie, une route en couloir dans la forêt) et de ce que les planches savent dessiner.
+SIZES = {'small': (40, 30), 'medium': (64, 44), 'large': (90, 64)}
+# La forme : un masque qui se mêle au relief. `weight` : la part du masque (0 : le bruit seul ; 1 : la forme pure).
+SHAPES = {
+    'free': dict(weight=0.0),                                          # le bruit décide de tout
+    'island': dict(weight=0.55),                                       # la terre au milieu, la mer tout autour
+    'ring': dict(weight=0.65),                                         # un anneau de terre autour d'un lac (ou d'un massif : `core`)
+    'plain': dict(weight=0.5, relief=dict(water=0.12, sand=0.15), vegetation=dict(border_forest=True)),     # de la terre presque partout, quelques mares ; une lisière la ferme
+    'coast': dict(weight=0.55),                                        # la mer d'un côté (`sea`), la terre de l'autre
+    'bay': dict(weight=0.6),                                           # la mer entre par un côté et creuse la carte
+    'corridor': dict(weight=0.5, relief=dict(water=0.10, sand=0.12), vegetation=dict(border_forest=True)),          # une route d'un bord à l'autre, fermée par la forêt
+    'archipelago': dict(weight=0.0, relief=dict(water=0.52, sand=0.60, scale=10.0)),
+}
+# Le caractère : un ou plusieurs mots, qui se cumulent.
+TRAITS = {
+    'rocky': dict(relief=dict(mountain=0.74, persistence=0.6), vegetation=dict(boulders=0.14, sea_rocks=0.05)),
+    'sandy': dict(relief=dict(sand_band=0.12), vegetation=dict(palms=4, shells=10)),
+    'wooded': dict(climate=dict(forest=0.44), vegetation=dict(border_forest=True)),
+    'open': dict(climate=dict(forest=0.70), vegetation=dict(tall_grass=0.06)),
+    'grassy': dict(vegetation=dict(tall_grass=0.22, tall_grass_scale=8.0)),
+    'flowery': dict(vegetation=dict(decorations=0.14, blooms=10)),
+    'wet': dict(relief=dict(water_more=0.08)),
+    'jagged': dict(relief=dict(octaves=5, persistence=0.62)),          # des rives déchiquetées
+    'smooth': dict(relief=dict(octaves=2, persistence=0.4, smooth=3)),          # de grandes courbes calmes
+}
+
+
+def settings(world):
+    """Les réglages d'un monde : les défauts, puis la forme, puis les caractères, puis ce que le monde écrit lui-même."""
+    style = world.get('style', {})
+    S = {k: dict(v) for k, v in DEFAULTS.items()}
+    S['vegetation'].update(boulders=0.08, border_forest=False)
+    shape = SHAPES.get(style.get('shape', 'free'))
+    if shape is None: raise SystemExit('forme inconnue : %r (connues : %s)' % (style.get('shape'), ', '.join(SHAPES)))
+    layers = [shape]
+    for trait in style.get('character', []):
+        if trait not in TRAITS: raise SystemExit('caractère inconnu : %r (connus : %s)' % (trait, ', '.join(TRAITS)))
+        layers.append(TRAITS[trait])
+    for layer in layers:
+        for k in S: S[k].update(layer.get(k, {}))
+    R = S['relief']
+    if 'water_more' in R: R['water'] += R.pop('water_more'); R['sand'] = max(R['sand'], R['water'] + 0.05)
+    if 'sand_band' in R: R['sand'] = R['water'] + R.pop('sand_band')
+    for k in S: S[k].update(world.get(k, {}))          # ce que le monde écrit lui-même passe devant
+    S['shape'] = dict(name=style.get('shape', 'free'), weight=shape['weight'], core=style.get('core', 'lake'), sea=style.get('sea', 'south'), axis=style.get('axis', 'vertical'))
+    return S
+
+
+def mask(shape, x, y, W, H):
+    """De 0 (la mer) à 1 (la terre haute) : la forme voulue, sans aucun hasard."""
+    u, v = (x + 0.5) / W * 2 - 1, (y + 0.5) / H * 2 - 1          # de -1 à 1
+    d = math.hypot(u, v)
+    name = shape['name']
+    if name == 'island': return max(0.0, 1.0 - d * 0.95)
+    if name == 'ring':          # un bourrelet de terre à mi-rayon ; le milieu est un lac, ou un massif
+        ring = max(0.0, 1.0 - abs(d - 0.58) * 3.2)
+        return max(ring, 1.0 - d * 2.2) if shape['core'] == 'mountain' else ring * 0.95
+    if name == 'coast': return min(1.0, max(0.0, 0.55 + 0.6 * {'south': -v, 'north': v, 'west': u, 'east': -u}[shape['sea']]))
+    if name == 'bay':
+        side = {'south': (u, v - 1.0), 'north': (u, v + 1.0), 'west': (u + 1.0, v), 'east': (u - 1.0, v)}[shape['sea']]
+        return min(1.0, math.hypot(side[0] * 0.95, side[1] * 0.62) * 0.62)
+    if name in ('plain', 'corridor'): return 0.75
+    return 0.5
+
 
 def lattice(seed, x, y):
     """Un nombre de 0 à 1, toujours le même pour la même graine et le même point."""
@@ -71,8 +138,10 @@ def fractal(seed, x, y, scale, octaves=1, persistence=0.5, lacunarity=2.0):
 
 def generate(world):
     m = world['map']
-    W, H = m['size']
-    S = {k: dict(DEFAULTS[k], **world.get(k, {})) for k in DEFAULTS}
+    size = world.get('style', {}).get('size', m.get('size', 'medium'))
+    W, H = SIZES[size] if isinstance(size, str) else size
+    m['size'] = [W, H]
+    S = settings(world)
     seeds = world.get('seed', {})
     def sub(layer): return seeds.get(layer) or (seeds.get('world', 1) * 1000003 + sum(ord(ch) for ch in layer) * 7919) & 0x7FFFFFFF
     CELLS = [(x, y) for y in range(H) for x in range(W)]
@@ -90,6 +159,8 @@ def generate(world):
         height[(x, y)] = h
     lo, hi = min(height.values()), max(height.values())
     height = {c: (h - lo) / (hi - lo or 1) for c, h in height.items()}          # de 0 à 1, pour que les seuils veuillent dire la même chose d'une graine à l'autre
+    weight = S['shape']['weight']          # la forme demandée, mêlée au bruit : le bruit garde les contours, la forme donne le dessin
+    if weight: height = {c: h * (1 - weight) + mask(S['shape'], c[0], c[1], W, H) * weight for c, h in height.items()}
     def kind(h): return '~' if h < R['water'] else ':' if h < R['sand'] else '.'
     ground = {c: kind(h) for c, h in height.items()}
     for _ in range(R['smooth']):          # pas de confettis : une case isolée prend le terrain de ses voisines
@@ -186,6 +257,14 @@ def generate(world):
     C, V = S['climate'], S['vegetation']
     moist = {c: fractal(sub('climate'), c[0], c[1], C['scale'], 3) for c in CELLS}
     forest = {c for c in grass - mountain - clear if moist[c] >= C['forest']}
+    if S['shape']['name'] == 'corridor':          # une route : la forêt serre une bande qui serpente d'un bord à l'autre
+        vertical = S['shape']['axis'] == 'vertical'
+        def off(c):
+            along, across, span = (c[1], c[0], W) if vertical else (c[0], c[1], H)
+            centre = span / 2.0 + (fractal(sub('paths'), along, 0, 14.0, 2) - 0.5) * span * 0.5
+            return abs(across - centre) / (span / 2.0)
+        forest |= {c for c in grass - mountain - clear if off(c) > 0.42 + (moist[c] - 0.5) * 0.3}
+    if V['border_forest']: forest |= {c for c in grass - mountain - clear if min(c[0], c[1], W - 1 - c[0], H - 1 - c[1]) < 3}          # une lisière ferme la carte, mieux qu'une rangée de sapins
     meadow = grass - mountain - clear - forest
     patch = sorted(meadow, key=lambda c: -fractal(sub('grass'), c[0], c[1], V['tall_grass_scale'], 2))          # les hautes herbes : les sommets d'un bruit, donc des taches, pas un semis
     tall = set(patch[:int(len(grass) * V['tall_grass'])])
@@ -198,6 +277,10 @@ def generate(world):
             feet = [(x + i, r - j) for i in range(3) for j in (0, 1) if inb((x + i, r - j))]
             if feet and sum(1 for c in feet if c in forest) * 3 >= len(feet) * 2 and not any(c in clear or c in tall or ground[c] != '.' for c in feet):
                 props.append(('treeB' if rng.random() < V['tree_dark'] else 'treeA', x, r)); occupied |= set(feet)
+    stone = random.Random(sub('relief') + 1)
+    for c in sorted(mountain):          # quelques blocs sur le dessus de la montagne, jamais collés
+        if stone.random() < V['boulders'] and all((c[0] + i, c[1] + j) in mountain for i in (-1, 0, 1, 2) for j in (-2, -1, 0, 1)) and not any((c[0] + i, c[1] + j) in occupied for i in (-2, -1, 0, 1, 2) for j in (-2, -1, 0, 1, 2)):
+            props.append(('boulder', c[0], c[1])); occupied |= {(c[0] + i, c[1] - j) for i in (0, 1) for j in (0, 1)}
     decor = random.Random(sub('decor'))
     lawn = sorted(meadow - tall - occupied)
     beds = []
@@ -277,7 +360,7 @@ if __name__ == '__main__':
     plan = generate(world); plan['source'] = args[0]
     out = sys.argv[sys.argv.index('--plan') + 1] if '--plan' in sys.argv else os.path.join(HERE, 'plans', world['map']['name'] + '.toml')
     write(plan, out)
-    S = {k: dict(DEFAULTS[k], **world.get(k, {})) for k in DEFAULTS}
+    S = settings(world)
     closed = close_edges(out) if S['gameplay']['close_edges'] else 0
     counts = {s: sum(row.count(s) for row in plan['terrain']) for s in '~:._"^'}
     print('%s : %d x %d — mer %d, sable %d, herbe %d, piste %d, hautes herbes %d, montagne %d ; %d choses posées, %d pour fermer les bords' % (world['map']['name'], *world['map']['size'], *[counts[s] for s in '~:._"^'], len(plan['props']), closed))
