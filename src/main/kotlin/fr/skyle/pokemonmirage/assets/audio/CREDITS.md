@@ -54,10 +54,11 @@ Un bruitage ne vient pas de ce pack mais du kit **Pokémon Essentials v21.1**
 |---|---|---|
 | `jump.ogg` | `Audio/SE/Player jump.ogg` | on saute un rebord |
 
-Les cris (`cries/`) viennent du même kit, copiés tels quels et renommés en
-minuscules : `Audio/SE/Cries/WINGULL.ogg`, `PELIPPER.ogg`, `HOPPIP.ogg`,
-`SKIPLOOM.ogg`, `JUMPLUFF.ogg`, `CORPHISH.ogg`, `SHELLDER.ogg`, `BELLOSSOM.ogg`. Le kit en a 655 : un autre Pokémon se copie de
-la même façon.
+Les cris (`cries/`), un par espèce (`wingull.ogg`), sont **copiés tels quels**
+du pack de données de Pokémon Studio —
+[GameDataPacks](https://github.com/PokemonWorkshop/GameDataPacks) de Pokémon
+Workshop, `Gen 9/scarlet-violet/audio/se/cries` — par `tools/gamedata.py`, sous
+la [Licence d'utilisation de Pokémon Studio](https://github.com/PokemonWorkshop/PokemonStudio/blob/develop/LICENSE-FR.md).
 
 ## Le pack Gen 4
 
