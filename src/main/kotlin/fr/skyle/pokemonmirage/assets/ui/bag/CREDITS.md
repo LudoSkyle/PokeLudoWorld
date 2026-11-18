@@ -9,3 +9,6 @@ Feuille (`source_frlg_bag_screens.png`, gardée telle quelle à côté).
   deux rangées de bleu sont ajoutées au-dessus de la case d'icône.
 - `bag_*.png` : le sac, fermé ou ouvert sur une poche, 64×64.
 - `arrow_*.png` : les flèches rouges, 16×16.
+- La **case de l'icône**, dessinée dans `background.png`, est agrandie de
+  28 × 28 à 36 × 36 (18/11/2026), dans son dessin d'origine : les icônes
+  d'objets du pack de données font 32 × 32.
