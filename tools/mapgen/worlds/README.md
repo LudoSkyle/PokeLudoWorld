@@ -30,6 +30,8 @@ size = "medium"                  # small (40 × 30), medium (64 × 44), large (9
 shape = "coast"                  # la forme générale
 character = ["rocky", "jagged"]  # un ou plusieurs caractères, qui se cumulent
 sea = "west"                     # pour coast et bay : le côté de la mer
+tint = "brown"                   # pour cave seulement : la teinte de la grotte — brown (le défaut) ou ice
+corridors = 2                    # pour cave seulement : resserre la salle en couloirs (voir plus bas) ; sans lui, une salle ouverte
 ```
 
 | `kind` | Ce que c'est (les règles de chaque style sont dans [`docs/mapping.md`](../../../docs/mapping.md), « Les styles de carte ») |
@@ -45,13 +47,14 @@ sea = "west"                     # pour coast et bay : le côté de la mer
 
 | `fields` | des champs : **des blocs de blé clôturés, aux bords droits**, sur une grille bousculée — un champ par case, parfois un grand sur deux cases. Chacun est un petit labyrinthe : du blé par bandes de deux à quatre rangées, des allées de terre d'une case, une trouée par bande, d'un côté puis de l'autre ; un portillon de deux cases tourné vers le milieu de la carte ; un champ sur deux garde un objet au fond de sa dernière allée. Des chemins continus relient les portillons, des bosquets remplissent le reste, un ou deux étangs tiennent entre les blocs ; pas de hautes herbes. Il lui faut `size = [60, 58]` pour quatre champs : en dessous il n'y en a qu'un ou deux. `champs_apercu.png` en montre (`style_champs`). Le blé couvre 7 à 9 % de la carte — la carte de référence en a 27 % : la ceinture de forêt et les marges entre champs en prennent trop. Pas encore : la montagne qui ferme un côté |
 
-| `cave` | une grotte : **une tache de roche posée sur du noir**. La paroi fait le tour, en deux gradins ; au milieu, **des massifs de roche** autour desquels on tourne par des couloirs de deux cases au moins, et, dès que la salle est assez grande, **des éperons** — des langues de roche qui partent de la paroi et la coupent en chambres. Un à trois bassins, des plaques de sol sombre, des stalagmites et des rochers le long des parois, un ou deux gros blocs, trois objets au fond, loin de l'entrée. On entre par un couloir de trois cases au sud (`[[exit]] side = "north"` pour une seconde sortie). Rien de vivant, pas de teinte de l'heure ; le décor est `cave`, quoi que dise `theme`. `shape`, `character` et `sea` n'y changent rien. `grotte_apercu.png` en montre une |
+| `cave` | une grotte : **une tache de roche posée sur du noir**. La paroi fait le tour, en deux gradins ; au milieu, **des massifs de roche** autour desquels on tourne par des couloirs de deux cases au moins, et, dès que la salle est assez grande, **des éperons** — des langues de roche qui partent de la paroi et la coupent en chambres. Un à trois bassins, des plaques de sol sombre, des stalagmites et des rochers le long des parois, un ou deux gros blocs, trois objets au fond, loin de l'entrée, et **une échelle qui monte** — dans un renfoncement adossé au haut d'une paroi, le plus loin possible de l'entrée. En teinte `ice`, **une qui descend** en plus : un trou de deux cases de côté, l'échelle au fond, vu de dessus (la planche de falaises brunes n'a pas son équivalent en roche). Ni l'une ni l'autre n'arrête : on monte dessus. Une par sens tant qu'il n'y a qu'un étage — leur nombre suivra le nombre d'étages. **`corridors = n`** resserre la salle : on pose des massifs tant qu'une case de sol reste à plus de `n` cases de toute roche. Une grotte peut être une halle, un labyrinthe, ou un peu des deux — cela dépend de la carte, ce n'est pas une règle. Sur la même graine : sans le réglage 62 % du sol est de l'intérieur, `corridors = 3` donne 58 %, `2` donne 43 %, `1` donne 27 % (un vrai labyrinthe). **`2` est le plus resserré qui reste dans les clous** : seize mondes de graines et de teintes différentes passent à 100 %. À `1`, les massifs se collent à la paroi et entre eux, et le contrôleur tombe à 93 % sur sa règle D (« des massifs de 12 à 70 cases ») — la carte reste jouable, c'est la règle qui ne décrit plus cette composition. Un labyrinthe demanderait ses propres seuils. On entre par un couloir de trois cases au sud (`[[exit]] side = "north"` pour une seconde sortie). Rien de vivant, pas de teinte de l'heure ; le décor vient de `tint`, quoi que dise `theme` : `brown` donne le décor `cave` (la roche brune), `ice` le décor `cave_ice` : une grotte de glace, bâtie **par plateaux emboîtés** comme la carte d'exemple de l'auteur de la planche — glace pâle sur le dessus des parois, face de falaise sur deux rangées au nord du sol, sol bleu-gris à contour, bord d'une seule case, plaques de glace lisse, pas de bassin. La glace prend une rangée de paroi de plus au nord (pour sa face) : la même graine ne donne donc plus tout à fait la même salle dans les deux teintes. `shape`, `character` et `sea` n'y changent rien. `grotte_apercu.png` en montre une, `galerie/15_grotte_glace.png` une grotte de glace |
 
 Le dernier style que le contrôleur connaît — `city` — ne s'invente pas encore : le générateur le dit et s'arrête.
 
-**`galerie/` montre quatorze mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
+**`galerie/` montre quinze mondes finis**, un par fichier, de styles et de caractères différents, chacun avec son
 aperçu : six routes (plaine, forêt, étangs, anneau, île, couloir du nord au sud), une route de montagne en terrasses,
-une route côtière, deux plages, une forêt profonde, un village, des champs, une grande grotte à deux sorties.
+une route côtière, deux plages, une forêt profonde, un village, des champs, une grande grotte à deux sorties et une
+grotte de glace.
 
 | `shape` | Ce que ça donne |
 |---|---|
@@ -208,8 +211,11 @@ l'aperçu, jonction par jonction.
 ## Ce qu'il ne fait pas encore
 
 - **La ville côtière, le désert, la neige, la route maritime.**
-- **Dans une grotte** : un seul étage et une seule salle — ni paliers, ni échelles, ni entrée en trouée de lumière, ni
-  passerelle sur un bassin, ni glace où l'on glisse ; une seule teinte de roche, la brune.
+- **Dans une grotte** : un seul étage et une seule salle. Les **échelles sont posées** — une qui monte, et en glace une qui descend —, mais elles ne
+  mènent nulle part tant qu'il n'y a pas de second étage — comme les sorties d'une grotte, qui n'ont pas encore de
+  scène où aller. Ni paliers, ni entrée en trouée de lumière, ni passerelle sur un bassin ; la passerelle de la planche de glace n'est pas découpée. Deux teintes depuis le 18/11/2026 (`tint` :
+  la roche brune, la glace). En glace, **le sol est le bleu-gris foncé et la glace pâle est la paroi**, et il n'y a **pas de bassin** : la planche n'a pas d'eau. On ne glisse pas encore sur le verglas — c'est une mécanique de joueur, pas une
+  tuile. **Le verglas ne se met qu'en travers d'un passage**, d'une paroi à l'autre, là où il coupe le sol en deux (un bras, une chambre ; à défaut le débouché du couloir d'entrée) : une halle sans passage à barrer n'en a pas — trois grottes sur vingt-quatre au balayage —, et les plaques font 6 à 50 cases quand la référence en montre de 20 à 150. Les objets vont d'abord derrière lui. En glace encore : les massifs sont faits de blocs de deux cases sur trois (une paroi s'y voit de face, dessus compris) ; au sol, seulement le caillou et le pic foncés, les cailloux ronds sur le dessus des parois, plus de gros bloc ; des fissures, une pour dix-huit cases. Et `corridors` y resserre peu : un massif de glace veut deux cases de sol autour de lui, coins compris.
 - **Sur une plage** : les herbes de plage et le tablier d'herbe au pied de la forêt (le décor et le constructeur ne
   les ont pas), les chaînes de rochers en arc autour d'un îlot, une maison sur le sable.
 - **Sur une route**, la mer ne touche jamais le bord : les passes barrées de rochers (A) sont à faire.

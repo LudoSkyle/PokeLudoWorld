@@ -261,9 +261,13 @@ def build(plan):
     # la montagne, le vide est de la roche. Son liseré se dessine sur ses propres cases, là où elles touchent le reste.
     VOID = {c for c in CELLS if sign[c] == '#'} if 'void5' in AT else set()
     if not VOID and any(v == '#' for v in sign.values()): warn.append('le décor %s n a pas de vide : les cases # sont laissées en herbe' % THEME['name'])
+    # Un décor **à plateaux** (la grotte de glace : `tools/ice_cave_tiles.py`) ne dessine pas sa paroi comme les autres :
+    # il empile un grand plateau, un petit et le liseré du vide. Sa paroi est prise telle que le plan l'écrit.
+    KIT = 'talla0' in AT and bool(VOID)
     MOUNTAIN = tidy({c for c in INSIDE if sign[c] == '^'} | VOID) - VOID
     for crumb in parts(MOUNTAIN):
         if len(crumb) < 9: MOUNTAIN -= crumb
+    if KIT: MOUNTAIN = {c for c in CELLS if sign[c] == '^'}
     TRAIL = tidy({c for c in INSIDE if sign[c] == '_'} - MOUNTAIN - house_area)
     TALL = {c for c in INSIDE if sign[c] == '"'} - TRAIL - MOUNTAIN
     # Un étang : une eau au niveau de l'herbe, sur le dessus d'un plateau. Pas de falaise, pas de sable : sa berge est dans
@@ -272,7 +276,7 @@ def build(plan):
     for puddle in parts(POND):
         if len(puddle) < 9 or not any(all((c[0] + i, c[1] + j) in puddle for i in (-1, 0, 1) for j in (-1, 0, 1)) for c in puddle):
             POND -= puddle
-    EARTH = tidy({c for c in INSIDE if sign[c] in ',w'} - MOUNTAIN - house_area)          # une plaque de terre nue, bordée d'herbe : on y marche (la clairière d'une forêt, un carrefour)
+    EARTH = ({c for c in CELLS if sign[c] == ','} - MOUNTAIN) if KIT else tidy({c for c in INSIDE if sign[c] in ',w'} - MOUNTAIN - house_area)          # une plaque de terre nue, bordée d'herbe : on y marche (la clairière d'une forêt, un carrefour)
     # Le blé pousse sur la terre d'un champ, par blocs de deux cases au moins dans chaque sens. On ne le traverse pas : on suit
     # les allées de terre qu'il laisse. (Ses tuiles n'ont pas de coin rentrant : la case pleine en tient lieu.)
     WHEAT = {c for c in EARTH if sign[c] == 'w'}
@@ -319,7 +323,7 @@ def build(plan):
     sand_shape, ring_shape, rock_shape, trail_shape = shape(SAND), shape(PLATEAU), shape(ROCKY), shape(TRAIL)
     # Une montagne a des gradins (docs/mapping.md, D) : sa silhouette, érodée d'une case par gradin, posée sur elle-même.
     # `mount_edge` : pour chaque case, le bord de roche du gradin le plus haut qui passe là ; `mount_floor` : ce qu'il y a dessous.
-    mount_edge, mount_floor, layer_ = {}, {}, MOUNTAIN | VOID
+    mount_edge, mount_floor, layer_ = {}, {}, (set() if KIT else MOUNTAIN | VOID)          # (un décor à plateaux dessine sa paroi lui-même, plus bas)
     for k in range(max(1, int(plan.map.get('tiers', 3)))):
         if not layer_: break
         edges = shape(layer_)
@@ -342,12 +346,70 @@ def build(plan):
         elif c not in LAND: ground[c] = 'water'; shore[c] = 'shore' + SAND_CORNER.get(sand_shape[c], sand_shape[c])
         elif c in RING or (c in ROCK and rock_shape[c] == '5'): ground[c] = 'rock5'          # sous l'anneau d'herbe : le gradin de roche
         elif c in BEACH or c in ROCK: ground[c] = 'sand5'
-        elif c in MOUNTAIN: ground[c] = mount_floor[c]
+        elif c in MOUNTAIN: ground[c] = mount_floor.get(c, 'lawn')
         else: ground[c] = 'trailC' if c in TRAIL else 'lawn'
         cliffs[c] = (['grass' + ring_shape[c]] if c in RING else []) + (['rock' + rock_shape[c]] if c in ROCK and rock_shape[c] != '5' else []) \
             + ([mount_edge[c]] if c in mount_edge and c not in VOID else [])
+    # ---------------------------------------------------------------- un décor à plateaux
+    # La grammaire de la carte d'exemple de la grotte de glace, relevée tuile par tuile (`tools/maps/ice_cave/survey.py`,
+    # puis vérifiée : elle redonne neuf cases sur dix de l'exemple à la tuile près). De bas en haut :
+    #   - le **sol** et la **glace lisse** (`,` du plan), deux matières à bords pleines, côte à côte sur `Ground` ;
+    #   - le **grand plateau** sur toute la paroi : son bord du haut, ses côtés, et **deux rangées de face** au sud —
+    #     plus les pièces de pli là où la face fait une marche (`talla3`…`tallc4`) ;
+    #   - le **petit plateau** par-dessus : le dessus du grand, en retrait d'une case à l'est et à l'ouest. Sa lèvre
+    #     tombe ainsi juste au-dessus de la face du grand, et sur les côtés on voit un rebord de chacun ;
+    #   - le **liseré du vide**, posé **sur** la dernière case de paroi : noir dehors, glace dedans.
+    # Le sol passe sous le bord du haut du grand plateau là où le petit ne le couvre pas : c'est ce qu'on voit dans
+    # l'arrondi de ses coins.
+    ring_tiles, upper = {}, set()
+    if KIT:
+        CAVE = set(CELLS) - VOID
+        def solid_(q): return q in MOUNTAIN or q in VOID or not inb(q)
+        tops = {c for c in MOUNTAIN if solid_((c[0], c[1] + 1)) and solid_((c[0], c[1] + 2))}          # le dessus du grand plateau : ce qui n'est pas sa face
+        def top_(q): return q in tops or q in VOID or not inb(q)
+        # Un caillou posé sur le dessus d'une paroi est posé sur le **grand** plateau : le petit s'écarte de sa case, et
+        # fait autour de lui une encoche d'une case (c'est ainsi que sont les quatorze cailloux ronds de la carte d'exemple).
+        perched = {(px_ - THEME['props'][k]['anchor'] + i, r + j) for k, px_, r in plan.props if k in THEME['props'] and THEME['props'][k]['layer'] == 'Props' for i, j in THEME['props'][k]['feet']} & MOUNTAIN
+        upper = {c for c in tops if top_((c[0] + 1, c[1])) and top_((c[0] - 1, c[1]))} - perched          # le petit plateau
+        # Il lui faut trois cases de large : à deux, ses deux rebords se touchent et font des rails sur le dessus d'un
+        # éperon. Là où il est trop mince pour ses tuiles de bord, on voit le dessus du grand plateau, uni.
+        def up_(q): return q in upper or q in VOID or not inb(q)
+        upper = {c for c in upper if any(all(up_((c[0] + d + i, c[1])) for i in (-1, 0, 1)) for d in (-1, 0, 1))}
+        upper = tidy(upper | VOID) - VOID
+        def row_(q):
+            """`d` : la dernière rangée de face ; `c` : l'avant-dernière ; `p` : le dessus ; None : pas de la paroi."""
+            if q in VOID or not inb(q): return 'p'
+            if q not in MOUNTAIN: return None
+            return 'd' if not solid_((q[0], q[1] + 1)) else ('c' if not solid_((q[0], q[1] + 2)) else 'p')
+        def tall_(c):
+            k, kw, ke = row_(c), row_((c[0] - 1, c[1])), row_((c[0] + 1, c[1]))
+            i = 0 if kw is None else (2 if ke is None else 1)
+            if k == 'd': return 'talld%d' % i
+            if k == 'c': return 'tallc3' if ke == 'd' and kw is not None else 'tallc4' if kw == 'd' and ke is not None else 'tallc%d' % i
+            if kw is not None and ke in ('c', 'd'): return 'talla3' if ke == 'c' else 'tallb3'
+            if ke is not None and kw in ('c', 'd'): return 'talla4' if kw == 'c' else 'tallb4'
+            return 'tall%s%d' % ('b' if solid_((c[0], c[1] - 1)) else 'a', i)
+        slick = set(EARTH)
+        dark = CAVE - MOUNTAIN - slick
+        under = lambda matter: matter | {c for c in MOUNTAIN - upper if (c[0], c[1] - 1) in matter}
+        floor_shape, slick_shape, upper_shape, cave_shape = shape(under(dark)), shape(under(slick)), shape(upper | VOID), shape(CAVE)
+        narrow = sorted(c for c in dark if floor_shape[c] is None) + sorted(c for c in slick if slick_shape[c] is None)
+        if narrow: warn.append('sol : %d cases trop étroites pour leurs bords, dessinées pleines — %s' % (len(narrow), narrow[:5]))
+        # Une paroi se montre de face : un dessus, puis deux rangées de face. Moins de trois cases de haut au-dessus d'un
+        # sol, et sa face commence sans dessus ; une seule case de large, et il lui manque un flanc — coupée net.
+        def topless(c): return not all((c[0], c[1] - j) in MOUNTAIN for j in range(1, {'c': 2, 'd': 3}.get(row_(c), 1)))          # (le vide ne fait pas un dessus : la face porterait le liseré)
+        cut = sorted(c for c in MOUNTAIN if topless(c) or (row_((c[0] - 1, c[1])) is None and row_((c[0] + 1, c[1])) is None))
+        if cut: warn.append('paroi : %d cases coupées net (une face sans son dessus, ou une seule case de large) — %s' % (len(cut), cut[:5]))
+        for c in CELLS:
+            if c in VOID: ground[c] = 'void5'; cliffs[c] = []; continue
+            # Sous la paroi, de la **glace claire**, pas du sol : c'est elle qu'on voit dans les jours de ses tuiles (le pied
+            # arrondi d'une face, le flanc d'un rebord), et elle rejoint le liseré clair que le sol porte sur son bord. Avec
+            # du sol foncé dessous, ce liseré restait seul et dessinait un cadre carré autour de chaque massif.
+            ground[c] = 'floor' + (floor_shape[c] or '5') if c in floor_shape else 'earth' + (slick_shape[c] or '5') if c in slick_shape else 'short5'
+            cliffs[c] = ([tall_(c)] + (['short' + (upper_shape[c] or '5')] if c in upper else [])) if c in MOUNTAIN else []
+            if c in MOUNTAIN and any(q in VOID for q in around([c])) and cave_shape[c] not in (None, '5'): ring_tiles[c] = 'ring' + cave_shape[c]
     earth_shape = shape(EARTH)
-    for c in sorted(EARTH): L['Paths'][c] = tile('earth' + earth_shape[c])
+    for c in sorted(EARTH if not KIT else ()): L['Paths'][c] = tile('earth' + earth_shape[c])
     for c, k in sorted(shape(WHEAT).items()): L['Crops'][c] = tile('wheat' + (k if k in '123456789' else '5'))
     if WHEAT: ORDER.insert(ORDER.index('Paths') + 1, 'Crops')
     pond_shape = shape(POND)
@@ -419,6 +481,7 @@ def build(plan):
         if c in TALL: L['Grass'][c] = (GRASS_SOURCE, 6, 0, 0)
         if c in deck: L['Bridges'][c] = tile(deck[c])
         elif c in stairs: L['Bridges'][c] = tile(stairs[c])
+        if c in ring_tiles: L['Ledges'][c] = tile(ring_tiles[c])          # le liseré du vide, par-dessus la paroi
 
     # ============================================================ 5. ce qui est posé : exactement ce que le plan liste, rien de plus
     sprites, flower_cells, hidden = [], set(), set()
@@ -436,8 +499,9 @@ def build(plan):
         source = ROUTE if model['source'] == 'main' else VILLAGE
         L[model['layer']][(x, r)] = (source,) + tuple(model['at']) + (0,)
         if model['layer'] == 'Decorations': continue
-        sprites.append((kind, x, r))
         if model['size'][1] > 1: hidden |= rect(x, r - model['size'][1] + 1, x + model['size'][0] - 1, r)
+        if not model['feet']: continue          # ce qui est à plat (une échelle, une fissure) n'est pas « debout » : ni collision, ni rocher à compter
+        sprites.append((kind, x, r))
         for c in feet(kind, x, r):
             if inb(c) and (c in DECK or c in STEPS): warn.append('%s en %s : posé sur un ponton ou des marches' % (kind, (px_, r))); break
     for name, (kind, x, r, _) in houses.items(): L['Houses'][(x, r)] = (VILLAGE,) + tuple(THEME['buildings'][kind]['at']) + (0,)
@@ -603,7 +667,7 @@ def build(plan):
 
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
                 BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
-                TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
+                TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, UPPER=upper, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
                 high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, WHEAT=WHEAT, VOID=VOID, GARDEN=GARDEN, lamps=[placed.get(l.get('name', 'Lamp%d' % n)) for n, l in enumerate(plan.table('lamp'))], ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
@@ -667,10 +731,12 @@ def preview(built, path):
                 p = sheet[ay * 16 + j][ax * 16 + i]
                 if p[3] == 255: img[Y][X] = tuple(p[:3])
                 elif p[3]: img[Y][X] = tuple(int(round(img[Y][X][n] * (1 - p[3] / 255.0) + p[n] * p[3] / 255.0)) for n in range(3))
-    for n in built['ORDER']:
-        for c, t in L[n].items(): put(c, t)
     models = {(ROUTE if p['source'] == 'main' else VILLAGE, tuple(p['at'])): p for p in THEME['props'].values()}
     models.update({(VILLAGE, tuple(b['at'])): b for b in THEME['buildings'].values()})
+    for n in built['ORDER']:          # (un objet posé sur un calque de fond peut prendre plus d'une case : l'échelle d'une grotte, son trou)
+        for c, t in L[n].items():
+            model = models.get((t[0], tuple(t[1:3])))
+            put(c, t, *((model['size'][0], model['size'][1], model['drop']) if model else ()))
     standing = [((c[1], 0), c, t) for c, t in L['Trees'].items()] + [((c[1], 1), c, t) for c, t in L['Props'].items()] + [((c[1], -1), c, t) for c, t in L['Houses'].items()]
     for _, c, t in sorted(standing):
         model = models.get((t[0], tuple(t[1:3])))

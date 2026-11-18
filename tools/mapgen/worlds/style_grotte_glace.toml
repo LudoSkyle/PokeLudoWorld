@@ -1,0 +1,16 @@
+# Un monde d'exemple : Grotte de Givre — une grotte de glace (style `cave`, teinte `ice`).
+# La graine est choisie pour que la grotte ait des bras : c'est là que le verglas se met, en travers d'un passage,
+# d'une paroi à l'autre, avec un objet ou une échelle derrière. Une halle sans passage à barrer n'a pas de verglas.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_grotte_glace.toml --preview /tmp/style_grotte_glace.png
+
+[map]
+name = "style_grotte_glace"
+location = "Grotte de Givre"
+
+[seed]
+world = 7
+
+[style]
+kind = "cave"
+size = [52, 40]
+tint = "ice"
