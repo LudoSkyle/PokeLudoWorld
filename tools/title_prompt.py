@@ -15,7 +15,7 @@ import os
 
 from island_tiles import ROOT, save
 
-OUT = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/title/prompt.png')
+OUT = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/title/prompt.png')
 TEXT = 'PRESS ENTER'
 
 INK = (255, 255, 255, 255)

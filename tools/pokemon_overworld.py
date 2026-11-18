@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from island_tiles import load, save   # le même lecteur et le même écrivain de PNG
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-POKEMON = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'pokemon')
+POKEMON = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'pokemon')
 BLOCK_W, BLOCK_H = 64, 128
 
 # ============================================================ toutes les espèces des planches HGSS
@@ -39,7 +39,7 @@ SHEETS = [
     dict(file='hgss_overworld_gen3.png', columns=13, first=252, last=386, extra={386: 3}, tall=(), wide=(321, 382, 383, 384)),
     dict(file='hgss_overworld_gen4.png', columns=11, first=387, last=493, extra={412: 2, 413: 2, 415: 1, 422: 1, 423: 1, 449: 1, 450: 1, 479: 5, 487: 4, 492: 1}, tall=(483, 484, 486, 487, 493), wide=()),
 ]
-NATIONAL = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'resources', 'pokedex', 'national.tsv')
+NATIONAL = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'resources', 'pokedex', 'national.tsv')
 
 
 def grid(sheet):

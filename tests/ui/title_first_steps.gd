@@ -10,7 +10,7 @@ func scene() -> String:
 	return "ludo_bedroom"
 
 func test() -> void:
-	check("la carte de depart du jeu est la chambre de Ludo", load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn").instantiate().get_node(VP + "/SceneManager").start_scene.ends_with("ludo_bedroom.tscn"))
+	check("la carte de depart du jeu est la chambre de Ludo", load("res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/core/game_manager.tscn").instantiate().get_node(VP + "/SceneManager").start_scene.ends_with("ludo_bedroom.tscn"))
 	await title_pick("New")
 	await title_gone()
 	check("on est dans la chambre de Ludo", level().scene_file_path.ends_with("ludo_bedroom.tscn"), level().scene_file_path)

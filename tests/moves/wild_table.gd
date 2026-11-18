@@ -3,7 +3,7 @@ extends "res://tests/lib.gd"
 # La table de rencontres d'une carte : qui vit dans ses herbes, a quel niveau,
 # en quelle proportion. Verifiee par tirages, sans marcher.
 
-const LEVELS_DIR := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
+const LEVELS_DIR := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/"
 
 func start() -> Vector2i:
 	return Vector2i(12, 8)

@@ -8,7 +8,7 @@ extends SceneTree
 # tout ce qui est VERIFIE se joue avec de vraies entrees clavier.
 
 const VP := "Control/Frame/SubViewportContainer/SubViewport"
-const LEVELS := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
+const LEVELS := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/"
 const MAPS := "res://tests/maps/"
 # Une case libre du terrain d'essai, loin de son point d'apparition : la ou plant_save pose le joueur.
 const SAVE_CELL := Vector2i(10, 2)
@@ -379,7 +379,7 @@ func test() -> void:
 # Lance le jeu. load_save = reprendre la sauvegarde de test, comme au vrai
 # lancement ; sinon on part de scene() et start().
 func boot(load_save: bool) -> void:
-	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/core/game_manager.tscn")
+	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/core/game_manager.tscn")
 	game = packed.instantiate()
 	var scenes := game.get_node(VP + "/SceneManager")
 	scenes.start_scene = scene_path(scene())
@@ -603,7 +603,7 @@ func wild_errors(table: String) -> String:
 # Les briques de quete se verifient sans scenario : le test pose lui-meme un
 # PNJ, un meuble, un panneau ou un passage sur la carte, avec ses reglages.
 
-const SCENES := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/"
+const SCENES := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/"
 const SPAWNABLE := {
 	"npc": [SCENES + "characters/npc.tscn", "World/Entities"],
 	"readable": [SCENES + "levels/readable.tscn", "World"],

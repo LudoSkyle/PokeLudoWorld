@@ -2,7 +2,7 @@
 # Lu par tests/audit.py.
 extends SceneTree
 
-const BASE := "res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/"
+const BASE := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/"
 const ROOMS := ["ludo_house", "ludo_bedroom", "library", "lab_house", "orange_house_north", "orange_house_south"]
 
 func _initialize() -> void:

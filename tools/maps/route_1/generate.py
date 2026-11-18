@@ -32,8 +32,8 @@ sys.path.insert(0, HERE)
 import layout as gen  # noqa: E402
 from layout import L, W, H, ROOT, route_tiles  # noqa: E402
 
-B = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld') + os.sep
-RES = 'res://src/main/kotlin/fr/skyle/pokeludoworld/'
+B = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage') + os.sep
+RES = 'res://src/main/kotlin/fr/skyle/pokemonmirage/'
 LEVELS = RES + 'scenes/levels/'
 TS = B + 'resources/tilesets/level.tres'
 WATER_MATERIAL = 'SubResource("ShaderMaterial_water")'

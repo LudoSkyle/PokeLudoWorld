@@ -11,7 +11,7 @@ d'origine n'y est plus.
 import os
 from island_tiles import load, save
 
-PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'levels', 'bell_stand.png')
+PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'levels', 'bell_stand.png')
 SOFT = {(32, 32, 32, 255): (80, 72, 62, 255)}
 
 if __name__ == '__main__':

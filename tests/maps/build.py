@@ -40,7 +40,7 @@ import os
 import struct
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-RES = 'res://src/main/kotlin/fr/skyle/pokeludoworld/'
+RES = 'res://src/main/kotlin/fr/skyle/pokemonmirage/'
 MAPS = 'res://tests/maps/'
 W, H = 24, 16
 

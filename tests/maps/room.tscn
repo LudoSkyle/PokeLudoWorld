@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=4]
 
-[ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
+[ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokemonmirage/resources/tilesets/level.tres" id="1_tileset"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/scene_trigger.tscn" id="2_door"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Cabane"

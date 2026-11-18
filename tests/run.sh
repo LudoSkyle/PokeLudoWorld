@@ -15,7 +15,7 @@
 
 cd "$(dirname "$0")/.." || exit 1
 GODOT="${GODOT:-/Users/godart/Downloads/Godot.app/Contents/MacOS/Godot}"
-LOGS="${TMPDIR:-/tmp}/pokeludoworld-tests"
+LOGS="${TMPDIR:-/tmp}/pokemonmirage-tests"
 mkdir -p "$LOGS"
 
 all_tests() {

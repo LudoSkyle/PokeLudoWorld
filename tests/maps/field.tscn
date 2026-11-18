@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=4]
 
-[ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokeludoworld/resources/tilesets/level.tres" id="1_tileset"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/scene_trigger.tscn" id="2_door"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/sign.tscn" id="3_sign"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/characters/npc.tscn" id="4_npc"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/roadblock.tscn" id="5_roadblock"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/street_lamp.tscn" id="6_lamp"]
-[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokeludoworld/scenes/levels/window_glow.tscn" id="7_glow"]
+[ext_resource type="TileSet" path="res://src/main/kotlin/fr/skyle/pokemonmirage/resources/tilesets/level.tres" id="1_tileset"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/scene_trigger.tscn" id="2_door"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/sign.tscn" id="3_sign"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/characters/npc.tscn" id="4_npc"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/roadblock.tscn" id="5_roadblock"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/street_lamp.tscn" id="6_lamp"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/window_glow.tscn" id="7_glow"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Terrain d'essai"

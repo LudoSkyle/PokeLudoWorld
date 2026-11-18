@@ -10,14 +10,14 @@ config_version=5
 
 [application]
 
-config/name="PokeLudoWorld"
+config/name="Pokémon Mirage"
 run/main_scene="uid://ei8m8fho5p37"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globals="*uid://drws2db0gwgd1"
+Globals="*res://src/main/kotlin/fr/skyle/pokemonmirage/scripts/autoload/Globals.kt"
 MCPRuntimeServer="*res://addons/godot_mcp_toolkit/runtime/mcp_runtime_server.gd"
 
 [display]

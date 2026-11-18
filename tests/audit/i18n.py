@@ -5,7 +5,7 @@ ici et on cherche chacun parmi les msgid. Usage : tests/run.sh i18n
 """
 import glob, re, sys
 
-ROOT = "src/main/kotlin/fr/skyle/pokeludoworld/"
+ROOT = "src/main/kotlin/fr/skyle/pokemonmirage/"
 # Libelles qui se lisent pareil dans toutes les langues.
 SAME = re.compile(r"^(x[0-9.]+|Français|English|Options|Debug|[0-9:]+|)$")
 

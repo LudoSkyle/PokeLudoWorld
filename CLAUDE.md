@@ -1,4 +1,4 @@
-# PokeLudoWorld
+# Pokémon Mirage
 
 Jeu type Pokémon sous **Godot 4.7** avec **godot-kotlin-jvm** : les scripts sont
 des `.kt` compilés vers la JVM, d'où le layout Maven (`src/main/kotlin/...`).
@@ -36,7 +36,7 @@ rapport à ce tutoriel sont listés dans [docs/architecture.md](docs/architectur
 ## Où sont les choses
 
 ```
-src/main/kotlin/fr/skyle/pokeludoworld/
+src/main/kotlin/fr/skyle/pokemonmirage/
 ├── assets/levels/      textures sources (atlas PNG + .import)
 ├── resources/tilesets/ level.tres — LE TileSet, collisions comprises
 ├── scenes/core/        game_manager.tscn (point d'entrée)

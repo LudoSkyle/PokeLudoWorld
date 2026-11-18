@@ -34,7 +34,7 @@ from collections import deque
 
 from island_tiles import ROOT, load, save
 
-TITLE = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/title')
+TITLE = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/title')
 LOGO_SOURCE = os.path.join(TITLE, 'sources/pokemon_logo.png')
 EMBLEM_SOURCE = os.path.join(TITLE, 'sources/emblem_reference.png')
 OUT = os.path.join(TITLE, 'logo.png')

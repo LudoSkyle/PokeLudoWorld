@@ -5,7 +5,7 @@ extends "res://tests/lib.gd"
 # celles du jeu, invented/ pour les objets de Kryptonlion, que le jeu ne lit pas.
 # Chaque objet du catalogue a la sienne, en 24 x 24.
 
-const ICONS := "res://src/main/kotlin/fr/skyle/pokeludoworld/assets/items/icons/"
+const ICONS := "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/items/icons/"
 
 func start() -> Vector2i:
 	return Vector2i(11, 11)

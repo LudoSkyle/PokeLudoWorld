@@ -39,7 +39,7 @@ func _run() -> void:
 "$GODOT" --path "$PWD" --script res://.probe_tmp/shot.gd
 ```
 
-L'image sort dans `~/Library/Application Support/Godot/app_userdata/PokeLudoWorld/`.
+L'image sort dans `~/Library/Application Support/Godot/app_userdata/PokemonMirage/`.
 **Supprimer le dossier de sonde après usage.**
 
 ## Tester les collisions

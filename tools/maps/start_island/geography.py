@@ -62,7 +62,7 @@ def read_objects(ref, w, h, load):
     pas. Une case que les tuiles de cette planche expliquent en entier, du dessus vers le dessous,
     est du terrain nu ; les autres portent un objet ('#').
     """
-    sw, sh, px = load(os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'levels', 'sources', 'seasons_trees_ponds.png'))
+    sw, sh, px = load(os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'levels', 'sources', 'seasons_trees_ponds.png'))
     tiles, probe = set(), (0, 5, 10, 15, 34, 51, 68, 85, 102, 119, 120, 136, 153, 170, 187, 204, 221, 238, 240, 255, 17, 30, 225, 72, 183)
     for y in range(0, sh - 15, 16):
         for x in range(0, sw - 15, 16):

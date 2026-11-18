@@ -625,7 +625,7 @@ y 15     .  .  .  .  .  .  .  .  .
 | dallage | tuiles `5:5-7,47-49`, bordées d'herbe | `environments.png` |
 | bancs | tuiles `5:74,25` et `5:75,25`, solides (déclarées dans `level.tres`) | `environments.png` |
 | statues `StatueWest`, `StatueEast` | objets sous `World`, un sprite découpé dans l'atlas, en miroir l'un de l'autre | `environments.png` |
-| socle `BellStandEmpty`, `BellStand` | objets sous `World`, script `Readable`, 48×48 ; voir ci-dessous ce qui bloque | `bell_stand.png` ([CREDITS](../src/main/kotlin/fr/skyle/pokeludoworld/assets/levels/CREDITS.md)) |
+| socle `BellStandEmpty`, `BellStand` | objets sous `World`, script `Readable`, 48×48 ; voir ci-dessous ce qui bloque | `bell_stand.png` ([CREDITS](../src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/CREDITS.md)) |
 
 **Ce qui bloque dans le socle.** Les deux montants et les deux rochers du bas,
 toujours. La colonne du milieu dépend de la cloche :

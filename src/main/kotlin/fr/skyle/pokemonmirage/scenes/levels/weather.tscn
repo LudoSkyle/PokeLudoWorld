@@ -1,0 +1,25 @@
+[gd_scene load_steps=4 format=3]
+
+; Le temps qu'il fait, par-dessus une carte d'extérieur. SceneManager l'ajoute ;
+; WeatherLayer.kt l'anime. Ce qui tombe se range sous Particles, la nappe sous
+; Tiles, et Tone, dessiné en dernier, teinte tout ce qui est dessous.
+
+[ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scripts/core/WeatherLayer.kt" id="1_layer"]
+[ext_resource type="Shader" path="res://src/main/kotlin/fr/skyle/pokemonmirage/resources/shaders/weather.gdshader" id="2_tone"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tone"]
+shader = ExtResource("2_tone")
+shader_parameter/tone_shift = Vector3(0, 0, 0)
+shader_parameter/tone_gray = 0.0
+
+[node name="Weather" type="Node2D"]
+script = ExtResource("1_layer")
+
+[node name="Particles" type="Node2D" parent="."]
+
+[node name="Tiles" type="Node2D" parent="."]
+
+[node name="Tone" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_tone")
+mouse_filter = 2

@@ -31,7 +31,7 @@ sys.path.insert(0, HERE)
 from island_tiles import load, save  # noqa: E402
 
 ROOT = os.path.dirname(HERE)
-GAME = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld')
+GAME = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage')
 OUT = os.path.join(GAME, 'resources', 'pokedex', 'national.tsv')
 FIELDS = ('number', 'id', 'generation', 'name_fr', 'name_en', 'genus_fr', 'genus_en', 'height', 'weight', 'icon', 'overworld', 'text_fr', 'text_en')
 ICONS = os.path.join(GAME, 'assets', 'pokemon', 'icons.png')

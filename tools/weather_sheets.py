@@ -20,7 +20,7 @@ sys.path.insert(0, HERE)
 from island_tiles import load, save  # noqa: E402  — les mêmes lecteur et écrivain de PNG
 
 WEATHER = os.path.join(
-    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'weather',
+    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'weather',
 )
 SOURCES = os.path.join(WEATHER, 'sources')
 CLEAR = (0, 0, 0, 0)

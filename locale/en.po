@@ -1,4 +1,4 @@
-# English translation of PokeLudoWorld.
+# English translation of PokemonMirage.
 # The game is written in French: each msgid is a French text exactly as it
 # appears in a scene or in the code. Check with tests/run.sh i18n.
 msgid ""

@@ -42,7 +42,7 @@ import struct
 import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-LEVELS = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'levels')
+LEVELS = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'levels')
 SOURCE = os.path.join(LEVELS, 'environments.png')
 OUTPUT = os.path.join(LEVELS, 'island.png')
 SOURCES = os.path.join(LEVELS, 'sources')

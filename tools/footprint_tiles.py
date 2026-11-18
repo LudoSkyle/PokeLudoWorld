@@ -27,7 +27,7 @@ sys.path.insert(0, HERE)
 from island_tiles import save  # noqa: E402  — le même écrivain de PNG que la planche de l'île
 
 OUTPUT = os.path.join(
-    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld',
+    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage',
     'assets', 'levels', 'footprints.png',
 )
 CELL = 8

@@ -28,7 +28,7 @@ import os
 
 from island_tiles import ROOT, save
 
-OUT = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokeludoworld/assets/ui/title')
+OUT = os.path.join(ROOT, 'src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/title')
 W, H = 320, 240
 CLEAR = (0, 0, 0, 0)
 

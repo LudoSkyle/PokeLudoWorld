@@ -29,8 +29,8 @@ sys.path.insert(0, HERE)
 import layout as lay  # noqa: E402
 from layout import L, W, H, ROOT, DOORS, PLAZA, LOOP, LOOP_CELLS, ROAD, GUARD_Y, DECK, STEPS, STAIRS, PIER_END, BEACH, INSIDE, rect, village_tiles  # noqa: E402
 
-B = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld') + os.sep
-RES = 'res://src/main/kotlin/fr/skyle/pokeludoworld/'
+B = os.path.join(ROOT, 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage') + os.sep
+RES = 'res://src/main/kotlin/fr/skyle/pokemonmirage/'
 LEVELS = RES + 'scenes/levels/'
 TS = B + 'resources/tilesets/level.tres'
 def px(c): return (c[0] * 16 + 8, c[1] * 16 + 8)

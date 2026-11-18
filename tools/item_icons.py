@@ -65,7 +65,7 @@ sys.path.insert(0, HERE)
 from island_tiles import load, save  # noqa: E402  — les mêmes lecteur et écrivain de PNG
 
 ITEMS = os.path.join(
-    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokeludoworld', 'assets', 'items',
+    os.path.dirname(HERE), 'src', 'main', 'kotlin', 'fr', 'skyle', 'pokemonmirage', 'assets', 'items',
 )
 SOURCES = os.path.join(ITEMS, 'sources')
 KIT = os.path.join(SOURCES, 'essentials')
