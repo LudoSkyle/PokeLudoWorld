@@ -48,6 +48,7 @@ NEIGH8 = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1) if (i, j) != (0, 0)]
 # toujours devant. Les styles viennent des cartes d'exemple (une plaine de champs et de bosquets, une côte et sa
 # baie, une route en couloir dans la forêt) et de ce que les planches savent dessiner.
 SIZES = {'small': (40, 30), 'medium': (64, 44), 'large': (90, 64)}
+CAVE_SIZES = {'small': (46, 36), 'medium': (52, 40), 'large': (66, 50)}          # une grotte est une salle, pas une région
 # La forme : un masque qui se mêle au relief. `weight` : la part du masque (0 : le bruit seul ; 1 : la forme pure).
 SHAPES = {
     'free': dict(weight=0.0),                                          # le bruit décide de tout
@@ -64,6 +65,9 @@ SHAPES = {
 # (forest, fields, village, city) ne s'inventent pas encore.
 KINDS = {
     'route': dict(),
+    # la grotte : une tache irrégulière posée sur du noir, fermée par sa paroi ; des massifs de roche au milieu, des bassins,
+    # des stalagmites le long des murs. Rien de vivant. Elle a son propre déroulé (`generate_cave`) et son décor (`cave`).
+    'cave': dict(cavern=True, gameplay=dict(close_edges=False, items=3)),
     # les champs : des blocs de blé clôturés, aux bords droits, chacun un petit labyrinthe d'allées de terre ; des chemins
     # continus passent entre eux, des bosquets remplissent le reste, deux étangs tiennent entre les blocs. Pas de hautes herbes.
     'fields': dict(shape='plain', farm=True, relief=dict(water=0.02, sand=0.03, terrace=2.0), climate=dict(forest=0.55),
@@ -121,6 +125,7 @@ def settings(world):
     if 'water_more' in R: R['water'] += R.pop('water_more'); R['sand'] = max(R['sand'], R['water'] + 0.05)
     if 'sand_band' in R: R['sand'] = R['water'] + R.pop('sand_band')
     for k in S: S[k].update(world.get(k, {}))          # ce que le monde écrit lui-même passe devant
+    S['cavern'] = bool(KINDS[kind].get('cavern'))
     S['deep'], S['hamlet'], S['farm'] = bool(KINDS[kind].get('deep')), bool(KINDS[kind].get('hamlet')), bool(KINDS[kind].get('farm'))
     S['kind'], S['open_sea'], S['chain'], S['wall'], S['terraces'] = kind, bool(KINDS[kind].get('open_sea')), bool(KINDS[kind].get('chain')), bool(KINDS[kind].get('wall')), bool(KINDS[kind].get('terraces'))
     S['shape'] = dict(level=KINDS[kind].get('level', 0.55), name=form, weight=shape['weight'], core=style.get('core', 'lake'), sea=style.get('sea', 'south'), axis=style.get('axis', 'vertical'))
@@ -195,9 +200,9 @@ class World:
     def __init__(self, world, source):
         self.world, self.source, self.m = world, source, world['map']
         size = world.get('style', {}).get('size', self.m.get('size', 'medium'))
-        self.W, self.H = SIZES[size] if isinstance(size, str) else size
-        self.m['size'] = [self.W, self.H]
         self.S = settings(world)
+        self.W, self.H = (CAVE_SIZES if self.S.get('cavern') else SIZES)[size] if isinstance(size, str) else size
+        self.m['size'] = [self.W, self.H]
         self.CELLS = [(x, y) for y in range(self.H) for x in range(self.W)]
         self.ground, self.trail, self.tall, self.mountain, self.levels = {}, set(), set(), set(), set()
         self.marks, self.props, self.tables, self.notes = {}, [], [], []
@@ -251,6 +256,7 @@ class World:
         for key in ('location', 'banner', 'music', 'wild'):
             if key in m: out.append('%s = "%s"' % (key, m[key]))
         out.append('daylight = %s' % str(m.get('daylight', True)).lower())
+        if 'tiers' in m: out.append('tiers = %d' % m['tiers'])
         shade = m.get('shade', [0.74, 0.84, 0.78] if self.S['deep'] else None)          # un sous-bois est dans la pénombre
         if shade: out.append('shade = [%s]' % ', '.join('%g' % v for v in shade))
         for name, entry in self.tables:
@@ -273,8 +279,167 @@ class World:
         return built
 
 
+def generate_cave(w):
+    """Une grotte (docs/mapping.md, « Grotte ») : son empreinte, sa paroi, ses massifs, ses bassins, ses rochers, ses objets."""
+    W, H, CELLS, inb, sub, G = w.W, w.H, w.CELLS, w.inb, w.sub, w.S['gameplay']
+    rng = random.Random(sub('relief') + 61)
+    w.m.update(theme='cave', daylight=False, tiers=2); w.m.setdefault('banner', 'cave')
+    WALL = 3          # l'épaisseur de la paroi : deux gradins et leur dessus
+    def blob(cx, cy, rx, ry, salt): return {(cx + i, cy + j) for i in range(-8, 9) for j in range(-7, 8) if (i / rx) ** 2 + (j / ry) ** 2 <= 1.0 + (lattice(sub('relief') + salt, cx + i, cy + j) - 0.5) * 0.6}
+    def biggest(cells): return max(pieces(cells), key=len) if cells else set()
+    def grown(cells, n): return {(c[0] + i, c[1] + j) for c in cells for i in range(-n, n + 1) for j in range(-n, n + 1)}
+
+    # 1. l'empreinte : une tache, ni ronde ni droite — un bruit ajouté à la distance au centre
+    cx, cy = (W - 1) / 2.0, (H - 1) / 2.0 - 1
+    def within(c):
+        d = math.hypot((c[0] - cx) / (W / 2.0 - 3), (c[1] - cy) / (H / 2.0 - 4))
+        return d + (fractal(sub('relief'), c[0], c[1], 9.0, 3) - 0.5) * 1.0 < 1.0
+    foot = biggest({c for c in CELLS if within(c) and 2 <= c[0] < W - 2 and 2 <= c[1] < H - 4})
+    # 2. le sol : l'empreinte moins sa paroi ; jamais d'une case de large — on ne garde que ce qui tient dans des carrés de deux
+    floor = {c for c in foot if all((c[0] + i, c[1] + j) in foot for i in range(-WALL, WALL + 1) for j in range(-WALL, WALL + 1))}
+    for _ in range(4):
+        floor = biggest({q for c in floor if all((c[0] + i, c[1] + j) in floor for i in (0, 1) for j in (0, 1)) for q in ((c[0] + i, c[1] + j) for i in (0, 1) for j in (0, 1))})
+    rock = grown(floor, WALL) - floor          # la paroi suit le sol, à trois cases
+    # 3. la sortie : un couloir de trois cases, de la salle au bord du bas (et au bord du haut, si on le demande)
+    w.exits = []
+    asked = [e.get('side', 'south') for e in w.world.get('exit', [])] or ['south']
+    for side in asked:
+        if side not in ('south', 'north'): w.notes.append('sortie %s : une grotte ne s ouvre qu au sud ou au nord' % side); continue
+        row = max(c[1] for c in floor) if side == 'south' else min(c[1] for c in floor)
+        x = min((c[0] for c in floor if c[1] == row), key=lambda q: abs(q - cx))
+        x = max(WALL + 2, min(W - WALL - 3, x))
+        rows = range(row - 2, H) if side == 'south' else range(0, row + 3)
+        lane = {(x + i, y) for y in rows for i in (-1, 0, 1)}
+        floor |= lane; rock -= lane
+        rock |= {(x + i, y) for y in rows for i in range(-1 - WALL, 2 + WALL) if inb((x + i, y))} - floor
+        edge = H - 1 if side == 'south' else 0
+        m = w.mark([(x - 1, edge), (x, edge), (x + 1, edge)])
+        w.tables.append(('exit', dict(mark=m, name='Sud' if side == 'south' else 'Nord')))
+        w.exits.append((x, edge)); w.lanes |= lane
+        if w.start is None: w.start = (x, edge - 2 if side == 'south' else edge + 2)
+    # 4. les massifs de roche, au milieu : on tourne autour, par des couloirs de deux cases au moins. Ce sont eux qui font la
+    # grotte — sans eux, c'est une salle vide.
+    def squared(cells): return {q for c in cells if all((c[0] + i, c[1] + j) in cells for i in (0, 1) for j in (0, 1)) for q in ((c[0] + i, c[1] + j) for i in (0, 1) for j in (0, 1))}          # sans pointe d'une case
+    solid, masses, wet, whole = set(), [], set(), len(floor) + len(rock)
+    room = floor - grown(w.lanes, 3)          # ni massif ni bassin devant la sortie
+    def box(c, wide, tall): return {(c[0] + i, c[1] + j) for i in range(wide) for j in range(tall)}
+    def raise_(most, share):
+        """Des massifs, jusqu'à `most`, tant que le sol dépasse `share` de la tache. Bousculés et à trois cases les uns des
+        autres d'abord ; puis plus petits et à deux cases ; droits enfin, s'il n'y en a toujours pas deux."""
+        for kind in ('loose', 'tight', 'straight'):
+            if kind == 'straight' and len(masses) >= min(most, 2): return
+            spots = sorted(floor - solid - wet); rng.shuffle(spots)
+            for c in spots:
+                if len(masses) >= most or len(floor) - len(solid) <= share * whole: return
+                mass = box(c, 4, 3) if kind == 'straight' else squared(blob(c[0], c[1], *((rng.uniform(2.0, 3.6), rng.uniform(1.8, 2.6)) if kind == 'loose' else (rng.uniform(1.8, 2.8), rng.uniform(1.6, 2.2))), 63 + len(masses)))
+                if 12 <= len(mass) <= 60 and grown(mass, 2) <= room - solid - wet and (kind != 'loose' or not grown(mass, 3) & (solid | wet)): solid.update(mass); masses.append(mass)
+    # Les éperons : des langues de roche qui partent de la paroi et coupent la salle en chambres. Une grande grotte sans eux
+    # est une halle ; chacun laisse deux cases de sol sur ses flancs et devant lui, et ne ferme rien.
+    bases = sorted(c for c in room if any((c[0] - i, c[1] - j) in rock for i, j in NEIGH4)); rng.shuffle(bases)
+    spurs = 0
+    for c in bases:
+        if spurs >= len(floor) // 450: break
+        for dx, dy in rng.sample(NEIGH4, 4):
+            long_, wide = rng.randint(5, 11), rng.choice((3, 3, 4))
+            px, py = -dy, dx
+            if not {(c[0] - dx + px * u, c[1] - dy + py * u) for u in range(wide)} <= rock: continue          # adossé à la paroi sur toute sa largeur
+            body = {(c[0] + dx * t + px * u, c[1] + dy * t + py * u) for t in range(long_) for u in range(wide)}
+            body = squared(body | blob(c[0] + dx * (long_ - 2) + px * (wide // 2), c[1] + dy * (long_ - 2) + py * (wide // 2), 2.4, 2.1, 67 + spurs))          # un bout renflé
+            def depth(q): return (q[0] - c[0]) * dx + (q[1] - c[1]) * dy
+            free = room - solid
+            if any(depth(q) < 0 for q in body) or any(depth(q) >= 0 and q not in free for q in grown(body, 2) - body): continue
+            if any(q in solid for q in grown(body, 4)) or len(pieces(floor - solid - body)) != 1: continue
+            solid |= body; spurs += 1; break
+    raise_(1, 0.0)          # un massif, un bassin, un second massif, puis le reste : sur une petite grotte, chacun a sa place
+    # 5. les bassins : un à trois, là où il reste de la place, qu'on longe de tous côtés
+    def flood(most):
+        spots = sorted(room - solid - wet); rng.shuffle(spots)
+        for c in spots:
+            if len(pieces(wet)) >= most: return
+            pool = squared(blob(c[0], c[1], rng.uniform(2.0, 3.2), rng.uniform(1.7, 2.4), 71 + len(wet)))
+            if 12 <= len(pool) <= 50 and any(all((q[0] + i, q[1] + j) in pool for i in (-1, 0, 1) for j in (-1, 0, 1)) for q in pool) and grown(pool, 2) <= room - solid and not grown(pool, 4) & wet: wet.update(pool)
+        for wide, tall in ((5, 3), (4, 3)):          # pas de place pour un bassin aux bords bousculés : un petit, droit
+            for c in spots:
+                if not wet and grown(box(c, wide, tall), 2) <= room - solid: wet.update(box(c, wide, tall))
+    flood(1)
+    raise_(2, 0.0)
+    flood(min(3, 1 + len(floor) // 300))
+    raise_(max(2, len(floor) // 60), 0.50)
+    floor -= solid; rock |= solid
+    # 6. des plaques de sol sombre, pour l'œil
+    spots = sorted(floor - wet - w.lanes); rng.shuffle(spots)
+    for c in spots:
+        if len(pieces(w.earth)) >= 2 + len(floor) // 300: break
+        patch = blob(c[0], c[1], rng.uniform(1.6, 2.6), rng.uniform(1.3, 2.0), 79 + len(w.earth))
+        if 6 <= len(patch) <= 24 and grown(patch, 1) <= floor - wet and not grown(patch, 2) & w.earth: w.earth |= patch
+    # le plan
+    for c in CELLS: w.ground[c] = '.' if c in floor else '#'
+    for c in wet: w.ground[c] = 'o'
+    w.mountain = {c for c in rock if inb(c)}
+    for hole in pieces({c for c in CELLS if w.ground[c] == '#'} - w.mountain):          # une poche de noir enfermée dans la roche : c'est de la roche
+        if not any(c[0] in (0, W - 1) or c[1] in (0, H - 1) for c in hole): w.mountain |= hole
+    # une entaille de noir de moins de trois cases dans la roche ne se dessine pas (son liseré n'a pas la place) : de la roche
+    dark = {c for c in CELLS if w.ground[c] == '#'} - w.mountain
+    def void(c): return c in dark or not inb(c)
+    kept = {(c[0] + i, c[1] + j) for c in dark for i in (-1, 0, 1) for j in (-1, 0, 1) if all(void((c[0] + a, c[1] + b)) for a in (-1, 0, 1) for b in (-1, 0, 1))}
+    w.mountain |= dark - kept
+    for c in w.mountain: w.ground[c] = '.'
+    built = w.probe()
+    reach, wall = built['REACH'], built['SOLID']
+    walk = set(reach)
+    # 7. les rochers et les stalagmites : le long des parois, un pour quinze à vingt cases de sol, jamais dans un passage
+    AROUND = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
+    def pinch(c):
+        ring = [(c[0] + i, c[1] + j) in walk for i, j in AROUND]
+        if all(ring) or not any(ring): return not any(ring)
+        runs, k0, k = 0, next(k for k in range(8) if not ring[k]), 0
+        while k < 8:
+            if ring[(k0 + k) % 8]:
+                run = []
+                while k < 8 and ring[(k0 + k) % 8]: run.append((k0 + k) % 8); k += 1
+                if any(q % 2 for q in run): runs += 1
+            else: k += 1
+        return runs != 1
+    placed = []
+    edge_ = sorted(c for c in walk if any((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) and c not in w.lanes and c not in grown(w.lanes, 1))
+    rng.shuffle(edge_)
+    for c in edge_:
+        if len(placed) >= len(walk) // 18: break
+        if any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 4 for p in placed) or pinch(c): continue
+        kind = rng.choice(('spire', 'spire', 'rock_s', 'pebbleA', 'pebbleB'))
+        w.props.append((kind, c[0], c[1])); placed.append(c); walk.discard(c)
+    open_ = sorted(c for c in walk if all((c[0] + i, c[1] + j) in walk for i in range(-2, 4) for j in range(-3, 3)) and c not in grown(w.lanes, 2))
+    rng.shuffle(open_)
+    big = []
+    for c in open_:          # et un ou deux gros blocs au milieu d'une salle
+        if len(big) >= len(walk) // 220: break
+        if any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 10 for p in big): continue
+        w.props.append(('boulder', c[0], c[1])); big.append(c)
+        walk -= {(c[0] + i, c[1] - j) for i in (0, 1) for j in (0, 1)}
+    # 8. les objets : au fond, loin de l'entrée, dans un renfoncement de la paroi
+    far, ring_ = {w.start: 0}, [w.start]
+    while ring_:
+        nxt = []
+        for c in ring_:
+            for i, j in NEIGH4:
+                n = (c[0] + i, c[1] + j)
+                if n in walk and n not in far: far[n] = far[c] + 1; nxt.append(n)
+        ring_ = nxt
+    nooks = sorted((c for c in far if sum((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) >= 2 and c not in w.lanes), key=lambda c: (-far[c], c))
+    found = []
+    for c in nooks:
+        if len(found) >= G['items']: break
+        if any(abs(c[0] - f[0]) + abs(c[1] - f[1]) < 10 for f in found) or pinch(c) or any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 2 for p in placed): continue
+        item = ITEMS[len(found) % len(ITEMS)]
+        found.append(c); walk.discard(c)
+        w.tables.append(('item', dict(mark=w.mark([c]), name='Item%d' % len(found), item=item[0], text='Vous trouvez %s !|Vous rangez %s dans la poche %s.' % (item[1], item[2], item[3]), exact=True)))
+    if len(masses) < 2: w.notes.append('seulement %d massif de roche : la salle est trop petite' % len(masses))
+    return w
+
+
 def generate(world, source='monde'):
     w = World(world, source)
+    if w.S['cavern']: return generate_cave(w)
     W, H, S, CELLS, inb, sub = w.W, w.H, w.S, w.CELLS, w.inb, w.sub
     R, C, V, G = S['relief'], S['climate'], S['vegetation'], S['gameplay']
     FRAME = G['frame']

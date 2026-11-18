@@ -36,6 +36,7 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 | `,` | la terre nue : une plaque bordée d'herbe, où l'on marche — la clairière d'une forêt, un carrefour. Deux cases au moins dans chaque sens |
 | `w` | le blé : il pousse sur la terre nue d'un champ, par blocs de deux cases au moins dans chaque sens. On ne le traverse pas : on suit les allées de terre (`,`) qu'il laisse |
 | `o` | un étang : une eau **au niveau de l'herbe**, sur le dessus d'un plateau, avec sa berge — ni falaise ni sable. Trois cases au moins dans chaque sens ; un pont (`=`) peut l'enjamber, un nénuphar (`lily1`, `lily2`, `lily3` dans `props`) s'y poser |
+| `#` | le vide : le noir autour d'une grotte. Il arrête, et la roche (`^`) qui le touche lui donne son liseré. Il lui faut le décor `cave` (`theme = "cave"`) : avec un autre, le constructeur le dit et laisse ces cases en herbe. Une grotte s'écrit avec `daylight = false` et `tiers = 2` |
 
 **`objects`** — ce qu'on pose dessus :
 
@@ -74,7 +75,8 @@ fl3 31 15
 ```
 
 Les sortes sont celles du décor (`[props]` de `themes/<décor>.toml`) : arbres, sapin, blocs, rochers, palmiers,
-buisson, petites fleurs `fl1`…`fl5`, coquillages. `bloom0`…`bloom7` est une grande fleur. Le constructeur pose
+buisson, petites fleurs `fl1`…`fl5`, coquillages. Dans une grotte (décor `cave`) : `spire` (une stalagmite), `rock_s`,
+`pebbleA`, `pebbleB`, `boulder`. `bloom0`…`bloom7` est une grande fleur. Le constructeur pose
 exactement cette liste, dans cet ordre, et rien d'autre.
 
 ## Écrire une carte tuile par tuile : `[[layer]]`
@@ -155,7 +157,7 @@ python3 tools/mapgen/check.py tools/mapgen/plans/*.toml             # une ligne 
 ```
 
 Les seuils dépendent du **style** de la carte, qu'on écrit dans sa table `[map]` : `style = "route"` (le défaut),
-`"forest"`, `"fields"`, `"beach"`, `"village"` (le défaut dès trois maisons) ou `"city"`. Sur une plage, par exemple,
+`"forest"`, `"fields"`, `"beach"`, `"cave"`, `"village"` (le défaut dès trois maisons) ou `"city"`. Sur une plage, par exemple,
 la mer touche le bord et le sable doit s'atteindre ; le détail est dans `docs/mapping.md`, « Les styles de carte ».
 
 Il rend un **taux** (la part des règles applicables qui sont respectées) et, à part, **INJOUABLE** si une sortie, une
@@ -164,7 +166,8 @@ l'œil. Sur un plan littéral (`route_1_bis`, `start_island_bis`), il ne lit que
 
 ## Ce qu'il ne fait pas encore
 
-Les grottes et les intérieurs, les lueurs aux fenêtres, les passages gardés.
+Les intérieurs, les lueurs aux fenêtres, les passages gardés. Dans une grotte : les paliers et leurs escaliers, les
+échelles, l'entrée en trouée de lumière, les passerelles.
 
 `route_2.toml` est la Route 1 refaite par le constructeur, pour juger ce qu'il sait faire : son plan est tiré de la
 Route 1 d'origine, et `route_1_et_route_2.png` montre les deux côte à côte. La Route 1 et l'île de départ ont été

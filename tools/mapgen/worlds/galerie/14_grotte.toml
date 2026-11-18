@@ -1,0 +1,19 @@
+# Galerie — une grande grotte : deux sorties, des éperons qui la coupent en chambres, des massifs, trois bassins.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/14_grotte.toml --preview tools/mapgen/worlds/galerie/14_grotte.png
+
+[map]
+name = "galerie_14_grotte"
+location = "Grotte Sans-Fond"
+
+[seed]
+world = 301
+
+[style]
+kind = "cave"
+size = "large"
+
+[[exit]]
+side = "south"
+
+[[exit]]
+side = "north"

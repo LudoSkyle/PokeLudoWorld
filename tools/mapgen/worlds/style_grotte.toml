@@ -1,0 +1,13 @@
+# Un monde d'exemple : Grotte aux Échos — le style `cave` : une salle dans le noir, sa paroi, ses massifs, ses bassins.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_grotte.toml --preview /tmp/style_grotte.png
+
+[map]
+name = "style_grotte"
+location = "Grotte aux Échos"
+
+[seed]
+world = 88
+
+[style]
+kind = "cave"
+size = [52, 40]

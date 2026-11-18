@@ -64,6 +64,7 @@ STYLES = {
     'fields':  dict(name='des champs', size=(40, 60), belt=6, open_sea=False, paths=True, relief=0, palms=5, tall=(3, 12), flowers=(15, 60), items=(2, 6), sand=None),
     'beach':   dict(name='une plage', size=(40, 70), belt=6, open_sea=True, sea=0.12, paths=False, relief=2, palms=2, tall=(10, 40), flowers=None, items=(3, 6), sand=8),
     'village': dict(name='un village', size=(30, 60), belt=6, open_sea=False, paths=True, relief=0, palms=5, tall=(10, 40), flowers=(8, 60), items=(1, 3), sand=None),
+    'cave':    dict(name='une grotte', size=(30, 66), belt=None, open_sea=False, paths=False, relief=0, palms=5, tall=(3, 12), flowers=None, items=(1, 4), sand=None, signs=False, bare=False),
     'city':    dict(name='une ville côtière', size=(30, 60), belt=None, open_sea=True, sea=0.5, paths=True, relief=1, palms=1, tall=(3, 15), flowers=None, items=(1, 3), sand=None),
 }
 
@@ -110,7 +111,7 @@ def check(plan):
     tree_cells = {(x + i, r - j) for _, x, r in trees for i in range(3) for j in (0, 1)}
     low = {c for c in L['Decorations'] if c not in b['fence']}          # les petites fleurs et les coquillages
     flowers = {c for c in low if c in INSIDE and c not in b['POND']}          # (les nénuphars d'un étang ne sont pas des fleurs de pelouse)
-    blooms = {c for c, t in L['Props'].items() if t[0] == builder.FLOWER_SOURCE and t[2] == builder.THEME['sources']['blooms']['foot']}
+    blooms = {c for c, t in L['Props'].items() if t[0] == builder.FLOWER_SOURCE and t[2] == builder.THEME['sources'].get('blooms', {}).get('foot')}
     props = {(x, r) for _, x, r in b['sprites']}
     lanes = {(c[0] + i, c[1] + j) for c in GATES for i in range(-2, 3) for j in range(-2, 3)}
     for c in list(GATES):          # le couloir d'une sortie traverse la marge : il en est exempté
@@ -181,7 +182,7 @@ def check(plan):
     bare = (REACH & INSIDE) - TRAIL - TALL - flowers - b['flower_cells'] - props - b['PAVED'] - set(b['stairs']) - margin - b['MOUNTAIN'] - b['EARTH']          # (une plaque de terre nue est une respiration voulue ; une terrasse où l'on monte est une pelouse comme une autre ; le dessus d'une butte ne s'atteint pas)
     squares = [(x, y) for x, y in bare if all((x + i, y + j) in bare for i in range(BARE) for j in range(BARE))]
     voids = pieces({(x + i, y + j) for x, y in squares for i in range(BARE) for j in range(BARE)})
-    rule('B', 'aucune pelouse nue de plus de 4 × 4 (une respiration permise)', len(voids) <= 1, '%d étendues nues, la plus grande de %d cases' % (len(voids), max([len(v) for v in voids] or [0])), [min(v) for v in voids])
+    rule('B', 'aucune pelouse nue de plus de 4 × 4 (une respiration permise)', len(voids) <= 1 if Y.get('bare', True) else None, '%d étendues nues, la plus grande de %d cases' % (len(voids), max([len(v) for v in voids] or [0])), [min(v) for v in voids])
     if Y['sand']:          # sur une plage, le sable garni tient plus large que la pelouse — mais pas nu
         strand = BEACH - RING
         rule('B', 'le sable est le sol : un dixième de la carte au moins', len(strand) >= W * H * 0.10, '%d cases de sable sur %d : %.0f %%' % (len(strand), W * H, 100.0 * len(strand) / (W * H)))
@@ -324,7 +325,7 @@ def check(plan):
     rule('K', '%d à %d objets à ramasser dans %s' % (Y['items'] + (Y['name'],)), Y['items'][0] <= len(items) <= Y['items'][1] if not b['literal'] else None, '%d objets' % len(items))
     signs = [plan.at(t['mark'], 'panneau') for t in plan.table('sign') if len(plan.marks.get(t['mark'], [])) == 1]
     bad = [g for g in gates if not any(min(abs(s[0] - c[0]) + abs(s[1] - c[1]) for c in g) <= 10 for s in signs)]
-    rule('K', 'un panneau à chaque entrée', not bad if gates else None, '%d sorties sans panneau' % len(bad), [min(g) for g in bad])
+    rule('K', 'un panneau à chaque entrée', not bad if gates and Y.get('signs', True) else None, '%d sorties sans panneau' % len(bad), [min(g) for g in bad])
 
     veil = set()          # ce qu'un grand dessin couvre au-dessus de son pied : sa cime, ses palmes
     for k, x, r in b['sprites']:
@@ -345,6 +346,26 @@ def check(plan):
         have = [name for name, there in motifs.items() if there]
         rule('B', 'une route a de quoi s y arrêter : quatre motifs au moins sur huit', len(have) >= 4,          # (les routes de Johto en ont de trois à six)
              '%d motifs : %s — il manque : %s' % (len(have), ', '.join(have), ', '.join(n for n in motifs if n not in have)))
+
+    # ---------------------------------------------------------------- une grotte
+    if kind == 'cave' and not b['literal']:
+        void, wall_ = b['VOID'], b['MOUNTAIN']
+        foot = set(CELLS) - void
+        floor = foot - wall_
+        rim = [c for c in border if c not in void and not any(abs(c[0] - g[0]) + abs(c[1] - g[1]) <= 6 for g in GATES)]          # (la paroi du couloir de sortie va jusqu'au bord avec lui)
+        rule('A', 'une grotte est une tache posée sur du noir : le vide touche tout le bord, hors des sorties', not rim, '%d cases de bord qui ne sont pas du vide' % len(rim), rim)
+        rule('B', 'le sol fait 35 à 60 % de la tache, le reste est de la roche', 0.35 <= len(floor) / max(1.0, len(foot)) <= 0.60, '%d cases de sol sur %d : %.0f %%' % (len(floor), len(foot), 100.0 * len(floor) / max(1, len(foot))))
+        masses = [m for m in pieces(wall_) if not any((c[0] + i, c[1] + j) in void for c in m for i, j in NEIGH4)]
+        rule('D', 'des massifs de roche au milieu de la salle : deux au moins, de 12 à 70 cases', len(masses) >= 2 and all(12 <= len(m) <= 70 for m in masses), '%d massifs, de %s cases' % (len(masses), sorted(len(m) for m in masses)))
+        narrow = thin(floor - b['POND'])
+        rule('N', 'aucun couloir d une seule case de large', len(narrow) <= 2, '%d cases de sol trop étroites' % len(narrow), narrow)
+        pools = pieces(b['POND'])
+        rule('O', 'un à trois bassins', 1 <= len(pools) <= 3, '%d bassins, de %s cases' % (len(pools), sorted(len(p) for p in pools)))
+        stones = len(b['sprites'])
+        per_ = len(REACH) / max(1.0, stones)
+        rule('F', 'des rochers et des stalagmites le long des parois : un pour 10 à 30 cases de sol', 10 <= per_ <= 30 if stones else False, '%d rochers pour %d cases : un pour %.0f' % (stones, len(REACH), per_))
+        alive = len(trees) + len(TALL) + len(flowers) + len(blooms)
+        rule('E', 'rien de vivant dans une grotte : ni arbre, ni herbes, ni fleurs', not alive, '%d' % alive)
 
     # ---------------------------------------------------------------- des champs
     if kind == 'fields' and not b['literal']:
