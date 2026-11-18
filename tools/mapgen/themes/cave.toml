@@ -1,0 +1,72 @@
+# Le décor « grotte ». Fabriqué par tools/mapgen/themes/cave.py : ne pas modifier à la main.
+
+name = "cave"
+
+# Les planches : leur numéro de source dans le TileSet (resources/tilesets/level.tres), et l'image, pour l'aperçu.
+[sources]
+main = { id = 15, sheet = "src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/cavern.png" }
+item_ball = { sheet = "src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/island.png", region = [48, 96, 16, 16] }          # la Poké Ball d'un objet à ramasser
+
+# Les tuiles du sol, des bords et du vide : nom = [colonne, rangée, 1 si elle arrête].
+[tiles]
+earth1 = [5, 5, 0]
+earth2 = [6, 5, 0]
+earth3 = [7, 5, 0]
+earth4 = [5, 4, 0]
+earth5 = [6, 4, 0]
+earth6 = [7, 4, 0]
+earth7 = [5, 3, 0]
+earth8 = [6, 3, 0]
+earth9 = [7, 3, 0]
+earthi = [8, 3, 0]
+earthj = [9, 3, 0]
+earthk = [8, 4, 0]
+earthl = [9, 4, 0]
+lawn = [10, 0, 0]
+pond1 = [0, 5, 1]
+pond2 = [1, 5, 1]
+pond3 = [2, 5, 1]
+pond4 = [0, 4, 1]
+pond5 = [1, 4, 1]
+pond6 = [2, 4, 1]
+pond7 = [0, 3, 1]
+pond8 = [1, 3, 1]
+pond9 = [2, 3, 1]
+pondi = [3, 3, 1]
+pondj = [4, 3, 1]
+pondk = [3, 4, 1]
+pondl = [4, 4, 1]
+rock1 = [0, 2, 1]
+rock2 = [1, 2, 1]
+rock3 = [2, 2, 1]
+rock4 = [0, 1, 1]
+rock5 = [1, 1, 0]
+rock6 = [2, 1, 1]
+rock7 = [0, 0, 1]
+rock8 = [1, 0, 1]
+rock9 = [2, 0, 1]
+rocki = [3, 0, 1]
+rockj = [4, 0, 1]
+rockk = [3, 1, 1]
+rockl = [4, 1, 1]
+void1 = [5, 2, 1]
+void2 = [6, 2, 1]
+void3 = [7, 2, 1]
+void4 = [5, 1, 1]
+void5 = [6, 1, 1]
+void6 = [7, 1, 1]
+void7 = [5, 0, 1]
+void8 = [6, 0, 1]
+void9 = [7, 0, 1]
+voidi = [9, 1, 1]
+voidj = [8, 1, 1]
+voidk = [9, 0, 1]
+voidl = [8, 0, 1]
+
+# Ce qui se pose : `at` sa case sur la planche, `size` sa taille en cases, `feet` les cases qu'il occupe.
+[props]
+boulder = { source = "main", at = [10, 2], size = [2, 2], drop = 0, anchor = 0, feet = [[0, -1], [1, -1], [0, 0], [1, 0]], layer = "Props" }
+pebbleA = { source = "main", at = [12, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+pebbleB = { source = "main", at = [13, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+rock_s = { source = "main", at = [11, 0], size = [1, 1], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }
+spire = { source = "main", at = [14, 0], size = [1, 2], drop = 0, anchor = 0, feet = [[0, 0]], layer = "Props" }

@@ -53,7 +53,8 @@ src/main/kotlin/fr/skyle/pokemonmirage/
 autre — `island_tiles.py` produit `assets/levels/island.png`,
 `route_tiles.py` découpe `assets/levels/route.png` dans la planche de la
 carte d'exemple de la route, `village_tiles.py` y découpe les maisons de
-`assets/levels/village.png`,
+`assets/levels/village.png`, `cavern_tiles.py` fabrique `assets/levels/cavern.png` — la roche d'une grotte —
+dans la planche des montagnes,
 `gamedata.py` sort du pack de données (`vendor/GameDataPacks`) les sprites,
 icônes, cris et données des 1025 espèces, et les icônes des objets,
 `weather_sheets.py` les planches de `assets/weather/`. Les trois
