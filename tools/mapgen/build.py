@@ -584,7 +584,7 @@ def build(plan):
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
                 BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
                 TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
-                high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
+                high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, GARDEN=GARDEN, lamps=[placed.get(l.get('name', 'Lamp%d' % n)) for n, l in enumerate(plan.table('lamp'))], ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
 def scene(built):
