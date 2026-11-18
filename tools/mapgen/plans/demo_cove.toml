@@ -1,0 +1,207 @@
+# Un plan d'exemple : une petite anse, pour montrer tout ce qu'un plan sait dire.
+# python3 tools/mapgen/build.py tools/mapgen/plans/demo_cove.toml --preview /tmp/demo_cove.png
+
+# Tout ce qui est posé, un par ligne : sa sorte, sa colonne, sa rangée (la case de son pied).
+props = '''
+treeA 8 0
+treeA 12 0
+treeB 16 0
+treeA 24 0
+treeA 28 0
+treeB 32 0
+treeA 36 0
+treeB 6 1
+treeA 10 1
+treeB 14 1
+treeB 26 1
+treeA 30 1
+treeA 34 1
+treeA 16 2
+treeA 24 2
+treeB 36 2
+treeA 6 3
+treeB 14 3
+treeA 34 3
+conif 5 0
+conif 19 0
+conif 23 0
+bloom1 34 5
+bloom3 36 6
+bloom0 5 7
+bloom2 33 7
+bloom1 7 8
+bloom3 37 10
+bloom7 25 12
+bloom5 38 12
+bloom1 34 13
+bloom2 36 14
+palm 31 18
+palm 7 19
+palm_big 36 20
+palm 3 21
+riverrock 8 26
+pebbleB 34 26
+spire 9 27
+riverrock 35 27
+fl2 25 3
+fl1 14 4
+fl1 37 4
+fl5 18 6
+fl4 17 7
+fl3 5 8
+fl1 37 8
+fl2 38 9
+fl2 18 14
+shell3 4 17
+shell4 14 17
+shell1 32 17
+shell2 9 18
+shell4 21 18
+shell4 37 18
+shell2 41 19
+shell1 6 20
+shell2 34 20
+shell3 27 21
+shell3 3 22
+shell1 10 22
+shell1 15 22
+'''
+
+[map]
+theme = "coast"
+name = "demo_cove"            # le nom de la scène : scenes/levels/demo_cove.tscn
+location = "Anse d'essai"     # le nom du lieu, sur le bandeau
+banner = "wood"
+music = "new_bark_town"
+daylight = true               # une carte d'extérieur : elle suit l'heure
+wild = "mulotin:2-4*60 | piafeuille:2-5*40"
+start = "S"                   # le repère d'où l'on part, pour contrôler que tout se rejoint
+
+# Le terrain, une case par signe :   ~ mer   : sable   . herbe   _ piste   " hautes herbes   ^ montagne
+terrain = '''
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~................___.................~~~~
+~~~~....___________________________.....~~~~
+~~~~....___________________________.....~~~~
+~~~~....___________________________.....~~~~
+~~~~................___...""""""""......~~~~
+~~~~................___...""""""""......~~~~
+~~~~................___...""""""""......~~~~
+~~~~................___.................~~~~
+~~~~....................................~~~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~::::::::::::::::::::::::::::::::::::::::~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+'''
+
+# Les ouvrages et les repères, sur la même grille :   . rien   = ponton   % dallage   f parc clôturé   x à laisser dégagé
+#   v > < rebords — et toute autre lettre ou chiffre est un repère, nommé plus bas.
+objects = '''
+....................EEE.....................
+............................................
+............................................
+............................................
+............................................
+............................................
+........................1...................
+..........A....................B............
+............................................
+..........S.................................
+............................................
+............................................
+........%%%%%%.N..2..................3......
+........%%%%%%..............................
+........%%%%%%..............................
+...................s........................
+............................................
+............................................
+............................................
+..........................j......k..........
+.....W......................................
+....................===.....................
+....................===.....................
+....................===.....................
+....................===.....................
+....................===.....................
+....................===.....................
+....................===.....................
+............................................
+............................................
+............................................
+............................................
+'''
+
+[[house]]                     # le repère est la case de la porte
+mark = "A"
+name = "MaisonOuest"
+kind = "hut_left"
+scene = "ludo_house"
+door = "Entree"
+
+[[house]]
+mark = "B"
+name = "MaisonEst"
+kind = "hut_right"
+
+[[stairs]]                    # le repère : la colonne de gauche de l'escalier, sur la rangée du bord du plateau
+mark = "s"
+
+[[exit]]                      # le repère couvre les cases du bord de la carte par où l'on sort
+mark = "E"
+name = "Nord"
+scene = "route_1"
+door = "Sud"
+
+[[sign]]
+mark = "1"
+name = "SignNord"
+text = "Route du nord.|Par ici, on quitte l'anse."
+
+[[lamp]]
+mark = "2"
+
+[[item]]
+mark = "3"
+name = "ItemPotion"
+item = "potion"
+text = "Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets."
+
+[[npc]]
+mark = "N"
+name = "Pecheur"
+appearance = "hgss_npc_midage_woman"
+text = "Le matin, la mer est si calme qu'on entend les Goélise."
+facing = [0, 1]
+
+[[npc]]                       # une ronde : d'un repère à l'autre, en ligne droite
+mark = "j"
+name = "Coureur"
+appearance = "hgss_tuber_m"
+text = "Je fais des longueurs sur la plage !"
+movement = "patrol"
+route = ["j", "k"]
+pace = 3.0
+
+[[flyers]]                    # un groupe que le vent porte, à hauteur du repère
+mark = "W"
+name = "Gulls"
+species = ["wingull", "wingull"]

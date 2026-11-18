@@ -57,8 +57,16 @@ carte d'exemple de la route, `village_tiles.py` y découpe les maisons de
 `gamedata.py` sort du pack de données (`vendor/GameDataPacks`) les sprites,
 icônes, cris et données des 1025 espèces, et les icônes des objets,
 `weather_sheets.py` les planches de `assets/weather/`. Les trois
-`title_*.py` dessinent les images de l'écran titre. `tools/maps/` garde les
-générateurs de cartes : `route_1/` relève une carte d'exemple tuile par
+`title_*.py` dessinent les images de l'écran titre. **`tools/mapgen/` fait les cartes, en deux programmes** :
+`build.py`, **le constructeur**, assemble un plan (`plans/<carte>.toml` : tout
+ce qu'il y a sur la carte, case par case) avec un décor (`themes/<décor>.toml` :
+quelle tuile dessine quoi) — sans rien décider ni tirer au hasard ;
+`worldgen.py`, **le générateur**, invente un plan à partir d'une graine et de
+réglages (`worlds/<monde>.toml` : relief, climat, végétation, chemins). Une
+nouvelle carte = un plan ou un monde, jamais un nouveau programme ; une
+nouvelle ambiance = un décor. Et la scène écrite ne se refait pas : elle se
+retouche dans l'éditeur. `tools/maps/` garde les
+anciens générateurs, propres à leur carte : `route_1/` relève une carte d'exemple tuile par
 tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`) ;
 `start_island/` lit la géographie d'une carte d'exemple (`geography.py`) et en
 fabrique l'île de départ, avec les tuiles de la Route 1. `seam.py` colle

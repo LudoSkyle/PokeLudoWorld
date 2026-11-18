@@ -1,5 +1,8 @@
 # Composer une carte
 
+> **Faire une carte** : écrire son plan ([tools/mapgen/plans/README.md](../tools/mapgen/plans/README.md)) ou la faire inventer ([tools/mapgen/worlds/README.md](../tools/mapgen/worlds/README.md)).
+> Les règles d'assemblage de ce document sont dans `tools/mapgen/build.py`, celles de composition dans `tools/mapgen/worldgen.py`.
+
 Document de conception des cartes d'extérieur. **À relire en entier avant de
 composer, générer ou retoucher une carte** : ces règles viennent des défauts
 que Ludovic a relevés sur les versions successives de l'île (huit relectures le

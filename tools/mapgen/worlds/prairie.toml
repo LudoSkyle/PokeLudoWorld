@@ -1,0 +1,53 @@
+# Un monde d'exemple : une prairie au bord de l'eau, deux sorties, une maison.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/prairie.toml --preview /tmp/prairie.png
+
+[map]
+name = "prairie"
+location = "Prairie d'essai"
+banner = "wood"
+music = "new_bark_town"
+theme = "coast"
+size = [64, 44]
+wild = "mulotin:2-4*60 | piafeuille:2-5*40"
+
+[seed]
+world = 2026          # la graine du monde : la même redonne la même carte
+# decor = 5           # une graine par couche, au besoin : relief, climate, grass, paths, trees, decor, shore
+
+[relief]
+scale = 18.0          # la taille des grandes formes, en cases
+octaves = 4           # le détail des contours
+persistence = 0.5
+lacunarity = 2.0
+water = 0.36          # en dessous : la mer
+sand = 0.43           # en dessous : le sable ; au-dessus : l'herbe
+
+[climate]
+scale = 11.0
+forest = 0.55         # l'humidité au-dessus de laquelle pousse la forêt
+
+[vegetation]
+tall_grass = 0.10     # la part de l'herbe couverte de hautes herbes
+tall_grass_scale = 6.0
+decorations = 0.07    # la chance d'une petite fleur sur une case de pelouse
+blooms = 5
+tree_spacing = 4
+
+[gameplay]
+path_width = 3
+poi_radius = 2
+
+[[exit]]
+side = "north"
+at = 0.3
+name = "Nord"
+
+[[exit]]
+side = "east"
+at = 0.6
+name = "Est"
+
+[[house]]
+name = "Cabane"
+kind = "hut_left"
+near = [0.55, 0.45]
