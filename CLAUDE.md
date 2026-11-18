@@ -54,7 +54,9 @@ autre — `island_tiles.py` produit `assets/levels/island.png`,
 `route_tiles.py` découpe `assets/levels/route.png` dans la planche de la
 carte d'exemple de la route, `village_tiles.py` y découpe les maisons de
 `assets/levels/village.png`, `cavern_tiles.py` fabrique `assets/levels/cavern.png` — la roche d'une grotte —
-dans la planche des montagnes,
+dans la planche des montagnes, `ice_cave_tiles.py` fabrique
+`assets/levels/ice_cavern.png` — la grotte de glace, un kit à plateaux qui
+se superposent — dans la planche de la grotte de glace,
 `gamedata.py` sort du pack de données (`vendor/GameDataPacks`) les sprites,
 icônes, cris et données des 1025 espèces, et les icônes des objets,
 `weather_sheets.py` les planches de `assets/weather/`. Les trois
@@ -77,7 +79,10 @@ anciens générateurs, propres à leur carte : `route_1/` relève une carte d'ex
 tuile (`survey.py`) et en fabrique la Route 1 (`generate.py`) ;
 `start_island/` lit la géographie d'une carte d'exemple (`geography.py`) et en
 fabrique l'île de départ, avec les tuiles de la Route 1. `seam.py` colle
-le bas de la route et le haut de l'île, pour vérifier qu'elles se suivent.
+le bas de la route et le haut de l'île, pour vérifier qu'elles se suivent. `ice_cave/` garde la carte
+d'exemple de la grotte de glace, son relevé tuile par tuile (`survey.py`) et
+le juge de paix du décor `cave_ice` (`compare.py` : notre constructeur doit
+la refaire à partir de quatre classes de cases).
 
 `vendor/GameDataPacks/` (hors Godot : `vendor/.gdignore`) : le pack
 `Gen 9/scarlet-violet` des packs de données de Pokémon Studio, **copié tel
