@@ -1,0 +1,15 @@
+# Galerie : des champs — cinq blocs de blé clôturés, des chemins entre eux, deux étangs.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/13_champs.toml --plan /tmp/13.toml --preview /tmp/13.png
+
+[map]
+name = "13_champs"
+location = "Grands champs"
+theme = "coast"
+banner = "wood"
+
+[seed]
+world = 273
+
+[style]
+kind = "fields"
+size = [78, 58]

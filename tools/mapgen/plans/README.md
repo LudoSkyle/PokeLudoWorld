@@ -34,6 +34,7 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 | `"` | les hautes herbes |
 | `^` | la montagne : de la roche sur un plateau, **en gradins** — sa silhouette érodée d'une case par gradin, trois par défaut (`tiers = 2` dans `[map]` pour en changer) |
 | `,` | la terre nue : une plaque bordée d'herbe, où l'on marche — la clairière d'une forêt, un carrefour. Deux cases au moins dans chaque sens |
+| `w` | le blé : il pousse sur la terre nue d'un champ, par blocs de deux cases au moins dans chaque sens. On ne le traverse pas : on suit les allées de terre (`,`) qu'il laisse |
 | `o` | un étang : une eau **au niveau de l'herbe**, sur le dessus d'un plateau, avec sa berge — ni falaise ni sable. Trois cases au moins dans chaque sens ; un pont (`=`) peut l'enjamber, un nénuphar (`lily1`, `lily2`, `lily3` dans `props`) s'y poser |
 
 **`objects`** — ce qu'on pose dessus :
@@ -43,7 +44,7 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 | `.` | rien |
 | `=` | un ponton ou un pont : un rectangle de trois cases de large. De la terre aux deux bouts, c'est un pont, qui monte de lui-même sur le dessus des deux plateaux ; sinon c'est une jetée |
 | `%` | un dallage |
-| `f` | un parc clôturé : un rectangle, portillon à l'est, grandes fleurs dedans |
+| `f` | un parc clôturé : un rectangle, portillon à l'est, grandes fleurs dedans Ses **portillons** sont les cases de son pourtour qu'on ne marque pas (ses quatre coins, eux, le sont toujours) ; s'il n'en manque aucune, un portillon s'ouvre au milieu de son côté est. Son dedans peut porter d'autres repères — un objet, par exemple |
 | `x` | à laisser dégagé : ni arbre, ni fleur, ni rien |
 | `v` | un rebord qu'on saute vers le sud : une rangée de deux cases au moins |
 | `>` | un rebord qu'on saute vers l'est : une colonne de deux cases au moins |
