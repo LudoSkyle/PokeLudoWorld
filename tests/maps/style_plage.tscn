@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/readable.tscn" id="9_readable"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/street_lamp.tscn" id="10_lamp"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/flyer.tscn" id="13_flyer"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/island.png" id="12_ball"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Plage du nord"
@@ -87,11 +88,21 @@ kind = "item"
 text = "@give:potion Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets."
 flag = "found_style_plage_item1"
 
+[node name="Ball" type="Sprite2D" parent="World/Item1"]
+texture = ExtResource("12_ball")
+region_enabled = true
+region_rect = Rect2(48, 96, 16, 16)
+
 [node name="Item2" parent="World" instance=ExtResource("9_readable")]
 position = Vector2(152, 344)
 kind = "item"
 text = "@give:poke_ball Vous trouvez une Poké Ball !|Vous rangez la Poké Ball dans la poche Poké Balls."
 flag = "found_style_plage_item2"
+
+[node name="Ball" type="Sprite2D" parent="World/Item2"]
+texture = ExtResource("12_ball")
+region_enabled = true
+region_rect = Rect2(48, 96, 16, 16)
 
 [node name="Item3" parent="World" instance=ExtResource("9_readable")]
 position = Vector2(152, 520)
@@ -99,11 +110,21 @@ kind = "item"
 text = "@give:antidote Vous trouvez un Antidote !|Vous rangez l'Antidote dans la poche Objets."
 flag = "found_style_plage_item3"
 
+[node name="Ball" type="Sprite2D" parent="World/Item3"]
+texture = ExtResource("12_ball")
+region_enabled = true
+region_rect = Rect2(48, 96, 16, 16)
+
 [node name="Item4" parent="World" instance=ExtResource("9_readable")]
 position = Vector2(248, 456)
 kind = "item"
 text = "@give:super_potion Vous trouvez une Super Potion !|Vous rangez la Super Potion dans la poche Objets."
 flag = "found_style_plage_item4"
+
+[node name="Ball" type="Sprite2D" parent="World/Item4"]
+texture = ExtResource("12_ball")
+region_enabled = true
+region_rect = Rect2(48, 96, 16, 16)
 
 [node name="Entities" type="Node2D" parent="World"]
 y_sort_enabled = true

@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/readable.tscn" id="9_readable"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/street_lamp.tscn" id="10_lamp"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/flyer.tscn" id="13_flyer"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/island.png" id="12_ball"]
 
 [node name="Level" type="Node2D"]
 metadata/location = "Anse d'essai"
@@ -89,6 +90,11 @@ position = Vector2(600, 200)
 kind = "item"
 text = "@give:potion Vous trouvez une Potion !|Vous rangez la Potion dans la poche Objets."
 flag = "found_demo_cove_itempotion"
+
+[node name="Ball" type="Sprite2D" parent="World/ItemPotion"]
+texture = ExtResource("12_ball")
+region_enabled = true
+region_rect = Rect2(48, 96, 16, 16)
 
 [node name="Entities" type="Node2D" parent="World"]
 y_sort_enabled = true
