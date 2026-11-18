@@ -64,7 +64,7 @@ def route_sources():
     for where in sorted(made):
         if where in inside or where in grass: continue
         name, key = names[where], '%d:%d' % where
-        wet = name == 'water' or route_tiles.family(name) in ('deep', 'sand')
+        wet = name == 'water' or route_tiles.family(name) in ('deep', 'sand', 'pond')
         if route_tiles.blocks(name): out.append('%s/next_alternative_id = 2' % key)
         out.append('%s/0 = 0' % key)
         if wet: out.append('%s/0/material = %s' % (key, WATER_MATERIAL))

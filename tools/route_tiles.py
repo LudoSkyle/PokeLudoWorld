@@ -42,6 +42,7 @@ BLOCKS = {
     'grass':  ((208, 512), (208, 560), (5, 3), (8, 3)),      # falaise à dessus d'herbe
     'hollow': ((160, 512), (160, 560), (10, 3), (13, 3)),    # la même falaise, dessus vide : se pose sur n'importe quel sol
     'stair':  ((384, 976), None, (6, 13), None),              # escalier de pierre à poteaux : sa rangée du milieu est celle des marches
+    'pond':   ((720, 400), (720, 448), (8, 16), (11, 16)),    # l'étang : une eau au niveau de l'herbe, sa berge brune en haut et sur les côtés — pas une falaise
 }
 # nom : ((x, y) sur la planche, (colonne, rangée) dans route.png)
 SINGLES = {
@@ -88,6 +89,10 @@ SHELL_ART = {
     'shell4': (2, 3, ['.oo........', 'opwo.......', '.oo........', '...........', '...........', '.......ooo.', '......ocdco', '.......ooo.']),
 }
 SHELL_INK = {'o': (150, 104, 84), 'w': (255, 240, 232), 'p': (240, 150, 140), 'c': (206, 168, 120), 'd': (150, 112, 78), 'r': (196, 110, 66), 's': (238, 156, 96)}          # un sable clair mange le blanc et le crème : il faut du rose et du brun
+# Les nénuphars : sur la planche ils sont peints sur l'eau d'un autre étang, plus sombre. On retire cette eau, teinte par
+# teinte (celles de sa case pleine, `LILY_WATER`) : il reste la feuille, la fleur et leur ombre, à poser sur n'importe quel étang.
+LILIES = {'lily1': ((624, 480), (13, 16)), 'lily2': ((640, 480), (14, 16)), 'lily3': ((656, 480), (15, 16))}
+LILY_WATER = (640, 416)
 TRAIL_CENTRE = (15, 4)            # une case de l'exemple où la piste est nue : son centre n'est pas sur la planche
 TRAIL_AT = (8, 1)
 KEYS, CORNERS = '789456123', 'ijkl'
@@ -108,7 +113,7 @@ def family(name):
 
 
 def blocks(name):
-    """Cette tuile arrête-t-elle le pas ? L'eau, le sable du pied des falaises, les parois, les rebords de roche.
+    """Cette tuile arrête-t-elle le pas ? L'eau, l'étang et sa berge, le sable du pied des falaises, les parois, les rebords de roche.
 
     Un rebord est plein, et se saute dans un seul sens (`jump`) : on ne s'y tient jamais.
 
@@ -122,7 +127,7 @@ def blocks(name):
     dans sa variante sans collision.
     """
     if name is None: return False
-    if name == 'water' or family(name) in ('deep', 'sand'): return True
+    if name == 'water' or family(name) in ('deep', 'sand', 'pond'): return True
     if name in ('grassk', 'grassl'): return False
     if family(name) in ('rock', 'grass', 'hollow'): return name[-1] != '5'
     return name.startswith('ledge') or name.startswith('fence')
@@ -158,6 +163,7 @@ def atlas():
     out.update({'shore' + k: at for k, at in zip('789461230ijkl'.replace('0', ''), [(c, r) for r in (7, 8) for c in range(6)])})
     for side, (c0, r0) in SIDE_STAIRS.items(): out.update({'stair%s%d%d' % (side, i, j): (c0 + i, r0 + j) for j in range(3) for i in range(4)})
     out.update(DOUBLE_STAIRS); out.update(PIER); out.update(SHELLS); out.update(FENCE); out.update(PAVED_INNER)
+    out.update({name: at for name, (_, at) in LILIES.items()})
     out.update(SPRITE_AT)
     out.update({name: at for name, (at, _) in REFERENCE_PIECES.items()})
     return out
@@ -236,6 +242,8 @@ def cells(survey=False):
             for i in range(3):
                 src = where[crown] if j < 2 else where[foot]
                 made[(where[name][0] + i, where[name][1] + j)] = made[(src[0] + i, src[1] + j)]
+    water = {tuple(town[LILY_WATER[1] + j][LILY_WATER[0] + i]) for j in range(16) for i in range(16)}
+    for name, ((x, y), at) in LILIES.items(): made[at] = [[CLEAR if p in water else p for p in row] for row in cut(town, x, y)]
     made[where['tall_pressing']], made[where['tall_pressed']] = pressed(made[where['tall']], 2, 0), pressed(made[where['tall']], 3, 1)
     reference = load(REFERENCE)[2]
     made[TRAIL_AT] = cut(reference, TRAIL_CENTRE[0] * 16, TRAIL_CENTRE[1] * 16)
