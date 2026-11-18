@@ -276,7 +276,8 @@ def check(plan):
     v = {c for c in side if (c[0] - 1, c[1]) not in TRAIL or (c[0] + 1, c[1]) not in TRAIL}
     h = {c for c in side if (c[0], c[1] - 1) not in TRAIL or (c[0], c[1] + 1) not in TRAIL}
     stiff = [(n, c) for n, c, d in runs(v) if d == (0, 1) and n > 8] + [(n, c) for n, c, d in runs(h) if d == (1, 0) and n > 8]
-    stiff = [(n, c) for n, c in stiff if c not in lanes and c not in near_work]
+    near_built = {(c[0] + i, c[1] + j) for c in b['GARDEN'] for i in range(-3, 4) for j in range(-3, 4)}          # le long d'une clôture, un chemin file droit : le construit est droit
+    stiff = [(n, c) for n, c in stiff if c not in lanes and c not in near_work and c not in near_built]
     rule('N', 'des bords de chemin ondulés : pas plus de 8 cases sans décrochement', len(stiff) <= 2 if TRAIL else None, '%d bords raides, le plus long de %d cases' % (len(stiff), max([n for n, _ in stiff] or [0])), [c for _, c in stiff])
     goals = fronts | GATES | {(c[0] + i, c[1] + j) for c in set(b['stairs']) | b['DECK'] for i, j in NEIGH8}
     trail_pieces = pieces(TRAIL)
@@ -344,6 +345,18 @@ def check(plan):
         have = [name for name, there in motifs.items() if there]
         rule('B', 'une route a de quoi s y arrêter : quatre motifs au moins sur huit', len(have) >= 4,          # (les routes de Johto en ont de trois à six)
              '%d motifs : %s — il manque : %s' % (len(have), ', '.join(have), ', '.join(n for n in motifs if n not in have)))
+
+    # ---------------------------------------------------------------- des champs
+    if kind == 'fields' and not b['literal']:
+        wheat, plots = b['WHEAT'], pieces(b['GARDEN'])
+        rule('B', 'les champs sont la matière de la carte : trois au moins, et le blé couvre 8 % de la carte', len(plots) >= 3 and len(wheat) >= W * H * 0.08, '%d champs, %.0f %% de blé' % (len(plots), 100.0 * len(wheat) / (W * H)))
+        rule('R', 'chaque champ est clôturé : pas de blé hors d un enclos', wheat <= b['GARDEN'], '%d cases de blé hors enclos' % len(wheat - b['GARDEN']), wheat - b['GARDEN'])
+        alleys = b['EARTH'] - wheat - {plan.marks[t['mark']][0] for t in items if len(plan.marks.get(t['mark'], [])) == 1}          # (un objet posé au fond d'une allée en occupe la case)
+        rule('R', 'un champ est un labyrinthe : ses allées s atteignent toutes, et font un cinquième à la moitié du champ', bool(alleys) and alleys <= REACH and 0.2 <= len(alleys) / max(1.0, len(b['EARTH'])) <= 0.5,
+             '%d cases d allée sur %d atteintes, %.0f %% du champ' % (len(alleys & REACH), len(alleys), 100.0 * len(alleys) / max(1, len(b['EARTH']))), alleys - REACH)
+        hidden_ = [t for t in items if len(plan.marks.get(t['mark'], [])) == 1 and plan.marks[t['mark']][0] in b['GARDEN']]
+        rule('K', 'un objet au fond d une allée de blé', bool(hidden_), '%d objets dans les champs' % len(hidden_))
+        rule('M', 'pas de hautes herbes dans les champs : le blé en tient lieu', len(TALL) <= 12, '%d cases de hautes herbes' % len(TALL))
 
     # ---------------------------------------------------------------- un village
     if kind == 'village' and not b['literal']:

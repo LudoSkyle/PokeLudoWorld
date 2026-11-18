@@ -64,6 +64,11 @@ SHAPES = {
 # (forest, fields, village, city) ne s'inventent pas encore.
 KINDS = {
     'route': dict(),
+    # les champs : des blocs de blé clôturés, aux bords droits, chacun un petit labyrinthe d'allées de terre ; des chemins
+    # continus passent entre eux, des bosquets remplissent le reste, deux étangs tiennent entre les blocs. Pas de hautes herbes.
+    'fields': dict(shape='plain', farm=True, relief=dict(water=0.02, sand=0.03, terrace=2.0), climate=dict(forest=0.55),
+                   vegetation=dict(tall_grass=0.0, decorations=0.07, blooms=2),
+                   gameplay=dict(path='full', grass_bars=0, ledges=0, items=2)),
     # le village : cinq maisons autour d'une placette dallée, un réseau de chemins continu qui relie chaque porte, deux étangs
     # au contact du bâti, des lampadaires, des massifs clôturés. Ni hautes herbes au centre, ni relief, ni rebord.
     'village': dict(shape='plain', hamlet=True, relief=dict(water=0.02, sand=0.03, terrace=2.0), climate=dict(forest=0.58),
@@ -116,7 +121,7 @@ def settings(world):
     if 'water_more' in R: R['water'] += R.pop('water_more'); R['sand'] = max(R['sand'], R['water'] + 0.05)
     if 'sand_band' in R: R['sand'] = R['water'] + R.pop('sand_band')
     for k in S: S[k].update(world.get(k, {}))          # ce que le monde écrit lui-même passe devant
-    S['deep'], S['hamlet'] = bool(KINDS[kind].get('deep')), bool(KINDS[kind].get('hamlet'))
+    S['deep'], S['hamlet'], S['farm'] = bool(KINDS[kind].get('deep')), bool(KINDS[kind].get('hamlet')), bool(KINDS[kind].get('farm'))
     S['kind'], S['open_sea'], S['chain'], S['wall'], S['terraces'] = kind, bool(KINDS[kind].get('open_sea')), bool(KINDS[kind].get('chain')), bool(KINDS[kind].get('wall')), bool(KINDS[kind].get('terraces'))
     S['shape'] = dict(level=KINDS[kind].get('level', 0.55), name=form, weight=shape['weight'], core=style.get('core', 'lake'), sea=style.get('sea', 'south'), axis=style.get('axis', 'vertical'))
     return S
@@ -201,6 +206,7 @@ class World:
         self.far, self.stairs = [], []
         self.tier, self.climbs, self.rim, self.way = {}, [], set(), set()
         self.glades, self.earth, self.hearts = set(), set(), []
+        self.wheat, self.fields = set(), []          # les champs : leurs cases de blé, et leurs enclos (x0, y0, x1, y1)
         self.plaza, self.spots = set(), set()          # le village : sa placette dallée, et les cases gardées pour son mobilier          # la forêt profonde : ses clairières, leurs plaques de terre nue, leurs centres          # les terrasses où l'on marche (case → niveau) et leurs escaliers
         self.routes, self.waypoints, self.bars, self.hops = [], [], [], []          # (`hops` : les rebords prévus, chacun avec son signe et ses cases)          # les trajets tracés, case par case ; les détours imposés à une route en couloir
         self.open = self.S['shape']['sea'] if self.S['open_sea'] else None          # le côté où la mer va jusqu'au bord (une plage)
@@ -223,7 +229,7 @@ class World:
 
     # ------------------------------------------------------------ le plan, et ce que le constructeur en dit
     def lines(self):
-        def sign(c): return '^' if c in self.mountain else '_' if c in self.trail else ',' if c in self.earth and self.ground[c] == '.' else '"' if c in self.tall else self.ground[c]
+        def sign(c): return '^' if c in self.mountain else '_' if c in self.trail else 'w' if c in self.wheat else ',' if c in self.earth and self.ground[c] == '.' else '"' if c in self.tall else self.ground[c]
         objects = [['.'] * self.W for _ in range(self.H)]
         for m, cells in self.marks.items():
             for c in cells: objects[c[1]][c[0]] = m
@@ -572,14 +578,70 @@ def generate(world, source='monde'):
         m = w.mark([door]); w.houses.append((h, m, door)); w.pois.append((door[0], door[1] + 1))
         w.tables.append(('house', dict(mark=m, **{k: h[k] for k in ('name', 'kind', 'scene', 'door') if k in h})))
     house_area = {(d[0] + i, d[1] - j) for _, _, d in w.houses for i in range(-5, 6) for j in range(0, 7)}
-    if S['hamlet'] and R['pond_max']:          # deux étangs de vingt-cinq à trente-cinq cases, au contact du bâti (O) : à côté d'une maison, loin de sa porte
+    if S['farm']:
+        # Les champs : on en pose jusqu'à six, à cinq cases au moins les uns des autres — la place d'un chemin et de ses bords.
+        # Chacun : une clôture sur son pourtour, de la terre dedans, du blé par bandes de deux ou trois rangées séparées d'allées
+        # d'une case ; chaque bande a une trouée, d'un côté puis de l'autre : on serpente. Le bout d'une allée, passé la trouée,
+        # est un cul-de-sac — un champ sur deux y garde un objet.
+        farm = random.Random(sub('paths') + 41)
+        def blocked(q): return not inb(q) or ground[q] != '.' or q in w.lanes or q in house_area or w.edge(q) < FRAME - 1 or any(abs(q[0] - p[0]) <= 3 and abs(q[1] - p[1]) <= 3 for p in w.pois)
+        # Une grille bousculée : des cases d'une vingtaine sur quinze, un champ par case — parfois un grand sur deux cases voisines.
+        pad_ = FRAME + 1
+        cols_, rows_ = max(1, (W - 2 * pad_) // 19), max(1, (H - 2 * pad_) // 16)
+        cw_, ch_ = (W - 2 * pad_) / float(cols_), (H - 2 * pad_) / float(rows_)
+        cells_left = [(i, j) for j in range(rows_) for i in range(cols_)]
+        farm.shuffle(cells_left)
+        used_ = set()
+        for (i, j) in cells_left:
+            if (i, j) in used_: continue
+            span = 2 if (i + 1, j) not in used_ and i + 1 < cols_ and farm.random() < 0.3 else 1
+            ax0, ay0, ax1, ay1 = int(pad_ + i * cw_) + 2, int(pad_ + j * ch_) + 2, int(pad_ + (i + span) * cw_) - 4, int(pad_ + (j + 1) * ch_) - 4          # la place du champ dans sa case : cinq cases de marge en tout
+            placed_ = False
+            for _ in range(40):
+                bands, room_ = [], ay1 - ay0 + 1 - farm.randint(0, 2)
+                while 3 + sum(bands) + len(bands) + 4 <= room_ and len(bands) < 4: bands.append(farm.choice((2, 3, 3, 4)))          # des bandes de trois rangées surtout : les allées font un quart du champ          # autant de bandes que la case en porte
+                if not bands: break
+                tall = 3 + sum(bands) + len(bands)          # (une allée en haut, une sous chaque bande, la clôture autour)
+                wide = farm.randint(max(9, ax1 - ax0 - 6), max(9, ax1 - ax0 + 1))
+                if tall > ay1 - ay0 + 1 or wide > ax1 - ax0 + 1: continue
+                x0, y0 = farm.randint(ax0, ax1 - wide + 1), farm.randint(ay0, ay1 - tall + 1)
+                x1, y1 = x0 + wide - 1, y0 + tall - 1
+                if any(blocked((x, y)) for x in range(x0 - 2, x1 + 3) for y in range(y0 - 2, y1 + 3)) or min(w.edge((x0, y0)), w.edge((x1, y1))) < FRAME + 1: continue
+                placed_ = True; break
+            if not placed_: continue
+            used_.update((i + k, j) for k in range(span))
+            inner = [(x, y) for x in range(x0 + 1, x1) for y in range(y0 + 1, y1)]
+            w.earth.update(inner)
+            y, side, gaps, alleys = y0 + 2, farm.choice((0, 1)), [], [y0 + 1]
+            for band in bands:
+                gap = farm.randint(x0 + 3, x0 + 4) if side else farm.randint(x1 - 4, x1 - 3)          # la trouée : à trois ou quatre cases d'un bord, d'un côté puis de l'autre
+                w.wheat.update((x, y + j) for x in range(x0 + 1, x1) for j in range(band) if x != gap)
+                gaps.append(gap); y += band + 1; alleys.append(y - 1); side = 1 - side
+            south = (y0 + y1) / 2.0 < H / 2.0          # le portillon regarde le milieu de la carte : c'est par là que passent les chemins
+            gx = max(x0 + 1, min(x1 - 2, (gaps[-1] if south else gaps[0]) + farm.choice((-4, 3))))
+            gate = [(gx, y1 if south else y0), (gx + 1, y1 if south else y0)]
+            ring_ = [(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1) if (x in (x0, x1) or y in (y0, y1)) and (x, y) not in gate]
+            w.marks.setdefault('f', []).extend(ring_)
+            w.pois.append((gx, y1 + 2 if south else y0 - 2))
+            if len(w.fields) % 2 == 0:          # l'objet : au fond de l'allée la plus loin du portillon, du côté opposé à sa trouée
+                row, g_ = (alleys[0], gaps[0]) if south else (alleys[-1], gaps[-1])
+                spot = (x0 + 1, row) if g_ - x0 > x1 - g_ else (x1 - 1, row)
+                item = ITEMS[(len(w.fields) // 2 + 3) % len(ITEMS)]
+                w.tables.append(('item', dict(mark=w.mark([spot]), name='ItemChamp%d' % (len(w.fields) // 2 + 1), item=item[0], text='Vous trouvez %s !|Vous rangez %s dans la poche %s.' % (item[1], item[2], item[3]), exact=True)))
+            w.fields.append((x0, y0, x1, y1))
+            cells_ = {(x, y) for x in range(x0, x1 + 1) for y in range(y0, y1 + 1)}
+            w.spots |= cells_
+            house_area |= {(q[0] + i, q[1] + j) for q in cells_ for i in (-1, 0, 1) for j in (-1, 0, 1)}          # ni chemin, ni arbre, ni fleur dans un champ ni contre sa clôture
+        if len(w.fields) < 2: w.notes.append('seulement %d champ : la carte est trop petite, ou trop encombrée' % len(w.fields))
+    if (S['hamlet'] or S['farm']) and R['pond_max']:          # deux étangs de vingt-cinq à trente-cinq cases, au contact du bâti (O) : à côté d'une maison, loin de sa porte
         pool_ = random.Random(sub('relief') + 51)
         def blob(cx, cy, rx, ry, salt): return {(cx + i, cy + j) for i in range(-6, 7) for j in range(-5, 6) if (i / rx) ** 2 + (j / ry) ** 2 <= 1.0 + (lattice(sub('relief') + salt, cx + i, cy + j) - 0.5) * 0.6}
         walls_ = set()          # l'emprise des maisons : leurs murs et leur toit
         for h, _, d in w.houses:
             model = builder.THEME['buildings'].get(h.get('kind', 'hut_left'), dict(door=1, size=[5, 6]))
             walls_ |= {(d[0] - model['door'] + i, d[1] - j) for i in range(model['size'][0]) for j in range(model['size'][1])}
-        shut_ = {(q[0] + i, q[1] + j) for q in walls_ for i in (-1, 0, 1) for j in (-1, 0, 1)} | w.lanes | {(q[0] + i, q[1] + j) for q in w.plaza for i in range(-2, 3) for j in range(-2, 3)} \
+        walls_ |= {(x, y) for fx0, fy0, fx1, fy1 in w.fields for x in range(fx0, fx1 + 1) for y in range(fy0, fy1 + 1)}          # et celle des champs
+        shut_ = ({(p[0] + i, p[1] + j) for p in w.pois for i in range(-3, 4) for j in range(-3, 4)} if S['farm'] else set()) | {(q[0] + i, q[1] + j) for q in walls_ for i in (-1, 0, 1) for j in (-1, 0, 1)} | w.lanes | {(q[0] + i, q[1] + j) for q in w.plaza for i in range(-2, 3) for j in range(-2, 3)} \
             | {(d[0] + i, d[1] + j) for _, _, d in w.houses for i in range(-2, 3) for j in range(1, 5)}
         near_walls = {(q[0] + i, q[1] + j) for q in walls_ for i in range(-2, 3) for j in range(-2, 3)}
         spots_ = sorted(c for c in CELLS if ground[c] == '.' and w.edge(c) >= FRAME + 5)
@@ -728,12 +790,16 @@ def generate(world, source='monde'):
             carve(leg(a_, corner) + leg(corner, b_))
     works = {(x + i, r + j) for x, r in w.climbs for i in range(-1, 6) for j in (-2, -1, 0, 1, 2)}          # les cases des escaliers et des ponts, et leurs abords
     causeway = []
+    redo = set()          # les points que le tracé disait reliés et que la carte assemblée ne relie pas
     for _ in range(10 + W * H // 1500):          # tant qu'un grand morceau de terre reste coupé du départ : un pont, ou un escalier vers sa plage
         built = w.probe()
         firm[0] = built['PLATEAU'] - built['SOLID']
         reach, inside, beach = footing(built), built['INSIDE'], built['BEACH'] - built['RING']
+        for p in w.pois[1:]:          # ce qu'on croyait relié et que le constructeur, lui, n'atteint pas (une langue de terre devenue trop mince pour qu'on y marche) : à relier de nouveau
+            if p not in reach and p not in waiting and p not in redo: waiting.append(p); redo.add(p)
         for p in list(waiting):          # ce qui attendait se relie peut-être, depuis le dernier ouvrage
-            if join(p): waiting.remove(p)
+            if p not in redo and join(p): waiting.remove(p)
+            elif p in redo and p in reach: waiting.remove(p)
         lands = [p for p in pieces({c for c in inside if walkable(c)}) if len(p) >= 50 and not p & reach]
         shores = [p for p in pieces(beach) if len(p) >= 24 and not p & reach]
         if not lands and not shores and not waiting: break
@@ -902,6 +968,7 @@ def generate(world, source='monde'):
         if not done and waiting:          # ni pont ni escalier : le chemin fait le tour par la lisière, plutôt qu'une sortie où l'on n'arrive pas
             loose[0] = True
             for p in list(waiting):
+                if p in redo: continue
                 path = route(p, network())
                 if path:
                     carve(path); waiting.remove(p); done = True
@@ -912,7 +979,8 @@ def generate(world, source='monde'):
             w.notes.append('les terrasses ont été retirées : leur escalier ne reliait pas les deux sorties')
             done = True
         if not done and waiting:          # rien n'y fait : on jette une langue de terre, cinq cases de large, au plus court en préférant la terre — une carte se joue
-            p, net = waiting[0], network()
+            p = waiting[0]
+            net = (reach & firm[0]) if p in redo else network()          # (pour un point que le tracé croyait relié : jusqu'à ce qu'on atteint vraiment)
             keep = {(c[0] + i, c[1] + j) for c in works for i in (-2, -1, 0, 1, 2) for j in (-2, -1, 0, 1, 2)}          # à l'écart des escaliers et des ponts déjà posés : on ne leur retire ni leur plage ni leur eau
             best, queue, came, hit = {p: 0.0}, [(0.0, p)], {}, None
             while queue:
@@ -921,10 +989,10 @@ def generate(world, source='monde'):
                 if d > best.get(c, 1e9): continue
                 for i, j in NEIGH4:
                     n = (c[0] + i, c[1] + j)
-                    if not inb(n) or w.edge(n) < 4 or w.offshore(n) < 8 or n in house_area or (n in keep and n not in net): continue
+                    if not inb(n) or w.edge(n) < 4 or w.offshore(n) < 8 or n in house_area or (n in keep and n not in net and p not in redo): continue          # (pour un point mal relié, on repasse où il faut : c'est souvent au ras d'un escalier que la terre s'est amincie)
                     step = 1.0 if ground[n] == '.' and n not in w.mountain and n not in w.levels else 8.0
                     if d + step < best.get(n, 1e9): best[n] = d + step; came[n] = c; heapq.heappush(queue, (d + step, n))
-            if hit is not None and not causeway:
+            if hit is not None and len(causeway) < 2:
                 causeway.append(p)
                 c = hit
                 while True:
@@ -1229,7 +1297,7 @@ def generate(world, source='monde'):
                     trees[(tx, tr)] = 'treeB' if fill.random() < V['tree_dark'] else 'treeA'
                     wood |= foot(tx, tr); occupied |= foot(tx, tr) | {(tx + i, tr - 2) for i in range(3)}
                 placed = True
-        if not placed and kind < 0.88 and not S['hamlet']:          # une touffe d'herbes hautes, de trois à six cases (pas dans un village)
+        if not placed and kind < 0.88 and not S['hamlet'] and not S['farm']:          # une touffe d'herbes hautes, de trois à six cases (pas dans un village)
             n, cells, tries = fill.randint(3, 6), [centre], 0
             while len(cells) < n and tries < 60:
                 c = cells[fill.randrange(len(cells))]; d = fill.choice(NEIGH4); q = (c[0] + d[0], c[1] + d[1]); tries += 1          # (côte à côte, pas en diagonale : une touffe est d'un seul tenant)

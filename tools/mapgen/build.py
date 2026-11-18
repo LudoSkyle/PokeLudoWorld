@@ -42,7 +42,7 @@ NEIGH8 = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1) if (i, j) != (0, 0)]
 OPEN_EDGE = 'grass8'          # TOUJOURS : la rangée du haut d'un plateau est de l'herbe, on y marche (docs/mapping.md, section J)
 
 # Ce que dit chaque signe du plan du terrain.
-TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne', 'o': 'un étang', ',': 'la terre nue'}
+TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne', 'o': 'un étang', ',': 'la terre nue', 'w': 'le blé'}
 # Les signes réservés du plan des objets ; toute autre lettre ou chiffre est un repère, nommé dans le plan.
 OBJECTS = {'.': 'rien', 'x': "un endroit à laisser dégagé", '=': 'un ponton ou un pont', '%': 'un dallage', 'f': 'un parc clôturé',
            'v': "un rebord qu'on saute vers le sud", '>': "un rebord qu'on saute vers l'est", '<': "un rebord qu'on saute vers l'ouest"}
@@ -249,10 +249,12 @@ def build(plan):
     PAVED = plan.cells('%')
     if PAVED and any(k is None for k in shape(PAVED).values()): warn.append('dallage : une forme que ses tuiles ne dessinent pas'); PAVED = tidy(PAVED)
     gardens = []
+    gates_of = {}          # les portillons d'un parc : les cases de son pourtour qu'on n'a pas marquées (à défaut, le milieu de son côté est)
     for piece in parts(plan.cells('f')):
         gx0, gy0, gx1, gy1 = min(c[0] for c in piece), min(c[1] for c in piece), max(c[0] for c in piece), max(c[1] for c in piece)
-        if piece != rect(gx0, gy0, gx1, gy1) or gx1 - gx0 < 2 or gy1 - gy0 < 2: warn.append('parc vers (%d, %d) : il faut un rectangle d au moins trois cases de côté' % (gx0, gy0)); continue
-        gardens.append((gx0, gy0, gx1, gy1))
+        ring_ = {c for c in rect(gx0, gy0, gx1, gy1) if c[0] in (gx0, gx1) or c[1] in (gy0, gy1)}
+        if not {(gx0, gy0), (gx1, gy0), (gx0, gy1), (gx1, gy1)} <= piece or gx1 - gx0 < 2 or gy1 - gy0 < 2: warn.append('parc vers (%d, %d) : il faut un rectangle d au moins trois cases de côté, ses quatre coins marqués' % (gx0, gy0)); continue
+        gardens.append((gx0, gy0, gx1, gy1)); gates_of[(gx0, gy0, gx1, gy1)] = (ring_ - piece) or {(gx1, (gy0 + gy1) // 2)}
     GARDEN = set().union(*[rect(*g) for g in gardens]) if gardens else set()
     MOUNTAIN = tidy({c for c in INSIDE if sign[c] == '^'})
     for crumb in parts(MOUNTAIN):
@@ -265,7 +267,14 @@ def build(plan):
     for puddle in parts(POND):
         if len(puddle) < 9 or not any(all((c[0] + i, c[1] + j) in puddle for i in (-1, 0, 1) for j in (-1, 0, 1)) for c in puddle):
             POND -= puddle
-    EARTH = tidy({c for c in INSIDE if sign[c] == ','} - MOUNTAIN - house_area)          # une plaque de terre nue, bordée d'herbe : on y marche (la clairière d'une forêt, un carrefour)
+    EARTH = tidy({c for c in INSIDE if sign[c] in ',w'} - MOUNTAIN - house_area)          # une plaque de terre nue, bordée d'herbe : on y marche (la clairière d'une forêt, un carrefour)
+    # Le blé pousse sur la terre d'un champ, par blocs de deux cases au moins dans chaque sens. On ne le traverse pas : on suit
+    # les allées de terre qu'il laisse. (Ses tuiles n'ont pas de coin rentrant : la case pleine en tient lieu.)
+    WHEAT = {c for c in EARTH if sign[c] == 'w'}
+    while True:
+        bad = [c for c, k in shape(WHEAT).items() if k is None]
+        if not bad: break
+        WHEAT -= set(bad)
     lost = sorted(c for c in CELLS if sign[c] == 'o' and c not in POND)
     if lost: warn.append('%d cases d étang laissées en herbe — trop étroit pour sa berge, ou hors du dessus d un plateau : %s' % (len(lost), lost[:6]))
     # Une terrasse : un morceau du dessus d'un plateau, un cran plus haut. Son bord, là où il donne sur l'herbe d'en bas,
@@ -299,7 +308,7 @@ def build(plan):
     if 'start' not in plan.map and doors: start = (start[0], start[1] + 1)
 
     # ============================================================ 3. le sol
-    L = {n: {} for n in ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Ledges', 'Bridges', 'Props', 'Trees', 'Houses']}
+    L = {n: {} for n in ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Crops', 'Plaza', 'Decorations', 'Grass', 'Ledges', 'Bridges', 'Props', 'Trees', 'Houses']}
     ORDER = ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Ledges', 'Bridges']
     TRAIL = tidy(TRAIL)
     sand_shape, ring_shape, rock_shape, trail_shape = shape(SAND), shape(PLATEAU), shape(ROCKY), shape(TRAIL)
@@ -331,6 +340,8 @@ def build(plan):
             + ([mount_edge[c]] if c in mount_edge else [])
     earth_shape = shape(EARTH)
     for c in sorted(EARTH): L['Paths'][c] = tile('earth' + earth_shape[c])
+    for c, k in sorted(shape(WHEAT).items()): L['Crops'][c] = tile('wheat' + (k if k in '123456789' else '5'))
+    if WHEAT: ORDER.insert(ORDER.index('Paths') + 1, 'Crops')
     pond_shape = shape(POND)
     for c in sorted(POND): L['Paths'][c] = tile('pond' + pond_shape[c], 1 if c in DECK else 0)          # (sur le calque des pistes : la pelouse reste dessous, on la voit aux coins de la berge)
     paved_shape = shape(PAVED)
@@ -425,11 +436,10 @@ def build(plan):
     WOODS = hidden          # derrière un arbre, sous une palme : on n'y pose ni panneau ni personnage
     fronts = {(d[0], d[1] + j) for d in doors.values() for j in (1, 2)}
     fence = {}
-    for gx0, gy0, gx1, gy1 in gardens:          # un parc : une clôture sur son pourtour, un portillon au milieu de son côté est
-        gate = (gx1, (gy0 + gy1) // 2)
+    for gx0, gy0, gx1, gy1 in gardens:          # un parc : une clôture sur son pourtour, ouverte à ses portillons
         for c in sorted(rect(gx0, gy0, gx1, gy1)):
             x, y = c
-            if (gx0 < x < gx1 and gy0 < y < gy1) or c == gate: continue
+            if (gx0 < x < gx1 and gy0 < y < gy1) or c in gates_of[(gx0, gy0, gx1, gy1)]: continue
             k = {(gx0, gy0): '7', (gx1, gy0): '9', (gx0, gy1): '1', (gx1, gy1): '3'}.get(c) or ('8' if y == gy0 else '2' if y == gy1 else '4' if x == gx0 else '6')
             fence[c] = 'fence' + k
     for c, name in fence.items(): L['Decorations'][c] = tile(name)
@@ -462,7 +472,7 @@ def build(plan):
         if c in DECK: continue
         if c in SEA or (any(blocks(n) and n != OPEN_EDGE for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
     SOLID |= blocked
-    if not literal: SOLID |= POND - DECK          # (un pont passe par-dessus)
+    if not literal: SOLID |= (POND - DECK) | WHEAT          # (un pont passe par-dessus un étang)
     for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
     SOLID |= set(fence) | (set() if literal else set(ledges) | (set(terrace) - STEPS))
     def free(c): return inb(c) and c not in SOLID
@@ -586,7 +596,7 @@ def build(plan):
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
                 BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
                 TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
-                high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, GARDEN=GARDEN, lamps=[placed.get(l.get('name', 'Lamp%d' % n)) for n, l in enumerate(plan.table('lamp'))], ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
+                high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, WHEAT=WHEAT, GARDEN=GARDEN, lamps=[placed.get(l.get('name', 'Lamp%d' % n)) for n, l in enumerate(plan.table('lamp'))], ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
 def scene(built):

@@ -1,0 +1,15 @@
+# Un monde d'exemple : Champs de blé — le style `fields` : des blocs de blé clôturés, chacun un petit labyrinthe d'allées.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_champs.toml --preview /tmp/style_champs.png
+
+[map]
+name = "style_champs"
+location = "Champs de blé"
+theme = "coast"
+banner = "wood"
+
+[seed]
+world = 3
+
+[style]
+kind = "fields"
+size = [60, 58]
