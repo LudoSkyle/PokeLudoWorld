@@ -6,10 +6,19 @@
 
 <p align="center">
   Un fan-game Pokémon en 2D, fait avec <b>Godot 4</b> et <b>Kotlin</b>.<br>
-  Projet personnel, <b>non commercial</b>, sans lien avec Nintendo, GAME FREAK ou The Pokémon Company.
+  <b>Preuve de concept</b> personnelle, <b>non commerciale</b>, sans lien avec Nintendo, GAME FREAK ou The Pokémon Company.
 </p>
 
 ---
+
+## Pourquoi ce projet
+
+Deux choses à démontrer, et rien d'autre :
+
+- **Qu'on peut écrire un vrai jeu en Kotlin sur Godot.** Godot se programme d'ordinaire en GDScript ou en C# ; ici tout le code de production est en Kotlin compilé pour la JVM, via [godot-kotlin-jvm](https://godot-kotl.in/). L'enjeu est de voir jusqu'où ça tient : scènes, tuiles, collisions, interface, sauvegarde, données des Pokémon — en gardant le typage, l'outillage et les habitudes qu'on a en Kotlin.
+- **Qu'on peut faire un jeu Pokémon sans PSDK.** PSDK et Pokémon Studio sont l'outil de référence du fan-game Pokémon, mais ils reposent sur RPG Maker XP : en pratique, ça veut dire Windows. En repartant de Godot, le même jeu s'exporte sur Windows, macOS, Linux, Android, iOS et le web. On garde leurs **données** — le pack [GameDataPacks](https://github.com/PokemonWorkshop/GameDataPacks) est la base du jeu, cf. les crédits — mais pas leur moteur.
+
+**C'est une preuve de concept, pas un jeu qu'on promet de finir.** Le but est de montrer que ça marche ; une fois que c'est montré, le reste est du bonus. Il est donc tout à fait possible que ce projet ne soit jamais terminé, et ce ne sera pas un échec.
 
 ## Le projet
 
