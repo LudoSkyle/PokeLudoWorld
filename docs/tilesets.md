@@ -366,6 +366,8 @@ rentrants `i j / k l`.
 | `sand` : sable bordé d'eau claire | `11:0-2,0-2` | `11:3-4,0-1` | `Ground` | pleine |
 | `water` : eau claire | `11:3,2` | — | `Ground` | pleine |
 | `deep` : eau profonde, bords fondus dans la claire | `11:5-7,0-2` | — | `Ground` | pleine |
+| `pond` : l'étang, une eau au niveau de l'herbe, sa berge brune en haut et sur les côtés | `11:8-10,16-18` | `11:11-12,16-17` | `Paths`, sur `lawn` | pleine (variante 1 sans collision, sous un pont) |
+| `lily1` `lily2` `lily3` : nénuphars, détourés de l'eau de la planche | `11:13-15,16` | — | `Decorations` | aucune |
 | `lawn` : pelouse | `11:4,2` (`11:8,0` : pelouse fleurie) | — | `Ground` | aucune |
 | `trailC` : le centre d'une piste | `11:8,1` | — | `Ground` | aucune |
 | `trail` : le contour d'herbe d'une piste, centre vide | `11:9-11,0-2` | `11:12-13,0-1` | `Paths`, sur `trailC` | aucune |

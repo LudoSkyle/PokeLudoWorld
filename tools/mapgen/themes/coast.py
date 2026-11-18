@@ -22,7 +22,7 @@ import village_tiles  # noqa: E402
 AT, SIZES, MADE = route_tiles.atlas(), route_tiles.sizes(), set(route_tiles.cells())
 ASSETS = 'src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/'
 FEET = {'tree': [[i, -j] for j in (1, 0) for i in range(3)], 'boulder': [[0, -1], [1, -1], [0, 0], [1, 0]]}
-LOW = ('fl', 'shell')          # du décor bas, sans collision : sur le calque des décorations
+LOW = ('fl', 'shell', 'lily')          # du décor bas, sans collision : sur le calque des décorations
 
 lines = ['# Le décor « bord de mer ». Fabriqué par tools/mapgen/themes/coast.py : ne pas modifier à la main.', '',
          'name = "coast"', '',
