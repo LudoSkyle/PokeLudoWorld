@@ -525,6 +525,34 @@ Collisions : les petits rochers, le pied des parasols, les caisses et le pot.
 Parasols, caisses et pot sont dans `Props` et se trient par leur pied ;
 pontons, escaliers et serviettes sont dans le fond.
 
+## La planche de la grotte (`cavern.png`, source 15)
+
+`assets/levels/cavern.png` — 240 × 96, cases de 16 px sans marge : la roche
+d'une grotte. **Rien n'y est dessiné à la main** : `tools/cavern_tiles.py` la
+découpe dans `sources/cliffs_caves.png` (le kit de grotte brune), et
+`--write` réécrit sa source dans `level.tres`. Relancé, il redonne le même
+fichier ; lui et `tools/maps/route_1/generate.py` laissent chacun le TileSet
+tel que l'autre l'a écrit (la source de la grotte est rangée avant celles de
+la route).
+
+Mêmes conventions que `route.png` : un bloc 3 × 3 nommé comme un pavé
+numérique, puis ses quatre coins rentrants `i j / k l`.
+
+| Nom | Cases | Calque | Collision |
+|---|---|---|---|
+| `rock` : la paroi, un gradin de roche — sa face est en bas | `15:0-2,0-2`, coins `15:3-4,0-1` | les falaises, par-dessus le sol | pleine, sauf `rock5` (le dessus plat, que rien n'atteint) |
+| `void` : le noir autour de la grotte. Ses huit bords sont des cases de vide **qui touchent la roche**, avec un liseré du côté de la roche ; son centre est le noir plein. Coins rangés à l'inverse (`l k / j i`) | `15:5-7,0-2`, coins `15:8-9,0-1` | `Ground` | pleine |
+| `pond` : un bassin dans sa berge de roche (l'eau bouge : même matériau que la mer) | `15:0-2,3-5`, coins `15:3-4,3-4` | `Paths` | pleine |
+| `earth` : une plaque de sol sombre | `15:5-7,3-5`, coins `15:8-9,3-4` | `Paths` | aucune : on y marche |
+| `lawn` : le sol de la grotte | `15:10,0` | `Ground` | aucune |
+| `rock_s`, `pebbleA`, `pebbleB` : petits rochers | `15:11,0`, `15:12,0`, `15:13,0` | `Props` | sa case |
+| `spire` : une stalagmite, 1 × 2 | `15:14,0` | `Props` | sa case du pied |
+| `boulder` : un gros bloc, 2 × 2 | `15:10,2` | `Props` | ses quatre cases |
+
+Le décor `tools/mapgen/themes/cave.toml` ne lit que cette planche. Les noms
+sont ceux que le constructeur attend d'un décor : c'est pourquoi le sol de la
+grotte s'appelle `lawn` et son bassin `pond`.
+
 ## Le vent dans les plantes
 
 Comme pour l'eau, aucune image d'animation : un shader,
