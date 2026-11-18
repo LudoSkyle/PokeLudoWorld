@@ -483,7 +483,7 @@ route — ou un village si le plan a trois maisons.
 | Route de montagne | `mountain` | ses seuils | oui : des murs de roche en gradins, une vallée en terrasses reliées par des escaliers de pierre sur le trajet ; ni rivière à cascades, ni grotte |
 | Route côtière | `seaside` | ses seuils | une première version : la mer sur un flanc et sa chaîne de rochers |
 | Plage | `beach` | ses seuils | oui, pour une carte de 40 à 70 cases de côté |
-| Forêt profonde | `forest` | ses seuils | pas encore |
+| Forêt profonde | `forest` | ses seuils, et trois règles à elle : les arbres couvrent la moitié de la carte au moins, aucun chemin, trois plaques de terre nue au moins | oui : clairières, couloirs en boucle, herbes au sol, plaques de terre, mares, pénombre ; ni taches de lumière, ni souches, ni passerelles |
 | Grotte, désert, neige, route maritime | — | pas encore : leurs règles sont ci-dessus, pas dans les outils | pas encore : le décor n'a ni paroi de grotte, ni sable de désert, ni neige |
 | Champs | `fields` | ses seuils | pas encore |
 | Village | `village` | ses seuils | pas encore |

@@ -178,7 +178,7 @@ def check(plan):
     rule('B', 'aucun bâtiment au centre exact de la carte', centre not in b['house_area'] if doors else None, 'centre %s' % (centre,))
     bad = [d for d in doors.values() if not ({(d[0], d[1] + 1), (d[0], d[1] + 2)} & (TRAIL | b['PAVED']))]
     rule('B', 'chaque porte donne sur un chemin ou une placette', not bad if doors else None, '%d portes sans chemin devant elles' % len(bad), bad)
-    bare = (REACH & INSIDE) - TRAIL - TALL - flowers - b['flower_cells'] - props - b['PAVED'] - set(b['stairs']) - margin - b['MOUNTAIN']          # (une terrasse où l'on monte est une pelouse comme une autre ; le dessus d'une butte ne s'atteint pas)
+    bare = (REACH & INSIDE) - TRAIL - TALL - flowers - b['flower_cells'] - props - b['PAVED'] - set(b['stairs']) - margin - b['MOUNTAIN'] - b['EARTH']          # (une plaque de terre nue est une respiration voulue ; une terrasse où l'on monte est une pelouse comme une autre ; le dessus d'une butte ne s'atteint pas)
     squares = [(x, y) for x, y in bare if all((x + i, y + j) in bare for i in range(BARE) for j in range(BARE))]
     voids = pieces({(x + i, y + j) for x, y in squares for i in range(BARE) for j in range(BARE)})
     rule('B', 'aucune pelouse nue de plus de 4 × 4 (une respiration permise)', len(voids) <= 1, '%d étendues nues, la plus grande de %d cases' % (len(voids), max([len(v) for v in voids] or [0])), [min(v) for v in voids])
@@ -344,6 +344,14 @@ def check(plan):
         have = [name for name, there in motifs.items() if there]
         rule('B', 'une route a de quoi s y arrêter : quatre motifs au moins sur huit', len(have) >= 4,          # (les routes de Johto en ont de trois à six)
              '%d motifs : %s — il manque : %s' % (len(have), ', '.join(have), ', '.join(n for n in motifs if n not in have)))
+
+    # ---------------------------------------------------------------- une forêt profonde
+    if kind == 'forest' and not b['literal']:
+        wooded = {c for c in tree_cells if inb(c)}
+        rule('E', 'en forêt profonde, les arbres sont les murs : la moitié de la carte au moins', len(wooded) >= W * H * 0.5, '%.0f %% de la carte sous les arbres' % (100.0 * len(wooded) / (W * H)))
+        rule('N', 'une forêt profonde n a pas de chemin', not TRAIL, '%d cases de chemin' % len(TRAIL))
+        earths = pieces(b['EARTH'])
+        rule('N', 'ce qui guide, ce sont des plaques de terre nue : trois au moins, de 4 à 30 cases', len(earths) >= 3 and all(4 <= len(e) <= 30 for e in earths), '%d plaques, de %s cases' % (len(earths), sorted(len(e) for e in earths)))
 
     # ---------------------------------------------------------------- le constructeur, lui, ne signale rien
     import re

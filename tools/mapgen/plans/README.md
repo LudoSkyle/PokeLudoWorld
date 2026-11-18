@@ -33,6 +33,7 @@ Même taille, une case par signe, entre `'''`. Les deux premières suffisent ; l
 | `_` | une piste, sur un plateau — trois cases de large |
 | `"` | les hautes herbes |
 | `^` | la montagne : de la roche sur un plateau, **en gradins** — sa silhouette érodée d'une case par gradin, trois par défaut (`tiers = 2` dans `[map]` pour en changer) |
+| `,` | la terre nue : une plaque bordée d'herbe, où l'on marche — la clairière d'une forêt, un carrefour. Deux cases au moins dans chaque sens |
 | `o` | un étang : une eau **au niveau de l'herbe**, sur le dessus d'un plateau, avec sa berge — ni falaise ni sable. Trois cases au moins dans chaque sens ; un pont (`=`) peut l'enjamber, un nénuphar (`lily1`, `lily2`, `lily3` dans `props`) s'y poser |
 
 **`objects`** — ce qu'on pose dessus :
@@ -118,7 +119,7 @@ Chaque table désigne sa place par un repère (`mark`) posé dans la grille des 
 
 | Table | Le repère est… | Champs |
 |---|---|---|
-| `[map]` | — | `name` (le fichier de la scène), `theme` (le décor), `location`, `banner`, `music`, `daylight`, `wild`, `start` (repère du départ) |
+| `[map]` | — | `name` (le fichier de la scène), `theme` (le décor), `location`, `banner`, `music`, `daylight`, `wild`, `start` (repère du départ) ; `shade = [r, v, b]` : la pénombre de la carte, qui multiplie la teinte de l'heure (un sous-bois : `[0.74, 0.84, 0.78]`) |
 | `[[house]]` | la case de la porte | `name`, `kind` (`hut_left`, `hut_right`, `hall`), `scene` et `door` (où mène la porte) |
 | `[[stairs]]` | la colonne de gauche de l'escalier, sur la rangée du bord du plateau | — il fait cinq cases de large et ne monte que face au sud |
 | `[[side_stairs]]` | l'anneau d'herbe, rangée du haut des marches | `side` : `W` ou `E`, le côté bas |

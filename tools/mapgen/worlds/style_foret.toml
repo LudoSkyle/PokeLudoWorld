@@ -1,0 +1,15 @@
+# Un monde d'exemple : Bois profond — le style `forest` : les arbres sont les murs, les hautes herbes le sol.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_foret.toml --preview /tmp/style_foret.png
+
+[map]
+name = "style_foret"
+location = "Bois profond"
+theme = "coast"
+banner = "forest"
+
+[seed]
+world = 12
+
+[style]
+kind = "forest"
+size = [72, 50]

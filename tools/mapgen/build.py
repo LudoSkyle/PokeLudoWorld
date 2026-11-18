@@ -42,7 +42,7 @@ NEIGH8 = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1) if (i, j) != (0, 0)]
 OPEN_EDGE = 'grass8'          # TOUJOURS : la rangée du haut d'un plateau est de l'herbe, on y marche (docs/mapping.md, section J)
 
 # Ce que dit chaque signe du plan du terrain.
-TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne', 'o': 'un étang'}
+TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne', 'o': 'un étang', ',': 'la terre nue'}
 # Les signes réservés du plan des objets ; toute autre lettre ou chiffre est un repère, nommé dans le plan.
 OBJECTS = {'.': 'rien', 'x': "un endroit à laisser dégagé", '=': 'un ponton ou un pont', '%': 'un dallage', 'f': 'un parc clôturé',
            'v': "un rebord qu'on saute vers le sud", '>': "un rebord qu'on saute vers l'est", '<': "un rebord qu'on saute vers l'ouest"}
@@ -265,6 +265,7 @@ def build(plan):
     for puddle in parts(POND):
         if len(puddle) < 9 or not any(all((c[0] + i, c[1] + j) in puddle for i in (-1, 0, 1) for j in (-1, 0, 1)) for c in puddle):
             POND -= puddle
+    EARTH = tidy({c for c in INSIDE if sign[c] == ','} - MOUNTAIN - house_area)          # une plaque de terre nue, bordée d'herbe : on y marche (la clairière d'une forêt, un carrefour)
     lost = sorted(c for c in CELLS if sign[c] == 'o' and c not in POND)
     if lost: warn.append('%d cases d étang laissées en herbe — trop étroit pour sa berge, ou hors du dessus d un plateau : %s' % (len(lost), lost[:6]))
     # Une terrasse : un morceau du dessus d'un plateau, un cran plus haut. Son bord, là où il donne sur l'herbe d'en bas,
@@ -328,6 +329,8 @@ def build(plan):
         else: ground[c] = 'trailC' if c in TRAIL else 'lawn'
         cliffs[c] = (['grass' + ring_shape[c]] if c in RING else []) + (['rock' + rock_shape[c]] if c in ROCK and rock_shape[c] != '5' else []) \
             + ([mount_edge[c]] if c in mount_edge else [])
+    earth_shape = shape(EARTH)
+    for c in sorted(EARTH): L['Paths'][c] = tile('earth' + earth_shape[c])
     pond_shape = shape(POND)
     for c in sorted(POND): L['Paths'][c] = tile('pond' + pond_shape[c], 1 if c in DECK else 0)          # (sur le calque des pistes : la pelouse reste dessous, on la voit aux coins de la berge)
     paved_shape = shape(PAVED)
@@ -581,7 +584,7 @@ def build(plan):
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
                 BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
                 TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
-                high=high, high_shape=high_shape, tier=tier, POND=POND, ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
+                high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
 def scene(built):
@@ -596,6 +599,7 @@ def scene(built):
     meta = ['metadata/location = "%s"' % plan.map.get('location', plan.name), 'metadata/banner = "%s"' % plan.map.get('banner', 'wood')]
     if plan.map.get('music'): meta.append('metadata/music = "%s"' % plan.map['music'])
     if plan.map.get('daylight', True): meta.append('metadata/daylight = true')
+    if plan.map.get('shade'): meta.append('metadata/shade = Color(%g, %g, %g, 1)' % tuple(plan.map['shade']))          # la pénombre d'un sous-bois : elle multiplie la teinte de l'heure (docs/daynight.md)
     if plan.map.get('wild'): meta += ['metadata/encounter_rate = %d' % plan.map.get('encounter_rate', 3), 'metadata/encounter_rate_run = %d' % plan.map.get('encounter_rate_run', 5), 'metadata/wild = "%s"' % plan.map['wild']]
     head = '''[gd_scene load_steps=8 format=4]
 
@@ -655,6 +659,8 @@ def preview(built, path):
         for j in range(5, 11):
             for i in range(5, 11):
                 if 0 <= c[1] * 16 + j < H * 16 and 0 <= c[0] * 16 + i < W * 16: img[c[1] * 16 + j][c[0] * 16 + i] = colour
+    shade = built['plan'].map.get('shade')          # la pénombre de la carte, comme le jeu la rendra en plein jour
+    if shade: img[:] = [[tuple(int(p[n] * shade[n]) for n in range(3)) for p in row] for row in img]
     for c, t in L['Props'].items():
         if t[0] == FLOWER_SOURCE and t[2] == THEME['sources']['blooms']['foot']: dot(c, (230, 120, 200))
     for name, c in built['placed'].items(): dot(c, (230, 40, 40))
