@@ -42,12 +42,12 @@ NEIGH8 = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1) if (i, j) != (0, 0)]
 OPEN_EDGE = 'grass8'          # TOUJOURS : la rangée du haut d'un plateau est de l'herbe, on y marche (docs/mapping.md, section J)
 
 # Ce que dit chaque signe du plan du terrain.
-TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne'}
+TERRAIN = {'~': 'la mer', ':': 'le sable', '.': "l'herbe", '_': 'une piste', '"': 'les hautes herbes', '^': 'la montagne', 'o': 'un étang'}
 # Les signes réservés du plan des objets ; toute autre lettre ou chiffre est un repère, nommé dans le plan.
 OBJECTS = {'.': 'rien', 'x': "un endroit à laisser dégagé", '=': 'un ponton ou un pont', '%': 'un dallage', 'f': 'un parc clôturé',
            'v': "un rebord qu'on saute vers le sud", '>': "un rebord qu'on saute vers l'est", '<': "un rebord qu'on saute vers l'ouest"}
 # Le plan des niveaux, facultatif : sur un plateau, une terrasse est un cran plus haut que l'herbe qui l'entoure.
-LEVELS = {'.': 'le niveau du plateau', '1': 'une terrasse, un cran plus haut'}
+LEVELS = {'.': 'le niveau du plateau', '1': 'une terrasse, un cran plus haut', '2': 'une terrasse sur une terrasse', '3': 'trois crans', '4': 'quatre crans'}
 
 # Le décor du plan en cours : ses tuiles, ce qui se pose, ses maisons, ses planches.
 THEME, AT = {}, {}
@@ -209,7 +209,8 @@ def build(plan):
         LAND |= full; BEACH |= full - ROCK
         SAND = tidy(LAND | {q for q in around(LAND) if inb(q)}, grow=True)
     SEA = set(CELLS) - LAND
-    RING = {c for c in PLATEAU if shape(PLATEAU)[c] != '5'}
+    plateau_shape = shape(PLATEAU)
+    RING = {c for c in PLATEAU if plateau_shape[c] != '5'}
     INSIDE = PLATEAU - RING
 
     # ============================================================ 2. ce que le plan pose : maisons, escaliers, pontons, dallages, parcs
@@ -258,16 +259,32 @@ def build(plan):
         if len(crumb) < 9: MOUNTAIN -= crumb
     TRAIL = tidy({c for c in INSIDE if sign[c] == '_'} - MOUNTAIN - house_area)
     TALL = {c for c in INSIDE if sign[c] == '"'} - TRAIL - MOUNTAIN
+    # Un étang : une eau au niveau de l'herbe, sur le dessus d'un plateau. Pas de falaise, pas de sable : sa berge est dans
+    # ses propres tuiles (docs/mapping.md, O). Il lui faut trois cases dans chaque sens pour avoir de l'eau au milieu.
+    POND = tidy({c for c in INSIDE if sign[c] == 'o'} - MOUNTAIN - house_area)
+    for puddle in parts(POND):
+        if len(puddle) < 9 or not any(all((c[0] + i, c[1] + j) in puddle for i in (-1, 0, 1) for j in (-1, 0, 1)) for c in puddle):
+            POND -= puddle
+    lost = sorted(c for c in CELLS if sign[c] == 'o' and c not in POND)
+    if lost: warn.append('%d cases d étang laissées en herbe — trop étroit pour sa berge, ou hors du dessus d un plateau : %s' % (len(lost), lost[:6]))
     # Une terrasse : un morceau du dessus d'un plateau, un cran plus haut. Son bord, là où il donne sur l'herbe d'en bas,
     # est une petite falaise d'herbe qu'on ne franchit pas — on y monte par un escalier de pierre, ou l'on en saute par
     # un rebord. Ce qui n'est pas l'herbe d'en bas (la falaise du plateau, le bord de la carte) ne lui fait pas de bord.
-    high = {c for c in INSIDE if not plan.errors and plan.levels[c[1]][c[0]] == '1'}
-    outside = set(CELLS) - INSIDE
-    while True:
-        bad = [c for c, k in shape(high | outside).items() if k is None and c in high]
-        if not bad: break
-        high -= set(bad)
-    high_shape = {c: k for c, k in shape(high | outside).items() if c in high}
+    # Les terrasses s'empilent : un niveau repose tout entier sur le dessus du précédent, à une case de son bord au moins —
+    # chaque case ne porte ainsi qu'une petite falaise. La montagne, elle, est un mur : une terrasse n'a pas de bord contre elle.
+    wished = {c: int(plan.levels[c[1]][c[0]]) for c in INSIDE - MOUNTAIN if not plan.errors and plan.levels[c[1]][c[0]] != '.'}          # (un étang a le niveau de la terrasse qui le porte)
+    wall = (set(CELLS) - INSIDE) | MOUNTAIN
+    tier, high_shape, below = {}, {}, None
+    for k in range(1, max(wished.values(), default=0) + 1):
+        region = {c for c, v in wished.items() if v >= k}
+        if below is not None: region &= {c for c, s_ in below.items() if s_ == '5'}
+        while True:
+            bad = [c for c, s_ in shape(region | wall).items() if s_ is None and c in region]
+            if not bad: break
+            region -= set(bad)
+        below = {c: s_ for c, s_ in shape(region | wall).items() if c in region}
+        for c, s_ in below.items(): tier[c] = k; high_shape[c] = s_
+    high = set(tier)
     terrace = {c: 'grass' + k for c, k in high_shape.items() if k != '5'}
     terrace_stairs = [plan.at(t['mark'], 'escalier de terrasse') for t in plan.table('terrace_stairs')]          # le repère : sa colonne de gauche, sur la rangée du bord sud de la terrasse
     TRAIL -= {c for c in terrace if c in TRAIL and high_shape[c] not in '2'} ; TALL -= set(terrace)
@@ -284,7 +301,19 @@ def build(plan):
     L = {n: {} for n in ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Ledges', 'Bridges', 'Props', 'Trees', 'Houses']}
     ORDER = ['Ground', 'Shore', 'Cliffs1', 'Cliffs2', 'Paths', 'Plaza', 'Decorations', 'Grass', 'Ledges', 'Bridges']
     TRAIL = tidy(TRAIL)
-    sand_shape, ring_shape, rock_shape, trail_shape, mount_shape = shape(SAND), shape(PLATEAU), shape(ROCKY), shape(TRAIL), shape(MOUNTAIN)
+    sand_shape, ring_shape, rock_shape, trail_shape = shape(SAND), shape(PLATEAU), shape(ROCKY), shape(TRAIL)
+    # Une montagne a des gradins (docs/mapping.md, D) : sa silhouette, érodée d'une case par gradin, posée sur elle-même.
+    # `mount_edge` : pour chaque case, le bord de roche du gradin le plus haut qui passe là ; `mount_floor` : ce qu'il y a dessous.
+    mount_edge, mount_floor, layer_ = {}, {}, set(MOUNTAIN)
+    for k in range(max(1, int(plan.map.get('tiers', 3)))):
+        if not layer_: break
+        edges = shape(layer_)
+        for c, s_ in edges.items():
+            mount_floor[c] = 'rock5' if k or s_ == '5' else 'lawn'
+            if s_ != '5': mount_edge[c] = 'rock' + s_
+            else: mount_edge.pop(c, None)
+        layer_ = tidy({c for c, s_ in edges.items() if s_ == '5'})
+        layer_ = set().union(*[p_ for p_ in parts(layer_) if len(p_) >= 9]) if layer_ else set()
     DEEP = tidy({c for c in SEA - SAND if all(q not in SAND for q in around([c], 2))})          # profonde au large, à deux cases de tout sable
     deep_shape = {c: (k if k in '123456789' else '5') for c, k in shape(DEEP).items()}
     SAND_CORNER = {'i': 'j', 'j': 'i', 'k': 'l', 'l': 'k'}          # les coins rentrants du sable ne sont pas rangés comme ceux des falaises
@@ -295,11 +324,14 @@ def build(plan):
         elif c not in LAND: ground[c] = 'water'; shore[c] = 'shore' + SAND_CORNER.get(sand_shape[c], sand_shape[c])
         elif c in RING or (c in ROCK and rock_shape[c] == '5'): ground[c] = 'rock5'          # sous l'anneau d'herbe : le gradin de roche
         elif c in BEACH or c in ROCK: ground[c] = 'sand5'
-        elif c in MOUNTAIN: ground[c] = 'rock5' if mount_shape[c] == '5' else 'lawn'
+        elif c in MOUNTAIN: ground[c] = mount_floor[c]
         else: ground[c] = 'trailC' if c in TRAIL else 'lawn'
         cliffs[c] = (['grass' + ring_shape[c]] if c in RING else []) + (['rock' + rock_shape[c]] if c in ROCK and rock_shape[c] != '5' else []) \
-            + (['rock' + mount_shape[c]] if c in MOUNTAIN and mount_shape[c] != '5' else [])
-    for c in sorted(PAVED): L['Plaza'][c] = tile('paved' + shape(PAVED)[c])
+            + ([mount_edge[c]] if c in mount_edge else [])
+    pond_shape = shape(POND)
+    for c in sorted(POND): L['Paths'][c] = tile('pond' + pond_shape[c], 1 if c in DECK else 0)          # (sur le calque des pistes : la pelouse reste dessous, on la voit aux coins de la berge)
+    paved_shape = shape(PAVED)
+    for c in sorted(PAVED): L['Plaza'][c] = tile('paved' + paved_shape[c])
 
     # ============================================================ 4. escaliers et pontons
     stairs, deck = {}, {}
@@ -337,6 +369,7 @@ def build(plan):
                 ledges[c] = names[0] if n == 0 else names[2] if n == len(run) - 1 else names[1]
                 landings.add((c[0] + dx, c[1] + dy)); landings.add((c[0] - dx, c[1] - dy))
     for c, name in ledges.items(): L['Ledges'][c] = tile(name)
+    DRY = LAND - POND          # là où un pont repose : la terre, pas l'eau d'un étang
     for way, x0, y0, x1, y1 in docks:
         for (x, y) in sorted(rect(x0, y0, x1, y1)):
             if way == 'V' and (x0 + 1, y1 + 1) in LAND and (x0 + 1, y0 - 1) in LAND:          # de la terre aux deux bouts : c'est un pont, pas une jetée
@@ -350,9 +383,9 @@ def build(plan):
         if way == 'H':          # le dessous d'un ponton en travers déborde sur la rangée d'en dessous, là où c'est de l'eau
             for x in range(x0, x1 + 1):
                 c = (x, y1 + 1)
-                if c not in DECK and c not in LAND: deck[c] = 'lipL' if (x - 1, y1 + 1) in DECK | LAND or x == x0 else ('lipR' if (x + 1, y1 + 1) in DECK | LAND or x == x1 else 'lip')
+                if c not in DECK and c not in DRY: deck[c] = 'lipL' if (x - 1, y1 + 1) in DECK | DRY or x == x0 else ('lipR' if (x + 1, y1 + 1) in DECK | DRY or x == x1 else 'lip')
     for c in sorted(DECK):
-        if c in PLATEAU and c not in RING: warn.append('ponton : il recouvre le dessus d un plateau en %s' % (c,)); break
+        if c in PLATEAU and c not in RING and c not in POND: warn.append('ponton : il recouvre le dessus d un plateau en %s' % (c,)); break
 
     for c in CELLS:
         free = 1 if c in DECK or c in STEPS or c in BEACH or c in RING else 0          # le même dessin, sans collision
@@ -426,6 +459,7 @@ def build(plan):
         if c in DECK: continue
         if c in SEA or (any(blocks(n) and n != OPEN_EDGE for n in cliffs[c]) and c not in STEPS): SOLID.add(c)
     SOLID |= blocked
+    if not literal: SOLID |= POND - DECK          # (un pont passe par-dessus)
     for name, x, r in sprites: SOLID |= {c for c in feet(name, x, r) if inb(c)}
     SOLID |= set(fence) | (set() if literal else set(ledges) | (set(terrace) - STEPS))
     def free(c): return inb(c) and c not in SOLID
@@ -545,7 +579,9 @@ def build(plan):
     for piece in island[:4]: warn.append('%d cases libres hors d atteinte vers %s : un escalier, un ponton ou une piste y manque — ou c est voulu' % (len(piece), min(piece)))
 
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
-                BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge)
+                BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
+                TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
+                high=high, high_shape=high_shape, tier=tier, POND=POND, ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
 def scene(built):

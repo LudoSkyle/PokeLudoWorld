@@ -1,0 +1,17 @@
+# Galerie : Route de forêt.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/2_route_foret.toml --plan /tmp/2_route_foret.toml --preview /tmp/2_route_foret.png
+
+[map]
+name = "2_route_foret"
+location = "Route de forêt"
+theme = "coast"
+
+[seed]
+world = 302
+
+[style]
+kind = "route"
+size = "medium"
+shape = "corridor"
+axis = "horizontal"
+character = ["wooded"]

@@ -1,0 +1,16 @@
+# Galerie : Tour du lac.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/4_route_anneau.toml --plan /tmp/4_route_anneau.toml --preview /tmp/4_route_anneau.png
+
+[map]
+name = "4_route_anneau"
+location = "Tour du lac"
+theme = "coast"
+
+[seed]
+world = 304
+
+[style]
+kind = "route"
+size = "medium"
+shape = "ring"
+character = ["open"]

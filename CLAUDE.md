@@ -62,7 +62,13 @@ icônes, cris et données des 1025 espèces, et les icônes des objets,
 ce qu'il y a sur la carte, case par case) avec un décor (`themes/<décor>.toml` :
 quelle tuile dessine quoi) — sans rien décider ni tirer au hasard ;
 `worldgen.py`, **le générateur**, invente un plan à partir d'une graine et de
-réglages (`worlds/<monde>.toml` : relief, climat, végétation, chemins). Une
+réglages (`worlds/<monde>.toml` : relief, climat, végétation, chemins), en
+appliquant les règles de `docs/mapping.md`. À côté d'eux, `check.py`, **le
+contrôleur**, mesure ces règles sur un plan (un taux, et « injouable » à
+part) avec les seuils du **style** de la carte — route, plage, village… :
+elle le dit dans `[map] style` ; `neighbor.py` lit le bord d'une carte pour
+que la suivante la prolonge (sortie, eau, talus, trame des arbres), et `sweep.py` le fait sur des dizaines de mondes de graines neuves —
+à relancer après toute retouche du générateur. Une
 nouvelle carte = un plan ou un monde, jamais un nouveau programme ; une
 nouvelle ambiance = un décor. Et la scène écrite ne se refait pas : elle se
 retouche dans l'éditeur. `tools/maps/` garde les

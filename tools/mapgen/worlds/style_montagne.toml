@@ -1,0 +1,14 @@
+# Un monde d'exemple : Col rocheux — le style `mountain` : la roche ferme la carte en gradins, la vallée monte en terrasses.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_montagne.toml --preview /tmp/style_montagne.png
+
+[map]
+name = "style_montagne"
+location = "Col rocheux"
+theme = "coast"
+
+[seed]
+world = 41
+
+[style]
+kind = "mountain"
+size = [46, 66]

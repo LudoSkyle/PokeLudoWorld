@@ -1,0 +1,16 @@
+# Galerie : Route côtière.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/7_cotiere.toml --plan /tmp/7_cotiere.toml --preview /tmp/7_cotiere.png
+
+[map]
+name = "7_cotiere"
+location = "Route côtière"
+theme = "coast"
+
+[seed]
+world = 307
+
+[style]
+kind = "seaside"
+size = "medium"
+sea = "east"
+character = ["flowery"]

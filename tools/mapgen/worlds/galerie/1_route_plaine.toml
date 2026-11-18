@@ -1,0 +1,16 @@
+# Galerie : Route de plaine.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/1_route_plaine.toml --plan /tmp/1_route_plaine.toml --preview /tmp/1_route_plaine.png
+
+[map]
+name = "1_route_plaine"
+location = "Route de plaine"
+theme = "coast"
+
+[seed]
+world = 301
+
+[style]
+kind = "route"
+size = "medium"
+shape = "plain"
+character = ["grassy", "flowery"]
