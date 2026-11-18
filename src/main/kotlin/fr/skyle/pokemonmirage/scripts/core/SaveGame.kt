@@ -4,6 +4,7 @@ import fr.skyle.pokemonmirage.scripts.log.Logger
 import godot.api.ConfigFile
 import godot.api.DirAccess
 import godot.api.FileAccess
+import godot.api.ResourceLoader
 import godot.core.Error
 import godot.core.Vector2
 
@@ -14,6 +15,14 @@ import godot.core.Vector2
  *
  * La partie en cours occupe l'emplacement [slot] : c'est lui qu'écrit le menu
  * de pause. On le choisit à l'écran titre (voir SaveSlots).
+ *
+ * **Le fichier porte un numéro de version** ([VERSION]) et ne retient rien qui
+ * dépende de l'agencement du projet : la carte par son **nom** (`start_island`),
+ * la place du joueur en **cases**. Renommer un dossier ou changer la taille
+ * d'une case ne casse donc pas une partie. Une partie d'une version plus
+ * ancienne est lue et convertie ([read]) ; elle est réécrite au format du jour
+ * à la sauvegarde suivante. Changer le format : monter [VERSION], et apprendre
+ * à [read] à lire l'ancien.
  */
 object SaveGame {
 
@@ -84,12 +93,29 @@ object SaveGame {
 		val file = ConfigFile()
 		if (file.load(GameFiles.save(at)) != Error.OK) return null
 
-		val scene = file.getValue(SECTION, "scene", "").toString()
-		if (scene.isEmpty()) return null
+		val version = (file.getValue(SECTION, "version", 1) as? Number)?.toInt() ?: 1
+		if (version > VERSION) {
+			Logger.e("Sauvegarde d'une version plus recente que le jeu ($version > $VERSION) : ${GameFiles.save(at)}")
+			return null
+		}
 
+		// Version 1 : le chemin entier de la scène, et la place en pixels. On n'en garde que le nom de la carte ;
+		// la place en pixels se lit telle quelle.
+		val map = if (version >= 2) file.getValue(SECTION, "map", "").toString() else mapOf(file.getValue(SECTION, "scene", "").toString())
+		if (map.isEmpty()) return null
+		val position = if (version >= 2) {
+			val grid = GRID.toDouble()
+			Vector2(number(file, "cell_x") * grid + grid / 2.0, number(file, "cell_y") * grid + grid / 2.0)
+		} else {
+			Vector2(number(file, "x"), number(file, "y"))
+		}
+
+		// Une carte du jeu se retrouve par son nom, où que soit rangé son dossier. Une carte d'ailleurs (un terrain
+		// d'essai) n'a que le chemin noté à côté.
+		val known = sceneOf(map)
 		return State(
-			scene = scene,
-			position = Vector2(number(file, "x"), number(file, "y")),
+			scene = if (ResourceLoader.exists(known)) known else file.getValue(SECTION, "scene", known).toString(),
+			position = position,
 			facing = Vector2(number(file, "facing_x"), number(file, "facing_y")),
 			location = file.getValue(SECTION, "location", "").toString(),
 			banner = file.getValue(SECTION, "banner", "").toString(),
@@ -125,9 +151,12 @@ object SaveGame {
 
 	fun write(state: State): Boolean {
 		val file = ConfigFile()
+		file.setValue(SECTION, "version", VERSION)
+		file.setValue(SECTION, "map", mapOf(state.scene))
+		// Le chemin n'est qu'un secours, pour une carte qui n'est pas dans le dossier des cartes du jeu.
 		file.setValue(SECTION, "scene", state.scene)
-		file.setValue(SECTION, "x", state.position.x)
-		file.setValue(SECTION, "y", state.position.y)
+		file.setValue(SECTION, "cell_x", kotlin.math.floor(state.position.x / GRID).toInt())
+		file.setValue(SECTION, "cell_y", kotlin.math.floor(state.position.y / GRID).toInt())
 		file.setValue(SECTION, "facing_x", state.facing.x)
 		file.setValue(SECTION, "facing_y", state.facing.y)
 		file.setValue(SECTION, "location", state.location)
@@ -155,6 +184,20 @@ object SaveGame {
 
 	/** Taille d'une équipe. */
 	const val TEAM = 6
+
+	/** Le format du fichier. 1 : chemin de la scène et pixels. 2 : nom de la carte et cases. */
+	const val VERSION = 2
+
+	/** Le nom d'une carte, tiré du chemin de sa scène : `start_island`. */
+	fun mapOf(scene: String): String = scene.substringAfterLast('/').removeSuffix(".tscn")
+
+	/** Le chemin de la scène d'une carte, d'après son nom. */
+	fun sceneOf(map: String): String = "$LEVELS$map.tscn"
+
+	private const val LEVELS = "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/"
+
+	/** Le côté d'une case, en pixels : celui de [fr.skyle.pokemonmirage.scripts.autoload.Globals.gridSize]. */
+	private const val GRID = 16
 
 	private const val SECTION = "save"
 	private const val ITEMS = "items"

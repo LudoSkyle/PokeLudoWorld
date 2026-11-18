@@ -26,8 +26,10 @@ est libre, elle est renommée en `save_1.cfg` (`SaveGame.adoptOldSave`).
 
 | Clé | Contenu |
 |---|---|
-| `scene` | chemin de la scène de la carte |
-| `x`, `y` | position du joueur, un centre de case |
+| `version` | le format du fichier (`SaveGame.VERSION`, aujourd'hui 2) |
+| `map` | le **nom** de la carte (`start_island`), pas le chemin de sa scène |
+| `scene` | le chemin de la scène, **en secours seulement** : il ne sert que pour une carte hors du dossier des cartes du jeu (un terrain d'essai) |
+| `cell_x`, `cell_y` | la case du joueur |
 | `facing_x`, `facing_y` | direction regardée |
 | `location`, `banner` | nom du lieu (en français) et son bandeau |
 | `seconds` | temps de jeu total |
@@ -45,6 +47,23 @@ place tant qu'on ne sauvegarde pas par-dessus.
 
 Le **temps de jeu** tourne en permanence, menus compris, comme dans les jeux
 d'origine (`SceneManager.playSeconds`). Il s'affiche en heures:minutes.
+
+### Le format et ses versions
+
+Le fichier ne retient **rien qui dépende de l'agencement du projet** : une
+carte par son nom, une place en cases. Renommer un dossier ou changer la
+taille d'une case ne casse donc pas une partie.
+
+| Version | Ce qui la distingue |
+|---|---|
+| 1 (sans clé `version`) | `scene` : le chemin entier de la scène ; `x`, `y` : la place en pixels |
+| 2 | `map`, `cell_x`, `cell_y` ; `scene` n'est plus qu'un secours |
+
+`SaveGame.read` lit toutes les versions jusqu'à la sienne et les convertit ;
+la partie est réécrite au format du jour à la sauvegarde suivante. Une partie
+d'une version **plus récente** que le jeu est refusée. **Changer le format** :
+monter `VERSION`, apprendre à `read` à lire l'ancien, ajouter la ligne
+ci-dessus.
 
 ## L'écran de sauvegarde
 

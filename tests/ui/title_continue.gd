@@ -15,7 +15,7 @@ func test() -> void:
 	await wait_choices()
 	await tap("interact")
 	await secs(2.2)
-	check("la partie est sauvegardee", saved_file().get_value("save", "scene", "").ends_with("field.tscn"))
+	check("la partie est sauvegardee, au format du jour : le nom de la carte et la case", saved_file().get_value("save", "version", 0) == 2 and saved_file().get_value("save", "map", "") == "field" and Vector2i(saved_file().get_value("save", "cell_x", -1), saved_file().get_value("save", "cell_y", -1)) == saved, str(saved_file().get_value("save", "map", "")))
 
 	await relaunch()
 	check("relance : l'ecran titre revient", title_shown() and level() == null)
