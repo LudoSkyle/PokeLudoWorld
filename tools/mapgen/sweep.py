@@ -19,8 +19,8 @@ import tempfile
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SHAPES = ['free', 'island', 'ring', 'plain', 'coast', 'bay', 'corridor', 'archipelago', 'beach', 'seaside', 'mountain']          # (les trois derniers sont des styles, pas des formes ; la mer ouverte change de côté avec la graine)
-KINDS = ('beach', 'seaside', 'mountain')
+SHAPES = ['free', 'island', 'ring', 'plain', 'coast', 'bay', 'corridor', 'archipelago', 'beach', 'seaside', 'mountain', 'forest']          # (les trois derniers sont des styles, pas des formes ; la mer ouverte change de côté avec la graine)
+KINDS = ('beach', 'seaside', 'mountain', 'forest')
 SIDES = ['south', 'west', 'north', 'east']
 CHARACTERS = [[], ['rocky'], ['sandy'], ['wooded'], ['wet', 'jagged'], ['flowery', 'open']]
 WORLD = '[map]\nname = "%s"\nlocation = "Essai"\ntheme = "coast"\n\n[seed]\nworld = %d\n\n[style]\nsize = "%s"\n%s\ncharacter = [%s]\n'

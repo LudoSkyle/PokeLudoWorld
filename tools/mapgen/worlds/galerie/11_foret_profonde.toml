@@ -1,0 +1,15 @@
+# Galerie : une forêt profonde — clairières, plaques de terre nue, mares, pénombre.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/11_foret_profonde.toml --plan /tmp/11.toml --preview /tmp/11.png
+
+[map]
+name = "11_foret_profonde"
+location = "Bois profond"
+theme = "coast"
+banner = "forest"
+
+[seed]
+world = 229
+
+[style]
+kind = "forest"
+size = [76, 52]

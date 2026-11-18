@@ -64,6 +64,10 @@ SHAPES = {
 # (forest, fields, village, city) ne s'inventent pas encore.
 KINDS = {
     'route': dict(),
+    # la forêt profonde : les arbres sont les murs, les hautes herbes le sol ; des clairières reliées par des couloirs, aucun
+    # chemin, une plaque de terre nue par clairière, quelques mares. Ni plateau, ni maison, presque pas de fleurs.
+    'forest': dict(shape='plain', deep=True, relief=dict(water=0.02, sand=0.03, terrace=2.0), vegetation=dict(decorations=0.01, blooms=0),
+                   gameplay=dict(path='none', grass_bars=0, items=5)),
     # la route côtière : la mer longe un flanc jusqu'au bord de la carte, une chaîne de rochers la borde au large ; peu de sable
     'seaside': dict(shape='coast', open_sea=True, level=0.50, chain=True, vegetation=dict(sea_rocks=0.01)),
     # la route de montagne : c'est la roche qui ferme la carte, pas la forêt ; des blocs, peu d'arbres
@@ -107,6 +111,7 @@ def settings(world):
     if 'water_more' in R: R['water'] += R.pop('water_more'); R['sand'] = max(R['sand'], R['water'] + 0.05)
     if 'sand_band' in R: R['sand'] = R['water'] + R.pop('sand_band')
     for k in S: S[k].update(world.get(k, {}))          # ce que le monde écrit lui-même passe devant
+    S['deep'] = bool(KINDS[kind].get('deep'))
     S['kind'], S['open_sea'], S['chain'], S['wall'], S['terraces'] = kind, bool(KINDS[kind].get('open_sea')), bool(KINDS[kind].get('chain')), bool(KINDS[kind].get('wall')), bool(KINDS[kind].get('terraces'))
     S['shape'] = dict(level=KINDS[kind].get('level', 0.55), name=form, weight=shape['weight'], core=style.get('core', 'lake'), sea=style.get('sea', 'south'), axis=style.get('axis', 'vertical'))
     return S
@@ -189,7 +194,8 @@ class World:
         self.letters = iter(MARKS)
         self.exits, self.houses, self.pois, self.lanes, self.start = [], [], [], set(), None
         self.far, self.stairs = [], []
-        self.tier, self.climbs, self.rim, self.way = {}, [], set(), set()          # les terrasses où l'on marche (case → niveau) et leurs escaliers
+        self.tier, self.climbs, self.rim, self.way = {}, [], set(), set()
+        self.glades, self.earth, self.hearts = set(), set(), []          # la forêt profonde : ses clairières, leurs plaques de terre nue, leurs centres          # les terrasses où l'on marche (case → niveau) et leurs escaliers
         self.routes, self.waypoints, self.bars, self.hops = [], [], [], []          # (`hops` : les rebords prévus, chacun avec son signe et ses cases)          # les trajets tracés, case par case ; les détours imposés à une route en couloir
         self.open = self.S['shape']['sea'] if self.S['open_sea'] else None          # le côté où la mer va jusqu'au bord (une plage)
 
@@ -211,7 +217,7 @@ class World:
 
     # ------------------------------------------------------------ le plan, et ce que le constructeur en dit
     def lines(self):
-        def sign(c): return '^' if c in self.mountain else '_' if c in self.trail else '"' if c in self.tall else self.ground[c]
+        def sign(c): return '^' if c in self.mountain else '_' if c in self.trail else ',' if c in self.earth and self.ground[c] == '.' else '"' if c in self.tall else self.ground[c]
         objects = [['.'] * self.W for _ in range(self.H)]
         for m, cells in self.marks.items():
             for c in cells: objects[c[1]][c[0]] = m
@@ -233,6 +239,8 @@ class World:
         for key in ('location', 'banner', 'music', 'wild'):
             if key in m: out.append('%s = "%s"' % (key, m[key]))
         out.append('daylight = %s' % str(m.get('daylight', True)).lower())
+        shade = m.get('shade', [0.74, 0.84, 0.78] if self.S['deep'] else None)          # un sous-bois est dans la pénombre
+        if shade: out.append('shade = [%s]' % ', '.join('%g' % v for v in shade))
         for name, entry in self.tables:
             out += ['', '[[%s]]' % name]
             for k, v in entry.items():
@@ -451,6 +459,32 @@ def generate(world, source='monde'):
         w.exits.append((e, m, span, inward)); w.trail |= set(lane(c)); w.lanes |= {(q[0] + i, q[1] + j) for q in lane(c) for i in (-1, 0, 1) for j in (-1, 0, 1)}
         w.pois.append((c[0] + inward[0] * (depth - 1), c[1] + inward[1] * (depth - 1)))
         w.tables.append(('exit', dict(mark=m, **{k: e[k] for k in ('name', 'scene', 'door') if k in e})))
+    if S['deep']:          # une forêt profonde : une dizaine de clairières sur une grille bousculée, chacune avec sa plaque de terre ; une sur trois avec sa mare
+        glade = random.Random(sub('paths') + 31)
+        pad_ = FRAME + 2
+        cols_, rows_ = max(2, (W - 2 * pad_) // 11), max(2, (H - 2 * pad_) // 9)          # onze cases sur neuf par clairière : la place d'un mur d'arbres entre deux
+        def blob(cx, cy, rx, ry, salt): return {(cx + i, cy + j) for i in range(-6, 7) for j in range(-5, 6) if (i / rx) ** 2 + (j / ry) ** 2 <= 1.0 + (lattice(sub('relief') + salt, cx + i, cy + j) - 0.5) * 0.7}
+        grid_ = [(i, j) for i in range(cols_) for j in range(rows_)]
+        glade.shuffle(grid_)
+        for i, j in sorted(grid_[len(grid_) // 8:]):          # une case de la grille sur huit reste du bois
+            if True:
+                cx = pad_ + int((i + 0.5 + glade.uniform(-0.25, 0.25)) * (W - 2 * pad_) / cols_)
+                cy = pad_ + int((j + 0.5 + glade.uniform(-0.25, 0.25)) * (H - 2 * pad_) / rows_)
+                room = {q for q in blob(cx, cy, glade.uniform(2.6, 3.4), glade.uniform(2.0, 2.6), 31) if inb(q) and w.edge(q) >= FRAME + 3 and ground[q] == '.'}
+                if len(room) < 14 or (cx, cy) not in room: continue
+                w.glades |= room; w.hearts.append((cx, cy))
+                w.earth |= {q for q in blob(cx, cy, glade.uniform(2.0, 2.6), glade.uniform(1.5, 2.0), 37) if q in room}
+        for (cx, cy) in glade.sample(w.hearts, max(1, len(w.hearts) // 3)):          # les mares : contre la clairière, de douze à quarante cases
+            dx_ = (1 if cx < W // 2 else -1) * glade.randint(5, 6)          # du côté du milieu de la carte : pas dans la lisière
+            pool = {q for q in blob(cx + dx_, cy + glade.choice((-1, 0, 1)), glade.uniform(2.4, 3.4), glade.uniform(1.8, 2.6), 41) if inb(q)}
+            if len(pool) >= 12 and (cx, cy) not in pool and all(ground[q] == '.' and w.edge(q) >= FRAME + 1 and q not in w.trail and q not in w.hearts for q in pool):
+                w.earth -= {(q[0] + a, q[1] + b) for q in pool for a in (-1, 0, 1) for b in (-1, 0, 1)}          # la terre s'arrête à une case de la berge
+                for q in pool: ground[q] = 'o'
+                w.glades |= {(q[0] + a, q[1] + b) for q in pool for a in (-1, 0, 1) for b in (-1, 0, 1) if inb((q[0] + a, q[1] + b)) and w.edge((q[0] + a, q[1] + b)) >= FRAME + 3}
+        if any(v == 'o' for v in ground.values()): settle()
+        w.glades = {q for q in w.glades if ground[q] == '.'}
+        order = list(w.hearts); glade.shuffle(order)
+        w.pois[1:1] = order          # chaque clairière se relie au réseau par son plus court couloir : un arbre de couloirs, d'une sortie à l'autre
     if S['shape']['name'] == 'corridor' and len(w.pois) == 2:          # une route en couloir serpente : un ou deux détours, de part et d'autre de la ligne droite entre ses sorties — ce seront ses poches
         a_, b_ = w.pois
         wig, upright = random.Random(sub('paths') + 2), abs(w.pois[1][1] - w.pois[0][1]) >= abs(w.pois[1][0] - w.pois[0][0])
@@ -620,6 +654,14 @@ def generate(world, source='monde'):
                 if n in free and n not in seen: seen.add(n); todo.append(n)
         return seen
     waiting = [p for p in w.pois[1:] if not join(p)]
+    if S['deep'] and len(w.hearts) >= 4:          # et deux ou trois couloirs de plus, en équerre, pour qu'on tourne en rond : un labyrinthe a des boucles
+        loop = random.Random(sub('paths') + 33)
+        pairs = [(a_, b_) for k, a_ in enumerate(w.hearts) for b_ in w.hearts[k + 1:] if 10 <= abs(a_[0] - b_[0]) + abs(a_[1] - b_[1]) <= 24]
+        loop.shuffle(pairs)
+        for a_, b_ in pairs[:2 + len(w.hearts) // 5]:
+            corner = (b_[0], a_[1]) if loop.random() < 0.5 else (a_[0], b_[1])
+            def leg(p_, q_): return [(x, p_[1]) for x in range(min(p_[0], q_[0]), max(p_[0], q_[0]) + 1)] + [(p_[0] if p_[0] == q_[0] else q_[0], y) for y in range(min(p_[1], q_[1]), max(p_[1], q_[1]) + 1)]
+            carve(leg(a_, corner) + leg(corner, b_))
     works = {(x + i, r + j) for x, r in w.climbs for i in range(-1, 6) for j in (-2, -1, 0, 1, 2)}          # les cases des escaliers et des ponts, et leurs abords
     causeway = []
     for _ in range(10 + W * H // 1500):          # tant qu'un grand morceau de terre reste coupé du départ : un pont, ou un escalier vers sa plage
@@ -861,6 +903,7 @@ def generate(world, source='monde'):
     brink = {c for c, k in built['high_shape'].items() if k != '5'}          # toute petite falaise, de butte ou de terrasse : rien n'y pousse, rien ne la chevauche
     level_ = built['tier']
     def same_level(cells): return len({level_.get(c, 0) for c in cells if inb(c)}) == 1 and not any(c in brink for c in cells)
+    if G['path'] == 'none': w.trail = set()          # une forêt profonde n'a pas de chemin : ce qui guide, ce sont ses plaques de terre
     if G['path'] == 'dotted':          # le chemin n'est dessiné qu'aux bouts, devant ce qui compte, et par tronçons (N) : entre eux, on marche dans l'herbe
         dots = random.Random(sub('paths') + 12)
         deck_ = set(w.marks.get('=', []))
@@ -892,9 +935,12 @@ def generate(world, source='monde'):
     fronts = {(d[0] + i, d[1] + j) for _, _, d in w.houses for i in (-2, -1, 0, 1, 2) for j in (1, 2, 3)}
     clear = {(c[0] + i, c[1] + j) for c in way for i in (-1, 0, 1) for j in (-1, 0, 1)} | w.lanes | works | house_area | fronts \
         | {(p[0] + i, p[1] + j) for p in w.pois for i in range(-G['poi_radius'], G['poi_radius'] + 1) for j in range(-G['poi_radius'], G['poi_radius'] + 1)}
+    floor = (way | w.glades) & inside if S['deep'] else set()          # le sol d'une forêt profonde : ses couloirs et ses clairières
+    if S['deep']: clear = floor | w.lanes | works          # et rien d'autre : les arbres serrent les couloirs, sans marge — ce sont des murs
     meadow0 = inside - w.mountain - clear
     moist = {c: fractal(sub('climate'), c[0], c[1], C['scale'], 3) for c in CELLS}
     forest = {c for c in meadow0 if moist[c] >= C['forest']}
+    if S['deep']: forest = set(meadow0)          # tout ce qui n'est pas le sol est du bois
     forest |= {c for c in meadow0 if w.edge(c) < FRAME}          # la ceinture : trois arbres d'épaisseur, tout le tour (A)
     forest |= {c for c in meadow0 if c in butte}          # les buttes sont boisées (D)
     forest |= {c for p in pieces(meadow0 - footing(built) - butte - brink) if len(p) >= 12 for c in p}          # une terre où ni pont ni escalier ne mène : un bois, pas une pelouse qu'on regarde sans pouvoir y aller
@@ -931,6 +977,13 @@ def generate(world, source='monde'):
                 if not feet or any(c not in inside or c in clear or c in w.mountain or c in butte for c in feet) or not same_level(feet + [(x + i, r - 2) for i in range(3)]): continue          # jamais à cheval sur un bord de plateau ni de butte (D)
                 if sum(1 for c in feet if c in forest) * 3 >= len(feet) * 2: trees[(x, r)] = 'treeB' if rng.random() < V['tree_dark'] else 'treeA'
     plant()
+    if S['deep']:          # entre deux clairières, la trame laisse des vides : on y serre des arbres, où qu'ils tiennent — c'est un mur
+        taken_ = {c for (x, r) in trees for c in foot(x, r)}
+        for r in range(1, H):
+            for x in range(0, W - 2):
+                feet = [(x + i, r - j) for i in range(3) for j in (0, 1)]
+                if all(c in forest and c not in clear and c not in taken_ and c in inside for c in feet) and same_level(feet):
+                    trees[(x, r)] = 'treeB' if rng.random() < V['tree_dark'] else 'treeA'; taken_.update(feet)
     ahead = footing(built)
     for _ in range(3):          # une clairière que les arbres ont refermée : la forêt la reprend, plutôt qu'une pelouse où l'on n'ira jamais
         trunks = {c for (x, r) in trees for c in foot(x, r)}
@@ -1014,7 +1067,9 @@ def generate(world, source='monde'):
 
     # --- les hautes herbes (M) : par plaques de 10 à 40, adossées à un bosquet, une eau ou une falaise, au contour déchiqueté
     grow = random.Random(sub('grass'))
-    wanted, patches = int(max(len(meadow) * V['tall_grass'], len(ahead & inside) * 0.15 if G['path'] == 'dotted' else 0)), []          # (sur une route, les herbes font un sixième de ce qu'on foule, au moins)
+    if S['deep']:          # les hautes herbes sont le sol (M) : quatre cases sur cinq de ce qu'on foule, hors des plaques de terre et des trouées de sortie
+        w.tall |= {c for c in ahead & inside if c not in w.earth and w.edge(c) >= 5 and c not in occupied and c not in works and c not in brink and lattice(sub('grass') + 3, c[0], c[1]) > 0.08}
+    wanted, patches = (0 if S['deep'] else int(max(len(meadow) * V['tall_grass'], len(ahead & inside) * 0.15 if G['path'] == 'dotted' else 0))), []          # (sur une route, les herbes font un sixième de ce qu'on foule, au moins)
     if G['path'] == 'dotted' and G['grass_bars']:          # des herbes en travers du trajet, d'un mur à l'autre (M, Johto) : on les traverse, là où le chemin n'est pas dessiné
         bar, bars = random.Random(sub('grass') + 4), []
         def wall(q): return not inb(q) or q in obstacle or q not in inside or q in occupied or q in butte or q in works
@@ -1066,7 +1121,7 @@ def generate(world, source='monde'):
     tufts = []
     open_ = inside - w.mountain - butte - brink - house_area - fronts - w.lanes - works          # toute la pelouse, abords des chemins compris
     FORMS = ([(0, 0), (1, 1)], [(0, 0), (1, 1), (2, 2)], [(0, 0), (1, 0), (1, 1)], [(0, 0), (0, 1), (1, 1)], [(0, 0), (1, -1)], [(0, 0), (1, 1), (2, 0)])
-    cap = max(3, len((built['REACH'] & inside) - wood - w.mountain) // 19)          # une touffe pour 15 à 60 cases où l'on marche : jamais plus serré
+    cap = max(3, len((built['REACH'] & inside) - wood - w.mountain) // (80 if S['deep'] else 19))          # une touffe pour 15 à 60 cases où l'on marche : jamais plus serré
     flowerable = inside - w.mountain - butte - brink - fronts - works - built['SOLID']          # là où une fleur peut pousser : jusque contre une maison, jusque sur le trajet
     def tuft(c, forced=False):
         if len(tufts) >= cap and not forced: return False
