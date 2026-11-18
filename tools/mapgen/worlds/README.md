@@ -15,6 +15,47 @@ la carte plaît, on retouche son plan à la main s'il le faut, puis `build.py --
         on invente                              on lit, on retouche                          on assemble
 ```
 
+## Orienter la carte en quelques mots — `[style]`
+
+Avant les nombres, on dit ce qu'on veut. Chaque mot règle plusieurs nombres d'un coup ; ce qu'on écrit ensuite dans
+`[relief]`, `[climate]` ou `[vegetation]` passe toujours devant. `styles_apercu.png` montre six exemples, dans
+l'ordre : `style_ile`, `style_anneau`, `style_couloir`, `style_plaine`, `style_cote`, `style_baie`.
+
+```toml
+[style]
+size = "medium"                  # small (40 × 30), medium (64 × 44), large (90 × 64), ou [largeur, hauteur]
+shape = "coast"                  # la forme générale
+character = ["rocky", "jagged"]  # un ou plusieurs caractères, qui se cumulent
+sea = "west"                     # pour coast et bay : le côté de la mer
+```
+
+| `shape` | Ce que ça donne |
+|---|---|
+| `free` | le bruit décide de tout (le défaut) |
+| `island` | la terre au milieu, la mer tout autour |
+| `ring` | un anneau de terre autour d'un lac — ou d'un massif, avec `core = "mountain"` |
+| `plain` | de la terre presque partout, fermée par une lisière |
+| `coast` | la mer d'un côté (`sea = "north"`, `"south"`, `"west"`, `"east"`), la terre de l'autre |
+| `bay` | la mer entre par un côté (`sea`) et creuse la carte |
+| `corridor` | une route d'un bord à l'autre (`axis = "vertical"` ou `"horizontal"`), serrée entre deux murs de forêt |
+| `archipelago` | des îlots |
+
+| `character` | Ce que ça change |
+|---|---|
+| `rocky` | de la montagne sur les hauteurs, des blocs, plus de rochers en mer |
+| `sandy` | de larges plages, plus de palmiers et de coquillages |
+| `wooded` | beaucoup de forêt, et une lisière qui ferme la carte |
+| `open` | peu de forêt, de grandes pelouses |
+| `grassy` | de grandes taches de hautes herbes |
+| `flowery` | plus de fleurs |
+| `wet` | plus d'eau |
+| `jagged` | des rives déchiquetées |
+| `smooth` | de grandes courbes calmes |
+
+D'où ils viennent : des cartes d'exemple (une plaine de champs et de bosquets, une côte avec sa baie et sa grande
+plage, une route en couloir fermée par la forêt) et de ce que les planches du décor savent dessiner. Ce qu'on y voit
+et que le générateur ne fait pas encore : les champs clôturés, les mares, les grottes, les herbes de plage.
+
 ## Le hasard — `[seed]`
 
 | Réglage | |
@@ -68,11 +109,13 @@ Un second bruit, l'humidité, croisé avec le relief : sur l'herbe, là où elle
 | `poi_radius` | 2 | le rayon laissé libre autour de chaque point d'intérêt : ni arbre, ni hautes herbes |
 | `close_edges` | true | fermer le bord de la carte partout où ce n'est pas une sortie |
 
+Et dans `[vegetation]` : `border_forest` (une lisière d'arbres le long des bords), `boulders` (la chance d'un bloc sur la montagne).
+
 ## Ce qu'on place
 
 | Table | Champs |
 |---|---|
-| `[map]` | `name`, `size = [largeur, hauteur]`, `theme`, `location`, `banner`, `music`, `wild` |
+| `[map]` | `name`, `theme`, `location`, `banner`, `music`, `wild` (la taille se dit dans `[style]`, ou ici : `size = [largeur, hauteur]`) |
 | `[[exit]]` | `side` (`north`, `south`, `west`, `east`), `at` (de 0 à 1, le long du bord), `name`, `scene`, `door` |
 | `[[house]]` | `name`, `kind`, `near = [x, y]` (de 0 à 1 dans la carte), `scene`, `door` |
 

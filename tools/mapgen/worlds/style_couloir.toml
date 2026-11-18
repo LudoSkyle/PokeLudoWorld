@@ -1,0 +1,26 @@
+# Un monde d'exemple : Route en couloir.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_couloir.toml --preview /tmp/style_couloir.png
+
+[map]
+name = "style_couloir"
+location = "Route en couloir"
+theme = "coast"
+
+[seed]
+world = 13
+
+[style]
+size = "small"
+shape = "corridor"
+character = ["grassy", "flowery"]
+axis = "vertical"
+
+[[exit]]
+side = "north"
+at = 0.5
+name = "Nord"
+
+[[exit]]
+side = "south"
+at = 0.5
+name = "Sud"

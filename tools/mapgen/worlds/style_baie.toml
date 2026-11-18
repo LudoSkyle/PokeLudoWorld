@@ -1,0 +1,16 @@
+# Un monde d'exemple : Baie.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_baie.toml --preview /tmp/style_baie.png
+
+[map]
+name = "style_baie"
+location = "Baie"
+theme = "coast"
+
+[seed]
+world = 16
+
+[style]
+size = "medium"
+shape = "bay"
+character = ["sandy", "wooded"]
+sea = "south"

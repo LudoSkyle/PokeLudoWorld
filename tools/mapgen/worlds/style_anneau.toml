@@ -1,0 +1,16 @@
+# Un monde d'exemple : Anneau autour d'un lac.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/style_anneau.toml --preview /tmp/style_anneau.png
+
+[map]
+name = "style_anneau"
+location = "Anneau autour d'un lac"
+theme = "coast"
+
+[seed]
+world = 12
+
+[style]
+size = "medium"
+shape = "ring"
+character = ["wooded"]
+core = "lake"
