@@ -123,6 +123,7 @@ pebbleA 12 13
 pebbleB 30 24
 boulder 42 17
 boulder 23 26
+ladder 7 14
 '''
 
 [map]
@@ -131,9 +132,8 @@ theme = "cave"
 style = "cave"
 start = "*"
 location = "Grotte aux Échos"
-banner = "cave"
 daylight = false
-tiers = 2
+tiers = 1
 
 [[exit]]
 mark = "A"

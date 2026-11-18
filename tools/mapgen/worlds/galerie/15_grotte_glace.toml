@@ -1,0 +1,14 @@
+# Galerie — une grotte de glace : sol bleu-gris, parois vues de face, et du verglas en travers d'un passage.
+# python3 tools/mapgen/worldgen.py tools/mapgen/worlds/galerie/15_grotte_glace.toml --preview tools/mapgen/worlds/galerie/15_grotte_glace.png
+
+[map]
+name = "galerie_15_grotte_glace"
+location = "Caverne de Givre"
+
+[seed]
+world = 333
+
+[style]
+kind = "cave"
+size = "medium"
+tint = "ice"

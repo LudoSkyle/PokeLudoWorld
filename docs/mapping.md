@@ -281,29 +281,91 @@ Elles confirment trois choses déjà écrites, et en précisent trois :
 *Cartes 27, 35, 36, 38, 39 et 40 du troisième panel.*
 
 - **Une grotte est une tache irrégulière posée sur du noir.** Pas de marge,
-  pas de ceinture d'arbres : ce qui ferme, c'est la paroi, en deux à quatre
-  gradins concentriques, et le vide autour. Son contour n'a ni droite ni
+  pas de ceinture d'arbres : ce qui ferme, c'est la paroi et le vide autour.
+  **Sa bordure extérieure ne fait qu'un gradin** (Ludovic, 18/11/2026 : « la
+  bordure extérieure d'une grotte ne doit faire que 1 de large, pas 4 ») — les
+  parois plus hautes, elles, sont pour l'intérieur de la salle. Dans un plan :
+  `tiers = 1`. Son contour n'a ni droite ni
   angle droit de plus de quatre cases.
+- **Halle, couloirs, ou un peu des deux : cela dépend de la carte** (Ludovic,
+  18/11/2026 : « on peut avoir des couloirs ou pas de couloirs ou un peu des
+  deux, ça dépend. Dans l'exemple c'est 3 couloirs, mais ça aurait pu être
+  différent »). Les chiffres d'une carte de référence décrivent **cette**
+  carte, ils ne sont pas un objectif. Dans le générateur, c'est le réglage
+  `corridors` d'un monde.
 - **Le sol est d'une seule matière et ne fait que 35 à 55 % de la tache** ; le
   reste est de la roche : la paroi, et **des massifs intérieurs de 20 à 60
   cases**, chacun coiffé d'un bloc, autour desquels tournent des couloirs de
   **deux à quatre cases**.
-- **Des paliers** : des plates-formes d'un gradin, où l'on monte par un
-  escalier court de deux ou trois cases — trois à huit par étage.
+- **Des paliers** : des plates-formes d'un gradin — trois à huit par étage.
+  **On n'y monte pas par un escalier** (Ludovic, 18/11/2026 : « dans les
+  grottes c'est assez rare d'avoir des escaliers, on peut plutôt se focus sur
+  les échelles ») : ce qui fait changer de niveau dans une grotte, c'est
+  l'échelle. Aucun des huit kits de falaises de `sources/cliffs_caves.png` n'a
+  de marche, et la carte de référence qu'il a fournie ce jour-là n'en montre
+  aucune.
 - **Un à trois bassins de 20 à 80 cases par étage**, au fond d'un bras ou au
   centre ; un pont ou une passerelle en franchit un, ou bien il garde un
   objet pour celui qui saura nager.
 - **Les échelles sont au bout des bras** : deux à quatre par étage, chacune
   dans un cul-de-sac, et celles de deux étages se répondent. L'entrée est une
   trouée de lumière dans la paroi, en haut ou en bas.
+  *Précisé sur la carte de référence du 18/11/2026 (une grotte de glace à trois
+  échelles)* : un couloir de grotte fait deux cases au moins, donc un « bout de
+  bras » n'est pas une case à voisin unique mais un **renfoncement**, avec de la
+  roche au-dessus et sur au moins un autre côté ; l'échelle est **adossée au
+  haut de la paroi**, son dessin monte d'une case dans la roche, et elle
+  n'arrête pas — on monte dessus. Les trois de la référence sont loin de
+  l'entrée, chacune dans un bras différent.
+  **Une échelle monte ou descend, et leur nombre suit le nombre d'étages**
+  (Ludovic, 18/11/2026) : celles de la carte de référence montent toutes, et
+  elle n'en a aucune qui descende. Une échelle qui descend est un **trou dans
+  le sol vu de dessus**, l'échelle au fond, sur deux cases de côté. Tant qu'une
+  grotte n'a qu'un étage, le générateur n'en pose **qu'une qui monte et une
+  qui descend** — pas deux à quatre : cette fourchette vaudra quand il y aura
+  plusieurs étages à relier.
 - **Des stalagmites et de petits rochers le long des parois**, un pour quinze
   à vingt cases de sol, jamais au milieu d'un couloir.
 - **Un à trois objets par étage**, au fond des culs-de-sac.
 - **Rien de vivant** : ni arbre, ni herbes, ni fleurs, ni lampadaire. Une
   teinte par grotte — bleue, brune, verte, de glace.
-- **Dans une grotte de glace**, des plaques où l'on glisse (20 à 150 cases),
-  semées de rochers qui arrêtent : c'est l'énigme de la carte, on dit par où
-  elle se résout.
+- **Une grotte de glace n'est pas une grotte brune repeinte** (Ludovic,
+  18/11/2026, sur deux décors faux de suite : « tu as mal observé l'image
+  exemple pour savoir comment utiliser le set de tiles »). Relevée tuile par
+  tuile (`tools/maps/ice_cave/`), la carte d'exemple de son auteur dit : la
+  **glace pâle est le dessus des parois**, là où l'on ne va pas ; le **sol est
+  le bleu-gris foncé**, avec son propre contour ; entre les deux, au nord du
+  sol, la paroi se montre **de face sur deux rangées** ; le **bord de la grotte
+  ne fait qu'une case** de glace pâle, le liseré du vide posé dessus ; et il
+  n'y a **pas d'eau**. Son kit se superpose — un grand plateau, un petit
+  dessus, le liseré par-dessus : `docs/tilesets.md`.
+- **Le sol d'une grotte de glace n'est pas uni** : des **fissures** (une tache
+  de deux cases de côté, à plat, sans collision) y sont semées un peu partout
+  — une pour seize cases de sol sur la carte d'exemple —, pour que le même
+  carreau ne se répète pas (principe 9). Jamais sur la glace lisse.
+- **Une roche de glace se voit de face** : son dessus, puis deux rangées de
+  face. Un massif, un éperon, un redan de la paroi font donc **au moins trois
+  cases de haut et deux de large** ; plus petit, son mur est coupé net.
+- **Chaque caillou de glace a sa place** (Ludovic, 18/11/2026) : **au sol, il
+  n'y a que le caillou foncé et le pic foncé**. Les **cailloux ronds et pâles**
+  ne sont jamais au sol : ils sont **sur le dessus du premier mur** — le grand
+  plateau, là où le second, plus petit, ne le couvre pas — ou **sur le
+  verglas**, comme obstacles des casse-têtes. Il y en a aussi **sur le tour
+  de la grotte**, deux ou trois : le petit plateau y laisse une case vide
+  pour le caillou. Tuiles et relevé :
+  `docs/tilesets.md`.
+- **Le verglas est un passage obligé, pas un décor** (Ludovic, 18/11/2026 :
+  « les plaques de verglas doivent faire la largeur d'un passage […] s'il est
+  là, le joueur devra passer par-dessus pour accéder à ce qu'il y a derrière.
+  C'est pas obligé qu'il soit là »). Une plaque va donc **d'une paroi à
+  l'autre**, en travers d'un passage de deux à huit cases, sur deux à six
+  cases de profondeur, et **coupe le sol en deux** : ce qui est derrière ne
+  s'atteint qu'en la traversant — c'est là qu'on met un objet, une échelle.
+  Une halle sans passage à barrer n'a pas de verglas ; on n'en pose pas une
+  flaque au milieu du sol pour faire joli.
+- **Plus tard**, on y glissera, et des rochers ronds et des crevasses y
+  arrêteront (les plaques de l'exemple font 20 à 150 cases) : c'est l'énigme
+  de la carte, on dit par où elle se résout.
 
 ### Désert
 
@@ -484,7 +546,7 @@ route — ou un village si le plan a trois maisons.
 | Route côtière | `seaside` | ses seuils | une première version : la mer sur un flanc et sa chaîne de rochers |
 | Plage | `beach` | ses seuils | oui, pour une carte de 40 à 70 cases de côté |
 | Forêt profonde | `forest` | ses seuils, et trois règles à elle : les arbres couvrent la moitié de la carte au moins, aucun chemin, trois plaques de terre nue au moins | oui : clairières, couloirs en boucle, herbes au sol, plaques de terre, mares, pénombre ; ni taches de lumière, ni souches, ni passerelles |
-| Grotte | `cave` | ses seuils, et sept règles à elle : le vide touche tout le bord hors des sorties, le sol fait 35 à 60 % de la tache, deux massifs au moins de 12 à 70 cases, aucun couloir d'une case, un à trois bassins, un rocher pour 10 à 30 cases de sol, rien de vivant | oui, avec le décor `cave` : une salle sur du noir, sa paroi en deux gradins, des massifs, des éperons qui la coupent en chambres, un à trois bassins, des plaques de sol sombre, stalagmites et rochers le long des parois, trois objets au fond, un couloir de sortie au sud (et au nord si on le demande). **En deçà des règles ci-dessus** : massifs de 12 à 60 cases sans bloc dessus, bassins de 12 à 50 cases, sol jusqu'à 60 % ; un seul étage — ni paliers, ni échelles, ni entrée en trouée de lumière, ni passerelle, ni glace ; une seule teinte, la brune |
+| Grotte | `cave` | ses seuils, et sept règles à elle : le vide touche tout le bord hors des sorties, le sol fait 35 à 60 % de la tache, deux massifs au moins de 12 à 70 cases, aucun couloir d'une case, un à trois bassins, un rocher pour 10 à 30 cases de sol, rien de vivant | oui, avec le décor `cave` : une salle sur du noir, sa paroi en deux gradins, des massifs, des éperons qui la coupent en chambres, un à trois bassins, des plaques de sol sombre, stalagmites et rochers le long des parois, trois objets au fond, un couloir de sortie au sud (et au nord si on le demande). **En deçà des règles ci-dessus** : massifs de 12 à 60 cases sans bloc dessus, bassins de 12 à 50 cases, sol jusqu'à 60 % ; un seul étage — **une échelle qui monte et, en glace, une qui descend** (dans un renfoncement adossé au haut d'une paroi pour la première, un trou de deux cases au fond d'un bras pour la seconde, loin de l'entrée toutes deux), mais elles ne mènent nulle part tant qu'une grotte n'a qu'un étage, comme ses sorties ; la grotte brune n'a pas d'échelle qui descend, aucune planche n'en ayant une en roche ; **une grotte de glace n'a pas d'eau** — ni sa planche ni la carte de référence n'en montrent — et son **sol est le bleu-gris foncé**, la glace pâle étant la paroi ; ni paliers, ni entrée en trouée de lumière, ni passerelle. **Pas d'escalier dans une grotte** (Ludovic, 18/11/2026 : « dans les grottes c'est assez rare d'avoir des escaliers, on peut plutôt se focus sur les échelles ») : c'est l'échelle qui fait passer d'un niveau à l'autre, et aucun des kits de falaises n'a de marche. **Deux teintes** (`tint` dans la table `[style]` du monde) : `brown`, la roche brune (décor `cave`), et `ice`, la glace (décor `cave_ice`). La glace est un **décor à plateaux** : sa paroi a une face de deux rangées au nord, son sol un contour, son bord une seule case, et pas de bassin ; ses plaques de sol sont de la **glace lisse** — on y marche, on n'y glisse pas encore. La grotte brune garde l'ancien dessin, alors que sa planche a les mêmes blocs : à convertir |
 | Désert, neige, route maritime | — | pas encore : leurs règles sont ci-dessus, pas dans les outils | pas encore : le décor n'a ni sable de désert, ni neige (la planche `sources/cliffs_caves.png` a ces kits : ils restent à découper) |
 | Champs | `fields` | ses seuils, et cinq règles à eux : trois champs au moins et 8 % de blé, aucun blé hors d'un enclos, des allées toutes atteintes qui font un cinquième à la moitié du champ, un objet au fond d'une allée, pas de hautes herbes | oui : blocs clôturés, bandes de blé et allées, portillons, chemins entre les blocs, étangs ; le blé ne couvre que 7 à 9 % de la carte, et aucune montagne ne ferme un côté |
 | Village | `village` | ses seuils, et quatre règles à lui : quatre maisons au moins, quatre à huit lampadaires, un réseau de chemins d'un seul tenant qui relie chaque porte, aucune haute herbe au centre | oui : maisons, placette dallée, réseau de chemins, étangs, lampadaires, massifs clôturés ; ni bancs, ni boîtes aux lettres, ni statue, ni habitants |

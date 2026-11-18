@@ -49,6 +49,14 @@ NEIGH8 = [(i, j) for i in (-1, 0, 1) for j in (-1, 0, 1) if (i, j) != (0, 0)]
 # baie, une route en couloir dans la forêt) et de ce que les planches savent dessiner.
 SIZES = {'small': (40, 30), 'medium': (64, 44), 'large': (90, 64)}
 CAVE_SIZES = {'small': (46, 36), 'medium': (52, 40), 'large': (66, 50)}          # une grotte est une salle, pas une région
+TINTS = {'brown': 'cave', 'ice': 'cave_ice'}          # la teinte d'une grotte (`tint` dans sa table `[style]`) : le décor qu'elle dessine
+KITS = ('cave_ice',)          # les décors à plateaux emboîtés : leur paroi a une face au nord, et pas de bassin
+THEME_DECOR = {'cave': ('ladder',), 'cave_ice': ('ladder', 'hole', 'crack')}
+THEME_WATER = {'cave': True, 'cave_ice': False}
+# Les petits rochers du sol d'une grotte, par décor. En glace il n'y en a que deux, les foncés ; les ronds et pâles ne
+# sont jamais au sol : sur le dessus d'une paroi, ou sur le verglas (Ludovic, 18/11/2026, et sa carte d'exemple).
+THEME_ROCKS = {'cave': ('spire', 'spire', 'rock_s', 'pebbleA', 'pebbleB'), 'cave_ice': ('pebbleA', 'spire')}
+THEME_TOPS = {'cave_ice': ('roundA', 'roundB')}          # une grotte de glace n'a pas d'eau : ni la planche ni la carte de référence n'en montrent
 # La forme : un masque qui se mêle au relief. `weight` : la part du masque (0 : le bruit seul ; 1 : la forme pure).
 SHAPES = {
     'free': dict(weight=0.0),                                          # le bruit décide de tout
@@ -283,7 +291,14 @@ def generate_cave(w):
     """Une grotte (docs/mapping.md, « Grotte ») : son empreinte, sa paroi, ses massifs, ses bassins, ses rochers, ses objets."""
     W, H, CELLS, inb, sub, G = w.W, w.H, w.CELLS, w.inb, w.sub, w.S['gameplay']
     rng = random.Random(sub('relief') + 61)
-    w.m.update(theme='cave', daylight=False, tiers=2); w.m.setdefault('banner', 'cave')
+    # La teinte de la grotte (docs/mapping.md, « Grotte » : une teinte par grotte). Elle ne change que le décor — même
+    # empreinte, mêmes massifs, mêmes bassins : rien ici ne tire au hasard, une graine donne la même grotte des deux teintes.
+    tint = w.world.get('style', {}).get('tint', 'brown')
+    if tint not in TINTS:
+        w.notes.append('teinte %s inconnue : la grotte reste brune (connues : %s)' % (tint, ', '.join(sorted(TINTS))))
+        tint = 'brown'
+    kit = TINTS[tint] in KITS
+    w.m.update(theme=TINTS[tint], daylight=False, tiers=1)          # un seul gradin : la bordure extérieure d'une grotte ne fait qu'une marche, pas quatre empilées (Ludovic, 18/11/2026); w.m.setdefault('banner', 'cave')
     WALL = 3          # l'épaisseur de la paroi : deux gradins et leur dessus
     def blob(cx, cy, rx, ry, salt): return {(cx + i, cy + j) for i in range(-8, 9) for j in range(-7, 8) if (i / rx) ** 2 + (j / ry) ** 2 <= 1.0 + (lattice(sub('relief') + salt, cx + i, cy + j) - 0.5) * 0.6}
     def biggest(cells): return max(pieces(cells), key=len) if cells else set()
@@ -294,12 +309,15 @@ def generate_cave(w):
     def within(c):
         d = math.hypot((c[0] - cx) / (W / 2.0 - 3), (c[1] - cy) / (H / 2.0 - 4))
         return d + (fractal(sub('relief'), c[0], c[1], 9.0, 3) - 0.5) * 1.0 < 1.0
-    foot = biggest({c for c in CELLS if within(c) and 2 <= c[0] < W - 2 and 2 <= c[1] < H - 4})
+    foot = biggest({c for c in CELLS if within(c) and 2 <= c[0] < W - 2 and (3 if kit else 2) <= c[1] < H - 4})          # (un décor à plateaux prend une rangée de plus au nord, pour sa face)
     # 2. le sol : l'empreinte moins sa paroi ; jamais d'une case de large — on ne garde que ce qui tient dans des carrés de deux
     floor = {c for c in foot if all((c[0] + i, c[1] + j) in foot for i in range(-WALL, WALL + 1) for j in range(-WALL, WALL + 1))}
     for _ in range(4):
         floor = biggest({q for c in floor if all((c[0] + i, c[1] + j) in floor for i in (0, 1) for j in (0, 1)) for q in ((c[0] + i, c[1] + j) for i in (0, 1) for j in (0, 1))})
     rock = grown(floor, WALL) - floor          # la paroi suit le sol, à trois cases
+    # Un décor à plateaux (la glace) montre la paroi du nord **de face**, sur deux rangées, sous la lèvre du petit plateau
+    # et sous le liseré : il lui faut une rangée de plus au nord du sol — liseré, lèvre, deux rangées de face.
+    if kit: rock |= {(c[0], c[1] - 1) for c in rock} - floor
     # 3. la sortie : un couloir de trois cases, de la salle au bord du bas (et au bord du haut, si on le demande)
     w.exits = []
     asked = [e.get('side', 'south') for e in w.world.get('exit', [])] or ['south']
@@ -320,6 +338,11 @@ def generate_cave(w):
     # 4. les massifs de roche, au milieu : on tourne autour, par des couloirs de deux cases au moins. Ce sont eux qui font la
     # grotte — sans eux, c'est une salle vide.
     def squared(cells): return {q for c in cells if all((c[0] + i, c[1] + j) in cells for i in (0, 1) for j in (0, 1)) for q in ((c[0] + i, c[1] + j) for i in (0, 1) for j in (0, 1))}          # sans pointe d'une case
+    plate = squared          # (une plaque au sol, elle, se contente de deux cases dans chaque sens)
+    # Un décor à plateaux montre chaque roche de face : son dessus, puis deux rangées de face. Un massif y est donc fait
+    # de blocs de deux cases de large sur **trois de haut** — plus bas, sa face commencerait sans dessus, coupée net.
+    if kit:
+        def squared(cells): return {q for c in cells if all((c[0] + i, c[1] + j) in cells for i in (0, 1) for j in (0, 1, 2)) for q in ((c[0] + i, c[1] + j) for i in (0, 1) for j in (0, 1, 2))}
     solid, masses, wet, whole = set(), [], set(), len(floor) + len(rock)
     room = floor - grown(w.lanes, 3)          # ni massif ni bassin devant la sortie
     def box(c, wide, tall): return {(c[0] + i, c[1] + j) for i in range(wide) for j in range(tall)}
@@ -361,14 +384,56 @@ def generate_cave(w):
         for wide, tall in ((5, 3), (4, 3)):          # pas de place pour un bassin aux bords bousculés : un petit, droit
             for c in spots:
                 if not wet and grown(box(c, wide, tall), 2) <= room - solid: wet.update(box(c, wide, tall))
-    flood(1)
+    if THEME_WATER.get(w.m['theme'], True): flood(1)
     raise_(2, 0.0)
-    flood(min(3, 1 + len(floor) // 300))
+    if THEME_WATER.get(w.m['theme'], True): flood(min(3, 1 + len(floor) // 300))
     raise_(max(2, len(floor) // 60), 0.50)
+    # Halle, couloirs, ou un peu des deux : **cela dépend de la carte, ce n'est pas une règle** (Ludovic, 18/11/2026 :
+    # « on peut avoir des couloirs ou pas de couloirs ou un peu des deux, ça dépend. Dans l'exemple c'est 3 couloirs,
+    # mais ça aurait pu être différent »). `corridors = n` dans la table `[style]` d'un monde resserre la salle : on
+    # pose des massifs tant qu'une case de sol reste à plus de `n` cases de toute roche — `2` donne des couloirs de
+    # deux à quatre cases, comme la carte de référence. Sans ce réglage, la salle reste ce que les passes du dessus
+    # en ont fait, et aucune graine ne bouge.
+    tight = w.world.get('style', {}).get('corridors')
+    if tight:
+        for _ in range(80):
+            free = floor - solid - wet
+            wide = sorted(c for c in free if all((c[0] + i, c[1] + j) in free for i in range(-tight, tight + 1) for j in range(-tight, tight + 1)))
+            if not wide: break
+            rng.shuffle(wide)
+            thin_now = len(free - squared(free))          # les cases de sol qui ne tiennent pas dans un carré de deux : on ne veut pas en créer
+            def fits(mass):
+                rest = free - mass
+                if not (12 <= len(mass) <= 60) or not (grown(mass, 2) if kit else mass) <= room - solid - wet: return False          # (un décor à plateaux veut deux cases de sol autour, coins compris : ses bords de sol n'ont pas de tuile pour deux angles à la fois)
+                return len(pieces(rest)) == 1 and len(rest - squared(rest)) <= thin_now          # la salle reste d'un seul tenant, et pas plus étroite qu'avant
+            for c in wide:
+                mass = squared(blob(c[0], c[1], rng.uniform(2.0, 3.2), rng.uniform(1.7, 2.4), 97 + len(masses)))
+                if kit and not fits(mass): mass = box((c[0] - 1, c[1] - 1), 4, 3)          # à défaut, un bloc droit : il lui faut moins de place
+                if not fits(mass): continue
+                solid.update(mass); masses.append(mass); break
+            else: break
     floor -= solid; rock |= solid
-    # 6. des plaques de sol sombre, pour l'œil
+    # Un décor à plateaux montre chaque paroi de face : il lui faut **son dessus et ses deux rangées de face**, donc trois
+    # cases de haut au-dessus de tout sol, et deux de large — sinon la face commence sans dessus, coupée net (Ludovic,
+    # 18/11/2026). Ce qui est plus mince, au milieu de la salle, redevient du sol ; on ne touche pas à ce qui borde le vide.
+    if kit:
+        def bare(q): return q not in floor and q not in rock          # le vide
+        while True:
+            thin = {c for c in rock if not any(bare((c[0] + i, c[1] + j)) for i in (-2, -1, 0, 1, 2) for j in (-2, -1, 0, 1, 2))
+                    and (((c[0], c[1] + 1) in floor and ((c[0], c[1] - 1) in floor or (c[0], c[1] - 2) in floor))
+                         or ((c[0], c[1] - 1) in floor and (c[0], c[1] + 1) in floor)
+                         or ((c[0] - 1, c[1]) in floor and (c[0] + 1, c[1]) in floor))}
+            if not thin: break
+            rock -= thin; floor |= thin; solid -= thin
+        # Et l'inverse : une encoche de sol d'une seule case de large, entre un massif et la paroi, n'a pas la place de
+        # ses deux bords — elle redevient de la roche (jamais dans le couloir de sortie).
+        for _ in range(4):
+            lone = floor - plate(floor) - w.lanes
+            if not lone: break
+            floor -= lone; rock |= lone
+    # 6. des plaques de sol sombre, pour l'œil (en glace, la plaque est du verglas, et elle a une autre règle : plus bas)
     spots = sorted(floor - wet - w.lanes); rng.shuffle(spots)
-    for c in spots:
+    for c in (() if kit else spots):
         if len(pieces(w.earth)) >= 2 + len(floor) // 300: break
         patch = blob(c[0], c[1], rng.uniform(1.6, 2.6), rng.uniform(1.3, 2.0), 79 + len(w.earth))
         if 6 <= len(patch) <= 24 and grown(patch, 1) <= floor - wet and not grown(patch, 2) & w.earth: w.earth |= patch
@@ -384,9 +449,55 @@ def generate_cave(w):
     kept = {(c[0] + i, c[1] + j) for c in dark for i in (-1, 0, 1) for j in (-1, 0, 1) if all(void((c[0] + a, c[1] + b)) for a in (-1, 0, 1) for b in (-1, 0, 1))}
     w.mountain |= dark - kept
     for c in w.mountain: w.ground[c] = '.'
+    # 6 bis. Le **verglas** d'une grotte de glace n'est pas là pour l'œil : c'est un **passage obligé** (Ludovic,
+    # 18/11/2026 : « les plaques de verglas doivent faire la largeur d'un passage […] s'il est là, le joueur devra
+    # passer par-dessus pour accéder à ce qu'il y a derrière. C'est pas obligé qu'il soit là »). Une plaque barre donc
+    # un passage **d'une paroi à l'autre**, sur deux à six cases de profondeur, et coupe le sol en deux : ce qui est
+    # derrière ne s'atteint qu'en la traversant. On barre d'abord un bras ou une chambre (moins de la moitié du sol
+    # derrière : c'est là que vont les objets, plus bas) ; à défaut, le débouché du couloir d'entrée, qu'on traverse
+    # pour entrer dans la salle. S'il n'y a aucun passage à barrer, il n'y a pas de verglas.
+    guarded = set()          # ce qu'on n'atteint qu'en traversant une plaque de verglas
+    if kit:
+        WIDE = 8          # au-delà, ce n'est plus un passage, c'est une salle
+        def bands(cells):
+            cols = {}
+            for x, y in sorted(cells):
+                runs = cols.setdefault(x, [])
+                if runs and runs[-1][1] == y - 1: runs[-1][1] = y
+                else: runs.append([y, y])
+            out = []
+            for x in sorted(cols):
+                for y0, y1 in cols[x]:          # une colonne de sol, d'une paroi à l'autre…
+                    if not 2 <= y1 - y0 + 1 <= WIDE: continue
+                    band, span = [(x, y0, y1)], (y0, y1)
+                    for d in (1, 2, 3, 4, 5):          # … et ses voisines, tant que c'est le même passage
+                        nxt = [r for r in cols.get(x + d, []) if min(r[1], span[1]) - max(r[0], span[0]) + 1 >= 2]
+                        if len(nxt) != 1 or nxt[0][1] - nxt[0][0] + 1 > WIDE: break
+                        span = tuple(nxt[0]); band.append((x + d,) + span)
+                        out.append({(bx, y) for bx, a, b in band for y in range(a, b + 1)})
+            return out
+        turn = lambda cells: {(c[1], c[0]) for c in cells}
+        thin_now = len(floor - plate(floor))
+        gates = []
+        for patch in bands(floor) + [turn(b) for b in bands(turn(floor))]:
+            if plate(patch) != patch or patch & grown({w.start}, 3): continue          # une matière à bords, et pas sous les pieds du joueur qui entre
+            rest = floor - patch
+            parts = pieces(rest)
+            if len(parts) != 2 or len(rest - plate(rest)) > thin_now: continue          # elle coupe le sol en deux, sans y laisser de case étroite
+            behind = min(parts, key=lambda part: w.start in part)
+            if len(behind) >= 8: gates.append((len(behind) > len(floor) // 2, -len(patch), sorted(patch), behind))
+        gates.sort(key=lambda g: g[:3])          # un bras avant le couloir d'entrée ; la plus grande plaque d'abord
+        for entry, _, cells, behind in gates:
+            patch = set(cells)
+            if len(pieces(w.earth)) >= (1 if entry else 1 + len(floor) // 400): break
+            if grown(patch, 3) & w.earth: continue
+            w.earth |= patch
+            if any(line.startswith(('sol :', 'paroi :')) for line in w.probe()['warn']): w.earth -= patch          # le constructeur n'y trouve pas la place des bords
+            elif not entry: guarded |= behind
     built = w.probe()
     reach, wall = built['REACH'], built['SOLID']
     walk = set(reach)
+    dry = (lambda c: c not in w.earth) if kit else (lambda c: True)          # en glace, rien ne se pose sur le verglas : ni caillou foncé, ni objet, ni échelle
     # 7. les rochers et les stalagmites : le long des parois, un pour quinze à vingt cases de sol, jamais dans un passage
     AROUND = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
     def pinch(c):
@@ -401,21 +512,51 @@ def generate_cave(w):
             else: k += 1
         return runs != 1
     placed = []
-    edge_ = sorted(c for c in walk if any((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) and c not in w.lanes and c not in grown(w.lanes, 1))
+    edge_ = sorted(c for c in walk if any((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) and c not in w.lanes and c not in grown(w.lanes, 1) and dry(c))
     rng.shuffle(edge_)
     for c in edge_:
         if len(placed) >= len(walk) // 18: break
         if any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 4 for p in placed) or pinch(c): continue
-        kind = rng.choice(('spire', 'spire', 'rock_s', 'pebbleA', 'pebbleB'))
+        kind = rng.choice(THEME_ROCKS[w.m['theme']])
         w.props.append((kind, c[0], c[1])); placed.append(c); walk.discard(c)
     open_ = sorted(c for c in walk if all((c[0] + i, c[1] + j) in walk for i in range(-2, 4) for j in range(-3, 3)) and c not in grown(w.lanes, 2))
     rng.shuffle(open_)
     big = []
     for c in open_:          # et un ou deux gros blocs au milieu d'une salle
+        if kit: break          # (pas en glace : au sol, il n'y a que le caillou et le pic foncés)
         if len(big) >= len(walk) // 220: break
         if any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 10 for p in big): continue
+        if kit and any((c[0] + i, c[1] - j) in w.earth for i in (-1, 0, 1, 2) for j in (-1, 0, 1, 2)): continue          # pas sur une plaque de glace lisse, qu'il cacherait à moitié
         w.props.append(('boulder', c[0], c[1])); big.append(c)
         walk -= {(c[0] + i, c[1] - j) for i in (0, 1) for j in (0, 1)}
+    # 7 bis. Les cailloux ronds et pâles de la glace : **sur le dessus du grand plateau**, là où le petit ne le couvre pas
+    # — le dessus uni d'un éperon, d'un massif épais, d'un redan de la paroi. La carte d'exemple en a quatorze, tous là.
+    # On ne choisit que des cases de dessus plein : paroi tout autour, et deux rangées de paroi encore au sud (plus près
+    # du bord, la case porte un flanc, un pli ou une rangée de face, et le caillou serait posé sur une arête).
+    if THEME_TOPS.get(w.m['theme']):
+        M = built['MOUNTAIN']
+        flat = sorted(c for c in M - built['UPPER'] if all((c[0] + i, c[1] + j) in M for i in (-1, 0, 1) for j in (-1, 0, 1, 2)))
+        tops_, lot = [], random.Random(sub('decor') + 83)
+        lot.shuffle(flat)
+        for c in flat:
+            if len(tops_) >= 1 + len(flat) // 8: break
+            if any(max(abs(c[0] - p[0]), abs(c[1] - p[1])) < 3 for p in tops_): continue
+            w.props.append((THEME_TOPS[w.m['theme']][len(tops_) % 2], c[0], c[1])); tops_.append(c)
+        # Et **sur le tour de la grotte** (Ludovic, 19/11/2026 : « là il n'y en a aucun sur le tour »). La paroi du bord
+        # porte le petit plateau jusqu'à son flanc : le caillou s'y pose dans la colonne du bord du petit plateau, qui
+        # s'écarte d'une case (le constructeur fait l'encoche) — entre lui et le vide il reste le liseré et un bord.
+        U, dark = built['UPPER'], {c for c in CELLS if w.ground[c] == '#'}
+        def ledge(c):
+            if c not in U or not all((c[0] + i, c[1] + j) in M for i in (-1, 0, 1) for j in (-1, 0, 1, 2)): return False
+            if (c[0], c[1] - 1) not in U or (c[0], c[1] + 1) not in U: return False          # une encoche dans le bord, pas son bout
+            return any((c[0] + s, c[1]) not in U and (c[0] - s, c[1]) in U and (c[0] - 2 * s, c[1]) in U and ((c[0] - 3 * s, c[1]) in dark or (c[0] - 4 * s, c[1]) in dark) for s in (1, -1))
+        rim = sorted(c for c in U if ledge(c))
+        lot.shuffle(rim)
+        around_ = []
+        for c in rim:
+            if len(around_) >= 2 + len(rim) // 12: break
+            if any(max(abs(c[0] - p[0]), abs(c[1] - p[1])) < 6 for p in tops_ + around_): continue
+            w.props.append((THEME_TOPS[w.m['theme']][(len(tops_) + len(around_)) % 2], c[0], c[1])); around_.append(c)
     # 8. les objets : au fond, loin de l'entrée, dans un renfoncement de la paroi
     far, ring_ = {w.start: 0}, [w.start]
     while ring_:
@@ -425,7 +566,7 @@ def generate_cave(w):
                 n = (c[0] + i, c[1] + j)
                 if n in walk and n not in far: far[n] = far[c] + 1; nxt.append(n)
         ring_ = nxt
-    nooks = sorted((c for c in far if sum((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) >= 2 and c not in w.lanes), key=lambda c: (-far[c], c))
+    nooks = sorted((c for c in far if sum((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) >= 2 and c not in w.lanes and dry(c)), key=lambda c: (c not in guarded, -far[c], c))          # d'abord derrière le verglas : c'est ce qu'il garde
     found = []
     for c in nooks:
         if len(found) >= G['items']: break
@@ -433,6 +574,46 @@ def generate_cave(w):
         item = ITEMS[len(found) % len(ITEMS)]
         found.append(c); walk.discard(c)
         w.tables.append(('item', dict(mark=w.mark([c]), name='Item%d' % len(found), item=item[0], text='Vous trouvez %s !|Vous rangez %s dans la poche %s.' % (item[1], item[2], item[3]), exact=True)))
+    # 9. les échelles (docs/mapping.md, « Grotte » : « au bout des bras, chacune dans un cul-de-sac »). Deux à quatre,
+    # adossées au **haut** d'une paroi — leur dessin monte d'une case dans la roche —, jamais sur un passage ni devant
+    # la sortie. Elles n'arrêtent pas : on monte dessus. Elles ne mènent nulle part tant qu'une grotte n'a qu'un étage,
+    # comme ses sorties, qui n'ont pas encore de scène où aller : c'est le même manque, pas un décor posé pour faire joli.
+    # Un couloir de grotte fait deux cases au moins : un bout de bras n'est donc pas une case à voisin unique, mais un
+    # **renfoncement** — de la roche au-dessus, de la roche sur au moins un autre côté — et le plus loin possible de l'entrée.
+    climbs = sorted((c for c in walk if (c[0], c[1] - 1) in wall and c in far
+                     and sum((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) >= 2 and c not in grown(w.lanes, 2) and dry(c)),
+                    key=lambda c: (-far[c], c))
+    ladders = []
+    for c in climbs:
+        if ladders: break          # une seule qui monte : le nombre d'échelles suit le nombre d'étages, et il n'y en a qu'un
+        if any(abs(c[0] - f[0]) + abs(c[1] - f[1]) < 3 for f in found): continue
+        if any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 2 for p in placed): continue          # pas contre un rocher déjà posé
+        w.props.append(('ladder', c[0], c[1])); ladders.append(c); walk.discard(c)
+    if not ladders: w.notes.append('aucune echelle qui monte : pas de renfoncement adosse a une paroi')
+    # Et **une seule qui descend** : un trou dans le sol, vu de dessus, qui tient sur deux cases de côté. Le décor de la
+    # grotte brune n'en a pas (sa planche de falaises n'a aucun trou à échelle) ; il n'y en a donc que dans la glace.
+    if 'hole' in THEME_DECOR.get(w.m['theme'], ()):
+        def roomy(c): return c in far and all((c[0] + i, c[1] - j) in walk and dry((c[0] + i, c[1] - j)) for i in (-1, 0, 1) for j in (0, 1)) and c not in grown(w.lanes, 2)
+        def clear(c): return not (any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 10 for p in ladders) or any(abs(c[0] - f[0]) + abs(c[1] - f[1]) < 3 for f in found) or any(abs(c[0] - p[0]) + abs(c[1] - p[1]) < 3 for p in placed))
+        nooks_ = sorted((c for c in walk if roomy(c) and sum((c[0] + i, c[1] + j) in wall for i, j in NEIGH4) >= 1), key=lambda c: (-far[c], c))
+        anywhere = sorted((c for c in walk if roomy(c)), key=lambda c: (-far[c], c))          # une petite grotte n'a pas toujours de recoin assez large
+        for c in [q for q in nooks_ if clear(q)] + [q for q in anywhere if clear(q)]:
+            w.props.append(('hole', c[0], c[1])); walk -= {(c[0] + i, c[1] - j) for i in (-1, 0, 1) for j in (0, 1)}
+            break
+        else: w.notes.append('aucune echelle qui descend : pas de place de deux cases au fond d un bras')
+    # Les **fissures** du sol (docs/mapping.md, principe 9 : pas de motif qui se répète). La carte d'exemple en sème
+    # seize sur ses 255 cases de sol (tools/maps/ice_cave/survey.json) : une pour seize cases — une tache de deux cases
+    # de côté, à plat, sans collision — pour que le sol ne soit pas partout le même carreau. On en met une pour dix-huit
+    # cases de sol nu. Jamais sur la glace lisse, ni sous un rocher, ni devant la sortie.
+    if 'crack' in THEME_DECOR.get(w.m['theme'], ()):
+        plain = walk - w.earth - grown(w.lanes, 1)
+        spots = sorted(c for c in plain if all((c[0] + i, c[1] - j) in plain for i in (0, 1) for j in (0, 1)))
+        rng.shuffle(spots)
+        cracks = []
+        for c in spots:
+            if len(cracks) >= len(plain) // 18: break
+            if any(max(abs(c[0] - p[0]), abs(c[1] - p[1])) < 3 for p in cracks): continue          # jamais deux qui se touchent
+            w.props.append(('crack', c[0], c[1])); cracks.append(c)
     if len(masses) < 2: w.notes.append('seulement %d massif de roche : la salle est trop petite' % len(masses))
     return w
 
