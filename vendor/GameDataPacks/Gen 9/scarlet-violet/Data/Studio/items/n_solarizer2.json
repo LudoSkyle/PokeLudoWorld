@@ -1,0 +1,17 @@
+{
+  "id": 1136,
+  "dbSymbol": "n_solarizer2",
+  "icon": "1136",
+  "price": 0,
+  "socket": 5,
+  "position": 0,
+  "isBattleUsable": false,
+  "eventId": 41,
+  "isMapUsable": true,
+  "isLimited": false,
+  "isHoldable": false,
+  "isAllowingMega": false,
+  "flingPower": 0,
+  "klass": "EventItem",
+  "isBerry": false
+}
