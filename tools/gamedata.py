@@ -36,7 +36,7 @@ CRIES = os.path.join(GAME, 'assets', 'audio', 'cries')
 ITEMS = os.path.join(GAME, 'assets', 'items', 'icons')          # ses sous-dossiers (custom/, other/) ne sont pas au pack : on n'y touche pas
 NATIONAL = os.path.join(GAME, 'resources', 'pokedex', 'national.tsv')
 
-FIELDS = ('number', 'id', 'generation', 'name_fr', 'name_en', 'genus_fr', 'genus_en', 'height', 'weight', 'icon', 'overworld', 'text_fr', 'text_en', 'front')
+FIELDS = ('number', 'id', 'generation', 'name_fr', 'name_en', 'genus_fr', 'genus_en', 'height', 'weight', 'icon', 'overworld', 'text_fr', 'text_en', 'front', 'type1', 'type2')
 LAST_OF_GENERATION = (151, 251, 386, 493, 649, 721, 809, 905, 1025)          # le dernier numéro de chaque génération
 NAMES, GENUS, TEXTS = '100000', '100001', '100002'                             # les fichiers de textes : noms, catégories, descriptions
 
@@ -48,6 +48,11 @@ def texts(name):
     en, fr = rows[0].index('en'), rows[0].index('fr')
     def clean(text): return ' '.join(text.split())          # sur une ligne : ni retour, ni tabulation
     return [(clean(r[fr]), clean(r[en])) for r in rows[1:]]
+
+
+def kind(symbol):
+    """Un type du pack (`grass`), ou rien : une espèce d'un seul type porte `__undef__` en second."""
+    return '' if not symbol or symbol.startswith('__') else symbol
 
 
 def put(source, folder, name):
@@ -97,7 +102,8 @@ if __name__ == '__main__':
         entry = {'number': number, 'id': symbol, 'generation': next(g + 1 for g, last in enumerate(LAST_OF_GENERATION) if number <= last),
                  'name_fr': names[number][0], 'name_en': names[number][1], 'genus_fr': genus[number][0], 'genus_en': genus[number][1],
                  'height': form['height'], 'weight': form['weight'], 'icon': int(has['icône']), 'overworld': int(has['sprite']),
-                 'text_fr': descriptions[number][0], 'text_en': descriptions[number][1], 'front': int(has['portrait'])}
+                 'text_fr': descriptions[number][0], 'text_en': descriptions[number][1], 'front': int(has['portrait']),
+                 'type1': kind(form.get('type1')), 'type2': kind(form.get('type2'))}
         lines.append('\t'.join(str(entry[field]) for field in FIELDS))
 
     with open(NATIONAL, 'w', encoding='utf-8') as f:

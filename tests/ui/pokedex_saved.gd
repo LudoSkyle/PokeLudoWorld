@@ -7,7 +7,11 @@ func dex() -> Node:
 	return game.get_node(VP + "/PokedexMenu")
 
 func counts() -> String:
-	return str(dex().get_node("Control/Screen/Counts").text)
+	return "%s vues, %s prises" % [str(dex().get_node("Control/Screen/List/Seen").text), str(dex().get_node("Control/Screen/List/Owned").text)]
+
+func line(n: int) -> String:
+	var texture: Texture2D = dex().get_node("Control/Screen/List/Marks/Row%d" % n).texture
+	return "%s %s" % [str(dex().get_node("Control/Screen/List/Names/Row%d" % n).text), "" if texture == null else texture.resource_path.get_file()]
 
 func test() -> void:
 	await menu_pick("Debug")
@@ -20,10 +24,8 @@ func test() -> void:
 	check("l'outil dit ce qu'il a fait", box_text().begins_with("Le Pokédex régional est rempli"), box_text())
 	await close_box()
 	await menu_pick("Pokedex")
-	check("une espece sur trois est prise, une sur trois seulement vue : 101 vues, 51 prises", counts() == "Vus 101  Pris 51", counts())
-	check("la premiere est prise, la deuxieme vue, la troisieme inconnue", str(dex().get_node("Control/Screen/List/Names/Row0").text) == "Bulbizarre" and str(dex().get_node("Control/Screen/List/Marks/Row0").text) == "●"
-		and str(dex().get_node("Control/Screen/List/Names/Row1").text) == "Herbizarre" and str(dex().get_node("Control/Screen/List/Marks/Row1").text) == ""
-		and str(dex().get_node("Control/Screen/List/Names/Row2").text) == "-----")
+	check("une espece sur trois est prise, une sur trois seulement vue : 101 vues, 51 prises", counts() == "101 vues, 51 prises", counts())
+	check("la premiere est prise, la deuxieme vue, la troisieme inconnue", line(0) == "Bulbizarre icon_own.png" and line(1) == "Herbizarre icon_seen.png" and line(2) == "---------- ", "%s | %s | %s" % [line(0), line(1), line(2)])
 	shot("pokedex_rempli")
 	await tap("menu")
 
@@ -37,4 +39,4 @@ func test() -> void:
 		"%d vues, %d prises" % [seen.size(), caught.size()])
 	await relaunch()
 	await menu_pick("Pokedex")
-	check("relance : le Pokedex est tel qu'on l'a laisse", counts() == "Vus 101  Pris 51", counts())
+	check("relance : le Pokedex est tel qu'on l'a laisse", counts() == "101 vues, 51 prises" and line(0) == "Bulbizarre icon_own.png", counts())

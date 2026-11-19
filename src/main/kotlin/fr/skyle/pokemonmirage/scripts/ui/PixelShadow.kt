@@ -24,16 +24,16 @@ object PixelShadow {
 	private val OFFSETS = listOf(PIXEL to 0.0, 0.0 to PIXEL)
 	private val NONE = Color(0.0, 0.0, 0.0, 0.0)
 
-	/** Ajoute l'ombre à tous les textes sous [root]. */
-	fun attachAll(root: Node?) {
+	/** Ajoute l'ombre à tous les textes sous [root]. [pixel] : la taille d'un pixel de police dans le repère de ces textes. */
+	fun attachAll(root: Node?, pixel: Double = PIXEL) {
 		val node = root ?: return
 		// La liste est figée avant d'ajouter des copies, qui sont elles-mêmes des textes.
 		val children = (0 until node.getChildCount()).mapNotNull { node.getChild(it) }
-		if (node is Label || node is RichTextLabel) attach(node as Control)
-		children.forEach { attachAll(it) }
+		if (node is Label || node is RichTextLabel) attach(node as Control, pixel)
+		children.forEach { attachAll(it, pixel) }
 	}
 
-	private fun attach(text: Control) {
+	private fun attach(text: Control, pixel: Double) {
 		if (text.name.toString().startsWith(PREFIX) || text.hasNode("${PREFIX}0")) return
 
 		val colorName = if (text is RichTextLabel) "default_color" else "font_color"
@@ -44,7 +44,10 @@ object PixelShadow {
 		// garderait l'ancien texte à chaque changement.
 		val copies = OFFSETS.map { text.duplicate() as? Control }
 
-		OFFSETS.forEachIndexed { index, (x, y) ->
+		// (Un écran dessiné à une autre échelle que le reste — le Pokédex — a un pixel de police d'une autre taille.)
+		OFFSETS.forEachIndexed { index, (ox, oy) ->
+			val x = ox / PIXEL * pixel
+			val y = oy / PIXEL * pixel
 			val copy = copies[index] ?: return@forEachIndexed
 			copy.setName("$PREFIX$index")
 			copy.addThemeColorOverride(colorName, shadow)
