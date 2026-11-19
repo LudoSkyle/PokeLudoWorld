@@ -19,7 +19,7 @@ LOGS="${TMPDIR:-/tmp}/pokemonmirage-tests"
 mkdir -p "$LOGS"
 
 all_tests() {
-  find tests -mindepth 2 -name '*.gd' -not -path 'tests/audit/*' | sed 's|^tests/||; s|\.gd$||' | sort
+  find tests -mindepth 2 -name '*.gd' -not -path 'tests/audit/*' -not -path 'tests/gdunit/*' | sed 's|^tests/||; s|\.gd$||' | sort
 }
 
 if [ "$1" = "--list" ]; then all_tests; echo audit; echo i18n; exit 0; fi
