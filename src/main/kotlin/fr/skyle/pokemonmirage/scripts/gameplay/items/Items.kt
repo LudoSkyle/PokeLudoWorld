@@ -53,6 +53,8 @@ object Items {
 		Item("soda_pop", N("Soda Cool"), N("Une boisson pétillante et sucrée. Elle redonne du tonus."), Pocket.ITEMS),
 		Item("lemonade", N("Limonade"), N("Une limonade bien fraîche. Rien de tel après une longue marche."), Pocket.ITEMS),
 		Item("poke_ball", N("Poké Ball"), N("Une capsule que l'on lance pour attraper un Pokémon sauvage."), Pocket.BALLS),
+		Item("repel", N("Repousse"), N("Un spray dont l'odeur tient les Pokémon sauvages à distance un moment."), Pocket.ITEMS),
+		Item("super_repel", N("Super Repousse"), N("Un spray plus tenace que la Repousse. Son effet dure deux fois plus longtemps."), Pocket.ITEMS),
 		Item("old_rod", N("Vieille canne"), N("Une canne à pêche usée. Le bois est lisse à force d'avoir servi."), Pocket.KEY_ITEMS),
 		Item("town_map", N("Carte du village"), N("Un plan de Bourg-Ludo et de ses environs, dessiné à la main."), Pocket.KEY_ITEMS),
 		// L'icône du Livre de Règles : un vieux livre.

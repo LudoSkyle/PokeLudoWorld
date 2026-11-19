@@ -122,15 +122,18 @@ bas de l'écran rappelle l'objet choisi :
 À chaque étape, Non, Annuler ou la touche du menu ramènent à la liste sans rien
 jeter. Les poches et le curseur ne bougent pas tant qu'une boîte est ouverte.
 
-Au-delà de six lignes la liste défile avec le curseur, et une flèche en haut ou
+Au-delà de neuf lignes la liste défile avec le curseur, et une flèche en haut ou
 en bas du panneau signale ce qui reste (`tests/ui/bag_scroll.gd`).
 
 ## Le fond
 
-Le fond d'origine fait 240×160 ; il est élargi à 288×162
-(`assets/ui/bag/CREDITS.md`), l'ancien format de l'écran. L'écran est passé en
-4:3 (320×240) : le sac garde sa planche, **centrée** sur un fond uni bleu
-(`Screen/Backdrop`), en attendant un fond redessiné à la bonne taille. Repères, en pixels de jeu : titre de poche
-centré sur `x 6-82, y 3-19` ; sac en `(8, 31)` ; lignes de la liste tous les
-16 px à partir de `y 8`, texte à `x 100`, quantité calée à droite sur `x 276` ;
-icône en `(9, 126)` ; description à partir de `(40, 114)`, trois lignes au plus.
+Le fond d'origine fait 240×160. Il a d'abord été élargi à 288×162, l'ancien
+format de l'écran, puis porté à **320×240**, l'écran en 4:3, par
+`tools/bag_background.py` (`assets/ui/bag/CREDITS.md`) : rien n'est redessiné,
+des bandes du fond sont recopiées — 32 colonnes du panneau, trois lignes de
+liste, 30 rangées du bandeau bleu. **Le sac tient tout l'écran**, et sa liste
+montre **neuf lignes** au lieu de six. Repères, en pixels de jeu : titre de
+poche centré sur `x 6-82, y 3-19` ; sac en `(8, 79)` ; lignes de la liste tous
+les 16 px à partir de `y 8`, texte à `x 100`, quantité calée à droite sur
+`x 308` ; icône en `(5, 184)` ; description à partir de `(40, 166)`, quatre
+lignes au plus.

@@ -5,7 +5,7 @@ extends "res://tests/lib.gd"
 func test() -> void:
 	await fill_bag()
 	await menu_pick("Bag")
-	check("Objets : les six premiers, avec leur quantite", bag_rows() == ["Potion x3", "Super Potion x4", "Hyper Potion x5", "Antidote x6", "Rappel x7", "Eau Fraîche x8"], str(bag_rows()))
+	check("Objets : les neuf premiers, avec leur quantite", bag_rows() == ["Potion x3", "Super Potion x4", "Hyper Potion x5", "Antidote x6", "Rappel x7", "Eau Fraîche x8", "Soda Cool x9", "Limonade x10", "Repousse x12"], str(bag_rows()))
 	check("Objets : sac ouvert sur la bonne poche", bag("Bag").texture.resource_path.ends_with("bag_items.png"))
 	check("premiere poche : pas de fleche a gauche, une a droite", not bag("PocketLeft").visible and bag("PocketRight").visible)
 	shot("sac_objets")

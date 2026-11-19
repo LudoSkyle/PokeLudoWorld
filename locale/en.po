@@ -1034,3 +1034,15 @@ msgstr "The regional Pokédex is filled: one species in three is caught, one in 
 
 msgid "?"
 msgstr "?"
+
+msgid "Repousse"
+msgstr "Repel"
+
+msgid "Un spray dont l'odeur tient les Pokémon sauvages à distance un moment."
+msgstr "A spray whose smell keeps wild Pokémon away for a while."
+
+msgid "Super Repousse"
+msgstr "Super Repel"
+
+msgid "Un spray plus tenace que la Repousse. Son effet dure deux fois plus longtemps."
+msgstr "A spray that clings longer than Repel. Its effect lasts twice as long."
