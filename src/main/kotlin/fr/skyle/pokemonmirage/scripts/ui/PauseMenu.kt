@@ -4,6 +4,8 @@ import fr.skyle.pokemonmirage.scripts.core.DayNight
 import fr.skyle.pokemonmirage.scripts.core.Weather
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Inventory
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Items
+import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.Pokedex
+import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.RegionalDex
 import fr.skyle.pokemonmirage.scripts.gameplay.story.Quest
 import fr.skyle.pokemonmirage.scripts.gameplay.story.Quests
 import fr.skyle.pokemonmirage.scripts.log.Logger
@@ -138,6 +140,12 @@ class PauseMenu : CanvasLayer() {
 			return
 		}
 
+		val pokedex = PokedexMenu.instance
+		if (pokedex != null && pokedex.isOpen) {
+			pokedex.handle(interact)
+			return
+		}
+
 		val save = SaveMenu.instance
 		if (save != null && save.isOpen) {
 			save.handle(interact)
@@ -168,6 +176,7 @@ class PauseMenu : CanvasLayer() {
 						tools.close()
 						PokedexDebug.instance?.open()
 					}
+					TOOL_FILL_DEX -> fillDex()
 					else -> tools.close()
 				}
 				DebugPage.QUESTS -> Quests.ALL.getOrNull(choice)?.let { showActions(it) } ?: showTools()
@@ -204,6 +213,7 @@ class PauseMenu : CanvasLayer() {
 			"Options" -> OptionsMenu.instance?.open()
 			"Save" -> SaveMenu.instance?.open()
 			"Bag" -> BagMenu.instance?.open()
+			"Pokedex" -> PokedexMenu.instance?.open()
 			"Debug" -> debug()
 			else -> Logger.i("Menu : entree inconnue $selectedName")
 		}
@@ -222,7 +232,7 @@ class PauseMenu : CanvasLayer() {
 	private fun showTools() {
 		debugPage = DebugPage.TOOLS
 		debugChoices?.open(
-			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_DEX_LABEL), T(DEBUG_BACK_LABEL)),
+			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_DEX_LABEL), T(DEBUG_FILL_DEX_LABEL), T(DEBUG_BACK_LABEL)),
 		)
 	}
 
@@ -238,6 +248,18 @@ class PauseMenu : CanvasLayer() {
 	}
 
 	/** Remplit le sac d'un peu de tout, et donne deux objets rares pour voir leur présentation. */
+	/** Remplit le Pokédex régional pour qu'on voie ses trois états : une espèce prise, la suivante vue, la suivante inconnue. */
+	private fun fillDex() {
+		RegionalDex.ids.forEachIndexed { index, id ->
+			when (index % 3) {
+				0 -> Pokedex.catch(id)
+				1 -> Pokedex.see(id)
+			}
+		}
+		close()
+		MessageBox.instance?.play(listOf(DEX_FILLED))
+	}
+
 	private fun fillBag() {
 		Items.ALL.filter { !it.isKey }.forEachIndexed { index, item -> Inventory.add(item.id, index + 3) }
 		close()
@@ -295,12 +317,15 @@ private const val TOOL_QUESTS = 1
 private const val TOOL_TIME = 2
 private const val TOOL_WEATHER = 3
 private const val TOOL_DEX = 4
+private const val TOOL_FILL_DEX = 5
 private const val ACTION_RESET = 0
 private const val ACTION_NEXT = 1
 private const val ACTION_FINISH = 2
 private val DEBUG_BAG_LABEL = N("Remplir le sac")
 private val DEBUG_QUESTS_LABEL = N("Quêtes")
 private val DEBUG_DEX_LABEL = N("Pokédex national")
+private val DEBUG_FILL_DEX_LABEL = N("Remplir le Pokédex")
+private val DEX_FILLED = N("Le Pokédex régional est rempli : une espèce sur trois est attrapée, une sur trois seulement vue.")
 private val DEBUG_BACK_LABEL = N("Retour")
 private val ACTION_RESET_LABEL = N("Repartir de zéro")
 private val ACTION_NEXT_LABEL = N("Étape suivante")

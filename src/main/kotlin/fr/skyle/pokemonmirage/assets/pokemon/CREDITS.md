@@ -9,6 +9,7 @@ par `tools/gamedata.py` :
 |---|---|---|
 | `overworld/` | le sprite de chaque espèce sur la carte | `graphics/characters/` |
 | `icons/` | l'icône de chaque espèce | `graphics/pokedex/pokeicon/` |
+| `front/` | le portrait de face de chaque espèce, 96 × 96 | `graphics/pokedex/pokefront/` |
 
 Un fichier par espèce, à son nom (`wingull.png`). Rien n'est retouché : seul le
 nom du fichier change (le numéro du pack devient le nom de l'espèce).

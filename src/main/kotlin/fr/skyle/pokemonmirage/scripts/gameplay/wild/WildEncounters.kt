@@ -1,5 +1,6 @@
 package fr.skyle.pokemonmirage.scripts.gameplay.wild
 
+import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.Pokedex
 import fr.skyle.pokemonmirage.scripts.log.Logger
 import fr.skyle.pokemonmirage.scripts.ui.MessageBox
 import fr.skyle.pokemonmirage.scripts.ui.N
@@ -72,6 +73,8 @@ object WildEncounters {
 
 		count++
 		last = wild
+		// Rencontrée, donc vue : elle s'inscrit au Pokédex.
+		Pokedex.see(wild.species.id)
 		Logger.i("Wild encounter! ${wild.species.id} level ${wild.level} (rate $rate %)")
 		// La phrase est déjà traduite, nom compris : la boîte la dira telle quelle.
 		MessageBox.instance?.play(listOf(T(ANNOUNCE).format(T(wild.species.name))))
