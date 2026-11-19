@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+// Le temps du jeu, pas celui de la montre (GameClock.kt) : il remplace TIME.
+global uniform float game_time;
+
 // Un reflet qui traverse le logo de l'écran titre, de gauche à droite, à
 // intervalles réguliers. Il éclaire les faces, pas les cernes sombres ; sur le
 // blanc il ne se voit pas, c'est sur le bleu qu'on le suit.
@@ -25,7 +28,7 @@ void vertex() {
 
 void fragment() {
 	vec4 pixel = texture(TEXTURE, UV);
-	float along = mod(TIME, period) / sweep;
+	float along = mod(game_time, period) / sweep;
 	float centre = mix(-width - abs(slant), 1.0 + width + abs(slant), along);
 	float distance_to = abs(UV.x + UV.y * slant - centre);
 	float glow = smoothstep(width, 0.0, distance_to) * step(along, 1.0);

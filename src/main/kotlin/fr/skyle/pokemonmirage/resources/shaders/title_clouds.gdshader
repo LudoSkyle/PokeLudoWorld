@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+// Le temps du jeu, pas celui de la montre (GameClock.kt) : il remplace TIME.
+global uniform float game_time;
+
 // Les nuages de l'écran titre : l'image défile à l'horizontale et se raccorde
 // d'un bord à l'autre, sans fin.
 
@@ -15,5 +18,5 @@ void vertex() {
 }
 
 void fragment() {
-	COLOR = texture(TEXTURE, vec2(fract(UV.x + TIME * speed), UV.y)) * tint;
+	COLOR = texture(TEXTURE, vec2(fract(UV.x + game_time * speed), UV.y)) * tint;
 }

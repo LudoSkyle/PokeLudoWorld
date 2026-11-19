@@ -74,6 +74,10 @@ class AudioManager : Node() {
 	private var leavingLevel = 0.0
 
 	private var jingleActive = false
+
+	/** Quand le jingle et le cri en cours finissent, à l'horloge du jeu ([GameClock]). */
+	private var jingleEnd = 0.0
+	private var cryEnd = 0.0
 	private var lastJingle = ""
 	private var lastSfx = ""
 	private var starts = 0
@@ -137,7 +141,8 @@ class AudioManager : Node() {
 
 	@Register
 	override fun _process(delta: Double) {
-		if (jingleActive && jinglePlayer?.playing != true) {
+		// (À l'horloge du jeu, pas au lecteur : le son, lui, suit toujours la montre.)
+		if (jingleActive && GameClock.seconds >= jingleEnd) {
 			jingleActive = false
 			// La musique reprend où elle en était — ou c'est une autre qui démarre,
 			// si l'on a changé de lieu pendant le jingle.
@@ -242,6 +247,7 @@ class AudioManager : Node() {
 		out.stream = stream
 		out.play()
 		jingleActive = true
+		jingleEnd = GameClock.seconds + stream.getLength()
 		lastJingle = id
 	}
 
@@ -267,12 +273,13 @@ class AudioManager : Node() {
 	 */
 	fun cry(species: String, volume: Double = 1.0, force: Boolean = false): Boolean {
 		val voice = cryPlayer ?: return false
-		if (voice.playing && !force) return false
+		if (GameClock.seconds < cryEnd && !force) return false
 		val stream = load("cries/$species") ?: return false
 		voice.stream = stream
 		cryVolume = volume
 		voice.volumeDb = decibels(volume * Settings.gain(Settings.Volume.CRIES)).toFloat()
 		voice.play()
+		cryEnd = GameClock.seconds + stream.getLength()
 		lastCry = species
 		cryCount++
 		return true

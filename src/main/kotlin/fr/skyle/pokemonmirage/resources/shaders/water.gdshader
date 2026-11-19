@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+// Le temps du jeu, pas celui de la montre (GameClock.kt) : il remplace TIME.
+global uniform float game_time;
+
 // L'eau qui bouge. Aucun des atlas n'a d'images d'animation pour l'eau : on la
 // fait vivre ici, sans toucher au dessin des tuiles. Des rides claires, et
 // quelques creux sombres, glissent en biais sur les pixels d'eau et sur eux
@@ -26,7 +29,7 @@ void fragment() {
 	float water = step(0.12, texel.b - texel.r) * step(texel.g * 0.9, texel.b);
 
 	vec2 pixel = floor(at);
-	float tick = floor(TIME * steps_per_second);
+	float tick = floor(game_time * steps_per_second);
 
 	// Des rides en biais, larges de deux ou trois pixels, qui glissent d'un pixel par cran...
 	float ripple = sin((pixel.x + tick) * 0.3 + pixel.y * 0.62);

@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+// Le temps du jeu, pas celui de la montre (GameClock.kt) : il remplace TIME.
+global uniform float game_time;
+
 // Le voile du dehors : une brume claire sur toute la carte, et des bancs de
 // nuages pâles qui dérivent lentement. Ils sont ancrés au monde — on marche
 // dessous, ils ne suivent pas la caméra. Le tout par paliers et par grains de
@@ -44,7 +47,7 @@ void vertex() {
 }
 
 void fragment() {
-	vec2 p = floor((world + drift * TIME) / grain) * grain / size;
+	vec2 p = floor((world + drift * game_time) / grain) * grain / size;
 	float n = 0.6 * value_noise(p) + 0.3 * value_noise(p * 2.1 + 7.3) + 0.1 * value_noise(p * 4.3 + 1.7);
 	float cloud = floor(smoothstep(0.42, 0.72, n) * levels + 0.5) / levels;
 	float alpha = (haze + clouds * cloud) * (1.0 - 0.8 * night_light);

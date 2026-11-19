@@ -1,6 +1,10 @@
 package fr.skyle.pokemonmirage.scripts.autoload
 
 import fr.skyle.pokemonmirage.scripts.core.DayNight
+import fr.skyle.pokemonmirage.scripts.core.AudioManager
+import fr.skyle.pokemonmirage.scripts.core.GameClock
+import fr.skyle.pokemonmirage.scripts.core.SaveGame
+import fr.skyle.pokemonmirage.scripts.core.Settings
 import fr.skyle.pokemonmirage.scripts.core.Weather
 import fr.skyle.pokemonmirage.scripts.gameplay.items.ItemIcons
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Items
@@ -13,6 +17,8 @@ import godot.annotation.Export
 import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.Node
+import godot.api.RenderingServer
+import godot.core.asStringName
 import kotlin.random.Random
 
 @Script
@@ -32,6 +38,26 @@ class Globals : Node() {
 		instance = this
 
 		Logger.i("Loading Globals ...")
+	}
+
+	/** L'horloge du jeu avance ici, et les shaders la reçoivent (`game_time`, à la place de `TIME`). */
+	@Register
+	override fun _process(delta: Double) {
+		GameClock.advance(delta)
+		RenderingServer.globalShaderParameterSet("game_time".asStringName(), GameClock.seconds)
+	}
+
+	/**
+	 * Remet à neuf ce que le jeu garde d'un lancement : les réglages (relus du fichier), l'emplacement de
+	 * sauvegarde, le temps qu'il fait. Un vrai lancement part de là ; les tests, qui enchaînent plusieurs parties
+	 * dans le même Godot, l'appellent avant chacune.
+	 */
+	@Register
+	fun freshStart() {
+		Settings.reload()
+		SaveGame.use(1)
+		Weather.sky = Weather.Sky.CLEAR
+		AudioManager.instance?.applyVolumes()
 	}
 
 	/**

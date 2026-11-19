@@ -60,6 +60,10 @@ textures/canvas_textures/default_texture_filter=0
 
 [shader_globals]
 
+game_time={
+"type": "float",
+"value": 0.0
+}
 night_light={
 "type": "float",
 "value": 0.0

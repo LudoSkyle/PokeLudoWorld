@@ -1,5 +1,8 @@
 shader_type canvas_item;
 
+// Le temps du jeu, pas celui de la montre (GameClock.kt) : il remplace TIME.
+global uniform float game_time;
+
 // Le vent dans les plantes. Aucun des atlas n'a d'images d'animation pour la
 // végétation : on la fait bouger ici, sans toucher au dessin des tuiles. Le
 // pied reste planté, la cime se décale d'un pixel ou deux, de plus en plus en
@@ -36,7 +39,7 @@ void fragment() {
 	// 0 au pied de la plante, 1 en haut de sa première tuile, 2 en haut de sa cime.
 	float height = (tile.y - local.y) / 16.0 + base;
 	vec2 plant = floor(at / 16.0) + vec2(0.0, base);
-	float tick = floor(TIME * steps_per_second);
+	float tick = floor(game_time * steps_per_second);
 	float wind = sin(tick * 0.8 + plant.x * 1.7 + plant.y * 0.6) + 0.5 * sin(tick * 0.31 + plant.x * 0.4);
 
 	float shift = round(wind * reach * 0.34 * height);
