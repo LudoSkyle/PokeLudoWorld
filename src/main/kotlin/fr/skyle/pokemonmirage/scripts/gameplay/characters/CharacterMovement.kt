@@ -54,6 +54,23 @@ class CharacterMovement : Node() {
 
 	private var jumpLength = 0.0
 
+	/**
+	 * Vrai tant que le personnage glisse sur le verglas. Porté de Pokémon SDK
+	 * (`Game_Character`, `@sliding`) : il se lève au départ du pas qui arrive
+	 * sur une case de verglas, et tombe quand la case de devant ne se passe pas
+	 * ou quand on se retrouve sur une case qui n'est plus du verglas.
+	 */
+	var isSliding: Boolean = false
+		private set
+
+	/** Insensible au verglas : ce personnage y marche comme ailleurs (PSDK : `@no_slide`). */
+	@Category("Movement")
+	@Export
+	var noSlide: Boolean = false
+
+	/** Le sens du dernier pas engagé : celui dans lequel on glisse. */
+	private var heading: Vector2 = Vector2.ZERO
+
 	/** Le nombre de pas engagés depuis le début, et la place d'où est parti le dernier : ce que suit un [Follower]. */
 	var steps: Int = 0
 		private set
@@ -77,10 +94,24 @@ class CharacterMovement : Node() {
 
 	private fun gridSize(): Double = Globals.instance.gridSize.toDouble()
 
-	/** Tente un pas. Renvoie false si la case visée est occupée ou si un pas est en cours. */
+	/**
+	 * Tente un pas. Renvoie false si la case visée est occupée ou si un pas est en cours.
+	 *
+	 * Comme les `move_down`, `move_left`… de PSDK : le pas part et on regarde où
+	 * il mène ([movementProcessEnd]) ; il est refusé et la glissade s'arrête là.
+	 */
 	fun tryWalk(direction: Vector2, mask: Int = obstacleMask): Boolean {
-		val node = body ?: return false
 		if (isWalking) return false
+		if (!step(direction, mask)) {
+			isSliding = false
+			return false
+		}
+		movementProcessEnd()
+		return true
+	}
+
+	private fun step(direction: Vector2, mask: Int): Boolean {
+		val node = body ?: return false
 
 		val step = direction * gridSize()
 		val destination = node.globalPosition + step
@@ -106,8 +137,61 @@ class CharacterMovement : Node() {
 		origin = node.position
 		steps++
 		target = node.position + step
+		heading = direction
 		isWalking = true
 		return true
+	}
+
+	/**
+	 * La fin de la mise en route d'un pas (PSDK : `movement_process_end`) : si la
+	 * case où il mène est du verglas, le personnage glisse — dès ce pas-ci, qui
+	 * se fait déjà sans remuer les jambes.
+	 */
+	private fun movementProcessEnd() {
+		val node = body ?: return
+		val arrival = node.globalPosition + (target - node.position)
+		if (!noSlide && isIce(arrival)) isSliding = true
+	}
+
+	/**
+	 * Un personnage qui glisse et vient de finir son pas (PSDK : `update_sliding`) :
+	 * s'il n'est plus sur du verglas, la glissade est finie ; sinon il refait un
+	 * pas devant lui, et [tryWalk] l'arrête si ce pas ne se fait pas.
+	 */
+	private fun updateSliding() {
+		if (!canSlide()) return stopSlide()
+		tryWalk(heading)
+	}
+
+	/** Peut-on continuer de glisser ? Tant qu'on se tient sur du verglas (PSDK : `can_slide?`). */
+	private fun canSlide(): Boolean {
+		val node = body ?: return false
+		return !noSlide && isIce(node.globalPosition)
+	}
+
+	/** PSDK : `stop_slide`. */
+	private fun stopSlide() {
+		isSliding = false
+	}
+
+	/**
+	 * La case qui contient [globalPoint] est-elle du verglas ? C'est la donnée
+	 * `ice` du TileSet, et **c'est le calque de sol le plus haut qui le dit** :
+	 * une tuile posée sur le verglas — une crevasse, une passerelle — n'en est
+	 * pas, et l'on s'y arrête (le `StopSlide` de PSDK, sans tuile à part).
+	 */
+	private fun isIce(globalPoint: Vector2): Boolean {
+		val node = body ?: return false
+		val level = Water.levelOf(node) ?: return false
+		val background = Water.backgroundOf(level) ?: return false
+		val layers = Water.groundLayers(background)
+		for (index in layers.indices.reversed()) {
+			val layer = layers[index]
+			val cell = layer.localToMap(layer.toLocal(globalPoint))
+			if (layer.getCellSourceId(cell) == -1) continue
+			return layer.getCellTileData(cell)?.getCustomData(ICE) as? Boolean == true
+		}
+		return false
 	}
 
 	/**
@@ -139,8 +223,10 @@ class CharacterMovement : Node() {
 		steps++
 		target = node.position + step * 2.0
 		jumpLength = gridSize() * 2.0
+		heading = direction
 		isWalking = true
 		isJumping = true
+		movementProcessEnd()
 		return true
 	}
 
@@ -158,6 +244,8 @@ class CharacterMovement : Node() {
 
 	fun process(delta: Double) {
 		val node = body ?: return
+		// Comme l'`update` de PSDK : en l'air ou en marche, on avance ; arrêté mais en train de glisser, on repart.
+		if (!isWalking && isSliding) updateSliding()
 		if (!isWalking) return
 
 		// Un saut a son allure à lui : le même bond, qu'on arrive au pas ou en courant.
@@ -295,6 +383,7 @@ class CharacterMovement : Node() {
 	fun stop() {
 		isWalking = false
 		isJumping = false
+		isSliding = false
 		lift = 0.0
 		release()
 	}
@@ -320,6 +409,9 @@ private const val LEDGE_REACH = 2.0
 
 /** La donnée du TileSet qui dit dans quel sens une tuile de rebord se saute (un `Vector2i` ; nul : elle ne se saute pas). */
 private const val JUMP = "jump"
+
+/** La donnée du TileSet qui dit qu'une tuile est du verglas (un booléen) : on y glisse. */
+private const val ICE = "ice"
 
 /** L'allure d'un saut, en cases par seconde : deux cases en 0,4 s. */
 private const val JUMP_TILES_PER_SECOND = 5.0

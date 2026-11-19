@@ -103,6 +103,33 @@ func two_steps_from(from: Vector2i) -> Vector2i:
 			return from + d * 2
 	return from
 
+# La case est-elle du verglas ? C'est la donnee `ice` du TileSet, et c'est le calque de sol le
+# plus haut qui le dit (comme CharacterMovement.isIce).
+func is_ice(c: Vector2i) -> bool:
+	var background := level().get_node_or_null("Background")
+	if background == null:
+		return false
+	for i in range(background.get_child_count() - 1, -1, -1):
+		var layer := background.get_child(i) as TileMapLayer
+		if layer == null or layer.get_cell_source_id(c) == -1:
+			continue
+		var data := layer.get_cell_tile_data(c)
+		return data != null and data.get_custom_data("ice") == true
+	return false
+
+# Les cases qu'on traverse en faisant un pas de `a` dans le sens `d`, la derniere etant celle
+# ou l'on s'arrete : la voisine, et plus loin tant qu'on glisse sur du verglas. Vide : on ne
+# peut pas faire ce pas.
+func glide(a: Vector2i, d: Vector2i) -> Array:
+	var crossed: Array = []
+	var c := a
+	while can_step(c, c + d):
+		c += d
+		crossed.append(c)
+		if not is_ice(c):
+			break
+	return crossed
+
 func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
 	# Les bornes sont celles de la carte, a une case pres autour.
 	var ground: TileMapLayer = level().get_node_or_null("Background/Ground")
@@ -114,12 +141,18 @@ func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
 		if c == to:
 			break
 		for d in DIRS.keys():
-			var n: Vector2i = c + d
-			if not area.has_point(n) or prev.has(n) or (n in avoid and n != to):
+			# Un pas mene a la case voisine — ou plus loin, si l'on glisse : le chemin est fait des
+			# cases ou l'on s'arrete. Ce qu'on evite, on ne le traverse pas non plus en glissant.
+			var crossed := glide(c, d)
+			if crossed.is_empty():
 				continue
-			if can_step(c, n):
-				prev[n] = c
-				todo.append(n)
+			var n: Vector2i = crossed[-1]
+			if not area.has_point(n) or prev.has(n):
+				continue
+			if crossed.any(func(q): return q in avoid and q != to):
+				continue
+			prev[n] = c
+			todo.append(n)
 	if not prev.has(to):
 		return []
 	var path: Array = []
@@ -146,10 +179,11 @@ func walk(label: String, to: Vector2i, expect_change: bool, avoid: Array = []) -
 	var replans := 0
 	while not path.is_empty():
 		var target: Vector2i = path.pop_front()
-		var d: Vector2i = target - cell()
+		# La case voisine, ou plus loin dans le meme sens si l'on y glisse.
+		var d: Vector2i = (target - cell()).sign()
 		Input.action_press(DIRS[d])
 		var guard := 0
-		while guard < 240 and level_id() == id and cell() != target:
+		while guard < 600 and level_id() == id and cell() != target:
 			await process_frame
 			guard += 1
 		Input.action_release(DIRS[d])

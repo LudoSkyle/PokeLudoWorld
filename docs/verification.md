@@ -169,6 +169,12 @@ change.
 **Déplacer un élément du terrain, c'est reprendre les tests qui visent sa
 case.** En ajouter un se fait dans `build.py`, sur une case libre.
 
+Une quatrième carte du même script, **la glacière** (`tests/maps/ice.tscn`) :
+une petite salle de grotte de glace, une plaque de verglas de (12, 7) à
+(17, 9), un caillou rond dessus en (15, 8). Elle est à part du terrain parce
+qu'une plaque de verglas y aurait détourné les trajets des autres tests
+(`moves/ice_slide`).
+
 **Ne lancer que les tests de ce qu'on vient de toucher** : on déplace le
 pêcheur, on lance `fisher` et `collisions/npcs`, rien d'autre. Si un mécanisme
 partagé change (lecture des touches, portes, boîte de dialogue), lancer le

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fabrique les cartes de test : tests/maps/field.tscn, room.tscn et hall.tscn.
+"""Fabrique les cartes de test : tests/maps/field.tscn, room.tscn, hall.tscn et ice.tscn.
 
     python3 tests/maps/build.py
 
@@ -31,6 +31,21 @@ Le terrain (field), 24 × 16 cases, tient presque dans un écran :
 
 La cabane (room) a la musique du terrain, la salle (hall) a la sienne : de quoi vérifier
 qu'une musique continue d'une carte à l'autre, ou change.
+
+La glacière (ice) est une petite salle de grotte de glace, pour la glissade (tests/moves/ice_slide).
+Elle est à part du terrain parce qu'une plaque de verglas y aurait détourné les trajets des autres
+tests. Ses cases, dans la carte (la salle est posée en (10, 5)) :
+
+      1111111111222
+      0123456789012
+    5 #############    # le vide, qui arrête
+    6 #...........#    . le sol
+    7 #.,,,,,,....#    , le verglas, de (12, 7) à (17, 9)
+    8 #.,,,O,,....#    O un caillou rond posé dessus, en (15, 8)
+    9 #.,,,,,,#...#    # en (18, 9) : du vide au bout de la rangée du bas
+   10 #...........#
+   11 #...........#
+   12 #############
 
 Relancer le script redonne exactement les mêmes fichiers. Les cases sont celles que les
 tests visent : en déplacer une, c'est reprendre les tests qui s'en servent.
@@ -172,8 +187,40 @@ def interior(location, music, door):
     return '\n'.join(out) + '\n'
 
 
+# --- la glacière : une salle de grotte de glace, une plaque de verglas, un caillou dessus
+
+ICE = 16          # la source de la grotte de glace dans le TileSet (tools/ice_cave_tiles.py)
+ICE_VOID, ICE_FLOOR, ICE_ROCK = (ICE, 1, 8), (ICE, 1, 12), (ICE, 6, 1)          # le noir qui arrête, le sol, un caillou rond
+ICE_ROOM, ICE_PLATE, ICE_STONE, ICE_STOP = (10, 5, 13, 8), (12, 7, 6, 3), (15, 8), (18, 9)
+
+
+def ice():
+    ground = {(x, y): ICE_VOID for x in range(32) for y in range(20)}
+    rx, ry, rw, rh = ICE_ROOM
+    for x in range(rx + 1, rx + rw - 1):
+        for y in range(ry + 1, ry + rh - 1): ground[(x, y)] = ICE_FLOOR
+    px, py, pw, ph = ICE_PLATE
+    for i in range(pw):
+        for j in range(ph):          # la matière `earth…` : son bloc de 3 × 3 est en (5, 13) sur la planche
+            ground[(px + i, py + j)] = (ICE, 5 + (0 if i == 0 else 2 if i == pw - 1 else 1), 13 + (0 if j == 0 else 2 if j == ph - 1 else 1))
+    ground[ICE_STOP] = ICE_VOID
+    out = ['[gd_scene load_steps=2 format=4]\n',
+           '[ext_resource type="TileSet" path="%sresources/tilesets/level.tres" id="1_tileset"]\n' % RES,
+           '[node name="Level" type="Node2D"]\nmetadata/location = "Glacière"\nmetadata/banner = "cave"\nmetadata/daylight = false\n',
+           '[node name="Background" type="Node2D" parent="."]\n',
+           layer('Ground', 'Background', ground),
+           '[node name="World" type="Node2D" parent="."]\ny_sort_enabled = true\n',
+           layer('Props', 'World', {ICE_STONE: ICE_ROCK}, 'y_sort_enabled = true\n'),
+           '[node name="Entities" type="Node2D" parent="World"]\ny_sort_enabled = true\n',
+           '[node name="SpawnPoint" type="Node2D" parent="."]\nposition = %s\n' % pos(11, 6),
+           '[node name="Doors" type="Node2D" parent="."]\n',
+           '[node name="Triggers" type="Node2D" parent="."]\n',
+           '[node name="Readables" type="Node2D" parent="."]']
+    return '\n'.join(out) + '\n'
+
+
 if __name__ == '__main__':
-    for name, text in (('field', field()), ('room', interior('Cabane', 'new_bark_town', 'Cabane')), ('hall', interior('Salle', 'sprout_tower', 'Salle'))):
+    for name, text in (('field', field()), ('room', interior('Cabane', 'new_bark_town', 'Cabane')), ('hall', interior('Salle', 'sprout_tower', 'Salle')), ('ice', ice())):
         with open(os.path.join(HERE, name + '.tscn'), 'w', encoding='utf-8') as handle:
             handle.write(text)
-    print('field.tscn, room.tscn et hall.tscn ecrits dans tests/maps')
+    print('field.tscn, room.tscn, hall.tscn et ice.tscn ecrits dans tests/maps')
