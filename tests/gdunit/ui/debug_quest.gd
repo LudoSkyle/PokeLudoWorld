@@ -1,0 +1,58 @@
+extends "res://tests/gdunit/game_suite.gd"
+
+# L'entree Debug du menu fait avancer la quete de la cloche, etape par etape ou d'un coup.
+
+func scene() -> String:
+	return "start_island"
+
+func start() -> Vector2i:
+	return Vector2i(34, 47)
+
+func test_debug_quest() -> void:
+	if game == null:
+		return
+	await menu_pick("Debug")
+	var tools := debug_lines()
+	check("Debug ouvre ses outils", debug_choices().visible and tools.size() == 9 and tools[0] == "Remplir le sac" and tools[1] == "Quêtes" and tools[2].begins_with("Heure : ") and tools[3].begins_with("Météo : ") and tools[4] == "Pokédex national" and tools[5] == "Remplir le Pokédex" and tools[6] == "Terrain d'essai" and tools[7] == "Vitesse : x1" and tools[8] == "Retour", str(tools))
+	shot("debug_outils")
+	await tap("ui_down")
+	await tap("interact")
+	check("Quetes liste les quetes : une ligne par quete", debug_lines() == ["La cloche de la Veillée", "Retour"], str(debug_lines()))
+	await tap("interact")
+	check("une quete choisie, on peut la remettre a zero, la faire avancer, la finir", debug_lines() == ["Repartir de zéro", "Étape suivante", "Finir la quête", "Retour"], str(debug_lines()))
+	shot("debug_quete")
+	await tap("menu")
+	check("la touche du menu remonte d'une page", debug_lines() == ["La cloche de la Veillée", "Retour"] and debug_choices().visible)
+	await tap("menu")
+	check("encore d'une page", debug_lines().size() == 9 and debug_lines()[1] == "Quêtes")
+	await tap("menu")
+	check("puis referme les outils, pas le menu", not debug_choices().visible and menu_open())
+	await tap("menu")
+	check("puis le menu", not menu_open())
+	await debug_tool(1)
+	check("suite : la premiere etape est posee, elle seule", flag("bell_told") and not flag("bell_register"))
+	await debug_tool(1)
+	await debug_tool(1)
+	check("deux de plus : on a trouve la cloche ternie", flag("bell_register") and flag("bell_tarnished") and not flag("bell_clean"))
+	await menu_pick("Bag")
+	await tap("ui_right")
+	check("le sac suit : le Registre et la Cloche ternie", bag_rows() == ["Registre poussiéreux", "Cloche ternie", "Retour"], str(bag_rows()))
+	await tap("menu")
+	await tap("menu")
+	await debug_tool(2)
+	check("fin : tous les drapeaux sont poses", flag("bell_clean") and flag("bell_ribbon") and flag("bell_hung"))
+	check("la carte s'est rechargee : la cloche est sur son socle, Meme est la", node("World/BellStand") != null and node("World/Entities/OdileAfter") != null)
+	await menu_pick("Bag")
+	await tap("ui_right")
+	check("le sac suit : plus de cloche, le Ruban en plus", bag_rows() == ["Registre poussiéreux", "Ruban de la Veillée", "Retour"], str(bag_rows()))
+	await tap("menu")
+	await tap("menu")
+	await menu_pick("Debug")
+	await tap("ui_down")
+	await tap("interact")
+	await tap("interact")
+	await tap("ui_down")
+	await tap("interact")
+	await secs(1.5)
+	check("une fois finie, Debug le dit", box_text() == "« La cloche de la Veillée » : la quête est déjà terminée.", box_text())
+	await close_box()

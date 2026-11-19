@@ -103,6 +103,36 @@ la classe testée ne doit appeler aucune fonction du moteur (elle peut en
 importer les types). Tout ce qui a besoin d'une scène, d'une image ou d'une
 touche reste dans `tests/`, ci-dessous. `./gradlew build` les lance aussi.
 
+## Les mêmes tests, sur gdUnit4 (à l'essai)
+
+`tests/gdunit/` reprend les 157 tests joués au clavier sur **gdUnit4**
+(`addons/gdUnit4`, version 6.2.3) : `tests/gdunit/run.sh [dossier|fichier]`.
+Toute la suite y passe en **deux minutes** au lieu de trois quarts d'heure.
+
+- `tests/gdunit/game_suite.gd` est `tests/lib.gd` porté — mêmes outils, mêmes
+  noms ; `check()` y est une assertion. Un test ne change que par son en-tête
+  et le nom de sa fonction (`test_<fichier>`).
+- **Un seul Godot** pour toute la suite : le jeu est monté avant chaque test et
+  démonté après. `Globals.fresh_start()` remet à neuf ce qu'un lancement
+  garde (réglages, emplacement de sauvegarde, temps qu'il fait).
+- **Le jeu avance à pas fixe** (`--fixed-fps 60`), aussi vite que la machine le
+  peut. C'est possible parce que tout ce qui se règle sur du temps suit
+  **l'horloge du jeu** (`GameClock.kt`) et non la montre : les shaders
+  (`game_time` à la place de `TIME`), la répétition des touches, la fin d'un
+  jingle ou d'un cri. Les tests attendent eux aussi en temps de jeu (`secs()`,
+  `ticks()`).
+- **Sans fenêtre** (`--headless`) pour tout ce qui ne lit pas l'image : rien ne
+  s'ouvre. Les quelques tests qui la lisent (`reads_screen()`, ajouté à ceux
+  qui appellent `get_image()`) se jouent ensuite dans **une** fenêtre, ouverte
+  une fois, que gdUnit4 ne réduit pas (`addons/gdUnit4/PATCHES.md`) et qu'on ne
+  ramène jamais devant.
+- Sans `-- --test`, la suite refuse de monter le jeu : il écrirait dans les
+  vraies sauvegardes.
+
+L'ancien lanceur (`tests/run.sh`) et ses fichiers restent en place tant que
+celui-ci est à l'essai : un test s'écrit dans `tests/<dossier>/`, puis se porte
+avec `python3 tests/gdunit/port.py . <dossier>`, qui réécrit `tests/gdunit/`.
+
 ## Les tests : un sujet par fichier
 
 Un test vérifie **une seule chose** — un dialogue, une porte, une pièce, un

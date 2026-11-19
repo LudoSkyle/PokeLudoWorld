@@ -1,0 +1,18 @@
+extends "res://tests/gdunit/game_suite.gd"
+
+# Un meuble examinable change de texte avec l'histoire, comme un PNJ.
+
+func start() -> Vector2i:
+	return Vector2i(14, 8)
+
+func test_readable_states() -> void:
+	if game == null:
+		return
+	await spawn("readable", "Shelf", Vector2i(14, 7), {
+		"text": "Des registres rangés par année.",
+		"states": PackedStringArray(["test_taken > Il y a un vide dans la rangée."]),
+	})
+	check("le meuble occupe sa case", not is_free(Vector2i(14, 7)))
+	await examine("sans drapeau", Vector2i(14, 8), "registres")
+	set_flag("test_taken")
+	await examine("drapeau pose", Vector2i(14, 8), "un vide")

@@ -1,0 +1,20 @@
+extends "res://tests/gdunit/game_suite.gd"
+
+# Sortir de la maison orange du nord par le paillasson.
+
+# Case ou l'on arrive sur l'ile, devant la porte MaisonNord : à renseigner
+# quand cette porte sera posee sur start_island. Tant qu'elle vaut (-1, -1),
+# le controle d'arrivee echoue : c'est voulu.
+const ISLAND_ARRIVAL := Vector2i(17, 10)
+
+func scene() -> String:
+	return "orange_house_north"
+
+func start() -> Vector2i:
+	return Vector2i(15, 13)
+
+func test_orange_north_exit() -> void:
+	if game == null:
+		return
+	await hold_until_change("Bas sur le paillasson", "ui_down")
+	await arrival("ile devant la maison orange du nord", ISLAND_ARRIVAL, "idle_down")

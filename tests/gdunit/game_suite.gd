@@ -1,0 +1,880 @@
+extends GdUnitTestSuite
+
+# Outils communs aux tests joues au clavier, pour gdUnit4. Chaque test herite de ce fichier et
+# ecrit une fonction test_<sujet>().
+#
+# C'est tests/lib.gd, porte : memes outils, memes noms. Ce qui change :
+#   - c'est gdUnit4 qui lance (addons/gdUnit4), compte et rapporte ; check() est une assertion ;
+#   - le jeu est monte avant chaque test (before_test) et demonte apres (after_test), dans le
+#     meme Godot : on ne relance plus le moteur a chaque test ;
+#   - on attend en TEMPS DE JEU (ticks(), secs()), jamais a l'horloge : lance avec --fixed-fps,
+#     le jeu avance d'un soixantieme de seconde par image, aussi vite que la machine le peut.
+#
+# Un test est PETIT : un dialogue, une porte, une piece, un deplacement. Il demarre directement
+# sur sa carte et sa case (scene() et start()). Ce placement est une mise en place ; tout ce qui
+# est VERIFIE se joue avec de vraies entrees clavier.
+
+const VP := "Control/Frame/SubViewportContainer/SubViewport"
+const LEVELS := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/levels/"
+const MAPS := "res://tests/maps/"
+# Une case libre du terrain d'essai, loin de son point d'apparition : la ou plant_save pose le joueur.
+const SAVE_CELL := Vector2i(10, 2)
+const DIRS := {Vector2i(0, -1): "ui_up", Vector2i(0, 1): "ui_down",
+	Vector2i(-1, 0): "ui_left", Vector2i(1, 0): "ui_right"}
+const STAIR_MAT := Vector2i(11, 8)
+const EXIT_MAT := Vector2i(15, 14)
+
+var game: Node
+var failures := 0
+
+# Carte de depart : le terrain d'essai (tests/maps/field.tscn) pour tout ce qui verifie le
+# systeme du jeu ; sinon le nom d'un fichier de scenes/levels, sans extension, pour ce qui
+# verifie une carte du jeu.
+func scene() -> String:
+	return "field"
+
+# Le chemin de la scene d'une carte : une carte de test si elle existe sous ce nom, sinon une
+# carte du jeu.
+func scene_path(name: String) -> String:
+	var mine := MAPS + name + ".tscn"
+	return mine if ResourceLoader.exists(mine) else LEVELS + name + ".tscn"
+
+# Case de depart. (-1, -1) = la ou la carte fait apparaitre le joueur.
+func start() -> Vector2i:
+	return Vector2i(-1, -1)
+
+# Passer par l'ecran titre, comme au vrai lancement ? Les tests arrivent d'ordinaire
+# directement sur leur carte ; ceux de l'ecran titre repondent true.
+func title() -> bool:
+	return false
+
+func wait(n: int) -> void:
+	for i in n:
+		await get_tree().process_frame
+
+# Attend en SECONDES : les images ne durent pas pareil sur tous les ecrans.
+func secs(t: float) -> void:
+	var end := ticks() + int(t * 1000.0)
+	while ticks() < end:
+		await get_tree().process_frame
+
+func level() -> Node2D:
+	return game.get_node_or_null(VP + "/Level")
+
+func level_id() -> int:
+	return -1 if level() == null else level().get_instance_id()
+
+func player() -> Node2D:
+	var l := level()
+	return null if l == null else l.get_node_or_null("World/Entities/Player")
+
+func cell() -> Vector2i:
+	var p := player().position
+	return Vector2i(floori(p.x / 16.0), floori(p.y / 16.0))
+
+func is_free(c: Vector2i) -> bool:
+	var q := PhysicsPointQueryParameters2D.new()
+	q.collide_with_bodies = true
+	q.collide_with_areas = false
+	q.collision_mask = 1
+	q.position = level().global_position + Vector2(c.x * 16 + 8, c.y * 16 + 8)
+	return level().get_world_2d().direct_space_state.intersect_point(q, 1).is_empty()
+
+# Un rebord (le bord haut d'un plateau) separe-t-il ces deux cases voisines ? Les deux se
+# foulent, mais on ne passe pas de l'une a l'autre : la tuile porte une bande fine sur la
+# couche physique 8, que le deplacement cherche de part et d'autre de la frontiere.
+func ledge_between(a: Vector2i, b: Vector2i) -> bool:
+	var step := Vector2(b - a)
+	var border: Vector2 = level().global_position + Vector2(a.x * 16 + 8, a.y * 16 + 8) + step * 8.0
+	for off in [-2.0, 2.0]:
+		var q := PhysicsPointQueryParameters2D.new()
+		q.collide_with_bodies = true
+		q.collide_with_areas = false
+		q.collision_mask = 8
+		q.position = border + step * off
+		if not level().get_world_2d().direct_space_state.intersect_point(q, 1).is_empty():
+			return true
+	return false
+
+# Peut-on faire un pas de a vers sa voisine b ?
+func can_step(a: Vector2i, b: Vector2i) -> bool:
+	return is_free(b) and not ledge_between(a, b)
+
+# Une case libre a deux pas de celle-ci, en ligne droite : de quoi s'eloigner d'un point de depart.
+func two_steps_from(from: Vector2i) -> Vector2i:
+	for d in DIRS.keys():
+		if can_step(from, from + d) and can_step(from + d, from + d * 2):
+			return from + d * 2
+	return from
+
+# La case est-elle du verglas ? C'est la donnee `ice` du TileSet, et c'est le calque de sol le
+# plus haut qui le dit (comme CharacterMovement.isIce).
+func is_ice(c: Vector2i) -> bool:
+	var background := level().get_node_or_null("Background")
+	if background == null:
+		return false
+	for i in range(background.get_child_count() - 1, -1, -1):
+		var layer := background.get_child(i) as TileMapLayer
+		if layer == null or layer.get_cell_source_id(c) == -1:
+			continue
+		var data := layer.get_cell_tile_data(c)
+		return data != null and data.get_custom_data("ice") == true
+	return false
+
+# Les cases qu'on traverse en faisant un pas de `a` dans le sens `d`, la derniere etant celle
+# ou l'on s'arrete : la voisine, et plus loin tant qu'on glisse sur du verglas. Vide : on ne
+# peut pas faire ce pas.
+func glide(a: Vector2i, d: Vector2i) -> Array:
+	var crossed: Array = []
+	var c := a
+	while can_step(c, c + d):
+		c += d
+		crossed.append(c)
+		if not is_ice(c):
+			break
+	return crossed
+
+func find_path(from: Vector2i, to: Vector2i, avoid: Array = []) -> Array:
+	# Les bornes sont celles de la carte, a une case pres autour.
+	var ground: TileMapLayer = level().get_node_or_null("Background/Ground")
+	var area := Rect2i(-1, -1, 47, 27) if ground == null else ground.get_used_rect().grow(1)
+	var prev := {from: from}
+	var todo: Array = [from]
+	while not todo.is_empty():
+		var c: Vector2i = todo.pop_front()
+		if c == to:
+			break
+		for d in DIRS.keys():
+			# Un pas mene a la case voisine — ou plus loin, si l'on glisse : le chemin est fait des
+			# cases ou l'on s'arrete. Ce qu'on evite, on ne le traverse pas non plus en glissant.
+			var crossed := glide(c, d)
+			if crossed.is_empty():
+				continue
+			var n: Vector2i = crossed[-1]
+			if not area.has_point(n) or prev.has(n):
+				continue
+			if crossed.any(func(q): return q in avoid and q != to):
+				continue
+			prev[n] = c
+			todo.append(n)
+	if not prev.has(to):
+		return []
+	var path: Array = []
+	var c: Vector2i = to
+	while c != from:
+		path.push_front(c)
+		c = prev[c]
+	return path
+
+func check(label: String, ok: bool, detail: String = "") -> void:
+	if not ok:
+		failures += 1
+	# Un contrôle raté ne coupe pas le test : les suivants se jouent, et tous sont rapportés.
+	assert_bool(ok).override_failure_message("%s  %s" % [label, detail]).is_true()
+
+func shot(name: String) -> void:
+	if DisplayServer.get_name() == "headless":
+		return          # sans écran, rien n'est dessiné
+	get_tree().root.get_texture().get_image().save_png("user://w_%s.png" % name)
+
+func walk(label: String, to: Vector2i, expect_change: bool, avoid: Array = []) -> void:
+	var path := find_path(cell(), to, avoid)
+	check(label + " : chemin trouve", cell() == to or not path.is_empty(), "%d pas" % path.size())
+	if path.is_empty() and cell() != to:
+		return
+	var id := level_id()
+	var replans := 0
+	while not path.is_empty():
+		var target: Vector2i = path.pop_front()
+		# La case voisine, ou plus loin dans le meme sens si l'on y glisse.
+		var d: Vector2i = (target - cell()).sign()
+		Input.action_press(DIRS[d])
+		var guard := 0
+		while guard < 600 and level_id() == id and cell() != target:
+			await get_tree().process_frame
+			guard += 1
+		Input.action_release(DIRS[d])
+		await wait(3)
+		if level_id() != id:
+			break
+		# Un PNJ qui bouge a pu se mettre en travers : on recalcule la route.
+		if cell() != target and replans < 20:
+			replans += 1
+			await wait(20)
+			path = find_path(cell(), to, avoid)
+	if expect_change:
+		var guard2 := 0
+		while guard2 < 300 and level_id() == id:
+			await get_tree().process_frame
+			guard2 += 1
+		check(label + " : la carte a change", level_id() != id)
+		await wait(90)
+	else:
+		await wait(45)
+		check(label + " : arrive sur la case", cell() == to, str(cell()))
+		check(label + " : PAS de changement de carte", level_id() == id)
+
+func hold_until_change(label: String, action: String) -> void:
+	var id := level_id()
+	Input.action_press(action)
+	var guard := 0
+	while guard < 300 and level_id() == id:
+		await get_tree().process_frame
+		guard += 1
+	Input.action_release(action)
+	check(label + " : la carte a change", level_id() != id)
+	await wait(90)
+
+func hold_no_change(label: String, action: String) -> void:
+	var id := level_id()
+	var c := cell()
+	Input.action_press(action)
+	await wait(70)
+	Input.action_release(action)
+	await wait(20)
+	check(label + " : PAS de changement de carte", level_id() == id)
+	check(label + " : reste sur place", cell() == c, str(cell()))
+
+func face_left_and_shoot(name: String) -> void:
+	Input.action_press("ui_left"); await wait(2); Input.action_release("ui_left"); await wait(12)
+	shot(name)
+
+func examine(label: String, from: Vector2i, expected: String, facing: String = "ui_up") -> void:
+	# marche jusqu'a la case, se tourne d'une pression breve, examine
+	await walk(label + " : approche", from, false)
+	Input.action_press(facing); await wait(2); Input.action_release(facing); await wait(6)
+	Input.action_press("interact"); await wait(2); Input.action_release("interact")
+	await wait(150)
+	var box: Control = game.get_node(VP + "/MessageBox/Control/Box")
+	var text: String = game.get_node(VP + "/MessageBox/Control/Box/Text").text
+	if expected == "":
+		check(label + " : rien a lire", not box.visible, text)
+	else:
+		check(label + " : la boite s'ouvre", box.visible)
+		check(label + " : dit ce qu'il faut", text.to_lower().contains(expected), text)
+		print("     > " + text)
+	var n := 0
+	while box.visible and n < 12:
+		Input.action_press("interact"); await wait(2); Input.action_release("interact"); await wait(60)
+		n += 1
+	check(label + " : la boite est refermee", not box.visible)
+	check(label + " : on n'a pas bouge", cell() == from, str(cell()))
+
+func arrival(label: String, expected: Vector2i, anim: String) -> void:
+	var p0 := player().position
+	await wait(80)
+	var p1 := player().position
+	var sprite: AnimatedSprite2D = player().get_node("Sprite")
+	check(label + " : arrive en %s" % str(expected), cell() == expected, "case %s" % str(cell()))
+	check(label + " : immobile apres l'arrivee", p0 == p1, "%s -> %s" % [p0, p1])
+	check(label + " : regarde du bon cote", str(sprite.animation) == anim, str(sprite.animation))
+	check(label + " : case d'arrivee libre", is_free(cell()))
+	shot(label.replace(" ", "_").replace("'", ""))
+
+func hold_and_count_changes(action: String, seconds: float) -> int:
+	# maintient une touche sans la relacher et compte les changements de carte
+	var last := level_id()
+	var changes := 0
+	Input.action_press(action)
+	var end := ticks() + int(seconds * 1000.0)
+	while ticks() < end:
+		await get_tree().process_frame
+		if level_id() != last and level_id() != -1:
+			changes += 1
+			last = level_id()
+	Input.action_release(action)
+	await wait(20)
+	return changes
+
+func enter(label: String, door: Vector2i) -> void:
+	await walk(label, door, true)
+
+# --- PNJ
+
+const ENT := VP + "/Level/World/Entities/"
+
+func npc(n: String) -> Node2D:
+	return game.get_node(ENT + n)
+
+func anim(n: String) -> String:
+	return str(npc(n).get_node("Sprite").animation)
+
+func box() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Box")
+
+func box_text() -> String:
+	return game.get_node(VP + "/MessageBox/Control/Box/Text").text
+
+func tap(action: String) -> void:
+	Input.action_press(action); await wait(2); Input.action_release(action); await wait(8)
+
+func close_box() -> void:
+	var n := 0
+	while box().visible and n < 12:
+		Input.action_press("interact"); await wait(2); Input.action_release("interact"); await wait(60)
+		n += 1
+
+func talk(label: String, from: Vector2i, facing: String, who: String, expected: String, npc_anim: String) -> void:
+	await walk(label + " : approche", from, false)
+	await tap(facing)
+	Input.action_press("interact"); await wait(2); Input.action_release("interact")
+	await wait(150)
+	check(label + " : la boite s'ouvre", box().visible)
+	check(label + " : dit ce qu'il faut", box_text().to_lower().contains(expected), box_text())
+	check(label + " : se tourne vers nous", anim(who) == npc_anim, anim(who))
+	await close_box()
+	check(label + " : la boite est refermee", not box().visible)
+	check(label + " : on n'a pas bouge", cell() == from, str(cell()))
+
+func cell_of(n: String) -> Vector2i:
+	var p := npc(n).position
+	return Vector2i(floori(p.x / 16.0), floori(p.y / 16.0))
+
+# Vrai quand le PNJ est pose sur un centre de case (pas au milieu d'un pas).
+func resting(n: String) -> bool:
+	var p := npc(n).position
+	return is_equal_approx(fmod(p.x, 16.0), 8.0) and is_equal_approx(fmod(p.y, 16.0), 8.0)
+
+# --- menu de pause
+
+func menu() -> Node:
+	return game.get_node(VP + "/PauseMenu")
+
+func menu_open() -> bool:
+	return game.get_node(VP + "/PauseMenu/Control/Menu").visible
+
+# Ligne (0, 1, 2...) en face de laquelle le curseur est dessine.
+func menu_cursor_line() -> int:
+	var cursor: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Cursor")
+	var list: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Entries")
+	var middle := cursor.position.y + cursor.size.y / 2.0 - list.position.y
+	return floori(middle / 64.0)
+
+# Nom du noeud de l'entree en face du curseur : Bag, Options, Quit.
+func menu_selected() -> String:
+	var list: Control = game.get_node(VP + "/PauseMenu/Control/Menu/Entries")
+	var line := menu_cursor_line()
+	return "" if line < 0 or line >= list.get_child_count() else str(list.get_child(line).name)
+
+# Ouvre le menu s'il est ferme, descend jusqu'a l'entree nommee (Bag, Save,
+# Options, Quit) et la valide.
+func menu_pick(entry: String) -> void:
+	# Le menu ne s'ouvre qu'entre deux pas : si la touche est tombee pendant un pas qui finissait, on la redonne.
+	var tries := 0
+	while not menu_open() and tries < 4:
+		await tap("menu")
+		tries += 1
+	var n := 0
+	while menu_selected() != entry and n < 8:
+		await tap("ui_down")
+		n += 1
+	await tap("interact")
+
+func options_open() -> bool:
+	return game.get_node(VP + "/OptionsMenu/Control/Screen").visible
+
+# Nom du choix de vitesse affiche en rouge : Half, One, Two, Four.
+func options_speed() -> String:
+	var red := ""
+	for label in game.get_node(VP + "/OptionsMenu/Control/Screen/Rows/TextSpeed/Choices").get_children():
+		if label.get_theme_color("font_color").r > 0.8:
+			red += str(label.name)
+	return red
+
+# Nom du choix de langue affiche en rouge : French, English.
+func options_language() -> String:
+	var red := ""
+	for label in game.get_node(VP + "/OptionsMenu/Control/Screen/Rows/Language/Choices").get_children():
+		if not str(label.name).begins_with("PixelShadow") and label.get_theme_color("font_color").r > 0.8:
+			red += str(label.name)
+	return red
+
+func letter_seconds() -> float:
+	return game.get_node(VP + "/MessageBox").seconds_per_letter
+
+# --- bandeau de lieu
+
+func banner() -> Control:
+	return game.get_node(VP + "/LocationBanner/Control/Panel")
+
+func banner_text() -> String:
+	return game.get_node(VP + "/LocationBanner/Control/Panel/Name").text
+
+# Regarde le bandeau pendant t secondes : [est apparu, texte, hauteur la plus basse]
+func watch_banner(t: float, name: String = "") -> Array:
+	var shown := false
+	var text := ""
+	var lowest := -999.0
+	var end := ticks() + int(t * 1000.0)
+	while ticks() < end:
+		await get_tree().process_frame
+		if banner().visible:
+			shown = true
+			text = banner_text()
+			if banner().position.y > lowest:
+				lowest = banner().position.y
+				if name != "" and lowest >= 24.0:
+					shot(name); name = ""
+	return [shown, text, lowest]
+
+func test() -> void:
+	pass
+
+# Lance le jeu. load_save = reprendre la sauvegarde de test, comme au vrai
+# lancement ; sinon on part de scene() et start().
+func boot(load_save: bool) -> void:
+	var packed: PackedScene = load("res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/core/game_manager.tscn")
+	game = packed.instantiate()
+	var scenes := game.get_node(VP + "/SceneManager")
+	scenes.start_scene = scene_path(scene())
+	scenes.load_save = load_save
+	scenes.show_title = title()
+	get_tree().root.add_child(game)
+	# Aucune rencontre sauvage par hasard : un test qui traverse l'herbe ne doit
+	# pas s'arreter sur une boite. Ceux qui en veulent une la demandent.
+	force_encounters(0)
+	await wait(20)
+
+# Quitte le jeu et le relance en reprenant la sauvegarde.
+func relaunch() -> void:
+	get_tree().root.remove_child(game)
+	game.free()
+	await wait(5)
+	await boot(true)
+
+# --- ecran titre (les tests qui s'en servent repondent true a title())
+
+func title_screen() -> CanvasLayer:
+	return game.get_node(VP + "/TitleScreen")
+
+func title_shown() -> bool:
+	return title_screen().visible
+
+func title_prompt() -> Node2D:
+	return title_screen().get_node("Control/Prompt")
+
+# L'ecran de selection des parties, ouvert par « Press Enter ».
+func slots() -> Control:
+	return title_screen().get_node("Control/Slots")
+
+# Les cartes, dans l'ordre : ["Save1", "New", "Options"].
+func slot_cards() -> Array:
+	return Array(slots().card_names().split(",", false))
+
+# La carte choisie, au milieu de l'ecran.
+func slot_selected() -> String:
+	return slots().selected_name()
+
+func slot_card(name: String) -> Control:
+	return slots().get_node("Strip/" + name)
+
+# Continuer / Effacer / Retour, puis Oui / Non.
+func slot_choices() -> Control:
+	return slots().get_node("Choices")
+
+# Les reponses affichees dans la boite de choix d'une partie.
+func slot_answers() -> Array:
+	var rows: Array = []
+	for label in slot_choices().get_node("Entries").get_children():
+		if label.visible:
+			rows.append(label.text)
+	return rows
+
+# Attend la fin de l'arrivee de l'ecran titre : « Press Enter » s'affiche.
+func title_ready() -> void:
+	var end := ticks() + 4000
+	while ticks() < end and not title_prompt().visible:
+		await get_tree().process_frame
+	await wait(4)
+
+# Ouvre la selection des parties si elle est fermee, et amene la carte nommee au milieu.
+func slot_go(card: String) -> void:
+	if not slots().visible:
+		await title_ready()
+		await tap("interact")
+	var n := 0
+	while slot_selected() != card and n < 6:
+		await tap("ui_right")
+		n += 1
+	var end := ticks() + 2000
+	while ticks() < end and not slots().is_settled():
+		await get_tree().process_frame
+
+# Choisit une carte et la valide : "New" lance une nouvelle partie, "Options" ouvre les options,
+# "Save1" ouvre ses reponses et prend la premiere, Continuer.
+func title_pick(card: String) -> void:
+	await slot_go(card)
+	await tap("interact")
+	if card.begins_with("Save"):
+		await tap("interact")
+
+# Attend que la partie soit lancee : la carte est la, le noir du fondu s'est leve.
+func title_gone() -> void:
+	var end := ticks() + 5000
+	while ticks() < end and (level() == null or game.get_node(VP + "/Fade/Rect").color.a > 0.0):
+		await get_tree().process_frame
+	await wait(10)
+
+# --- sac
+
+func bag(path: String) -> Node:
+	return game.get_node(VP + "/BagMenu/Control/Screen/" + path)
+
+func bag_open() -> bool:
+	return game.get_node(VP + "/BagMenu/Control/Screen").visible
+
+# Les lignes non vides de la liste, avec leur quantite : ["Potion x3", "Retour"]
+func bag_rows() -> Array:
+	var rows: Array = []
+	for i in 9:
+		var name: String = bag("Names/Row%d" % i).text
+		var amount: String = bag("Amounts/Row%d" % i).text
+		if name != "":
+			rows.append(name if amount == "" else name + " " + amount)
+	return rows
+
+# Ligne (0..8) en face de laquelle le curseur du sac est dessine.
+func bag_line() -> int:
+	var cursor: Control = bag("Cursor")
+	return floori((cursor.position.y + cursor.size.y / 2.0 - bag("Names").position.y) / 64.0)
+
+# Fait avancer un dialogue d'une pression — sauf pendant qu'un objet rare est
+# montre : cette boite-la passe seule. Y presser quand meme, c'est risquer que
+# la pression tombe a l'instant ou la boite se ferme : le joueur reexaminerait
+# ce qui est devant lui, et recevrait l'objet une seconde fois.
+func press_unless_revealing() -> void:
+	if reveal().visible:
+		await get_tree().process_frame
+		return
+	await tap("interact")
+	await secs(0.2)
+
+# Remplit le sac par l'entree Debug du menu (premier outil), comme le ferait le joueur :
+# huit objets (x3 a x10), des Poke Balls (x11) et deux objets rares.
+func fill_bag() -> void:
+	await menu_pick("Debug")
+	await tap("interact")
+	# Le premier message se passe a la touche ; les deux objets rares
+	# s'annoncent ensuite et passent tout seuls, sans tenir compte des touches.
+	var end := ticks() + 30000
+	while ticks() < end and box().visible:
+		await press_unless_revealing()
+	await wait(10)
+
+func bag_choices() -> Control:
+	return bag("Choices")
+
+# Les reponses proposees par la boite de choix du sac : ["Jeter", "Annuler"]
+func bag_answers() -> Array:
+	var answers: Array = []
+	for label in bag("Choices/Entries").get_children():
+		if label.visible:
+			answers.append(label.text)
+	return answers
+
+func reveal() -> Control:
+	return game.get_node(VP + "/ItemReveal/Control/Panel")
+
+# --- sauvegarde
+
+func save_summary() -> Control:
+	return game.get_node(VP + "/SaveMenu/Control/Summary")
+
+func save_choices() -> Control:
+	return game.get_node(VP + "/SaveMenu/Control/Choices")
+
+# La sauvegarde de test d'un emplacement (1 a 3) ; sans ecran titre, on joue sur le premier.
+func save_path(slot: int = 1) -> String:
+	return "user://test_save_%d.cfg" % slot
+
+func saved_file(slot: int = 1) -> ConfigFile:
+	var file := ConfigFile.new()
+	file.load(save_path(slot))
+	return file
+
+# La case du joueur notee dans la sauvegarde d'un emplacement. Le jeu ecrit des cases (`cell_x`,
+# `cell_y`, format 2) ; une partie posee par plant_save est a l'ancien format, en pixels.
+func saved_cell(slot: int = 1) -> Vector2i:
+	var file := saved_file(slot)
+	if file.has_section_key("save", "cell_x"):
+		return Vector2i(int(file.get_value("save", "cell_x", -1)), int(file.get_value("save", "cell_y", -1)))
+	return Vector2i(floori(float(file.get_value("save", "x", -16.0)) / 16.0), floori(float(file.get_value("save", "y", -16.0)) / 16.0))
+
+# Pose une sauvegarde toute faite dans un emplacement : une mise en place, pour les tests qui
+# ont besoin de parties existantes sans les jouer. A appeler avant relaunch().
+func plant_save(slot: int, where: String = "Terrain d'essai", seconds: float = 0.0) -> void:
+	var file := ConfigFile.new()
+	file.set_value("save", "scene", MAPS + "field.tscn")
+	file.set_value("save", "x", SAVE_CELL.x * 16 + 8)
+	file.set_value("save", "y", SAVE_CELL.y * 16 + 8)
+	file.set_value("save", "facing_x", 0.0)
+	file.set_value("save", "facing_y", 1.0)
+	file.set_value("save", "location", where)
+	file.set_value("save", "banner", "")
+	file.set_value("save", "seconds", seconds)
+	file.save(save_path(slot))
+
+# Attend que la question soit ecrite et que Oui/Non apparaisse.
+func wait_choices() -> void:
+	var end := ticks() + 4000
+	while ticks() < end and not save_choices().visible:
+		await get_tree().process_frame
+	await wait(4)
+
+# --- drapeaux d'histoire
+
+func flag(name: String) -> bool:
+	return get_tree().root.get_node("Globals").has_flag(name)
+
+func set_flag(name: String) -> void:
+	get_tree().root.get_node("Globals").set_flag(name)
+
+# --- rencontres sauvages
+
+# 1 : chaque pas dans l'herbe donne une rencontre ; 0 : aucun ; -1 : le hasard.
+func force_encounters(mode: int) -> void:
+	get_tree().root.get_node("Globals").force_encounters(mode)
+
+func encounters() -> int:
+	return get_tree().root.get_node("Globals").encounters()
+
+# Le dernier Pokemon rencontre, "espece:niveau" ; vide s'il n'y en a pas eu.
+func last_encounter() -> String:
+	return get_tree().root.get_node("Globals").last_encounter()
+
+# n tirages "espece:niveau" dans une table ecrite comme sur une carte.
+func wild_draws(table: String, n: int, seed_value: int = 1) -> Array:
+	var drawn: String = get_tree().root.get_node("Globals").wild_draws(table, n, seed_value)
+	return [] if drawn == "" else Array(drawn.split(","))
+
+func wild_errors(table: String) -> String:
+	return get_tree().root.get_node("Globals").wild_errors(table)
+
+# --- noeuds de test
+#
+# Les briques de quete se verifient sans scenario : le test pose lui-meme un
+# PNJ, un meuble, un panneau ou un passage sur la carte, avec ses reglages.
+
+const SCENES := "res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/"
+const SPAWNABLE := {
+	"npc": [SCENES + "characters/npc.tscn", "World/Entities"],
+	"readable": [SCENES + "levels/readable.tscn", "World"],
+	"sign": [SCENES + "levels/sign.tscn", "World"],
+	"roadblock": [SCENES + "levels/roadblock.tscn", "Triggers"],
+	# Un Pokemon volant : sur l'ile il vit sous "Sky", que le terrain d'essai n'a pas.
+	"flyer": [SCENES + "levels/flyer.tscn", "World"],
+}
+
+# Pose un noeud sur une case. props : ses proprietes telles qu'un .tscn les
+# ecrit (snake_case). Renvoie le noeud ; s'il a quitte la carte de lui-meme,
+# is_instance_valid(noeud) est faux.
+func spawn(kind: String, name: String, at: Vector2i, props: Dictionary = {}) -> Node:
+	var node: Node2D = load(SPAWNABLE[kind][0]).instantiate()
+	node.name = name
+	for key in props:
+		if not key in node:
+			check("%s : la propriete %s existe" % [name, key], false)
+		node.set(key, props[key])
+	node.position = Vector2(at.x * 16 + 8, at.y * 16 + 8)
+	level().get_node(SPAWNABLE[kind][1]).add_child(node)
+	await wait(4)
+	return node
+
+# --- question dans un dialogue
+
+func ask_choices() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Choices")
+
+# Attend que la question soit ecrite et que Oui/Non apparaisse.
+func wait_ask() -> void:
+	var end := ticks() + 4000
+	while ticks() < end and not ask_choices().visible:
+		await get_tree().process_frame
+	await wait(4)
+
+# Ligne (0 = Oui, 1 = Non) en face de laquelle le curseur de la question est dessine.
+func ask_line() -> int:
+	var cursor: Control = ask_choices().get_node("Cursor")
+	return floori((cursor.position.y + cursor.size.y / 2.0 - ask_choices().get_node("Entries").position.y) / 64.0)
+
+# Se tourne vers la case voisine et l'examine, sans rien verifier.
+func interact_facing(facing: String) -> void:
+	await tap(facing)
+	await tap("interact")
+
+# Attend qu'un texte soit entierement ecrit dans la boite (au plus t secondes).
+func wait_text(expected: String, t: float = 9.0) -> void:
+	var end := ticks() + int(t * 1000.0)
+	while ticks() < end and box_text() != expected:
+		await get_tree().process_frame
+	await wait(2)
+
+# Met un objet dans le sac comme le ferait un dialogue : un panneau de test
+# pose sur la case voisine le donne par @give:, puis disparait.
+func receive(item: String, at: Vector2i, facing: String) -> void:
+	var giver := await spawn("sign", "TestGiver", at, {"text": "@give:%s Objet de test." % item})
+	await interact_facing(facing)
+	var end := ticks() + 12000
+	while ticks() < end and box().visible:
+		await press_unless_revealing()
+	giver.free()
+	await wait(4)
+
+# Recharge la carte comme le fait la consigne @reload d'un dialogue : c'est
+# la que se decide qui s'y trouve selon les drapeaux.
+func reload_level() -> void:
+	var id := level_id()
+	game.get_node(VP + "/SceneManager").reload()
+	var end := ticks() + 4000
+	while ticks() < end and level_id() == id:
+		await get_tree().process_frame
+	await secs(0.6)
+
+# Pose le joueur sur une case, entre deux parties d'un test (mise en place).
+func place(c: Vector2i) -> void:
+	player().position = Vector2(c.x * 16 + 8, c.y * 16 + 8)
+	await wait(10)
+
+func node(path: String) -> Node:
+	return level().get_node_or_null(path)
+
+# --- encart du nom, au-dessus de la boite de dialogue
+
+func speaker_tag() -> Control:
+	return game.get_node(VP + "/MessageBox/Control/Speaker")
+
+# Le nom affiche, ou "" si l'encart est cache.
+func speaker_name() -> String:
+	return speaker_tag().get_node("Name").text if speaker_tag().visible else ""
+
+# La couleur du nom : "red", "blue", ou "ink" pour l'encre ordinaire du texte.
+func speaker_color() -> String:
+	var c: Color = speaker_tag().get_node("Name").get_theme_color("font_color")
+	if c.r > 0.7 and c.b < 0.3: return "red"
+	if c.b > 0.7 and c.r < 0.3: return "blue"
+	return "ink"
+
+# --- outils de l'entree Debug
+
+func debug_choices() -> Control:
+	return game.get_node(VP + "/PauseMenu/Control/DebugChoices")
+
+# Ouvre Debug et valide son outil numero n (0 = remplir le sac, 1 = quete : suite,
+# 2 = quete : fin), puis passe le message et attend le rechargement eventuel.
+func debug_tool(n: int) -> void:
+	# Debug > Quetes > la premiere quete > l'action. n : 1 = etape suivante, 2 = finir, 3 = repartir de zero.
+	await menu_pick("Debug")
+	await tap("ui_down")
+	await tap("interact")
+	await tap("interact")
+	for i in {1: 1, 2: 2, 3: 0}[n]:
+		await tap("ui_down")
+	await tap("interact")
+	await secs(1.2)
+	var id := level_id()
+	var said := box_text()
+	var reloads := said.ends_with("une étape de plus.") or said.ends_with("la quête est terminée.") or said.ends_with("la quête repart de zéro.")
+	await close_box()
+	if reloads:
+		var end := ticks() + 4000
+		while ticks() < end and level_id() == id:
+			await get_tree().process_frame
+		await secs(0.6)
+
+# Les lignes visibles de la boite de Debug.
+func debug_lines() -> Array:
+	var lines := []
+	for label in debug_choices().get_node("Entries").get_children():
+		if label.visible:
+			lines.append(label.text)
+	return lines
+
+# --- son
+
+func audio() -> Node:
+	return game.get_node(VP + "/AudioManager")
+
+# Attend la fin du jingle en cours : tant qu'il joue, le dialogue ne passe pas a la suite.
+func wait_jingle() -> void:
+	var end := ticks() + 9000
+	while ticks() < end and audio().jingle_playing():
+		await get_tree().process_frame
+	await wait(4)
+
+# --- jour et nuit
+
+# Impose une heure au jeu (0 a 24) ; une valeur negative rend la main a l'horloge reelle.
+func set_hour(h: float) -> void:
+	get_tree().root.get_node("Globals").set_hour(h)
+	await wait(4)
+
+# La teinte du jour sur la carte courante, ou blanc si la carte n'en porte pas.
+func daylight() -> Color:
+	var sky := level().get_node_or_null("Daylight")
+	return Color.WHITE if sky == null else sky.color
+
+# Ce test lit-il l'image a l'ecran ? Sans fenetre rien n'est dessine : ceux-la se jouent a part, dans une fenetre.
+func reads_screen() -> bool:
+	return false
+
+# --- le temps du jeu
+
+var _clock := 0.0
+
+func _process(delta: float) -> void:
+	_clock += delta
+
+# Le temps de jeu ecoule, en millisecondes : ce que comptait l'horloge quand le jeu tournait en temps reel.
+func ticks() -> int:
+	return int(_clock * 1000.0)
+
+# --- monter et demonter le jeu, autour de chaque test
+
+# Le jeu n'ecrit dans des fichiers de test que lance avec « -- --test » (GameFiles.kt). Sans cela, un
+# test qui sauvegarde ecraserait la partie du joueur : on refuse de monter le jeu.
+func in_test_mode() -> bool:
+	return "--test" in OS.get_cmdline_user_args()
+
+func before_test() -> void:
+	failures = 0
+	if not in_test_mode():
+		fail("le jeu n'est pas en mode test : relancer avec « -- --test » (tests/gdunit/run.sh)")
+		return
+	get_tree().root.size = Vector2i(1280, 960)
+	# Etat neuf a chaque test : ni reglages ni sauvegarde d'un test precedent.
+	# Ce sont des fichiers de test, ceux du joueur ne sont jamais touches.
+	for file in ["user://test_settings.cfg", "user://test_save.cfg", save_path(1), save_path(2), save_path(3)]:
+		if FileAccess.file_exists(file):
+			DirAccess.remove_absolute(file)
+	for action in InputMap.get_actions():
+		Input.action_release(action)
+	# Un test qui lit l'image a besoin d'une fenetre que le systeme dessine vraiment : on l'attend, a l'horloge
+	# (c'est le systeme qu'on attend, pas le jeu). On ne la rouvre ni ne la ramene devant : run.sh la lance une
+	# fois, sans que gdUnit4 la reduise.
+	if reads_screen() and DisplayServer.get_name() != "headless":
+		var limit := Time.get_ticks_msec() + 8000
+		while not DisplayServer.window_can_draw() and Time.get_ticks_msec() < limit:
+			await get_tree().process_frame
+		if not DisplayServer.window_can_draw():
+			fail("la fenetre du jeu n'est pas dessinee (reduite, ou entierement cachee ?) : ce test lit l'image")
+			return
+		await wait(30)
+	# Un lancement neuf : reglages relus, premier emplacement, ciel degage.
+	get_tree().root.get_node("Globals").fresh_start()
+	# Les tests se jouent en plein jour, sauf ceux qui imposent une autre heure.
+	get_tree().root.get_node("Globals").set_hour(12.0)
+	await boot(false)
+	if start() != Vector2i(-1, -1):
+		player().position = Vector2(start().x * 16 + 8, start().y * 16 + 8)
+		await wait(10)
+
+func after_test() -> void:
+	if not in_test_mode():
+		return
+	for action in InputMap.get_actions():
+		Input.action_release(action)
+	if is_instance_valid(game):
+		get_tree().root.remove_child(game)
+		game.free()
+	game = null
+	await wait(5)

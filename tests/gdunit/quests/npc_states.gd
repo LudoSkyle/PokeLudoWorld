@@ -1,0 +1,25 @@
+extends "res://tests/gdunit/game_suite.gd"
+
+# Un PNJ dit le texte de la derniere etape atteinte ; sans drapeau, son texte par defaut.
+
+func start() -> Vector2i:
+	return Vector2i(14, 8)
+
+func test_npc_states() -> void:
+	if game == null:
+		return
+	await spawn("npc", "Teller", Vector2i(14, 7), {
+		"text": "Texte par défaut.",
+		"states": PackedStringArray(["test_a > Texte de l'étape A.|Seconde boîte de A.", "test_b > Texte de l'étape B."]),
+	})
+	await talk("sans drapeau", Vector2i(14, 8), "ui_up", "Teller", "texte par défaut", "idle_down")
+	set_flag("test_a")
+	await tap("interact")
+	await secs(1.5)
+	check("premier drapeau : le texte de son etape", box_text() == "Texte de l'étape A.", box_text())
+	await tap("interact")
+	await secs(1.5)
+	check("la barre separe toujours deux boites", box_text() == "Seconde boîte de A.", box_text())
+	await close_box()
+	set_flag("test_b")
+	await talk("deux drapeaux : la derniere etape gagne", Vector2i(14, 8), "ui_up", "Teller", "étape b", "idle_down")
