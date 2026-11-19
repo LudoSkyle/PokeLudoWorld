@@ -57,8 +57,8 @@ objects = '''
 ....................................................
 ....................................................
 ....................................D...............
+...........C........................................
 ....................................................
-..........C.........................................
 ....................................................
 .............................................B......
 ....................................................
@@ -89,58 +89,61 @@ objects = '''
 '''
 
 props = '''
-spire 26 11
-spire 11 22
-pebbleA 29 15
-pebbleA 27 28
-spire 37 11
-spire 20 29
-spire 31 27
-spire 37 24
-spire 33 17
-pebbleA 16 13
-pebbleA 45 16
-spire 31 20
-pebbleA 21 13
-pebbleA 18 21
-pebbleA 14 25
-spire 23 10
-spire 39 21
-pebbleA 23 18
-spire 23 23
-spire 26 22
-spire 17 26
-spire 30 11
+roundA 10 15
+roundB 10 19
+roundA 42 17
+pebbleA 33 10
+spire 24 10
+pebbleA 21 32
+pebbleA 13 11
+pebbleA 40 13
+spire 21 19
+spire 15 25
+spire 30 15
+pebbleA 32 20
+pebbleA 37 25
+spire 19 27
+spire 24 23
+spire 21 13
+spire 28 27
+spire 38 22
+pebbleA 12 22
 pebbleA 27 17
-pebbleA 41 13
-pebbleA 35 27
+spire 45 16
+pebbleA 17 20
+pebbleA 30 11
+pebbleA 16 13
+spire 10 12
+spire 33 17
+pebbleA 37 11
+spire 26 20
 roundA 18 17
 roundB 19 13
 roundA 24 20
 roundB 28 31
 roundA 39 25
-ladder 12 10
-hole 19 27
-crack 28 27
-crack 31 14
-crack 22 15
-crack 37 21
-crack 11 21
-crack 24 28
-crack 21 29
-crack 12 14
-crack 38 15
+ladder 39 12
+hole 24 18
+crack 20 22
+crack 36 19
+crack 30 23
 crack 35 16
-crack 25 16
-crack 14 23
-crack 32 21
-crack 39 18
-crack 29 22
-crack 17 24
-crack 23 25
-crack 21 21
-crack 33 25
-crack 26 24
+crack 24 14
+crack 21 17
+crack 27 23
+crack 17 23
+crack 33 13
+crack 25 27
+crack 19 26
+crack 14 24
+crack 35 26
+crack 39 16
+crack 33 20
+crack 12 21
+crack 35 23
+crack 32 16
+crack 12 13
+crack 31 26
 '''
 
 [map]

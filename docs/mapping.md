@@ -363,9 +363,20 @@ Elles confirment trois choses déjà écrites, et en précisent trois :
   s'atteint qu'en la traversant — c'est là qu'on met un objet, une échelle.
   Une halle sans passage à barrer n'a pas de verglas ; on n'en pose pas une
   flaque au milieu du sol pour faire joli.
-- **Plus tard**, on y glissera, et des rochers ronds et des crevasses y
-  arrêteront (les plaques de l'exemple font 20 à 150 cases) : c'est l'énigme
-  de la carte, on dit par où elle se résout.
+- **On y glisse** ([player.md](player.md), porté de Pokémon SDK) : tout droit,
+  jusqu'à buter ou jusqu'à la première case de sol. Atteindre n'y est donc
+  plus réciproque, et trois choses en découlent :
+  - **une plaque se traverse dans les deux sens, et l'on n'y reste jamais
+    coincé** : de chaque case où l'on s'arrête, on regagne le départ. Le
+    constructeur calcule « ce qu'on atteint à pied » en glissant
+    (`build.glide`), le générateur refuse une plaque qui ne tient pas la
+    règle, et le contrôleur la mesure (règle G) ;
+  - **rien au bord d'une plaque** : un caillou ou un objet sur une case de sol
+    qui la touche change l'endroit où l'on s'arrête ;
+  - **sur une grande plaque, un ou deux cailloux ronds** : contre eux on
+    s'arrête, et de là on repart dans un autre sens — le début d'un
+    casse-tête. Les plaques de l'exemple font 20 à 150 cases, les nôtres 6 à
+    56 ; les crevasses de la planche ne sont pas encore posées.
 
 ### Désert
 
