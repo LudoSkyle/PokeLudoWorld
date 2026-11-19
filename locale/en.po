@@ -1034,3 +1034,18 @@ msgstr "Weight"
 
 msgid "Pokémon ?????"
 msgstr "????? Pokémon"
+
+msgid "Terrain d'essai"
+msgstr "Test field"
+
+msgid "Vitesse : x1"
+msgstr "Speed: x1"
+
+msgid "Vitesse : x2"
+msgstr "Speed: x2"
+
+msgid "Vitesse : x4"
+msgstr "Speed: x4"
+
+msgid "Vitesse : x8"
+msgstr "Speed: x8"

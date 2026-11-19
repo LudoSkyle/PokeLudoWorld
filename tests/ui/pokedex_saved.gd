@@ -15,7 +15,7 @@ func line(n: int) -> String:
 
 func test() -> void:
 	await menu_pick("Debug")
-	check("la boite de Debug a sept lignes, Retour en dernier", debug_lines().size() == 7 and debug_lines()[5] == "Remplir le Pokédex" and debug_lines()[6] == "Retour", str(debug_lines()))
+	check("la boite de Debug a neuf lignes, Retour en dernier", debug_lines().size() == 9 and debug_lines()[5] == "Remplir le Pokédex" and debug_lines()[8] == "Retour", str(debug_lines()))
 	shot("debug_sept_lignes")
 	for i in 5:
 		await tap("ui_down")
