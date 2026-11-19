@@ -20,7 +20,7 @@ func test() -> void:
 	check("une seconde plus tard tout est ferme, menu compris", not box().visible and not save_summary().visible and not menu_open())
 	var file := saved_file()
 	check("carte enregistree", str(file.get_value("save", "scene", "")).ends_with("field.tscn"), str(file.get_value("save", "scene", "")))
-	check("case enregistree", file.get_value("save", "x", 0.0) == 22 * 16 + 8 and file.get_value("save", "y", 0.0) == 4 * 16 + 8, "%s %s" % [file.get_value("save", "x", 0.0), file.get_value("save", "y", 0.0)])
+	check("case enregistree", saved_cell() == Vector2i(22, 4), str(saved_cell()))
 	check("regard enregistre", file.get_value("save", "facing_y", 0.0) == -1.0, str(file.get_value("save", "facing_y", 0.0)))
 	check("lieu enregistre", file.get_value("save", "location", "") == "Terrain d'essai", str(file.get_value("save", "location", "")))
 	await walk("on remarche ensuite", Vector2i(21, 4), false)

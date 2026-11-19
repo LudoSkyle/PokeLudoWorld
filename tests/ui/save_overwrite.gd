@@ -23,7 +23,7 @@ func test() -> void:
 	await tap("ui_down")
 	await tap("interact")
 	check("Non : retour au menu", menu_open() and not save_summary().visible)
-	check("Non : l'ancienne sauvegarde est intacte", saved_file().get_value("save", "x", 0.0) == 22 * 16 + 8, str(saved_file().get_value("save", "x", 0.0)))
+	check("Non : l'ancienne sauvegarde est intacte", saved_cell().x == 22, str(saved_cell()))
 
 	await menu_pick("Save")
 	await wait_choices()
@@ -32,6 +32,6 @@ func test() -> void:
 	await tap("interact")
 	await secs(0.6)
 	check("Oui deux fois : sauvegarde faite", box_text() == "La partie est sauvegardée.", box_text())
-	check("la nouvelle place est enregistree", saved_file().get_value("save", "x", 0.0) == 20 * 16 + 8, str(saved_file().get_value("save", "x", 0.0)))
+	check("la nouvelle place est enregistree", saved_cell().x == 20, str(saved_cell()))
 	await secs(1.6)
 	check("tout est ferme", not box().visible and not menu_open())

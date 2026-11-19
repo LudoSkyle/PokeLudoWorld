@@ -22,7 +22,7 @@ func test() -> void:
 	# Un Pokemon pose sur la carte lit le fichier de son espece : il n'y a pas de planche a part pour les PNJ.
 	var posed: AnimatedSprite2D = game.get_node(ENT + "Corphish/Sprite")
 	var his: String = posed.sprite_frames.get_frame_texture("idle_down", 0).atlas.resource_path
-	check("Ecrapince lit le fichier de son espece, au pixel du jeu, pose au bas de sa case", his.ends_with("assets/pokemon/overworld/corphish.png") and posed.scale == Vector2(1, 1) and posed.position == Vector2(0, -8), "%s %s" % [his, posed.position])
+	check("Ecrapince lit le fichier de son espece, a l'echelle des Pokemon (0,9), pose au bas de sa case", his.ends_with("assets/pokemon/overworld/corphish.png") and posed.scale.is_equal_approx(Vector2(0.9, 0.9)) and posed.position.is_equal_approx(Vector2(0, 8.0 - 16.0 * posed.scale.y)), "%s %s %s" % [his, posed.scale, posed.position])
 	shot("island_corphish")
 	check("Ecrapince est en haut a droite du gamin aux coquillages", cell_of("Corphish") == cell_of("ShellKid") + Vector2i(1, -1), str(cell_of("Corphish")))
 	var quiet: int = audio().cries_played()

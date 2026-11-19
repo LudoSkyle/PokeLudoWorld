@@ -352,8 +352,11 @@ func menu_selected() -> String:
 # Ouvre le menu s'il est ferme, descend jusqu'a l'entree nommee (Bag, Save,
 # Options, Quit) et la valide.
 func menu_pick(entry: String) -> void:
-	if not menu_open():
+	# Le menu ne s'ouvre qu'entre deux pas : si la touche est tombee pendant un pas qui finissait, on la redonne.
+	var tries := 0
+	while not menu_open() and tries < 4:
 		await tap("menu")
+		tries += 1
 	var n := 0
 	while menu_selected() != entry and n < 8:
 		await tap("ui_down")
@@ -581,6 +584,14 @@ func saved_file(slot: int = 1) -> ConfigFile:
 	var file := ConfigFile.new()
 	file.load(save_path(slot))
 	return file
+
+# La case du joueur notee dans la sauvegarde d'un emplacement. Le jeu ecrit des cases (`cell_x`,
+# `cell_y`, format 2) ; une partie posee par plant_save est a l'ancien format, en pixels.
+func saved_cell(slot: int = 1) -> Vector2i:
+	var file := saved_file(slot)
+	if file.has_section_key("save", "cell_x"):
+		return Vector2i(int(file.get_value("save", "cell_x", -1)), int(file.get_value("save", "cell_y", -1)))
+	return Vector2i(floori(float(file.get_value("save", "x", -16.0)) / 16.0), floori(float(file.get_value("save", "y", -16.0)) / 16.0))
 
 # Pose une sauvegarde toute faite dans un emplacement : une mise en place, pour les tests qui
 # ont besoin de parties existantes sans les jouer. A appeler avant relaunch().
