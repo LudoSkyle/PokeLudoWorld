@@ -519,14 +519,14 @@ func bag_open() -> bool:
 # Les lignes non vides de la liste, avec leur quantite : ["Potion x3", "Retour"]
 func bag_rows() -> Array:
 	var rows: Array = []
-	for i in 6:
+	for i in 9:
 		var name: String = bag("Names/Row%d" % i).text
 		var amount: String = bag("Amounts/Row%d" % i).text
 		if name != "":
 			rows.append(name if amount == "" else name + " " + amount)
 	return rows
 
-# Ligne (0..5) en face de laquelle le curseur du sac est dessine.
+# Ligne (0..8) en face de laquelle le curseur du sac est dessine.
 func bag_line() -> int:
 	var cursor: Control = bag("Cursor")
 	return floori((cursor.position.y + cursor.size.y / 2.0 - bag("Names").position.y) / 64.0)

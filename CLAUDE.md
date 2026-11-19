@@ -58,9 +58,9 @@ dans la planche des montagnes, `ice_cave_tiles.py` fabrique
 `assets/levels/ice_cavern.png` — la grotte de glace, un kit à plateaux qui
 se superposent — dans la planche de la grotte de glace,
 `gamedata.py` sort du pack de données (`vendor/GameDataPacks`) les sprites,
-icônes, cris et données des 1025 espèces, et les icônes des objets,
+icônes, portraits, cris et données des 1025 espèces, et les icônes des objets,
 `weather_sheets.py` les planches de `assets/weather/`. Les trois
-`title_*.py` dessinent les images de l'écran titre. **`tools/mapgen/` fait les cartes, en deux programmes** :
+`title_*.py` dessinent les images de l'écran titre, `bag_background.py` porte le fond du sac à la taille de l'écran. **`tools/mapgen/` fait les cartes, en deux programmes** :
 `build.py`, **le constructeur**, assemble un plan (`plans/<carte>.toml` : tout
 ce qu'il y a sur la carte, case par case) avec un décor (`themes/<décor>.toml` :
 quelle tuile dessine quoi) — sans rien décider ni tirer au hasard ;

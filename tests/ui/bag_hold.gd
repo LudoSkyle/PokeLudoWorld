@@ -8,7 +8,7 @@ func test() -> void:
 	Input.action_press("ui_down")
 	await secs(1.6)
 	Input.action_release("ui_down")
-	check("Bas tenu : on arrive tout en bas, sur Retour", bag_rows()[5] == "Retour" and bag_line() == 5 and bag("Description").text == "Refermer le sac.", str(bag_rows()))
+	check("Bas tenu : on arrive tout en bas, sur Retour", bag_rows()[8] == "Retour" and bag_line() == 8 and bag("Description").text == "Refermer le sac.", str(bag_rows()))
 	check("la liste ne boucle pas : on y reste", not bag("ScrollDown").visible)
 	shot("sac_bas_tenu")
 	Input.action_press("ui_up")
