@@ -409,7 +409,7 @@ class MessageBox : CanvasLayer() {
 				}
 				"flag" -> StoryFlags.set(name)
 				"sound" -> AudioManager.instance?.jingle(name)
-				"cry" -> AudioManager.instance?.cry(name)
+				"cry" -> AudioManager.instance?.cry(name, force = true)          // celui à qui l'on parle s'entend toujours
 			}
 			text = rest
 		}

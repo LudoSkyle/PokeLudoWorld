@@ -260,10 +260,14 @@ class AudioManager : Node() {
 	 * [volume] de 0 à 1. Un seul cri à la fois : si un autre joue encore, celui-ci
 	 * est passé sous silence et la fonction renvoie false — deux oiseaux qui
 	 * crient ensemble ne se couvrent pas.
+	 *
+	 * [force] : ce cri-là doit s'entendre, il **coupe** celui qui joue. C'est le
+	 * cri qu'on a demandé — on parle à un Pokémon, on ouvre sa fiche du Pokédex —,
+	 * pas celui d'un oiseau qui passe.
 	 */
-	fun cry(species: String, volume: Double = 1.0): Boolean {
+	fun cry(species: String, volume: Double = 1.0, force: Boolean = false): Boolean {
 		val voice = cryPlayer ?: return false
-		if (voice.playing) return false
+		if (voice.playing && !force) return false
 		val stream = load("cries/$species") ?: return false
 		voice.stream = stream
 		cryVolume = volume
