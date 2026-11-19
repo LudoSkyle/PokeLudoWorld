@@ -61,6 +61,18 @@ object Settings {
 
 	private var loaded = false
 
+	/**
+	 * Oublie ce qui est en mémoire et relit le fichier : les réglages d'un lancement neuf. Sert aux tests,
+	 * qui jouent plusieurs parties dans le même lancement.
+	 */
+	fun reload() {
+		loaded = false
+		textSpeed = DEFAULT_TEXT_SPEED
+		language = 0
+		volumes.fill(VOLUME_STEPS)
+		load()
+	}
+
 	fun load() {
 		if (loaded) return
 		loaded = true

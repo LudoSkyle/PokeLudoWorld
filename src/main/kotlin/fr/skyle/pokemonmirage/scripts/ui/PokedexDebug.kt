@@ -11,7 +11,7 @@ import godot.api.Input
 import godot.api.Label
 import godot.api.ResourceLoader
 import godot.api.Texture2D
-import godot.api.Time
+import fr.skyle.pokemonmirage.scripts.core.GameClock
 import godot.api.TextureRect
 import godot.core.Rect2
 import godot.core.Vector2
@@ -127,7 +127,7 @@ class PokedexDebug : CanvasLayer() {
 		val all = NationalDex.all
 		val entry = all.getOrNull(selected) ?: return
 		// Une espèce se montre d'abord de face.
-		shownAt = Time.getTicksMsec()
+		shownAt = GameClock.msec()
 		facing = 0
 		if (selected < top) top = selected
 		if (selected >= top + ROWS) top = selected - ROWS + 1
@@ -152,7 +152,7 @@ class PokedexDebug : CanvasLayer() {
 	 * droite. C'est ce qui laisse vérifier ses quatre côtés sans quitter la fiche.
 	 */
 	private fun turn() {
-		val side = (((Time.getTicksMsec() - shownAt) / TURN_MS) % 4).toInt()
+		val side = (((GameClock.msec() - shownAt) / TURN_MS) % 4).toInt()
 		if (side == facing) return
 		facing = side
 		showWalker(NationalDex.all.getOrNull(selected) ?: return)

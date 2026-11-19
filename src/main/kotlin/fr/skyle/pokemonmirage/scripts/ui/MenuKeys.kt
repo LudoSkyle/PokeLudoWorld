@@ -3,7 +3,7 @@ package fr.skyle.pokemonmirage.scripts.ui
 import fr.skyle.pokemonmirage.scripts.core.AudioManager
 import godot.api.Engine
 import godot.api.Input
-import godot.api.Time
+import fr.skyle.pokemonmirage.scripts.core.GameClock
 
 /**
  * Touches des menus avec **répétition** : une pression déplace le curseur
@@ -39,7 +39,7 @@ object MenuKeys {
 		if (key.frame == frame) return key.fired
 		key.frame = frame
 
-		val now = Time.getTicksMsec()
+		val now = GameClock.msec()
 		key.fired = when {
 			Input.isActionJustPressed(action) -> {
 				key.armed = true
