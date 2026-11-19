@@ -12,3 +12,6 @@ Thumbs.db
 
 # Python
 __pycache__/
+
+# Rapports de gdUnit4 (tests/gdunit/run.sh)
+/reports/
