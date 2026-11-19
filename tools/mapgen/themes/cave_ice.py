@@ -21,7 +21,8 @@ AT = kit.atlas()
 ASSETS = 'src/main/kotlin/fr/skyle/pokemonmirage/assets/levels/'
 
 lines = ['# Le décor « grotte de glace ». Fabriqué par tools/mapgen/themes/cave_ice.py : ne pas modifier à la main.', '',
-         'name = "cave_ice"', '',
+         'name = "cave_ice"',
+         'slick = "earth"          # on glisse sur cette matière : le verglas (la donnée `ice` de ses tuiles)', '',
          '# Les planches : leur numéro de source dans le TileSet (resources/tilesets/level.tres), et l\'image, pour l\'aperçu.',
          '[sources]',
          'main = { id = %d, sheet = "%sice_cavern.png" }' % (kit.SOURCE_ID, ASSETS),

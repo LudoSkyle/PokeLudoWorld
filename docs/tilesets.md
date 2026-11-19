@@ -685,8 +685,16 @@ case) :
   **sur le dessus du grand plateau, là où le petit ne le couvre pas** — le
   dessus uni d'un éperon, d'un massif épais, d'un redan (les quatorze de
   l'exemple y sont tous) —, ou **sur le verglas**, où ils serviront d'obstacles
-  aux casse-têtes. Le générateur les pose sur les parois ; il n'en met pas
-  encore sur le verglas, faute de glissade.
+  aux casse-têtes. Le générateur les pose sur les parois, et un ou deux sur
+  chaque grande plaque de verglas — seulement là où l'on traverse toujours,
+  dans les deux sens.
+
+**Le verglas se déclare dans le TileSet** : la donnée perso **`ice`**
+(`custom_data_layer_3`, booléen), posée par `ice_cave_tiles.py` sur toute la
+matière `earth…`, bords compris. C'est elle que lit le déplacement
+(`CharacterMovement.isIce`, [player.md](player.md)) ; le décor, lui, dit au
+constructeur que cette matière glisse (`slick = "earth"` dans
+`cave_ice.toml`).
 
 **Le petit plateau s'écarte sous un caillou.** Là où le petit plateau couvre
 le grand — toute la paroi du tour, jusqu'à son flanc —, le constructeur retire

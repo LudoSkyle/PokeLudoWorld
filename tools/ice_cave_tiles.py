@@ -39,6 +39,7 @@ OUTPUT = os.path.join(LEVELS, 'ice_cavern.png')
 TILESET = os.path.join(os.path.dirname(LEVELS.rstrip('/')), '..', 'resources', 'tilesets', 'level.tres')
 RES = 'res://src/main/kotlin/fr/skyle/pokemonmirage/'
 SOURCE_ID, TEXTURE_ID = 16, '11_ice_cavern'
+ICE_LAYER = 3          # la couche de données perso `ice` du TileSet (0 `sand`, 1 `water`, 2 `jump`)
 COPIED = (11, 16)          # ce qui est repris tel quel de la planche source : ses onze premières colonnes, seize rangées
 
 # Les matières à bords — nom : (colonne, rangée) du bloc 3 x 3, (colonne, rangée) de ses coins rentrants 2 x 2, et
@@ -92,6 +93,11 @@ def blocks(name):
     return name.startswith('tall') or name == 'void5'
 
 
+def slick(name):
+    """Glisse-t-on sur cette tuile ? Le verglas : toute la matière `earth…`, bords compris (la donnée `ice` du TileSet)."""
+    return name.startswith('earth')
+
+
 def sheet():
     src = load(SOURCE)[2]
     cols, rows = COPIED[0] + 4, COPIED[1]
@@ -134,6 +140,7 @@ def source():
         solid = blocks(names[where])
         if solid: out.append('%s/next_alternative_id = 2' % key)
         out.append('%s/0 = 0' % key)
+        if slick(names[where]): out.append('%s/0/custom_data_%d = true' % (key, ICE_LAYER))          # on y glisse (CharacterMovement.kt)
         if solid: out += ['%s/0/physics_layer_0/polygon_0/points = %s' % (key, polygon([(0, 0)])), '%s/1 = 1' % key]          # la variante 1 : le même dessin, sans collision
     return '\n'.join(out) + '\n'
 
@@ -144,6 +151,10 @@ def patch_tileset(write):
     s = re.sub(r'\[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ice_cavern"\]\n(?:[^\[\n][^\n]*\n)*\n?', '', s)
     s = re.sub(r'^sources/%d = [^\n]*\n' % SOURCE_ID, '', s, flags=re.M)
     texture = '[ext_resource type="Texture2D" path="%sassets/levels/ice_cavern.png" id="%s"]' % (RES, TEXTURE_ID)
+    if 'custom_data_layer_%d/name = "ice"' % ICE_LAYER not in s:          # la donnée du verglas : un booléen (type 1), après celle des rebords
+        last = 'custom_data_layer_%d/type = 6\n' % (ICE_LAYER - 1)
+        assert s.count(last) == 1
+        s = s.replace(last, last + 'custom_data_layer_%d/name = "ice"\ncustom_data_layer_%d/type = 1\n' % (ICE_LAYER, ICE_LAYER))
     if texture not in s:
         cavern = '[ext_resource type="Texture2D" path="%sassets/levels/cavern.png" id="10_cavern"]' % RES
         assert s.count(cavern) == 1
