@@ -193,14 +193,18 @@ class Npc : CharacterBody2D() {
 			inConversation = false
 			if (movement == "static") faceHome()
 		}
-		if (!isWalking && !isHeld()) {
+		// Sur le verglas un PNJ glisse comme le joueur (PSDK : « every instance of
+		// Game_Character slide on it ») : tant qu'il glisse il ne décide de rien.
+		val sliding = mover?.isSliding == true
+		if (!isWalking && !sliding && !isHeld()) {
 			when (movement) {
 				"wander" -> wander(delta)
 				"patrol" -> patrol()
 			}
 		}
 
-		sprite?.refresh(direction, isWalking)
+		// Et il glisse sans remuer les jambes.
+		sprite?.refresh(direction, isWalking && !sliding)
 	}
 
 	fun face(newDirection: Vector2) {

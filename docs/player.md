@@ -125,6 +125,68 @@ Pour qu'une tuile se saute : lui donner la donnée `jump` et une collision
 pleine. Sur la Route 1 c'est le générateur qui l'écrit.
 `tests/run.sh route_ledges`.
 
+## Glisser sur le verglas
+
+Sur une case de verglas on ne s'arrête pas : on **glisse tout droit**, sans que
+les touches comptent, jusqu'à **buter** — une paroi, un caillou, un personnage
+— ou jusqu'à **la première case qui n'est plus du verglas**. Contre un obstacle
+on est arrêté *sur* le verglas, et l'on repart de là dans le sens qu'on veut.
+
+**C'est porté de Pokémon SDK** (`Game_Character`, dans
+`scripts/4 Systems/003 Map Engine/2 Logic/50 RMXP/` de
+gitlab.com/pokemonsdk/pokemonsdk, version 26.62), en gardant ses méthodes et
+leurs noms, dans `CharacterMovement.kt` :
+
+| PSDK | Chez nous | Ce que ça fait |
+|---|---|---|
+| `@sliding` | `isSliding` | vrai tant qu'on glisse |
+| `movement_process_end` | `movementProcessEnd()` | au **départ** d'un pas : si la case où il mène est du verglas, on glisse — dès ce pas-ci |
+| `update_sliding` | `updateSliding()` | un pas fini, on en refait un devant soi |
+| `can_slide?` | `canSlide()` | tant qu'on se tient sur du verglas |
+| `move_down`… qui échoue : `@sliding = false` | `tryWalk` refusé | la case de devant ne se passe pas : la glissade est finie |
+| `stop_slide` | `stopSlide()` | on n'est plus sur du verglas : finie aussi |
+| `@no_slide` | `no_slide` (export) | ce personnage marche sur le verglas comme ailleurs |
+| `:begin_slide`, `:end_slide` | — | deux événements que PSDK émet et que rien n'écoute chez lui : pas de son, pas de particules. Rien chez nous non plus |
+
+- **Les jambes ne bougent pas**, du pas qui entre sur le verglas au pas qui en
+  sort (PSDK fige `@pattern`) : `Player` et `Npc` passent `false` à
+  `CharacterAnimation.refresh` tant que `isSliding`.
+- **Pas d'allure à part** : on garde celle du pas qui a fait entrer, marche ou
+  course.
+- **Tant qu'on glisse, rien n'est lu ni déclenché** : ni direction, ni menu,
+  ni interaction, ni passage gardé, ni rencontre. Tout reprend à l'arrêt, sur
+  la case où l'on s'est posé.
+- **Tout le monde glisse** : le joueur, un PNJ (`Npc` ne décide de rien tant
+  qu'il glisse), et le Pokémon qui suit, puisqu'il refait les pas du joueur.
+  Un PNJ marqué `no_slide` marche sur le verglas (le `[noslide=on]` de PSDK).
+- **Ce qui est du verglas se déclare dans le TileSet** : la donnée perso `ice`
+  ([tilesets.md](tilesets.md)). Rien n'est codé en dur.
+
+Trois écarts voulus :
+
+- PSDK fait glisser « en avant », dans le sens où le personnage **regarde** ;
+  nous dans le sens de son **dernier pas** (`heading`). C'est pareil en
+  marchant, et juste pour un personnage qu'une scène fait reculer.
+- **Quel calque dit que c'est du verglas.** Chez PSDK (`Game_Map#system_tag`)
+  c'est le premier calque, en partant du haut, qui porte **un tag** : une
+  tuile sans tag posée sur la glace ne change rien, et il faut la tuile
+  `StopSlide` pour arrêter. Chez nous c'est **le calque de sol le plus haut**,
+  tagué ou non — la règle qu'ont déjà le sable et l'eau : une tuile à plat
+  posée sur le verglas (une crevasse, une passerelle) arrête, sans tuile à
+  part.
+- **Le Pokémon qui suit** n'a pas de déplacement à lui : il refait les pas du
+  joueur, et fige son image tant que **le joueur** glisse, pas quand lui-même
+  est sur la glace (une case d'écart).
+
+Conséquence pour les cartes : sur le verglas, **atteindre n'est plus
+réciproque** — on peut traverser une plaque dans un sens et pas dans l'autre,
+ou s'y retrouver coincé. Le constructeur et le contrôleur en tiennent compte
+([mapping.md](mapping.md), « Grotte »).
+
+`tests/run.sh moves/ice_slide`, sur la glacière (`tests/maps/ice.tscn`) : le
+joueur, le suiveur et un PNJ. Les chemins des tests sont faits des cases où
+l'on s'arrête (`tests/lib.gd`, `glide`).
+
 ## Les traces de pas
 
 Sur le sable, un personnage — le joueur comme un PNJ — laisse derrière lui une

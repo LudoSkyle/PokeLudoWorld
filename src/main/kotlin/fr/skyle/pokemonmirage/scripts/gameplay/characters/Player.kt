@@ -76,6 +76,10 @@ class Player : CharacterBody2D() {
 	val isWalking: Boolean
 		get() = movement?.isWalking ?: false
 
+	/** Vrai tant que le joueur glisse sur le verglas : il ne répond plus aux touches, et ne remue pas les jambes. */
+	val isSliding: Boolean
+		get() = movement?.isSliding ?: false
+
 	fun lock() {
 		isLocked = true
 	}
@@ -142,7 +146,12 @@ class Player : CharacterBody2D() {
 		val currentMovement = movement ?: return
 
 		val wasWalking = currentMovement.isWalking
+		val wasSliding = currentMovement.isSliding
 		currentMovement.process(delta)
+		// Sur le verglas (porté de PSDK, `Game_Player#update`) : tant qu'on glisse, ni touches, ni menu, ni
+		// déclencheur — et les jambes ne bougent pas, du pas qui y entre au pas qui en sort.
+		val sliding = currentMovement.isSliding
+		val striding = currentMovement.isWalking && !sliding
 		// Pendant le saut d'un rebord, c'est l'image qui monte : le joueur, lui, reste au sol, où sont son tri et sa caméra.
 		sprite?.let { it.position = Vector2(it.position.x, spriteRest - currentMovement.lift) }
 		// Son ombre reste au sol, sous lui : c'est elle qui dit qu'il est en l'air.
@@ -151,7 +160,8 @@ class Player : CharacterBody2D() {
 
 		// Un passage gardé se déclenche à l'instant où l'on se pose dessus,
 		// avant que la touche tenue n'engage le pas suivant.
-		if (wasWalking && !currentMovement.isWalking && !isLocked) {
+		// Une glissade ne s'arrête qu'une image après son dernier pas : c'est là qu'on s'est posé.
+		if ((wasWalking || wasSliding) && !currentMovement.isWalking && !sliding && !isLocked) {
 			(currentMovement.areaUnderfoot() as? Roadblock)?.intercept(this)
 			// Un pas dans l'herbe peut faire surgir un Pokémon sauvage — sauf si
 			// le pas a déclenché autre chose : un garde, une porte.
@@ -163,7 +173,7 @@ class Player : CharacterBody2D() {
 		// Pendant un fondu, le pas engagé se termine mais plus aucune entrée
 		// n'est lue : le joueur finit d'entrer dans la porte, puis attend.
 		if (SceneManager.instance?.isChanging == true) {
-			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+			sprite?.refresh(currentInput.direction, striding)
 			return
 		}
 
@@ -196,7 +206,13 @@ class Player : CharacterBody2D() {
 		}
 
 		if (isLocked) {
-			sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+			sprite?.refresh(currentInput.direction, striding)
+			return
+		}
+
+		// On glisse : rien n'est lu avant l'arrêt.
+		if (sliding) {
+			sprite?.refresh(currentInput.direction, false)
 			return
 		}
 
@@ -241,7 +257,8 @@ class Player : CharacterBody2D() {
 			}
 		}
 
-		sprite?.refresh(currentInput.direction, currentMovement.isWalking)
+		// (Le pas qui vient de partir mène peut-être sur du verglas : on glisse déjà.)
+		sprite?.refresh(currentInput.direction, currentMovement.isWalking && !currentMovement.isSliding)
 	}
 
 	private fun readFacingObject() {

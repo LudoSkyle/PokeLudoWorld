@@ -95,7 +95,9 @@ class Follower : Node2D() {
 
 		// Il s'anime sans cesse, même arrêté, et toujours à la même cadence, qu'on marche ou qu'on coure — comme dans
 		// les jeux d'origine et dans PSDK (`step_anime`). Son petit saut d'un pixel est dans son image.
-		sprite?.refresh(direction, true)
+		// Sauf sur le verglas : PSDK fige l'image de tout ce qui glisse, suiveur compris. Il n'a pas de déplacement à
+		// lui, il refait les pas du joueur : il se fige tant que le joueur glisse.
+		sprite?.refresh(direction, !movement.isSliding)
 	}
 
 	private fun cardinal(gap: Vector2): Vector2 = when {
