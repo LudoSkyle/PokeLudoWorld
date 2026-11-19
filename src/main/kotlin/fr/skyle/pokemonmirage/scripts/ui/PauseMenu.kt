@@ -2,6 +2,7 @@ package fr.skyle.pokemonmirage.scripts.ui
 
 import fr.skyle.pokemonmirage.scripts.core.DayNight
 import fr.skyle.pokemonmirage.scripts.core.Weather
+import fr.skyle.pokemonmirage.scripts.core.SceneManager
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Inventory
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Items
 import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.Pokedex
@@ -15,6 +16,7 @@ import godot.annotation.Register
 import godot.annotation.Script
 import godot.api.CanvasLayer
 import godot.api.Control
+import godot.api.Engine
 import godot.api.Input
 import godot.api.NinePatchRect
 import godot.api.ResourceLoader
@@ -55,6 +57,9 @@ class PauseMenu : CanvasLayer() {
 	/** Les outils de l'entrée Debug, dans une boîte de choix qui change de contenu d'une page à l'autre. */
 	private var debugChoices: ChoiceBox? = null
 	private var debugPage = DebugPage.TOOLS
+
+	/** La vitesse du jeu choisie dans les outils : un indice dans [SPEEDS]. */
+	private var speed = 0
 	private var debugQuest: Quest? = null
 
 	/** Entrée sous le curseur. Revient à la première à chaque ouverture. */
@@ -177,6 +182,18 @@ class PauseMenu : CanvasLayer() {
 						PokedexDebug.instance?.open()
 					}
 					TOOL_FILL_DEX -> fillDex()
+					TOOL_FIELD -> {
+						// Le terrain d'essai des tests : on y va comme par une porte, et le menu se referme.
+						tools.close()
+						close()
+						SceneManager.instance?.changeLevel(FIELD_SCENE, "")
+					}
+					TOOL_SPEED -> {
+						// La vitesse du jeu défile sur place, comme l'heure : x1, x2, x4, x8, puis de nouveau x1.
+						speed = (speed + 1) % SPEEDS.size
+						Engine.timeScale = SPEEDS[speed]
+						tools.relabel(TOOL_SPEED, T(SPEED_LABELS[speed]))
+					}
 					else -> tools.close()
 				}
 				DebugPage.QUESTS -> Quests.ALL.getOrNull(choice)?.let { showActions(it) } ?: showTools()
@@ -232,7 +249,7 @@ class PauseMenu : CanvasLayer() {
 	private fun showTools() {
 		debugPage = DebugPage.TOOLS
 		debugChoices?.open(
-			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_DEX_LABEL), T(DEBUG_FILL_DEX_LABEL), T(DEBUG_BACK_LABEL)),
+			listOf(T(DEBUG_BAG_LABEL), T(DEBUG_QUESTS_LABEL), T(DayNight.label()), T(Weather.label()), T(DEBUG_DEX_LABEL), T(DEBUG_FILL_DEX_LABEL), T(DEBUG_FIELD_LABEL), T(SPEED_LABELS[speed]), T(DEBUG_BACK_LABEL)),
 		)
 	}
 
@@ -318,6 +335,15 @@ private const val TOOL_TIME = 2
 private const val TOOL_WEATHER = 3
 private const val TOOL_DEX = 4
 private const val TOOL_FILL_DEX = 5
+private const val TOOL_FIELD = 6
+private const val TOOL_SPEED = 7
+
+/** La carte des tests, où mène l'outil « Terrain d'essai ». */
+private const val FIELD_SCENE = "res://tests/maps/field.tscn"
+
+/** Les vitesses du jeu que fait défiler l'outil de mise au point (`Engine.time_scale`), et leurs libellés. */
+private val SPEEDS = listOf(1.0, 2.0, 4.0, 8.0)
+private val SPEED_LABELS = listOf(N("Vitesse : x1"), N("Vitesse : x2"), N("Vitesse : x4"), N("Vitesse : x8"))
 private const val ACTION_RESET = 0
 private const val ACTION_NEXT = 1
 private const val ACTION_FINISH = 2
@@ -325,6 +351,7 @@ private val DEBUG_BAG_LABEL = N("Remplir le sac")
 private val DEBUG_QUESTS_LABEL = N("Quêtes")
 private val DEBUG_DEX_LABEL = N("Pokédex national")
 private val DEBUG_FILL_DEX_LABEL = N("Remplir le Pokédex")
+private val DEBUG_FIELD_LABEL = N("Terrain d'essai")
 private val DEX_FILLED = N("Le Pokédex régional est rempli : une espèce sur trois est attrapée, une sur trois seulement vue.")
 private val DEBUG_BACK_LABEL = N("Retour")
 private val ACTION_RESET_LABEL = N("Repartir de zéro")

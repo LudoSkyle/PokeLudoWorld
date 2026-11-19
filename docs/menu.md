@@ -123,7 +123,7 @@ au menu de pause.
 
 | Page | Lignes |
 |---|---|
-| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · **Pokédex national** (la vue de debug, voir [pokedex.md](pokedex.md)) · **Remplir le Pokédex** (une espèce de la région sur trois prise, une sur trois vue) · Retour |
+| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · **Pokédex national** (la vue de debug, voir [pokedex.md](pokedex.md)) · **Remplir le Pokédex** (une espèce de la région sur trois prise, une sur trois vue) · **Terrain d'essai** (emmène sur la carte des tests, `tests/maps/field.tscn`, à son point d'apparition) · **Vitesse : x1** (fait défiler x1, x2, x4, x8 sur place : c'est `Engine.time_scale`) · Retour |
 | **les quêtes** | une ligne par quête (`Quests.ALL`) · Retour |
 | **la quête choisie** | Repartir de zéro · Étape suivante · Finir la quête · Retour |
 
