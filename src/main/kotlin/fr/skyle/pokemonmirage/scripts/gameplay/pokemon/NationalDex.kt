@@ -23,6 +23,8 @@ data class DexEntry(
 	val hasOverworld: Boolean,
 	val textFr: String,
 	val textEn: String,
+	/** Son portrait de face, 96 x 96, est-il là ? C'est lui que montre la fiche du Pokédex. */
+	val hasFront: Boolean = false,
 ) {
 	/** Ce qui manque à cette espèce, en clair : vide quand tout y est. */
 	val missing: List<String>
@@ -35,6 +37,7 @@ data class DexEntry(
 			if (textEn.isEmpty()) add("texte EN")
 			if (!hasIcon) add("icône")
 			if (!hasOverworld) add("sprite")
+			if (!hasFront) add("portrait")
 		}
 }
 
@@ -57,7 +60,12 @@ object NationalDex {
 	 */
 	const val OVERWORLD_DIR = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/overworld/"
 
+	/** Le dossier des portraits de face : un fichier par espèce, `<id>.png`, de 96 x 96. */
+	const val FRONT_DIR = "res://src/main/kotlin/fr/skyle/pokemonmirage/assets/pokemon/front/"
 	val all: List<DexEntry> by lazy { read() }
+	private val byId: Map<String, DexEntry> by lazy { all.associateBy { it.id } }
+	/** L'espèce d'identifiant [id] (`bulbasaur`), ou null. */
+	fun find(id: String): DexEntry? = byId[id]
 
 	fun get(number: Int): DexEntry? = all.getOrNull(number - 1)
 
@@ -92,6 +100,7 @@ object NationalDex {
 			hasOverworld = cells[10] == "1",
 			textFr = cells[11],
 			textEn = cells[12],
+			hasFront = cells.getOrNull(13) == "1",
 		)
 	}
 

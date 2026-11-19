@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ei8m8fho5p37"]
+[gd_scene load_steps=13 format=3 uid="uid://ei8m8fho5p37"]
 
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/message_box.tscn" id="2_msgbox"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/location_banner.tscn" id="4_banner"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/save_menu.tscn" id="7_save"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/bag_menu.tscn" id="8_bag"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/pokedex_debug.tscn" id="20_dexdebug"]
+[ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/pokedex_menu.tscn" id="21_dex"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/item_reveal.tscn" id="9_reveal"]
 [ext_resource type="PackedScene" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scenes/ui/title_screen.tscn" id="11_title"]
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scripts/core/SceneManager.kt" id="3_scenemgr"]
@@ -71,6 +72,8 @@ render_target_update_mode = 4
 [node name="BagMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("8_bag")]
 
 [node name="PokedexDebug" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("20_dexdebug")]
+
+[node name="PokedexMenu" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("21_dex")]
 
 [node name="ItemReveal" parent="Control/Frame/SubViewportContainer/SubViewport" instance=ExtResource("9_reveal")]
 

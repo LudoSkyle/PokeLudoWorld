@@ -19,12 +19,12 @@ func test() -> void:
 			seen[last] = true
 	Input.action_release("ui_down")
 	check("ensuite le curseur defile tout seul", moves >= 8, "%d crans en 1,2 s" % moves)
-	check("il fait le tour des cinq entrees", seen.size() == 5, str(seen.keys()))
+	check("il fait le tour des six entrees", seen.size() == 6, str(seen.keys()))
 	var stopped := menu_cursor_line()
 	await secs(0.5)
 	check("touche relachee : il s'arrete", menu_cursor_line() == stopped)
 	await tap("ui_up")
-	check("une pression breve ne fait qu'un cran", menu_cursor_line() == (stopped + 4) % 5, "%d -> %d" % [stopped, menu_cursor_line()])
+	check("une pression breve ne fait qu'un cran", menu_cursor_line() == (stopped + 5) % 6, "%d -> %d" % [stopped, menu_cursor_line()])
 	await tap("menu")
 
 	# une touche deja enfoncee a l'ouverture ne fait rien defiler

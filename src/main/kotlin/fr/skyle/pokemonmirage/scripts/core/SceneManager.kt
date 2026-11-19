@@ -4,6 +4,8 @@ import fr.skyle.pokemonmirage.scripts.autoload.Globals
 import fr.skyle.pokemonmirage.scripts.gameplay.characters.CharacterMovement
 import fr.skyle.pokemonmirage.scripts.gameplay.characters.Follower
 import fr.skyle.pokemonmirage.scripts.gameplay.items.Inventory
+import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.Pokedex
+import fr.skyle.pokemonmirage.scripts.gameplay.pokemon.RegionalDex
 import fr.skyle.pokemonmirage.scripts.gameplay.characters.PlayerCamera
 import fr.skyle.pokemonmirage.scripts.gameplay.characters.PlayerInput
 import fr.skyle.pokemonmirage.scripts.gameplay.levels.SceneTrigger
@@ -220,6 +222,7 @@ class SceneManager : Node() {
 		playSeconds = 0.0
 		Inventory.clear()
 		StoryFlags.clear()
+		Pokedex.clear()
 		restore = if (resume) SaveGame.read() else null
 		restore?.let {
 			if (ResourceLoader.exists(it.scene)) {
@@ -227,6 +230,7 @@ class SceneManager : Node() {
 				playSeconds = it.seconds
 				Inventory.restore(it.items)
 				StoryFlags.restore(it.flags)
+				Pokedex.restore(it.seen, it.caught)
 			} else {
 				Logger.e("Sauvegarde ignoree, carte introuvable : ${it.scene}")
 				restore = null
@@ -543,6 +547,9 @@ class SceneManager : Node() {
 				seconds = playSeconds,
 				items = Inventory.snapshot(),
 				flags = StoryFlags.snapshot(),
+				pokedex = Pokedex.seenCount(RegionalDex.ids),
+				seen = Pokedex.seenSnapshot(),
+				caught = Pokedex.caughtSnapshot(),
 			),
 		)
 	}

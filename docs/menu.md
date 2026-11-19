@@ -10,7 +10,7 @@ début de ligne.
 | Haut / Bas | déplace le curseur, qui **boucle** aux deux bouts |
 | interaction | valide l'entrée sous le curseur |
 
-Entrées actuelles : **Sac** (voir [bag.md](bag.md)), **Sauvegarder** (voir
+Entrées actuelles : **Pokédex** (le régional, voir [pokedex.md](pokedex.md)), **Sac** (voir [bag.md](bag.md)), **Sauvegarder** (voir
 [save.md](save.md)), **Options** (ouvre l'écran des options), **Debug** (outils
 de mise au point, voir plus bas), **Quitter** (ferme le
 menu). Le menu est collé au coin haut droit
@@ -123,7 +123,7 @@ au menu de pause.
 
 | Page | Lignes |
 |---|---|
-| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · **Pokédex national** (la vue de debug, voir [pokedex.md](pokedex.md)) · Retour |
+| **les outils** | Remplir le sac · **Quêtes** · Heure : … · Météo : … · **Pokédex national** (la vue de debug, voir [pokedex.md](pokedex.md)) · **Remplir le Pokédex** (une espèce de la région sur trois prise, une sur trois vue) · Retour |
 | **les quêtes** | une ligne par quête (`Quests.ALL`) · Retour |
 | **la quête choisie** | Repartir de zéro · Étape suivante · Finir la quête · Retour |
 

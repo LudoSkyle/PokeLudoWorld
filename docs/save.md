@@ -33,7 +33,8 @@ est libre, elle est renommée en `save_1.cfg` (`SaveGame.adoptOldSave`).
 | `facing_x`, `facing_y` | direction regardée |
 | `location`, `banner` | nom du lieu (en français) et son bandeau |
 | `seconds` | temps de jeu total |
-| `badges`, `pokedex`, `team` | badges gagnés, espèces vues, équipe (espèces séparées par des virgules) — **toujours 0, 0 et vide** : rien ne les compte encore, mais la carte de la partie les lit déjà |
+| `seen`, `caught` | le Pokédex : les espèces vues, et celles qu'on a prises, par leur identifiant, séparées par des virgules ([pokedex.md](pokedex.md)). Absentes d'une partie plus ancienne : vides |
+| `badges`, `pokedex`, `team` | badges gagnés, espèces de la région vues, équipe (espèces séparées par des virgules) — les badges et l'équipe sont **toujours 0 et vide** : rien ne les compte encore, mais la carte de la partie les lit déjà |
 | section `[items]` | le contenu du sac : une quantité par identifiant d'objet |
 | section `[flags]` | les drapeaux d'histoire posés ([quests.md](quests.md)) : `nom=true` |
 
