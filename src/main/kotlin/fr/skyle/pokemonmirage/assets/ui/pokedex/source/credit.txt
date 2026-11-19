@@ -1,0 +1,4 @@
+Custom Legends-inspired Pokedex UI
+Credit: delusionsofgrandr 
+
+Designed around the vanilla Essentials layout. To install, just drag and drop into your game folder!
