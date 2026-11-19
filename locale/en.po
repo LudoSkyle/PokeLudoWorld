@@ -1002,38 +1002,11 @@ msgstr "Other sounds"
 msgid "Pokédex national"
 msgstr "National Pokédex"
 
-msgid "Vus %d  Pris %d"
-msgstr "Seen %d  Caught %d"
-
-msgid "No %s"
-msgstr "No. %s"
-
-msgid "Taille : %s"
-msgstr "Height: %s"
-
-msgid "Poids : %s"
-msgstr "Weight: %s"
-
-msgid "Il faut l'avoir attrapé pour en savoir plus."
-msgstr "Catch it to learn more."
-
-msgid "Attrapé"
-msgstr "Caught"
-
-msgid "Vu"
-msgstr "Seen"
-
-msgid "Inconnu"
-msgstr "Unknown"
-
 msgid "Remplir le Pokédex"
 msgstr "Fill the Pokédex"
 
 msgid "Le Pokédex régional est rempli : une espèce sur trois est attrapée, une sur trois seulement vue."
 msgstr "The regional Pokédex is filled: one species in three is caught, one in three only seen."
-
-msgid "?"
-msgstr "?"
 
 msgid "Repousse"
 msgstr "Repel"
@@ -1046,3 +1019,18 @@ msgstr "Super Repel"
 
 msgid "Un spray plus tenace que la Repousse. Son effet dure deux fois plus longtemps."
 msgstr "A spray that clings longer than Repel. Its effect lasts twice as long."
+
+msgid "Vus :"
+msgstr "Seen:"
+
+msgid "Pris :"
+msgstr "Owned:"
+
+msgid "Taille"
+msgstr "Height"
+
+msgid "Poids"
+msgstr "Weight"
+
+msgid "Pokémon ?????"
+msgstr "????? Pokémon"

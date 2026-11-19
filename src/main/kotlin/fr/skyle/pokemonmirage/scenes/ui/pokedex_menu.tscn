@@ -1,16 +1,35 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://src/main/kotlin/fr/skyle/pokemonmirage/scripts/ui/PokedexMenu.kt" id="1_script"]
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/frames/rse_01.png" id="2_frame"]
-[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/fonts/pokemon-dp-pro.ttf" id="3_font"]
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/cursor.png" id="4_cursor"]
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/bag/arrow_up.png" id="5_up"]
-[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/bag/arrow_down.png" id="6_down"]
+[ext_resource type="FontFile" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/fonts/pokemon-dp-pro.ttf" id="2_font"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/bg_list.png" id="t_bg_list"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/bg_info.png" id="t_bg_info"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/page_info.png" id="t_page_info"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/icon_own.png" id="t_icon_own"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/icon_seen.png" id="t_icon_seen"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/cursor_list.png" id="t_cursor_list"]
+[ext_resource type="Texture2D" path="res://src/main/kotlin/fr/skyle/pokemonmirage/assets/ui/pokedex/icon_slider.png" id="t_icon_slider"]
 
-[sub_resource type="FontVariation" id="menu_font"]
-base_font = ExtResource("3_font")
+[sub_resource type="FontVariation" id="dex_font"]
+base_font = ExtResource("2_font")
 spacing_top = -4
 spacing_bottom = -4
+
+[sub_resource type="AtlasTexture" id="tab_on"]
+atlas = ExtResource("t_page_info")
+region = Rect2(0, 28, 86, 28)
+
+[sub_resource type="AtlasTexture" id="slider_up"]
+atlas = ExtResource("t_icon_slider")
+region = Rect2(0, 0, 40, 30)
+
+[sub_resource type="AtlasTexture" id="slider_down"]
+atlas = ExtResource("t_icon_slider")
+region = Rect2(0, 30, 40, 30)
+
+[sub_resource type="AtlasTexture" id="slider_box"]
+atlas = ExtResource("t_icon_slider")
+region = Rect2(40, 0, 40, 40)
 
 [node name="PokedexMenu" type="CanvasLayer"]
 layer = 3
@@ -26,743 +45,764 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Screen" type="ColorRect" parent="Control"]
+[node name="Screen" type="Control" parent="Control"]
 visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-color = Color(0.752941, 0.219608, 0.188235, 1)
-
-[node name="Title" type="Label" parent="Control/Screen"]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 16.0
+offset_left = 0.0
+offset_top = 0.0
 offset_right = 512.0
-offset_bottom = 80.0
+offset_bottom = 384.0
 mouse_filter = 2
-theme_override_colors/font_color = Color(0.972549, 0.972549, 0.972549, 1)
-theme_override_colors/font_shadow_color = Color(0.439216, 0.0941176, 0.0784314, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-text = "Pokédex"
-vertical_alignment = 1
-
-[node name="Counts" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 544.0
-offset_top = 16.0
-offset_right = 1248.0
-offset_bottom = 80.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.972549, 0.972549, 0.972549, 1)
-theme_override_colors/font_shadow_color = Color(0.439216, 0.0941176, 0.0784314, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="PortraitFrame" type="NinePatchRect" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 96.0
-offset_right = 160.0
-offset_bottom = 220.0
-scale = Vector2(4, 4)
-mouse_filter = 2
-texture = ExtResource("2_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
-
-[node name="Portrait" type="TextureRect" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 96.0
-offset_top = 152.0
-offset_right = 480.0
-offset_bottom = 536.0
-mouse_filter = 2
-expand_mode = 1
-
-[node name="Unknown" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 96.0
-offset_right = 544.0
-offset_bottom = 592.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-text = "?"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CardFrame" type="NinePatchRect" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 32.0
-offset_top = 608.0
-offset_right = 160.0
-offset_bottom = 688.0
-scale = Vector2(4, 4)
-mouse_filter = 2
-texture = ExtResource("2_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
-
-[node name="Number" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 72.0
-offset_top = 640.0
-offset_right = 504.0
-offset_bottom = 704.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-
-[node name="Name" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 72.0
-offset_top = 704.0
-offset_right = 504.0
-offset_bottom = 768.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Genus" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 72.0
-offset_top = 768.0
-offset_right = 504.0
-offset_bottom = 832.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Status" type="Label" parent="Control/Screen"]
-layout_mode = 0
-offset_left = 72.0
-offset_top = 832.0
-offset_right = 504.0
-offset_bottom = 896.0
-mouse_filter = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
+scale = Vector2(2.5, 2.5)
 
 [node name="List" type="Control" parent="Control/Screen"]
 layout_mode = 0
-offset_left = 560.0
-offset_top = 96.0
-offset_right = 1248.0
-offset_bottom = 928.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 512.0
+offset_bottom = 384.0
 mouse_filter = 2
 
-[node name="Frame" type="NinePatchRect" parent="Control/Screen/List"]
+[node name="Background" type="TextureRect" parent="Control/Screen/List"]
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0
-offset_right = 172.0
-offset_bottom = 208.0
-scale = Vector2(4, 4)
+offset_right = 512.0
+offset_bottom = 384.0
 mouse_filter = 2
-texture = ExtResource("2_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+texture = ExtResource("t_bg_list")
 
-[node name="Cursor" type="TextureRect" parent="Control/Screen/List"]
+[node name="Title" type="Label" parent="Control/Screen/List"]
 layout_mode = 0
-offset_left = 32.0
-offset_top = 44.0
-offset_right = 56.0
-offset_bottom = 84.0
+offset_left = 56.0
+offset_top = 3.0
+offset_right = 456.0
+offset_bottom = 35.0
 mouse_filter = 2
-texture = ExtResource("4_cursor")
+theme_override_colors/font_color = Color(0.972549, 0.972549, 0.972549, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+text = "Pokédex"
+vertical_alignment = 1
+
+[node name="Name" type="Label" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 51.0
+offset_right = 212.0
+offset_bottom = 83.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 1
+vertical_alignment = 1
+clip_text = true
+
+[node name="Icon" type="TextureRect" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 90.0
+offset_right = 208.0
+offset_bottom = 282.0
+mouse_filter = 2
 expand_mode = 1
 
-[node name="Numbers" type="VBoxContainer" parent="Control/Screen/List"]
+[node name="SeenLabel" type="Label" parent="Control/Screen/List"]
 layout_mode = 0
-offset_left = 72.0
-offset_top = 32.0
-offset_right = 184.0
-offset_bottom = 800.0
+offset_left = 42.0
+offset_top = 307.0
+offset_right = 132.0
+offset_bottom = 339.0
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+text = "Vus :"
+vertical_alignment = 1
 
-[node name="Names" type="VBoxContainer" parent="Control/Screen/List"]
+[node name="Seen" type="Label" parent="Control/Screen/List"]
 layout_mode = 0
-offset_left = 200.0
-offset_top = 32.0
-offset_right = 600.0
-offset_bottom = 800.0
+offset_left = 102.0
+offset_top = 307.0
+offset_right = 182.0
+offset_bottom = 339.0
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 2
+vertical_alignment = 1
 
-[node name="Marks" type="VBoxContainer" parent="Control/Screen/List"]
+[node name="OwnedLabel" type="Label" parent="Control/Screen/List"]
 layout_mode = 0
-offset_left = 608.0
-offset_top = 32.0
-offset_right = 656.0
-offset_bottom = 800.0
+offset_left = 42.0
+offset_top = 339.0
+offset_right = 132.0
+offset_bottom = 371.0
 mouse_filter = 2
-theme_override_constants/separation = 0
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+text = "Pris :"
+vertical_alignment = 1
+
+[node name="Owned" type="Label" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 102.0
+offset_top = 339.0
+offset_right = 182.0
+offset_bottom = 371.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Marks" type="Control" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 232.0
+offset_top = 54.0
+offset_right = 260.0
+offset_bottom = 374.0
+mouse_filter = 2
+
+[node name="Numbers" type="Control" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 274.0
+offset_top = 52.0
+offset_right = 322.0
+offset_bottom = 372.0
+mouse_filter = 2
+
+[node name="Names" type="Control" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 322.0
+offset_top = 52.0
+offset_right = 464.0
+offset_bottom = 372.0
+mouse_filter = 2
+
+[node name="Row0" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 28.0
+offset_bottom = 28.0
+mouse_filter = 2
 
 [node name="Row0" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row1" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row2" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row3" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row4" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row5" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row6" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row7" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row8" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row9" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row10" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row11" type="Label" parent="Control/Screen/List/Numbers"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 2
-
-[node name="Row0" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row1" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row2" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row3" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row4" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row5" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row6" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row7" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row8" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row9" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row10" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row11" type="Label" parent="Control/Screen/List/Names"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-clip_text = true
-
-[node name="Row0" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row1" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row2" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row3" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row4" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row5" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row6" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row7" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row8" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row9" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row10" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="Row11" type="Label" parent="Control/Screen/List/Marks"]
-custom_minimum_size = Vector2(0, 64)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
-theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
-vertical_alignment = 1
-horizontal_alignment = 1
-
-[node name="ScrollUp" type="TextureRect" parent="Control/Screen/List"]
-visible = false
-layout_mode = 0
-offset_left = 312.0
-offset_top = -24.0
-offset_right = 376.0
-offset_bottom = 40.0
-mouse_filter = 2
-texture = ExtResource("5_up")
-expand_mode = 1
-
-[node name="ScrollDown" type="TextureRect" parent="Control/Screen/List"]
-visible = false
-layout_mode = 0
-offset_left = 312.0
-offset_top = 792.0
-offset_right = 376.0
-offset_bottom = 856.0
-mouse_filter = 2
-texture = ExtResource("6_down")
-expand_mode = 1
-
-[node name="Sheet" type="Control" parent="Control/Screen"]
-visible = false
-layout_mode = 0
-offset_left = 560.0
-offset_top = 96.0
-offset_right = 1248.0
-offset_bottom = 928.0
-mouse_filter = 2
-
-[node name="Frame" type="NinePatchRect" parent="Control/Screen/Sheet"]
 layout_mode = 0
 offset_left = 0.0
 offset_top = 0.0
-offset_right = 172.0
-offset_bottom = 208.0
-scale = Vector2(4, 4)
+offset_right = 48.0
+offset_bottom = 32.0
 mouse_filter = 2
-texture = ExtResource("2_frame")
-patch_margin_left = 8
-patch_margin_top = 8
-patch_margin_right = 8
-patch_margin_bottom = 8
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
 
-[node name="Height" type="Label" parent="Control/Screen/Sheet"]
+[node name="Row0" type="Label" parent="Control/Screen/List/Names"]
 layout_mode = 0
-offset_left = 40.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 142.0
+offset_bottom = 32.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row1" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
 offset_top = 32.0
-offset_right = 648.0
+offset_right = 28.0
+offset_bottom = 60.0
+mouse_filter = 2
+
+[node name="Row1" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 32.0
+offset_right = 48.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row1" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 32.0
+offset_right = 142.0
+offset_bottom = 64.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row2" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 64.0
+offset_right = 28.0
+offset_bottom = 92.0
+mouse_filter = 2
+
+[node name="Row2" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 64.0
+offset_right = 48.0
 offset_bottom = 96.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
 vertical_alignment = 1
 
-[node name="Weight" type="Label" parent="Control/Screen/Sheet"]
+[node name="Row2" type="Label" parent="Control/Screen/List/Names"]
 layout_mode = 0
-offset_left = 40.0
+offset_left = 0.0
+offset_top = 64.0
+offset_right = 142.0
+offset_bottom = 96.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row3" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
 offset_top = 96.0
-offset_right = 648.0
+offset_right = 28.0
+offset_bottom = 124.0
+mouse_filter = 2
+
+[node name="Row3" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 96.0
+offset_right = 48.0
+offset_bottom = 128.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row3" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 96.0
+offset_right = 142.0
+offset_bottom = 128.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row4" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 128.0
+offset_right = 28.0
+offset_bottom = 156.0
+mouse_filter = 2
+
+[node name="Row4" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 128.0
+offset_right = 48.0
 offset_bottom = 160.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
 vertical_alignment = 1
 
-[node name="Text" type="Label" parent="Control/Screen/Sheet"]
+[node name="Row4" type="Label" parent="Control/Screen/List/Names"]
 layout_mode = 0
-offset_left = 40.0
-offset_top = 192.0
-offset_right = 648.0
-offset_bottom = 800.0
+offset_left = 0.0
+offset_top = 128.0
+offset_right = 142.0
+offset_bottom = 160.0
 mouse_filter = 2
 theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
 theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
-theme_override_constants/shadow_offset_x = 4
-theme_override_constants/shadow_offset_y = 4
-theme_override_fonts/font = SubResource("menu_font")
-theme_override_font_sizes/font_size = 64
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row5" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 160.0
+offset_right = 28.0
+offset_bottom = 188.0
+mouse_filter = 2
+
+[node name="Row5" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 160.0
+offset_right = 48.0
+offset_bottom = 192.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row5" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 160.0
+offset_right = 142.0
+offset_bottom = 192.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row6" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 192.0
+offset_right = 28.0
+offset_bottom = 220.0
+mouse_filter = 2
+
+[node name="Row6" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 192.0
+offset_right = 48.0
+offset_bottom = 224.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row6" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 192.0
+offset_right = 142.0
+offset_bottom = 224.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row7" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 224.0
+offset_right = 28.0
+offset_bottom = 252.0
+mouse_filter = 2
+
+[node name="Row7" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 224.0
+offset_right = 48.0
+offset_bottom = 256.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row7" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 224.0
+offset_right = 142.0
+offset_bottom = 256.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row8" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 256.0
+offset_right = 28.0
+offset_bottom = 284.0
+mouse_filter = 2
+
+[node name="Row8" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 256.0
+offset_right = 48.0
+offset_bottom = 288.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row8" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 256.0
+offset_right = 142.0
+offset_bottom = 288.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Row9" type="TextureRect" parent="Control/Screen/List/Marks"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 288.0
+offset_right = 28.0
+offset_bottom = 316.0
+mouse_filter = 2
+
+[node name="Row9" type="Label" parent="Control/Screen/List/Numbers"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 288.0
+offset_right = 48.0
+offset_bottom = 320.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+
+[node name="Row9" type="Label" parent="Control/Screen/List/Names"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 288.0
+offset_right = 142.0
+offset_bottom = 320.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Cursor" type="TextureRect" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 46.0
+offset_right = 466.0
+offset_bottom = 90.0
+mouse_filter = 2
+texture = ExtResource("t_cursor_list")
+
+[node name="SliderUp" type="TextureRect" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 468.0
+offset_top = 48.0
+offset_right = 508.0
+offset_bottom = 78.0
+mouse_filter = 2
+texture = SubResource("slider_up")
+visible = false
+
+[node name="SliderDown" type="TextureRect" parent="Control/Screen/List"]
+layout_mode = 0
+offset_left = 468.0
+offset_top = 346.0
+offset_right = 508.0
+offset_bottom = 376.0
+mouse_filter = 2
+texture = SubResource("slider_down")
+visible = false
+
+[node name="SliderBox" type="NinePatchRect" parent="Control/Screen/List"]
+visible = false
+layout_mode = 0
+offset_left = 468.0
+offset_top = 78.0
+offset_right = 508.0
+offset_bottom = 118.0
+mouse_filter = 2
+texture = SubResource("slider_box")
+patch_margin_top = 8
+patch_margin_bottom = 16
+axis_stretch_vertical = 1
+
+[node name="Entry" type="Control" parent="Control/Screen"]
+visible = false
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 512.0
+offset_bottom = 384.0
+mouse_filter = 2
+
+[node name="Background" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 512.0
+offset_bottom = 384.0
+mouse_filter = 2
+texture = ExtResource("t_bg_info")
+
+[node name="Tab" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 121.0
+offset_top = 2.0
+offset_right = 207.0
+offset_bottom = 30.0
+mouse_filter = 2
+texture = SubResource("tab_on")
+
+[node name="Portrait" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 28.0
+offset_right = 200.0
+offset_bottom = 220.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Own" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 212.0
+offset_top = 44.0
+offset_right = 240.0
+offset_bottom = 72.0
+mouse_filter = 2
+texture = ExtResource("t_icon_own")
+
+[node name="Heading" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 246.0
+offset_top = 41.0
+offset_right = 496.0
+offset_bottom = 73.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.972549, 0.972549, 0.972549, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Genus" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 246.0
+offset_top = 73.0
+offset_right = 496.0
+offset_bottom = 105.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+vertical_alignment = 1
+clip_text = true
+
+[node name="Type0" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 296.0
+offset_top = 120.0
+offset_right = 392.0
+offset_bottom = 152.0
+mouse_filter = 2
+
+[node name="Type1" type="TextureRect" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 396.0
+offset_top = 120.0
+offset_right = 492.0
+offset_bottom = 152.0
+mouse_filter = 2
+
+[node name="HeightLabel" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 314.0
+offset_top = 157.0
+offset_right = 404.0
+offset_bottom = 189.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+text = "Taille"
+vertical_alignment = 1
+
+[node name="Height" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 350.0
+offset_top = 157.0
+offset_right = 470.0
+offset_bottom = 189.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="WeightLabel" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 314.0
+offset_top = 189.0
+offset_right = 404.0
+offset_bottom = 221.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+text = "Poids"
+vertical_alignment = 1
+
+[node name="Weight" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 362.0
+offset_top = 189.0
+offset_right = 482.0
+offset_bottom = 221.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Text" type="Label" parent="Control/Screen/Entry"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 238.0
+offset_right = 472.0
+offset_bottom = 366.0
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.345098, 0.345098, 0.313725, 1)
+theme_override_colors/font_shadow_color = Color(0.658824, 0.721569, 0.721569, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_fonts/font = SubResource("dex_font")
+theme_override_font_sizes/font_size = 32
 autowrap_mode = 3

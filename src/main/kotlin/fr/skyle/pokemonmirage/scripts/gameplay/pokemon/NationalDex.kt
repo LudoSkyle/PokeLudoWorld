@@ -25,6 +25,8 @@ data class DexEntry(
 	val textEn: String,
 	/** Son portrait de face, 96 x 96, est-il là ? C'est lui que montre la fiche du Pokédex. */
 	val hasFront: Boolean = false,
+	/** Ses types, un ou deux, par leur nom dans le pack de données (`grass`, `poison`). */
+	val types: List<String> = emptyList(),
 ) {
 	/** Ce qui manque à cette espèce, en clair : vide quand tout y est. */
 	val missing: List<String>
@@ -101,6 +103,7 @@ object NationalDex {
 			textFr = cells[11],
 			textEn = cells[12],
 			hasFront = cells.getOrNull(13) == "1",
+			types = listOfNotNull(cells.getOrNull(14), cells.getOrNull(15)).filter { it.isNotBlank() },
 		)
 	}
 
