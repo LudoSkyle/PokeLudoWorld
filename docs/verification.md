@@ -116,7 +116,7 @@ tests/run.sh doors               # tout un dossier
 tests/run.sh doors/ludo          # ceux dont le chemin commence ainsi
 tests/run.sh audit               # accessibilité des cartes fermées
 tests/run.sh --list              # la liste
-tests/run.sh                     # tout : 6 minutes, à éviter
+tests/run.sh                     # tout : 158 tests, trois quarts d'heure
 ```
 
 | Dossier | Un fichier par… | Exemples |
@@ -174,6 +174,18 @@ une petite salle de grotte de glace, une plaque de verglas de (12, 7) à
 (17, 9), un caillou rond dessus en (15, 8). Elle est à part du terrain parce
 qu'une plaque de verglas y aurait détourné les trajets des autres tests
 (`moves/ice_slide`).
+
+**Tous les tests passent, en tout temps** (Ludovic, 19/11/2026 : « on a commit
+sur develop des tests qui passent pas ? Ça doit plus arriver »). Pendant le
+travail on ne lance que les tests du sujet ; mais **avant de pousser quoi que
+ce soit vers `develop`, toute la suite passe** — `tests/run.sh` sans argument,
+en arrière-plan, ses résultats dans un fichier, et `./gradlew test`. Un test
+rouge se répare avant de committer, **même s'il l'était déjà** : périmé, on le
+remet d'accord avec le jeu ; juste, c'est le jeu qu'on corrige. Et quand on
+change une donnée ou un format que d'autres lisent — la sauvegarde, le
+catalogue des objets, les entrées du menu de pause, les fichiers du pack —, on
+cherche tout de suite dans `tests/` qui en dépend. Ne jamais lancer deux
+passages à la fois : chacun ferme les fenêtres de l'autre.
 
 **Ne lancer que les tests de ce qu'on vient de toucher** : on déplace le
 pêcheur, on lance `fisher` et `collisions/npcs`, rien d'autre. Si un mécanisme

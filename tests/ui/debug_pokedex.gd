@@ -35,13 +35,13 @@ func test() -> void:
 	var grid: TextureRect = dex().get_node("Control/Screen/WalkerGrid")
 	check("il est a quatre pixels d'ecran par pixel, sur un damier au pixel avec les axes de sa case", walker.size == Vector2(128, 128) and grid.visible and grid.size == Vector2(128, 128) and grid.texture.get_size() == Vector2(8, 8)
 		and dex().get_node("Control/Screen/WalkerAxisV").position.x == grid.position.x + 63, "%s %s" % [walker.size, grid.size])
-	check("il se montre d'abord de face", dex().shown_facing() == 0 and front.position == Vector2(0, 64) and front.size == Vector2(32, 32), str(front))
+	check("il se montre d'abord de face", dex().shown_facing() == 0 and front.position == Vector2(0, 0) and front.size == Vector2(32, 32), str(front))
 	var sides := {}
 	var end := Time.get_ticks_msec() + 4300
 	while Time.get_ticks_msec() < end:
 		await process_frame
 		sides[dex().shown_facing()] = walker.texture.region.position
-	check("en quatre secondes il a montre ses quatre cotes : face, gauche, dos, droite", sides.size() == 4 and sides[1] == Vector2(32, 0) and sides[2] == Vector2(0, 0) and sides[3] == Vector2(32, 64), str(sides))
+	check("en quatre secondes il a montre ses quatre cotes : face, gauche, dos, droite", sides.size() == 4 and sides[0] == Vector2(0, 0) and sides[1] == Vector2(0, 32) and sides[2] == Vector2(0, 96) and sides[3] == Vector2(0, 64), str(sides))
 
 	await tap("ui_down")
 	check("Bas : l'espece suivante", dex().shown_number() == 2 and text_of("Names").begins_with("Herbizarre"))
@@ -53,8 +53,8 @@ func test() -> void:
 	check("Gauche s'arrete au debut", dex().shown_number() == 1)
 	await tap("ui_up")
 	check("Haut depuis la premiere mene a la derniere", dex().shown_number() == 1025 and text_of("Names") == "Pêchaminus / Pecharunt", text_of("Names"))
-	check("la derniere n'a ni texte francais, ni icone, ni sprite : la vue le dit", text_of("Lacks") == "Manque : texte FR, icône, sprite" and text_of("French").begins_with("("), text_of("Lacks"))
-	check("la liste a suivi : la derniere ligne porte le curseur et l'etoile de ce qui manque", text_of("List").split("\n")[-1] == "> 1025 Pêchaminus *", text_of("List").split("\n")[-1])
+	check("la derniere est complete elle aussi : rien ne lui manque", text_of("Lacks") == "" and text_of("French").length() > 40, text_of("Lacks"))
+	check("la liste a suivi : la derniere ligne porte le curseur, sans etoile", text_of("List").split("\n")[-1] == "> 1025 Pêchaminus", text_of("List").split("\n")[-1])
 
 	# Un gros Pokemon a son propre fichier, pas une case de la planche : Lugia.
 	await tap("ui_down")

@@ -7,7 +7,11 @@ func test() -> void:
 	check("ouvrir le menu", audio().last_sfx_id() == "menu", audio().last_sfx_id())
 	await tap("ui_down")
 	check("deplacer le curseur", audio().last_sfx_id() == "cursor", audio().last_sfx_id())
-	await tap("ui_down")
+	# jusqu'a l'entree des options, ou qu'elle soit dans le menu
+	var n := 0
+	while menu_selected() != "Options" and n < 8:
+		await tap("ui_down")
+		n += 1
 	await tap("interact")
 	check("valider une entree", options_open() and audio().last_sfx_id() == "confirm", audio().last_sfx_id())
 	await tap("ui_right")

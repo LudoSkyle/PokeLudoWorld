@@ -166,7 +166,7 @@ func test() -> void:
 	var paths := layer("Background/Paths")
 	var on_path: Array = []
 	for n in level().get_node("World").get_children() + level().get_node("World/Entities").get_children():
-		if n is Node2D and not (n is TileMapLayer) and str(n.name) != "Entities" and str(n.name) != "Player" and not str(n.name).begins_with("Runner") and not str(n.name).begins_with("Glow") and not str(n.name).begins_with("Guard"):          # les gardes, eux, barrent la piste expres
+		if n is Node2D and not (n is TileMapLayer) and str(n.name) != "Entities" and str(n.name) != "Player" and str(n.name) != "Follower" and not str(n.name).begins_with("Runner") and not str(n.name).begins_with("Glow") and not str(n.name).begins_with("Guard"):          # les gardes, eux, barrent la piste expres
 			var c := Vector2i(floori(n.position.x / 16.0), floori(n.position.y / 16.0))
 			if paths.get_cell_source_id(c) != -1 or ground.get_cell_atlas_coords(c) == Vector2i(8, 1):
 				on_path.append(str(n.name))

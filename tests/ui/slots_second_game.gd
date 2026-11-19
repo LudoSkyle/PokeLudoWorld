@@ -23,8 +23,8 @@ func test() -> void:
 	await tap("interact")
 	await secs(2.2)
 	check("elle s'ecrit dans le deuxieme emplacement", FileAccess.file_exists(save_path(2)))
-	check("a la case ou l'on est", int(saved_file(2).get_value("save", "x", 0.0)) == here.x * 16 + 8, str(saved_file(2).get_value("save", "x", 0.0)))
-	check("la premiere partie n'a pas bouge", is_equal_approx(saved_file(1).get_value("save", "seconds", 0.0), 3725.0) and int(saved_file(1).get_value("save", "x", 0.0)) == SAVE_CELL.x * 16 + 8)
+	check("a la case ou l'on est", saved_cell(2) == here, str(saved_cell(2)))
+	check("la premiere partie n'a pas bouge", is_equal_approx(saved_file(1).get_value("save", "seconds", 0.0), 3725.0) and saved_cell(1) == SAVE_CELL)
 
 	await relaunch()
 	await slot_go("Save2")
