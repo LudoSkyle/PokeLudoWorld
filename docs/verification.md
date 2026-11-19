@@ -128,6 +128,23 @@ Toute la suite y passe en **deux minutes** au lieu de trois quarts d'heure.
   ramène jamais devant.
 - Sans `-- --test`, la suite refuse de monter le jeu : il écrirait dans les
   vraies sauvegardes.
+- **Le lanceur met le projet à jour tout seul, et le dit** : il recompile le
+  Kotlin quand une source est plus récente que `jvm/main.jar`, puis fait
+  importer le projet par Godot quand un fichier a changé depuis le dernier
+  import (`IMPORT=1` pour le forcer). Éditeur fermé, il n'y a rien à lancer
+  avant lui après un `git pull`.
+- **Jamais d'import quand un éditeur est ouvert sur le projet.** L'import
+  (`--headless --import`) est un démarrage d'éditeur, greffons compris : à côté
+  d'un éditeur déjà ouvert, il lui prend puis lui efface son inscription auprès
+  du serveur MCP, et c'est dans cette situation qu'on l'a vu une fois rester
+  bloqué pour de bon, sans rien afficher (la cause exacte n'est pas établie).
+  L'éditeur ouvert importe lui-même, **quand sa fenêtre reprend la main** : si
+  des fichiers ont changé depuis, le lanceur prévient que les tests jouent
+  peut-être sur l'ancien état — repasser par l'éditeur, puis relancer.
+- **Il s'arrête toujours.** Chaque Godot est lancé à part et attendu : Ctrl-C
+  le tue (la JVM du jeu retient un simple `INT`), et un import qui n'écrit plus
+  rien pendant 90 secondes (`IMPORT_STALL`) est arrêté, ses dernières lignes
+  affichées.
 
 L'ancien lanceur (`tests/run.sh`) et ses fichiers restent en place tant que
 celui-ci est à l'essai : un test s'écrit dans `tests/<dossier>/`, puis se porte
