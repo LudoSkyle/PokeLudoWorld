@@ -366,6 +366,16 @@ def check(plan):
         rule('F', 'des rochers et des stalagmites le long des parois : un pour 10 à 30 cases de sol', 10 <= per_ <= 30 if stones else False, '%d rochers pour %d cases : un pour %.0f' % (stones, len(REACH), per_))
         alive = len(trees) + len(TALL) + len(flowers) + len(blooms)
         rule('E', 'rien de vivant dans une grotte : ni arbre, ni herbes, ni fleurs', not alive, '%d' % alive)
+        # Sur le verglas on glisse (CharacterMovement.kt) : y aller n'assure plus d'en revenir. De chaque case où l'on
+        # s'arrête, on doit pouvoir regagner le départ — sinon une plaque est un piège, ou ne se traverse que dans un sens.
+        slick, begin = b['SLICK'], b['start']
+        if slick and begin in REACH:
+            free_ = lambda c: inb(c) and c not in SOLID
+            rest, _ = builder.glide(begin, free_, slick)
+            floor_parts = pieces((floor - b['EARTH']) & rest)
+            stuck = sorted(c for c in (rest & slick) | {min(part) for part in floor_parts} if begin not in builder.glide(c, free_, slick)[0])
+            rule('G', 'du verglas, on revient toujours : aucune case où l on s arrête sans pouvoir regagner le départ', not stuck, '%d cases d où l on ne revient pas' % len(stuck), stuck)
+        else: rule('G', 'du verglas, on revient toujours : aucune case où l on s arrête sans pouvoir regagner le départ', None, '')
 
     # ---------------------------------------------------------------- des champs
     if kind == 'fields' and not b['literal']:

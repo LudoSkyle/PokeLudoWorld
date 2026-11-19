@@ -452,7 +452,7 @@ def generate_cave(w):
     # 6 bis. Le **verglas** d'une grotte de glace n'est pas là pour l'œil : c'est un **passage obligé** (Ludovic,
     # 18/11/2026 : « les plaques de verglas doivent faire la largeur d'un passage […] s'il est là, le joueur devra
     # passer par-dessus pour accéder à ce qu'il y a derrière. C'est pas obligé qu'il soit là »). Une plaque barre donc
-    # un passage **d'une paroi à l'autre**, sur deux à six cases de profondeur, et coupe le sol en deux : ce qui est
+    # un passage **d'une paroi à l'autre**, sur deux à huit cases de profondeur, et coupe le sol en deux : ce qui est
     # derrière ne s'atteint qu'en la traversant. On barre d'abord un bras ou une chambre (moins de la moitié du sol
     # derrière : c'est là que vont les objets, plus bas) ; à défaut, le débouché du couloir d'entrée, qu'on traverse
     # pour entrer dans la salle. S'il n'y a aucun passage à barrer, il n'y a pas de verglas.
@@ -470,13 +470,23 @@ def generate_cave(w):
                 for y0, y1 in cols[x]:          # une colonne de sol, d'une paroi à l'autre…
                     if not 2 <= y1 - y0 + 1 <= WIDE: continue
                     band, span = [(x, y0, y1)], (y0, y1)
-                    for d in (1, 2, 3, 4, 5):          # … et ses voisines, tant que c'est le même passage
+                    for d in range(1, 8):          # … et ses voisines, tant que c'est le même passage
                         nxt = [r for r in cols.get(x + d, []) if min(r[1], span[1]) - max(r[0], span[0]) + 1 >= 2]
                         if len(nxt) != 1 or nxt[0][1] - nxt[0][0] + 1 > WIDE: break
                         span = tuple(nxt[0]); band.append((x + d,) + span)
                         out.append({(bx, y) for bx, a, b in band for y in range(a, b + 1)})
             return out
         turn = lambda cells: {(c[1], c[0]) for c in cells}
+        def stranded(b):
+            """Sur le verglas on glisse (CharacterMovement.kt) : aller quelque part n'assure plus d'en revenir. Les cases
+            de sol qu'on n'atteint pas en glissant, puis les cases où l'on s'arrête et d'où l'on ne revient pas au départ."""
+            free_ = lambda c: inb(c) and c not in b['SOLID']
+            rest, _ = builder.glide(w.start, free_, b['SLICK'])
+            lost = sorted(c for c in floor - w.earth - rest if free_(c))
+            if lost: return lost
+            dry = floor - w.earth
+            probes = (rest & b['SLICK']) | {min(part) for part in pieces(dry & rest)}
+            return sorted(c for c in probes if w.start not in builder.glide(c, free_, b['SLICK'])[0])
         thin_now = len(floor - plate(floor))
         gates = []
         for patch in bands(floor) + [turn(b) for b in bands(turn(floor))]:
@@ -492,12 +502,28 @@ def generate_cave(w):
             if len(pieces(w.earth)) >= (1 if entry else 1 + len(floor) // 400): break
             if grown(patch, 3) & w.earth: continue
             w.earth |= patch
-            if any(line.startswith(('sol :', 'paroi :')) for line in w.probe()['warn']): w.earth -= patch          # le constructeur n'y trouve pas la place des bords
+            probe = w.probe()
+            if any(line.startswith(('sol :', 'paroi :')) for line in probe['warn']): w.earth -= patch          # le constructeur n'y trouve pas la place des bords
+            elif stranded(probe): w.earth -= patch          # on y glisse : il faut pouvoir la traverser dans les deux sens, sans y rester coincé
             elif not entry: guarded |= behind
+        # Sur une grande plaque, un ou deux **cailloux ronds** : c'est sur le verglas qu'ils servent (Ludovic, 18/11/2026 :
+        # « pour servir d'obstacle pour faire les casse-têtes »). Contre eux on s'arrête, et de là on repart dans un autre
+        # sens. On n'en garde un que si l'on traverse toujours, dans les deux sens, sans rester coincé nulle part.
+        stones = random.Random(sub('relief') + 91)
+        for part in sorted(pieces(w.earth), key=min):
+            spots = sorted(part); stones.shuffle(spots)
+            put = []
+            for c in spots[:8]:
+                if len(put) >= (0 if len(part) < 12 else 2 if len(part) >= 30 else 1): break
+                if any(max(abs(c[0] - q[0]), abs(c[1] - q[1])) < 3 for q in put): continue
+                w.props.append((THEME_TOPS[w.m['theme']][len(put) % 2], c[0], c[1]))
+                if stranded(w.probe()): w.props.pop()
+                else: put.append(c)
     built = w.probe()
     reach, wall = built['REACH'], built['SOLID']
     walk = set(reach)
-    dry = (lambda c: c not in w.earth) if kit else (lambda c: True)          # en glace, rien ne se pose sur le verglas : ni caillou foncé, ni objet, ni échelle
+    icy = grown(w.earth, 1) if kit else set()
+    dry = lambda c: c not in icy          # en glace, rien ne se pose sur le verglas ni contre lui : un caillou au bord d'une plaque change l'endroit où l'on s'arrête
     # 7. les rochers et les stalagmites : le long des parois, un pour quinze à vingt cases de sol, jamais dans un passage
     AROUND = [(-1, -1), (0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0)]
     def pinch(c):
@@ -614,6 +640,9 @@ def generate_cave(w):
             if len(cracks) >= len(plain) // 18: break
             if any(max(abs(c[0] - p[0]), abs(c[1] - p[1])) < 3 for p in cracks): continue          # jamais deux qui se touchent
             w.props.append(('crack', c[0], c[1])); cracks.append(c)
+    if kit and w.earth:          # tout est posé : on glisse toujours d'un bord à l'autre, et l'on revient
+        stuck = stranded(w.probe())
+        if stuck: w.notes.append('verglas : %d cases qu on n atteint pas en glissant, ou d ou l on ne revient pas — %s' % (len(stuck), stuck[:5]))
     if len(masses) < 2: w.notes.append('seulement %d massif de roche : la salle est trop petite' % len(masses))
     return w
 

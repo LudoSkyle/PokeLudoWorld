@@ -67,6 +67,23 @@ def load_theme(name):
     ROUTE, VILLAGE, GRASS_SOURCE, FLOWER_SOURCE = source('main'), source('buildings'), source('tall_grass'), source('blooms')
 
 
+def glide(origin, free, slick=()):
+    """Ce qu'on atteint à pied depuis `origin` : (les cases où l'on peut s'arrêter, celles qu'on ne fait que traverser).
+
+    Sur le verglas (`slick`) on ne s'arrête pas : on glisse tout droit jusqu'à buter, ou jusqu'à la première case qui
+    n'en est plus — c'est `CharacterMovement.kt`, porté de Pokémon SDK. Atteindre n'y est donc plus réciproque : on peut
+    traverser une plaque dans un sens et pas dans l'autre. Sans verglas, c'est un parcours ordinaire."""
+    rest, crossed, queue = {origin}, set(), collections.deque([origin])
+    while queue:
+        c = queue.popleft()
+        for i, j in NEIGH4:
+            n = (c[0] + i, c[1] + j)
+            if not free(n): continue
+            while n in slick and free((n[0] + i, n[1] + j)): crossed.add(n); n = (n[0] + i, n[1] + j)
+            if n not in rest: rest.add(n); queue.append(n)
+    return rest, crossed - rest
+
+
 def raw(name):
     """`@10:15,3` : la tuile (15, 3) de la source 10 du TileSet, pour ce que le décor ne nomme pas. Sinon None."""
     if not name.startswith('@'): return None
@@ -551,14 +568,12 @@ def build(plan):
     for c in sorted(PLATEAU):          # le bord du haut d'un plateau se foule — toujours
         if ring_shape.get(c) == '8' and c in SOLID and not any(c in feet(n, x, r) for n, x, r in sprites) and c not in house_solid:
             warn.append('bord du haut : la rangée du haut du plateau est fermée en %s, elle doit se fouler' % (c,)); break
+    # Le verglas : la matière que le décor dit glissante (`slick`), moins les cases où une tuile à plat est posée dessus —
+    # une crevasse, une passerelle : là on s'arrête, c'est le calque de sol le plus haut qui parle (CharacterMovement.isIce).
+    SLICK = (set(EARTH) - {(px_ - THEME['props'][k]['anchor'], r) for k, px_, r in plan.props if k in THEME['props'] and THEME['props'][k]['layer'] != 'Props'}) if THEME.get('slick') == 'earth' else set()
     def reach_from(origin):
-        seen, queue = {origin}, collections.deque([origin])
-        while queue:
-            c = queue.popleft()
-            for i, j in NEIGH4:
-                n = (c[0] + i, c[1] + j)
-                if free(n) and n not in seen: seen.add(n); queue.append(n)
-        return seen
+        rest, crossed = glide(origin, free, SLICK)
+        return rest | crossed
     edge = sorted(c for c in (reach_from(start) if free(start) else set()) if (c[0] in (0, W - 1) or c[1] in (0, H - 1)) and c not in GATES)
     if edge: warn.append('le bord de la carte s atteint ailleurs qu à une sortie : %d cases, dont %s — une sortie à déclarer, ou quelque chose à y poser' % (len(edge), edge[:5]))
     def pinches(c):
@@ -667,7 +682,7 @@ def build(plan):
 
     return dict(plan=plan, W=W, H=H, L=L, ORDER=ORDER, nodes=nodes, SOLID=SOLID, REACH=REACH, SEA=SEA, DECK=DECK, STEPS=STEPS, warn=warn, start=start, placed=placed, npcs=npcs,
                 BEACH=BEACH, PLATEAU=PLATEAU, INSIDE=INSIDE, RING=RING, ring_shape=ring_shape, rock_shape=rock_shape, GATES=GATES, edge=edge,
-                TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, UPPER=upper, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
+                TRAIL=TRAIL, TALL=TALL, MOUNTAIN=MOUNTAIN, UPPER=upper, SLICK=SLICK, ROCK=ROCK, LAND=LAND, doors=doors, house_area=house_area, sprites=sprites, flower_cells=flower_cells,
                 high=high, high_shape=high_shape, tier=tier, POND=POND, EARTH=EARTH, WHEAT=WHEAT, VOID=VOID, GARDEN=GARDEN, lamps=[placed.get(l.get('name', 'Lamp%d' % n)) for n, l in enumerate(plan.table('lamp'))], ledges=ledges, PAVED=PAVED, stairs=stairs, hidden=hidden, fence=fence, literal=literal)
 
 
